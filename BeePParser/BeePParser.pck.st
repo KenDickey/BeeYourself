@@ -1,7 +1,10 @@
-'From Cuis 5.0 [latest update: #4530] on 9 February 2021 at 3:56:17 pm'!
-'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis'!
-!provides: 'BeePParser' 1 4!
+'From Cuis 5.0 [latest update: #4530] on 13 February 2021 at 4:24:46 pm'!
+'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
+See https://github.com/powerlang/bee-dmr/tree/master/PetitParser'!
+!provides: 'BeePParser' 1 9!
 !requires: 'PetitParser' 1 2 nil!
+!requires: 'RTFExporting' 1 3 nil!
+!requires: 'RTFImporting' 1 6 nil!
 SystemOrganization addCategory: 'BeePParser'!
 
 
@@ -13,6 +16,26 @@ PPStream subclass: #BeePPStream
 	category: 'BeePParser'!
 !classDefinition: 'BeePPStream class' category: 'BeePParser'!
 BeePPStream class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPMappedParser category: 'BeePParser'!
+PPListParser subclass: #PPMappedParser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser'!
+!classDefinition: 'PPMappedParser class' category: 'BeePParser'!
+PPMappedParser class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPSequencedChoiceParser category: 'BeePParser'!
+PPListParser subclass: #PPSequencedChoiceParser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser'!
+!classDefinition: 'PPSequencedChoiceParser class' category: 'BeePParser'!
+PPSequencedChoiceParser class
 	instanceVariableNames: ''!
 
 
@@ -40,6 +63,64 @@ failure: aPPFailure
 asPetitStream 
 
 	^ self! !
+
+!PPMappedParser methodsFor: 'parsing' stamp: 'KenD 2/13/2021 16:22:40'!
+parseOn: aStream 
+
+	| key parser |
+	key := aStream peek.
+	key isNil
+		ifTrue: [^PPFailure
+			message: 'no parser for key ' , key printString
+			from: aStream].
+	parser := parsers
+		at: key
+		ifAbsent: [^PPFailure
+			message: 'no parser for key ' , key printString
+			from: aStream].
+	^parser parseOn: aStream! !
+
+!PPMappedParser methodsFor: 'initialization' stamp: 'KenD 2/13/2021 16:21:32'!
+initialize 
+
+	super initialize.
+	parsers := Dictionary new! !
+
+!PPMappedParser methodsFor: 'initialization' stamp: 'KenD 2/13/2021 16:22:09'!
+setParsers: aDictionary 
+
+	parsers := aDictionary! !
+
+!PPMappedParser methodsFor: 'accessing' stamp: 'KenD 2/13/2021 16:21:13'!
+at: key put: aPPParser 
+
+	parsers at: key put: aPPParser! !
+
+!PPSequencedChoiceParser methodsFor: 'printing' stamp: 'KenD 2/12/2021 08:59:08'!
+printTextOn: rtf 
+	parsers
+		do: [:p | p printSmalltalkReceiverOn: rtf]
+		separatedBy: [rtf nextPutAll: ' & ']! !
+
+!PPSequencedChoiceParser methodsFor: 'parsing' stamp: 'KenD 2/12/2021 08:58:42'!
+parseOn: aStream 
+	"
+	This is optimized code that avoids unnecessary block activations, do not change.
+	When all choices fail, the last failure is answered.
+	"
+	| element elements start |
+	elements := Array new: parsers size.
+	start := aStream position.
+	1 to: parsers size do: [:index | 
+		element := (parsers at: index) parseOn: aStream.
+		element isPetitFailure ifFalse: [elements at: index put: element]].
+	^(elements anySatisfy: [:elem | elem notNil]) ifTrue: [elements] ifFalse: [
+		aStream position: start.
+		PPFailure message: 'No match for any "and / or" rule' from: aStream]! !
+
+!PPSequencedChoiceParser methodsFor: 'operations' stamp: 'KenD 2/12/2021 08:58:01'!
+& aRule 
+	^self copyWith: aRule! !
 
 !Character methodsFor: '*BeePParser' stamp: 'KenD 2/9/2021 15:52:41'!
 parserTo: aCharacter 
@@ -80,4 +161,232 @@ newline
 
 	^ (Character lf asParser)
 	/ (Character cr asParser , Character lf asParser optional)
+! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:50:36'!
+max: anInteger 
+	"Answer a new parser that parses the receiver at most anInteger times."
+
+	^ PPRepeatingParser on: self max: anInteger! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 08:54:40'!
+newline 
+
+	^Character lf asParser
+		/ (Character cr asParser , Character lf asParser optional)
+		==> [:nodes | 
+			(nodes size = 2 and: [nodes last isNil])
+				ifTrue: [nodes first]
+				ifFalse: [nodes]]! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:43:54'!
+parse: anObject for: requestor 
+
+	^self parse: anObject! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:02:56'!
+printNameOn: aStream 
+
+	self name isNil
+		ifTrue: [ aStream print: self hash ]
+		ifFalse: [ aStream nextPutAll: self name ]! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:03:17'!
+printSmalltalkReceiverOn: rtf 
+
+	| text ast |
+	text := Rtf new.
+	self printTextOn: text.
+	ast := SmalltalkParser new parseSnippet: '(' , text asString , ') msg'.
+	(ast isNil or: [ast format trimBlanks first = $(])
+		ifTrue: [
+			rtf nextPut: $(.
+			self printTextOn: rtf.
+			rtf nextPut: $)]
+		ifFalse: [self printTextOn: rtf]
+! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:19:17'!
+printTextOn: rtf 
+
+	| signature class |
+	signature := self signature ifNil: [^super printTextOn: rtf].
+	class := signature key classImplementing: signature value.
+	class >> signature value printTextOn: rtf! !
+
+!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:21:55'!
+signature: anAssociation 
+
+	self
+		propertyAt: #signature put: anAssociation;
+		name: anAssociation value! !
+
+!PPWrappingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:45:18'!
+printTextOn: rtf
+	parser printSmalltalkReceiverOn: rtf.
+	rtf
+		useColor: PaintingVisitor new defaultColor
+		while: [rtf nextPutAll: ' >=> '].
+	block printTextOn: rtf! !
+
+!PPMemoizedParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 16:19:23'!
+printTextOn: rtf 
+
+	self printSmalltalkReceiverOn: rtf.
+	parser nextPutAll: ' memoized'! !
+
+!PPNotParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 16:18:35'!
+printTextOn: rtf 
+
+	parser printSmalltalkReceiverOn: rtf.
+	rtf nextPutAll: ' not'! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:08:37'!
+isPlus 
+
+	^min = 1 and: [max = SmallInteger maxVal]! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:09:11'!
+isStar 
+
+	^min = 0 and: [max = SmallInteger maxVal ]
+
+! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:08:04'!
+on: aParser min: aMinInteger max: aMaxInteger 
+
+	^ (self on: aParser) setMin: aMinInteger max: aMaxInteger! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:09:49'!
+parseOn: aStream 
+
+	| start element elements |
+	start := aStream position.
+	elements := OrderedCollection new.
+	[ elements size < min ] whileTrue: [
+		(element := parser parseOn: aStream) isPetitFailure ifTrue: [
+			aStream position: start.
+			^ element ].
+		elements addLast: element ].
+	[ elements size < max ] whileTrue: [
+		(element := parser parseOn: aStream) isPetitFailure
+			ifTrue: [ ^ elements asArray ].
+		elements addLast: element ].
+	^ elements asArray! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:10:21'!
+printOn: aStream 
+
+	self name ifNotNil: [^self printNameOn: aStream].
+	aStream nextPut: $(.
+	parser printOn: aStream.
+	aStream nextPutAll: ') '.
+	self isStar ifTrue: [^aStream nextPutAll: 'star'].
+	self isPlus ifTrue: [^aStream nextPutAll: 'plus'].
+	aStream
+		nextPutAll: ' [';
+		print: min;
+		nextPutAll: ', ';
+		nextPutAll: (max = SmallInteger maxVal
+			ifTrue: ['*']
+			ifFalse: [max printString]);
+		nextPut: $]! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:11:01'!
+printTextOn: rtf 
+
+	| stop |
+	self name ifNotNil: [^self printNameOn: rtf].
+	parser printSmalltalkReceiverOn: rtf.
+	self isStar ifTrue: [^rtf nextPutAll: ' star'].
+	self isPlus ifTrue: [^rtf nextPutAll: ' plus'].
+	stop := max = SmallInteger maxVal ifTrue: ['*'] ifFalse: [max printString].
+	rtf
+		nextPutAll: ' rep [';
+		print: min;
+		nextPutAll: ', ';
+		nextPutAll: stop;
+		nextPut: $]! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:11:24'!
+setMin: aMinInteger max: aMaxInteger 
+
+	min := aMinInteger.
+	max := aMaxInteger! !
+
+!PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 09:01:04'!
+on: aParser 
+	^(super on: aParser) setMin: 0 max: SmallInteger maxVal! !
+
+!PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:06:13'!
+on: aParser max: aMaxInteger 
+
+	^ (self on: aParser) setMin: 0 max: aMaxInteger
+! !
+
+!PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:07:03'!
+on: aParser min: aMinInteger 
+
+	^(self on: aParser) setMin: aMinInteger max: SmallInteger maxVal ! !
+
+!PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:07:28'!
+on: aParser min: aMinInteger max: aMaxInteger 
+
+	^ (self on: aParser) setMin: aMinInteger max: aMaxInteger! !
+
+!PPTrimmingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:51:50'!
+printTextOn: rtf 
+	parser printSmalltalkReceiverOn: rtf.
+	rtf nextPutAll: ' trim'! !
+
+!PPTrimmingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:52:15'!
+trim 
+	"There is no point in trimming more than once."
+
+	^ self! !
+
+!PPSequenceParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:55:48'!
+printTextOn: rtf 
+	parsers
+		do: [:p | p printSmalltalkReceiverOn: rtf]
+		separatedBy: [rtf nextPutAll: ' , ']! !
+
+!PPPredicateObjectParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:37:25'!
+printOn: aStream 
+	self name isSymbol
+		ifTrue: [
+			self name storeOn: aStream.
+			aStream nextPutAll: ' asParser']
+		ifFalse: [super printOn: aStream]! !
+
+!PPPredicateObjectParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:37:37'!
+printTextOn: rtf 
+	self name isSymbol
+		ifTrue: [
+			self name printTextOn: rtf.
+			rtf nextPutAll: ' asParser']
+		ifFalse: [super printTextOn: rtf]
+! !
+
+!PPPredicateSequenceParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:13:41'!
+on: aBlock message: aString negated: aNegatedBlock message: aNegatedString size: anInteger 
+	
+	^self new
+		initializeOn: aBlock
+		message: aString
+		negated: aNegatedBlock
+		message: aNegatedString
+		size: anInteger
+! !
+
+!PPPredicateSequenceParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:13:59'!
+on: aBlock message: aString size: anInteger 
+
+	^self
+		on: aBlock
+		message: aString
+		negated: [:each | (aBlock value: each) not]
+		message: 'no ' , aString
+		size: anInteger
 ! !
