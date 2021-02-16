@@ -1,6 +1,6 @@
 # BeeYourself
 
-Experiments in porting Powerlang/Bee-dmr to Cuis
+Experiments in porting Powerlang/Bee-DMR to Cuis
 
 Note:
 - http://esug.org/data/ESUG2014/IWST/Papers/iwst2014_Design%20and%20implementation%20of%20Bee%20Smalltalk%20Runtime.pdf
