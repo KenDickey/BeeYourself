@@ -1,12 +1,63 @@
-'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 8:22:01 am'!
+'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 12:48:19 pm'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
 See https://github.com/powerlang/bee-dmr/tree/master/PetitParser'!
-!provides: 'BeePParser' 1 14!
+!provides: 'BeePParser' 1 17!
 !requires: 'PetitParser' 1 2 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!
 SystemOrganization addCategory: 'BeePParser'!
+SystemOrganization addCategory: 'BeePParser-Tests'!
 
+
+!classDefinition: #PPActionParserTest category: 'BeePParser-Tests'!
+TestCase subclass: #PPActionParserTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser-Tests'!
+!classDefinition: 'PPActionParserTest class' category: 'BeePParser-Tests'!
+PPActionParserTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPGramarTest category: 'BeePParser-Tests'!
+TestCase subclass: #PPGramarTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser-Tests'!
+!classDefinition: 'PPGramarTest class' category: 'BeePParser-Tests'!
+PPGramarTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPIdentifierTest category: 'BeePParser-Tests'!
+TestCase subclass: #PPIdentifierTest
+	instanceVariableNames: 'identifier'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser-Tests'!
+!classDefinition: 'PPIdentifierTest class' category: 'BeePParser-Tests'!
+PPIdentifierTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPParserCombinationTest category: 'BeePParser-Tests'!
+TestCase subclass: #PPParserCombinationTest
+	instanceVariableNames: 'identifier'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser-Tests'!
+!classDefinition: 'PPParserCombinationTest class' category: 'BeePParser-Tests'!
+PPParserCombinationTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PPTerminalParserTest category: 'BeePParser-Tests'!
+TestCase subclass: #PPTerminalParserTest
+	instanceVariableNames: 'characters'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'BeePParser-Tests'!
+!classDefinition: 'PPTerminalParserTest class' category: 'BeePParser-Tests'!
+PPTerminalParserTest class
+	instanceVariableNames: ''!
 
 !classDefinition: #PPMappedParser category: 'BeePParser'!
 PPListParser subclass: #PPMappedParser
@@ -28,6 +79,254 @@ PPListParser subclass: #PPSequencedChoiceParser
 PPSequencedChoiceParser class
 	instanceVariableNames: ''!
 
+
+!PPActionParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:11:10'!
+testFlatten 
+
+	| p identifier |
+	p := #letter asParser star flatten.
+	self assert: (p parse: 'Hello0') = 'Hello'.
+	identifier := (#letter asParser , (#letter asParser / #digit asParser) star) flatten.
+	self assert: (identifier parse: 'foo12+') = 'foo12'
+! !
+
+!PPActionParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:11:21'!
+testToken 
+
+	| p |
+	p := #letter asParser star token.
+	self assert: (p parse: 'Hello0') class = PPToken! !
+
+!PPActionParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:11:33'!
+testTransformation 
+
+	| p number |
+	p := #digit asParser.
+	number := p ==> [:ch | ch digitValue].
+	self assert: (number parse: '8') = 8.
+	p := #letter asParser star
+		==> [:array | array collect: [:ch | ch asLowercase]].
+	self assert: (p parse: 'HELLO') = 'hello' asArray! !
+
+!PPGramarTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:12:19'!
+testArithmetic 
+
+	| number term prod prim start |
+	number := #digit asParser plus token trim
+		==> [:token | token value asNumber].
+	term := PPUnresolvedParser new.
+	prod := PPUnresolvedParser new.
+	prim := PPUnresolvedParser new.
+	term
+		def: prod , $+ asParser token trim , term
+			==> [:nodes | nodes first + nodes last]
+			/ prod.
+	prod
+		def: prim , $* asParser token trim , prod
+			==> [:nodes | nodes first * nodes last]
+			/ prim.
+	prim
+		def: $( asParser token trim , term , $) asParser token trim
+			==> [:nodes | nodes second]
+			/ number.
+	start := term end.
+	self
+		assert: (start parse: '1 + 2 * 3') = 7;
+		assert: (start parse: '(1 + 2) * 3') = 9
+! !
+
+!PPGramarTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:12:35'!
+testInteger 
+
+	| number |
+	number := #digit asParser plus token trim
+		==> [:token | token value asNumber].
+	self assert: (number parse: '123') = 123! !
+
+!PPIdentifierTest methodsFor: 'setUp/tearDown' stamp: 'KenD 2/16/2021 09:13:39'!
+setUp 
+
+	super setUp.
+	identifier := #letter asParser , (#letter asParser / #digit asParser) star! !
+
+!PPIdentifierTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:14:12'!
+testIdentifierMatches 
+
+	self
+		assert: (identifier matches: 'foo');
+		deny: (identifier matches: '123')! !
+
+!PPIdentifierTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:14:24'!
+testIdentifierMatchesIn 
+
+	| answer |
+	answer := identifier matchesIn: 'foo 123 bar12'.
+	self
+		assert: answer first = (identifier parse: 'foo');
+		assert: answer second = (identifier parse: 'oo');
+		assert: answer third = (identifier parse: 'o');
+		assert: answer fourth = (identifier parse: 'bar12');
+		assert: answer fifth = (identifier parse: 'ar12');
+		assert: answer sixth = (identifier parse: 'r12')! !
+
+!PPIdentifierTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:14:34'!
+testIdentifierParse 
+	| ast |
+	ast := identifier parse: 'yeah'.
+	self assert: ast = #($y #($e $a $h)).
+	ast := identifier parse: 'f12'.
+	self assert: ast = #($f #($1 $2))! !
+
+!PPIdentifierTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:14:46'!
+testIdentifierParseError 
+
+	| error position |
+	identifier parse: '123' onError: [:msg :pos | 
+		error := msg.
+		position := pos].
+	self assert: error = 'letter expected'; assert: position = 0! !
+
+!PPIdentifierTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 12:47:56'!
+testIdentifierStructure 
+
+	self
+		assert: identifier class = PPSequenceParser;
+		assert: identifier children size = 2;
+		assert: identifier children first class == PPPredicateObjectParser.
+		"assert: identifier children second class == PPRepeatingParser;
+		assert: identifier children second children size = 1"! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:15:30'!
+testAnd 
+
+	| p |
+	p := #letter asParser and , #uppercase asParser.
+	self
+		assert: (p matches: 'A');
+		deny: (p matches: 'a')! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:15:39'!
+testEnd 
+
+	| p |
+	p := #uppercase asParser end.
+	self
+		assert: (p matches: 'A');
+		deny: (p matches: 'AB')! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:15:49'!
+testNot 
+
+	| p |
+	p := #uppercase asParser not , #letter asParser.
+	self
+		assert: (p matches: 'a');
+		deny: (p matches: 'A')! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:16:00'!
+testOptional 
+
+	| p |
+	p := $+ asParser optional , $- asParser optional , #digit asParser.
+	self
+		assert: (p matches: '1');
+		assert: (p matches: '+1');
+		assert: (p matches: '-1');
+		deny: (p matches: '/1')! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:16:17'!
+testOrderedChoice 
+
+	| p1 p2 |
+	p1 := #letter asParser.
+	p2 := #digit asParser.
+	self
+		assert: (p1 / p2 matches: 'a0');
+		assert: (p2 / p1 matches: 'X9');
+		deny: (p1 / p2 matches: ' B1')
+! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:16:54'!
+testPlus 
+
+	| p |
+	p := #letter asParser plus.
+	self
+		assert: (p matches: 'a');
+		deny: (p matches: '0');
+		deny: (p matches: '')
+! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:17:05'!
+testSequence 
+
+	| p1 p2 |
+	p1 := #letter asParser.
+	p2 := #digit asParser.
+	self
+		assert: (p1 , p2 matches: 'a0');
+		deny: (p2 , p1 matches: 'X9')! !
+
+!PPParserCombinationTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:17:15'!
+testStar 
+
+	| p |
+	p := #letter asParser star.
+	self
+		assert: (p matches: 'a');
+		assert: (p matches: '0');
+		assert: (p matches: '')! !
+
+!PPTerminalParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:18:16'!
+testAnyParser 
+
+	| parser |
+	parser := #any asParser.
+	characters do: [:ch | self assert: (parser matches: ch)]! !
+
+!PPTerminalParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:18:25'!
+testCharacterParser 
+
+	| parser ok |
+	parser := $a asParser.
+	ok := characters select: [:ch | parser matches: ch].
+	self assert: ok = #('a')! !
+
+!PPTerminalParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:18:44'!
+testDigitParser 
+
+	| parser digits |
+	parser := #digit asParser.
+	digits := characters select: [:ch | parser matches: ch].
+	self assert: digits = #('0' '1' '2' '3' '4' '5' '6' '7' '8' '9')! !
+
+!PPTerminalParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 12:44:37'!
+testLetterParser 
+
+	| parser letters |
+	parser := #letter asParser.
+	letters := characters select: [:ch | parser matches: ch].
+	self
+		assert: letters
+			= #('A' 'B' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'J' 'K' 'L' 'M' 'N' 'O' 'P' 'Q' 'R' 'S' 'T' 'U' 'V' 'W' 'X' 'Y' 'Z'
+				'_' 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j' 'k' 'l' 'm' 'n' 'o' 'p' 'q' 'r' 's' 't' 'u' 'v' 'w' 'x' 'y' 'z')
+! !
+
+!PPTerminalParserTest methodsFor: 'testing' stamp: 'KenD 2/16/2021 09:19:20'!
+testStringParser 
+
+	| parser |
+	parser := 'abc' asParser.
+	self
+		assert: (parser matches: 'abc');
+		deny: (parser matches: 'aabc');
+		assert: (parser matchesIn: 'aabc') asArray = #('abc')! !
+
+!PPTerminalParserTest methodsFor: 'setUp/tearDown' stamp: 'KenD 2/16/2021 09:18:05'!
+setUp 
+
+	super setUp.
+	characters := (0 to: 255) collect: [:i | i asCharacter asString]! !
 
 !PPMappedParser methodsFor: 'parsing' stamp: 'KenD 2/13/2021 16:22:40'!
 parseOn: aStream 
@@ -86,6 +385,11 @@ parseOn: aStream
 !PPSequencedChoiceParser methodsFor: 'operations' stamp: 'KenD 2/12/2021 08:58:01'!
 & aRule 
 	^self copyWith: aRule! !
+
+!Character methodsFor: '*BeePParser' stamp: 'KenD 2/16/2021 12:39:58'!
+isASCIILetter
+
+	^'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' includes: self! !
 
 !Character methodsFor: '*BeePParser' stamp: 'KenD 2/9/2021 15:52:41'!
 parserTo: aCharacter 
@@ -361,3 +665,19 @@ printTextOn: rtf
 			rtf nextPutAll: ' asParser']
 		ifFalse: [super printTextOn: rtf]
 ! !
+
+!PPPredicateObjectParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:25:54'!
+identifier
+	| parser |
+	parser := self
+		on: (PPCharSetPredicate on: [:char | char = $_ or: [char isAlphaNumeric]])
+		message: 'letter expected'.
+	^parser name: #identifier! !
+
+!PPPredicateObjectParser class methodsFor: '*BeePParser' stamp: 'KenD 2/16/2021 12:42:35'!
+letter
+	| parser |
+	parser := self
+		on: (PPCharSetPredicate on: [:char | char = $_ or: [char isASCIILetter ]])
+		message: 'letter expected'.
+	^parser name: #identifier! !

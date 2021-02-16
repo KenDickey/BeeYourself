@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 8:22:04 am'!
+'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 12:48:15 pm'!
 'Description See http://scg.unibe.ch/research/helvetia/petitparser'!
-!provides: 'PetitParser' 1 12!
+!provides: 'PetitParser' 1 14!
 !requires: 'SqueakCompatibility' 1 27 nil!
 SystemOrganization addCategory: 'PetitParser-Core'!
 SystemOrganization addCategory: 'PetitParser-Tools'!
@@ -886,6 +886,23 @@ value: aCharacter
 on: aBlock
 	^ self basicNew initializeOn: aBlock! !
 
+!PPParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:38'!
+children
+	"Answer a set of child parsers that could follow the receiver."
+
+	^ #()! !
+
+!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:38'!
+name: aString
+	self propertyAt: #name put: aString! !
+
+!PPParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 14:51:29'!
+printNameOn: aStream 
+
+	self name isNil
+		ifTrue: [ aStream print: self hash ]
+		ifFalse: [ aStream nextPutAll: self name ]! !
+
 !PPParser methodsFor: 'operators' stamp: 'lr 9/23/2008 18:32'!
 , aParser 
 	"Answer a new parser that parses the receiver followed by aParser."
@@ -1056,16 +1073,6 @@ asParser
 	"Answer the receiving parser."
 	
 	^ self! !
-
-!PPParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:38'!
-children
-	"Answer a set of child parsers that could follow the receiver."
-
-	^ #()! !
-
-!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:38'!
-name: aString
-	self propertyAt: #name put: aString! !
 
 !PPParser methodsFor: 'operators-convenience' stamp: 'lr 2/19/2010 07:42'!
 delimitedBy: aParser
@@ -1394,13 +1401,6 @@ times: anInteger
 	"Answer a new parser that parses the receiver exactly anInteger times."
 	
 	^ self min: anInteger max: anInteger! !
-
-!PPParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 14:51:29'!
-printNameOn: aStream 
-
-	self name isNil
-		ifTrue: [ aStream print: self hash ]
-		ifFalse: [ aStream nextPutAll: self name ]! !
 
 !PPParser methodsFor: 'as yet unclassified' stamp: 'KenD 2/12/2021 13:44:20'!
 & aParser 
@@ -1957,13 +1957,13 @@ setMessage: aString
 message: aString
 	^ self new setMessage: aString! !
 
-!PPListParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:37'!
-children
-	^ parsers! !
-
 !PPListParser methodsFor: 'copying' stamp: 'lr 9/17/2008 22:36'!
 copyWith: aParser
 	^ self species withAll: (parsers copyWith: aParser)! !
+
+!PPListParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:37'!
+children
+	^ parsers! !
 
 !PPListParser methodsFor: 'initialization' stamp: 'lr 4/29/2010 10:12'!
 initialize
@@ -2269,10 +2269,6 @@ hex
 		message: 'hex digit expected'.
 	^parser name: #hex! !
 
-!PPPredicateObjectParser class methodsFor: 'factory-chars' stamp: 'lr 8/25/2010 11:05'!
-letter
-	^ self on: (PPCharSetPredicate on: [ :char | char isLetter ]) message: 'letter expected'! !
-
 !PPPredicateObjectParser class methodsFor: 'factory-chars' stamp: 'KenD 2/12/2021 13:27:15'!
 lf
 	| parser |
@@ -2341,14 +2337,6 @@ on: aBlock message: aString
 !PPPredicateObjectParser class methodsFor: 'instance creation' stamp: 'lr 6/12/2010 09:10'!
 on: aBlock message: aString negated: aNegatedBlock message: aNegatedString
 	^ self new initializeOn: aBlock message: aString negated: aNegatedBlock message: aNegatedString! !
-
-!PPPredicateObjectParser class methodsFor: 'as yet unclassified' stamp: 'KenD 2/12/2021 13:25:54'!
-identifier
-	| parser |
-	parser := self
-		on: (PPCharSetPredicate on: [:char | char = $_ or: [char isAlphaNumeric]])
-		message: 'letter expected'.
-	^parser name: #identifier! !
 
 !PPPredicateSequenceParser methodsFor: 'initialization' stamp: 'lr 6/12/2010 09:13'!
 initializeOn: aBlock message: aString negated: aNegatedBlock message: aNegatedString size: anInteger
