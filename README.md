@@ -5,6 +5,7 @@ Experiments in porting Powerlang/Bee-dmr to Cuis
 Note:
 - http://esug.org/data/ESUG2014/IWST/Papers/iwst2014_Design%20and%20implementation%20of%20Bee%20Smalltalk%20Runtime.pdf
 - http://stefan-marr.de/downloads/dls17-pimas-et-al-garbage-collection-and-efficiency-in-dynamic-metacircular-runtimes.pdf
+- https://www.slideshare.net/esug/bee-smalltalk-runtime-anchors-aweigh
 - https://powerlang.readthedocs.io/en/latest/index.html
 - https://github.com/powerlang
 
