@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 15 February 2021 at 3:53:03 pm'!
+'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 8:22:04 am'!
 'Description See http://scg.unibe.ch/research/helvetia/petitparser'!
-!provides: 'PetitParser' 1 11!
+!provides: 'PetitParser' 1 12!
 !requires: 'SqueakCompatibility' 1 27 nil!
 SystemOrganization addCategory: 'PetitParser-Core'!
 SystemOrganization addCategory: 'PetitParser-Tools'!
@@ -886,23 +886,6 @@ value: aCharacter
 on: aBlock
 	^ self basicNew initializeOn: aBlock! !
 
-!PPParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:38'!
-children
-	"Answer a set of child parsers that could follow the receiver."
-
-	^ #()! !
-
-!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:38'!
-name: aString
-	self propertyAt: #name put: aString! !
-
-!PPParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 14:51:29'!
-printNameOn: aStream 
-
-	self name isNil
-		ifTrue: [ aStream print: self hash ]
-		ifFalse: [ aStream nextPutAll: self name ]! !
-
 !PPParser methodsFor: 'operators' stamp: 'lr 9/23/2008 18:32'!
 , aParser 
 	"Answer a new parser that parses the receiver followed by aParser."
@@ -1073,6 +1056,16 @@ asParser
 	"Answer the receiving parser."
 	
 	^ self! !
+
+!PPParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:38'!
+children
+	"Answer a set of child parsers that could follow the receiver."
+
+	^ #()! !
+
+!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:38'!
+name: aString
+	self propertyAt: #name put: aString! !
 
 !PPParser methodsFor: 'operators-convenience' stamp: 'lr 2/19/2010 07:42'!
 delimitedBy: aParser
@@ -1402,6 +1395,13 @@ times: anInteger
 	
 	^ self min: anInteger max: anInteger! !
 
+!PPParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 14:51:29'!
+printNameOn: aStream 
+
+	self name isNil
+		ifTrue: [ aStream print: self hash ]
+		ifFalse: [ aStream nextPutAll: self name ]! !
+
 !PPParser methodsFor: 'as yet unclassified' stamp: 'KenD 2/12/2021 13:44:20'!
 & aParser 
 
@@ -1439,7 +1439,7 @@ setParser: aParser
 on: aParser
 	^ self new setParser: aParser! !
 
-!PPCompositeParser methodsFor: 'initialization' stamp: 'lr 5/8/2011 15:27'!
+!PPCompositeParser methodsFor: 'initialization' stamp: 'KenD 2/16/2021 08:11:40'!
 initializeStartingAt: aSymbol
 	| productionNames |
 	self initialize.
@@ -1449,7 +1449,33 @@ initializeStartingAt: aSymbol
 		self instVarAt: key put: (PPDelegateParser named: value) ].
 	parser setParser: (self perform: aSymbol).
 	productionNames keysAndValuesDo: [ :key :value |
-		(self instVarAt: key) setParser: (self perform: value) ]! !
+		(self instVarAt: key) setParser: (self perform: value) ]
+	"*BeePParser has:
+	
+	| allVariableNames ignoredVariableNames productionIndexesAndNames |
+	self initialize.	
+
+	''find all the productions that need to be initialized''
+	allVariableNames := self class allInstVarNames
+		collect: [ :each | each asSymbol ].
+	ignoredVariableNames := self class ignoredNames
+		collect: [ :each | each asSymbol ].
+	productionIndexesAndNames := ((1 to: self class instSize)
+		collect: [ :index | index -> (allVariableNames at: index) ])
+		reject: [ :assoc | ignoredVariableNames includes: assoc value ].
+	
+	''initialize productions with an undefined parser to be replaced later''
+	parser := PPUnresolvedParser named: aSymbol.
+	productionIndexesAndNames do: [ :assoc |
+		self instVarAt: assoc key put: (PPUnresolvedParser named: assoc value) ].
+	parser def: (self perform: aSymbol).
+	
+	''resolve unresolved parsers with their actual implementation''
+	productionIndexesAndNames do: [ :assoc |
+		(self respondsTo: assoc value)
+			ifFalse: [ self error: 'Unable to initialize ' , assoc value printString ]
+			ifTrue: [ (self instVarAt: assoc key) def: (self perform: assoc value) ] 
+	"! !
 
 !PPCompositeParser methodsFor: 'querying' stamp: 'lr 12/4/2009 18:39'!
 productionAt: aSymbol
@@ -1931,13 +1957,13 @@ setMessage: aString
 message: aString
 	^ self new setMessage: aString! !
 
-!PPListParser methodsFor: 'copying' stamp: 'lr 9/17/2008 22:36'!
-copyWith: aParser
-	^ self species withAll: (parsers copyWith: aParser)! !
-
 !PPListParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:37'!
 children
 	^ parsers! !
+
+!PPListParser methodsFor: 'copying' stamp: 'lr 9/17/2008 22:36'!
+copyWith: aParser
+	^ self species withAll: (parsers copyWith: aParser)! !
 
 !PPListParser methodsFor: 'initialization' stamp: 'lr 4/29/2010 10:12'!
 initialize

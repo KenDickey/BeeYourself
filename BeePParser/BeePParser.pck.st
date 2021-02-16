@@ -1,22 +1,12 @@
-'From Cuis 5.0 [latest update: #4530] on 13 February 2021 at 4:24:46 pm'!
+'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 8:22:01 am'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
 See https://github.com/powerlang/bee-dmr/tree/master/PetitParser'!
-!provides: 'BeePParser' 1 9!
+!provides: 'BeePParser' 1 14!
 !requires: 'PetitParser' 1 2 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!
 SystemOrganization addCategory: 'BeePParser'!
 
-
-!classDefinition: #BeePPStream category: 'BeePParser'!
-PPStream subclass: #BeePPStream
-	instanceVariableNames: 'failure'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'BeePParser'!
-!classDefinition: 'BeePPStream class' category: 'BeePParser'!
-BeePPStream class
-	instanceVariableNames: ''!
 
 !classDefinition: #PPMappedParser category: 'BeePParser'!
 PPListParser subclass: #PPMappedParser
@@ -38,31 +28,6 @@ PPListParser subclass: #PPSequencedChoiceParser
 PPSequencedChoiceParser class
 	instanceVariableNames: ''!
 
-
-!BeePPStream methodsFor: 'printing' stamp: 'KenD 2/9/2021 15:14:15'!
-printOn: aStream
-	collection isString
-		ifFalse: [ ^ super printOn: aStream ].
-	aStream
-		nextPutAll: (collection copyFrom: 1 to: position);
-		nextPutAll: 'ꞈ'; "@@?from Bee @@"
-		nextPutAll: (collection copyFrom: position + 1 to: readLimit)! !
-
-!BeePPStream methodsFor: 'accessing' stamp: 'KenD 2/7/2021 16:39:49'!
-failure 
-
-	^failure! !
-
-!BeePPStream methodsFor: 'accessing' stamp: 'KenD 2/7/2021 16:40:07'!
-failure: aPPFailure 
-
-	(failure isNil or: [failure position < aPPFailure position])
-		ifTrue: [failure := aPPFailure]! !
-
-!BeePPStream methodsFor: 'converting' stamp: 'KenD 2/7/2021 16:39:16'!
-asPetitStream 
-
-	^ self! !
 
 !PPMappedParser methodsFor: 'parsing' stamp: 'KenD 2/13/2021 16:22:40'!
 parseOn: aStream 
@@ -163,12 +128,6 @@ newline
 	/ (Character cr asParser , Character lf asParser optional)
 ! !
 
-!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:50:36'!
-max: anInteger 
-	"Answer a new parser that parses the receiver at most anInteger times."
-
-	^ PPRepeatingParser on: self max: anInteger! !
-
 !PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 08:54:40'!
 newline 
 
@@ -183,13 +142,6 @@ newline
 parse: anObject for: requestor 
 
 	^self parse: anObject! !
-
-!PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:02:56'!
-printNameOn: aStream 
-
-	self name isNil
-		ifTrue: [ aStream print: self hash ]
-		ifFalse: [ aStream nextPutAll: self name ]! !
 
 !PPParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 09:03:17'!
 printSmalltalkReceiverOn: rtf 
@@ -221,6 +173,31 @@ signature: anAssociation
 		propertyAt: #signature put: anAssociation;
 		name: anAssociation value! !
 
+!PPExpressionParser methodsFor: '*BeePParser' stamp: 'KenD 2/16/2021 08:20:22'!
+buildTerm: term selector: selector 
+
+	| list |
+	list := operators at: selector ifAbsent: [#()].
+	^list isEmpty ifTrue: [term] ifFalse: [
+		self perform: selector with: term with: (list size = 1
+			ifTrue: [
+				list first first ==> [:operator | 
+					list isEmpty ifTrue: [self halt].
+					{list first second. operator}]]
+			ifFalse: [
+				list
+					inject: PPChoiceParser new
+					into: [:choice :each | choice
+						/ (each first ==> [:operator | {each second. operator}])]])]
+! !
+
+!PPActionParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:36:53'!
+printTextOn: rtf 
+
+	parser printSmalltalkReceiverOn: rtf.
+	rtf cr; cr; nextPutAll: '==> '.
+	block printSmalltalkReceiverOn: rtf! !
+
 !PPWrappingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:45:18'!
 printTextOn: rtf
 	parser printSmalltalkReceiverOn: rtf.
@@ -228,6 +205,18 @@ printTextOn: rtf
 		useColor: PaintingVisitor new defaultColor
 		while: [rtf nextPutAll: ' >=> '].
 	block printTextOn: rtf! !
+
+!PPAndParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:35:44'!
+printTextOn: rtf 
+
+	parser printSmalltalkReceiverOn: rtf.
+	rtf nextPutAll: ' and'! !
+
+!PPFlattenParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:28:58'!
+printTextOn: rtf 
+
+	parser printSmalltalkReceiverOn: rtf.
+	rtf nextPutAll: ' flatten'! !
 
 !PPMemoizedParser methodsFor: '*BeePParser' stamp: 'KenD 2/13/2021 16:19:23'!
 printTextOn: rtf 
@@ -275,24 +264,6 @@ parseOn: aStream
 		elements addLast: element ].
 	^ elements asArray! !
 
-!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:10:21'!
-printOn: aStream 
-
-	self name ifNotNil: [^self printNameOn: aStream].
-	aStream nextPut: $(.
-	parser printOn: aStream.
-	aStream nextPutAll: ') '.
-	self isStar ifTrue: [^aStream nextPutAll: 'star'].
-	self isPlus ifTrue: [^aStream nextPutAll: 'plus'].
-	aStream
-		nextPutAll: ' [';
-		print: min;
-		nextPutAll: ', ';
-		nextPutAll: (max = SmallInteger maxVal
-			ifTrue: ['*']
-			ifFalse: [max printString]);
-		nextPut: $]! !
-
 !PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:11:01'!
 printTextOn: rtf 
 
@@ -308,12 +279,6 @@ printTextOn: rtf
 		nextPutAll: ', ';
 		nextPutAll: stop;
 		nextPut: $]! !
-
-!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:11:24'!
-setMin: aMinInteger max: aMaxInteger 
-
-	min := aMinInteger.
-	max := aMaxInteger! !
 
 !PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 09:01:04'!
 on: aParser 
@@ -346,11 +311,39 @@ trim
 
 	^ self! !
 
+!PPEpsilonParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:30:50'!
+printTextOn: rtf 
+
+	rtf
+		useColor: PaintingVisitor new specialColor
+		while: [rtf nextPutAll: 'nil'].
+	rtf nextPutAll: ' asParser'
+! !
+
+!PPChoiceParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:33:52'!
+printTextOn: rtf 
+
+	parsers
+		do: [:p | p printSmalltalkReceiverOn: rtf]
+		separatedBy: [rtf nextPutAll: ' / ']! !
+
 !PPSequenceParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 08:55:48'!
 printTextOn: rtf 
 	parsers
 		do: [:p | p printSmalltalkReceiverOn: rtf]
 		separatedBy: [rtf nextPutAll: ' , ']! !
+
+!PPLiteralParser methodsFor: '*BeePParser' stamp: 'KenD 2/15/2021 14:20:50'!
+printOn: aStream 
+
+	literal printString printOn: aStream.
+	aStream nextPutAll: ' asParser'! !
+
+!PPLiteralParser methodsFor: '*BeePParser' stamp: 'KenD 2/14/2021 15:25:49'!
+printTextOn: rtf 
+
+	literal literalString printTextOn: rtf.
+	rtf nextPutAll: ' asParser'! !
 
 !PPPredicateObjectParser methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:37:25'!
 printOn: aStream 
@@ -367,26 +360,4 @@ printTextOn: rtf
 			self name printTextOn: rtf.
 			rtf nextPutAll: ' asParser']
 		ifFalse: [super printTextOn: rtf]
-! !
-
-!PPPredicateSequenceParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:13:41'!
-on: aBlock message: aString negated: aNegatedBlock message: aNegatedString size: anInteger 
-	
-	^self new
-		initializeOn: aBlock
-		message: aString
-		negated: aNegatedBlock
-		message: aNegatedString
-		size: anInteger
-! !
-
-!PPPredicateSequenceParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 13:13:59'!
-on: aBlock message: aString size: anInteger 
-
-	^self
-		on: aBlock
-		message: aString
-		negated: [:each | (aBlock value: each) not]
-		message: 'no ' , aString
-		size: anInteger
 ! !
