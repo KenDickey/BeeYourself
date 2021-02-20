@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 19 February 2021 at 8:54:01 am'!
+'From Cuis 5.0 [latest update: #4530] on 20 February 2021 at 3:09:33 pm'!
 'Description Code Metamodel (used by Powerlang/Bee-DMR)'!
-!provides: 'Ring2' 1 0!
+!provides: 'Ring2' 1 1!
 SystemOrganization addCategory: 'Ring2-Core'!
 
 
@@ -76,7 +76,7 @@ removePropertyNamed: propertyName
 	(self hasPropertyNamed: propertyName)
 		ifTrue: [ properties removeKey: propertyName ]! !
 
-!RGObject methodsFor: 'accessing' stamp: 'KenD 2/19/2021 08:39:54'!
+!RGObject methodsFor: 'accessing' stamp: 'KenD 2/20/2021 15:05:21'!
 name: aString 
 
 	| oldName |
