@@ -1,6 +1,7 @@
-'From Cuis 5.0 [latest update: #4530] on 20 February 2021 at 4:14:31 pm'!
+'From Cuis 5.0 [latest update: #4530] on 21 February 2021 at 1:43:12 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 1!
+!provides: 'Powerlang-Core' 1 3!
+!requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
@@ -66,6 +67,172 @@ SSymbolicToken subclass: #SStringToken
 SStringToken class
 	instanceVariableNames: ''!
 
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
+comment 
+
+	^comments notNil ifTrue: [comments anyOne]! !
+
+!SToken methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:24:19'!
+isDelimitedIdentifier 
+
+	^false! !
+
+!SToken methodsFor: 'initialization' stamp: 'KenD 2/21/2021 13:26:35'!
+initialize 
+
+	super initialize.
+	stretch := 1 thru: 0! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:01'!
+endsExpression 
+
+	^self isEnd! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:14'!
+hasSymbol 
+
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:44'!
+is: anObject 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:55'!
+isAssignment 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:07'!
+isBar 
+
+	^(self is: #'|') or: [self is: #'/']! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:17'!
+isBlockNode 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:28'!
+isComment 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:56'!
+isDelimiter 
+
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:49'!
+isEnd 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:09'!
+isIdentifier 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:20'!
+isLiteral 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:29'!
+isNameToken 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:38'!
+isNumberNode 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:52'!
+isPoolLiteral 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:26:57'!
+sStringToken 
+
+	^false! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:29'!
+compileWarning: aString 
+
+	compiler notify: aString at: self stretch! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:41'!
+compiler 
+
+	^compiler! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:14'!
+compiler: aSmalltalkCompiler 
+
+	compiler := aSmalltalkCompiler! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:25'!
+end 
+
+	^stretch end! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:35'!
+end: aNumber 
+
+	stretch end: aNumber! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:27:49'!
+position 
+
+	^stretch start! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:02'!
+position: aNumber 
+
+	stretch start: aNumber! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:13'!
+prevPosition 
+
+	^stretch start - 1! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:27'!
+source 
+	^compiler sourceCode copyFrom: stretch start to: stretch end! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:38'!
+stretch 
+
+	^stretch! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:50'!
+stretch: aStretch 
+
+	stretch := aStretch! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:45'!
+comments 
+
+	^comments! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:56'!
+comments: aCollection 
+
+	aCollection isNil ifTrue: [^self].
+	comments isNil
+		ifTrue: [comments := aCollection]
+		ifFalse: [comments addAll: aCollection]! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:27:32'!
+moveCommentsTo: aParseNode 
+
+	aParseNode comments: comments.
+	comments := nil! !
 
 !SEndToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:05:41'!
 value: aString 
