@@ -1,11 +1,21 @@
-'From Cuis 5.0 [latest update: #4530] on 21 February 2021 at 1:43:12 pm'!
+'From Cuis 5.0 [latest update: #4530] on 21 February 2021 at 2:03:07 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 3!
+!provides: 'Powerlang-Core' 1 5!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
 
+
+!classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
+Object subclass: #SParseTreeVisitor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SParseTreeVisitor class' category: 'Powerlang-Core'!
+SParseTreeVisitor class
+	instanceVariableNames: ''!
 
 !classDefinition: #SSmalltalkScanner category: 'Powerlang-Core'!
 Object subclass: #SSmalltalkScanner
@@ -35,6 +45,16 @@ SToken subclass: #SEndToken
 	category: 'Powerlang-Core'!
 !classDefinition: 'SEndToken class' category: 'Powerlang-Core'!
 SEndToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SParseNode category: 'Powerlang-Core'!
+SToken subclass: #SParseNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SParseNode class' category: 'Powerlang-Core'!
+SParseNode class
 	instanceVariableNames: ''!
 
 !classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
@@ -72,6 +92,101 @@ SStringToken class
 comment 
 
 	^comments notNil ifTrue: [comments anyOne]! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
+visit: aParseNode 
+
+	^aParseNode notNil ifTrue: [aParseNode acceptVisitor: self] ! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:56'!
+visitAssignment: anAssignmentNode 
+
+	^self visitParseNode: anAssignmentNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:10'!
+visitBlock: aBlockNode 
+
+	^self visitParseNode: aBlockNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:23'!
+visitBraceNode: aBraceNode 
+
+	^self visitParseNode: aBraceNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:34'!
+visitCascade: aCascadeNode 
+
+	^self visitParseNode: aCascadeNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:54'!
+visitCascadeMessage: aCascadeMessageNode 
+
+	^self visitMessage: aCascadeMessageNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:02:31'!
+visitForeignNode: anForeignNode 
+
+	^self visitLiteral: anForeignNode "Bee code lacks $^ ??"! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:29'!
+visitIdentifier: anIdentifierNode 
+
+	^self visitParseNode: anIdentifierNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:45'!
+visitLiteral: aLiteralNode 
+
+	^self visitParseNode: aLiteralNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:58'!
+visitMessage: aMessageNode 
+
+	^self visitParseNode: aMessageNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:09'!
+visitMethod: aMethodNode 
+
+	^self visitParseNode: aMethodNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:21'!
+visitNumberNode: aNumberNode 
+
+	^self visitLiteral: aNumberNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:33'!
+visitParseNode: aParseNode 
+
+	^self subclassResponsibility! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:42'!
+visitPragma: aPragmaNode 
+
+	^self visitParseNode: aPragmaNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:53'!
+visitReturn: aReturnNode 
+
+	^self visitParseNode: aReturnNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:03'!
+visitSelector: aSelectorNode 
+
+	^self visitParseNode: aSelectorNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:16'!
+visitString: aStringNode 
+
+	^self visitLiteral: aStringNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:30'!
+visitSymbolicPragma: aPragmaNode 
+
+	^self visitPragma: aPragmaNode! !
+
+!SParseTreeVisitor class methodsFor: 'instance creation' stamp: 'KenD 2/21/2021 13:57:12'!
+new 
+
+	^super new initialize! !
 
 !SToken methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:24:19'!
 isDelimitedIdentifier 
@@ -252,6 +367,126 @@ prevPosition
 !SEndToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:04:14'!
 isEnd
 	^true! !
+
+!SParseNode methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:52:09'!
+moveCommentsFrom: aParseNode 
+
+	aParseNode moveCommentsTo: self! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:12'!
+ast 
+
+	^compiler ast! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:34'!
+hasAssign 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:48'!
+isAssign 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:00'!
+isBraceNode 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:11'!
+isCascade 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:22'!
+isCascadeMessage 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:30'!
+isEvaluable 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:39'!
+isImmediate 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:45'!
+isMessageNode 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:52'!
+isMethod 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:59'!
+isMethodArgument 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:05'!
+isMethodTemporary 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:14'!
+isReturn 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:28'!
+isSelector 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:34'!
+isSelf 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:45'!
+isSuper 
+
+	^false! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:48:44'!
+allNodesDo: aBlock 
+
+	self nodesDo: aBlock includingDeclarations: true! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:52:43'!
+nodeWithLiteral: anObject 
+
+	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) 
+					and: [n value = anObject]] 
+		ifAbsent: nil
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:53:52'!
+nodesDetect: aBlock ifAbsent: absentBlock 
+
+	self  nodesDo: [:node | (aBlock value: node) ifTrue: [ ^node ] ] 
+		includingDeclarations: false.
+	^absentBlock value! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:05'!
+nodesDo: aBlock 
+
+	self nodesDo: aBlock includingDeclarations: false! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:21'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	aBlock evaluateWith: self! !
+
+!SParseNode methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:48:13'!
+acceptVisitor: visitor 
+
+	^visitor visitParseNode: self! !
 
 !SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
 value 
