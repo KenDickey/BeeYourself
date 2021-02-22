@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 22 February 2021 at 1:38:33 pm'!
+'From Cuis 5.0 [latest update: #4530] on 22 February 2021 at 2:14:34 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 6!
+!provides: 'Powerlang-Core' 1 7!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -15,6 +15,46 @@ Object subclass: #ObjectMap
 	category: 'Powerlang-Core'!
 !classDefinition: 'ObjectMap class' category: 'Powerlang-Core'!
 ObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ByteObjectMap category: 'Powerlang-Core'!
+ObjectMap subclass: #ByteObjectMap
+	instanceVariableNames: 'bytes hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ByteObjectMap class' category: 'Powerlang-Core'!
+ByteObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ShapeMap category: 'Powerlang-Core'!
+ObjectMap subclass: #ShapeMap
+	instanceVariableNames: 'shapes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ShapeMap class' category: 'Powerlang-Core'!
+ShapeMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SlotObjectMap category: 'Powerlang-Core'!
+ObjectMap subclass: #SlotObjectMap
+	instanceVariableNames: 'slots hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core'!
+SlotObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
+ObjectMap subclass: #SmallintObjectMap
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
+SmallintObjectMap class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectShape category: 'Powerlang-Core'!
@@ -127,35 +167,15 @@ SSymbolicToken subclass: #SStringToken
 SStringToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShapeMap category: 'Powerlang-Core'!
-Object subclass: #ShapeMap
-	instanceVariableNames: 'shapes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'ShapeMap class' category: 'Powerlang-Core'!
-ShapeMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
-Object subclass: #SmallintObjectMap
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
-SmallintObjectMap class
-	instanceVariableNames: ''!
-
-
-!SExpression commentStamp: '<historical>' prior: 0!
-I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
-!
 
 !ShapeMap commentStamp: '<historical>' prior: 0!
 I represent the shape of objects as used by mirrors. Mirrors
 access instance variables by name, asking the runtime the for
 the offsets of the instVars.!
+
+!SExpression commentStamp: '<historical>' prior: 0!
+I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
+!
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
 isBytes 
@@ -166,6 +186,62 @@ isBytes
 isPointers 
 
 	^ false! !
+
+!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
+printOn: aStream 
+
+	spec ifNil: [ ^ super printOn: aStream ].
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: self contentsString;
+		nextPutAll: '>>'! !
+
+!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
+isBytes 
+
+	^true! !
+
+!SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: spec name withArticle;
+		nextPutAll: '>>'! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:50:51'!
+isPointers 
+
+	^true! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:22'!
+allInstVarNames 
+
+	| c |
+	^ spec properties
+		at: #allInstVarNames
+		ifAbsentPut: [ spec isMeta
+				ifTrue: [ c := spec environment at: #Class.
+					c allInstVarNames , spec allInstVarNames ]
+				ifFalse: [ spec allInstVarNames ] ]! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:50:36'!
+instSize 
+
+	| c |
+	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
+		ifTrue: [ c := spec environment at: #Class.
+			
+			c instSize + spec instSize ]
+		ifFalse: [ spec instSize ]]! !
+
+!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:58:39'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: value printString;
+		nextPutAll: '>>'! !
 
 !ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
 printOn: aStream 
@@ -369,6 +445,404 @@ new: anRGBehavior size: size
 	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
 	class := self classFor: anRGBehavior.
 	^ class new initializeAs: anRGBehavior sized: size! !
+
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
+initialize 
+
+	hash := 0! !
+
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:38'!
+initializeAs: anRGBehavior sized: size 
+
+	self assert: anRGBehavior notNil.
+"	self assert: anRGBehavior isBytes.
+	self assert: anRGBehavior isVariable.
+"	
+	spec := anRGBehavior.
+	bytes := ByteArray new: size! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:32'!
+at: index 
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: bytes size).
+	^bytes at: index! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:47'!
+at: index put: anObjectMap 
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+
+	| value |
+	self assert: (index between: 1 and: bytes size).
+	self assert: anObjectMap isImmediate.
+	value := anObjectMap value.
+	self assert: (value between: 0 and: 255).
+	bytes at: index put: value.
+	^anObjectMap! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:13'!
+bodySizeInBytes 
+	"Return the size of object body(s) in bytes, padded"
+	
+	^ self size alignedTo: self wordSize! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:26'!
+bytes 
+
+	^ bytes! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:11'!
+contentsString 
+
+	spec name == #String
+		ifTrue: [ ^bytes allButLast asString storeString ].
+	spec name == #Symbol
+		ifTrue: [ ^bytes allButLast asString asSymbol storeString ].
+	spec name == #ByteArray
+		ifTrue: [ ^bytes storeString ].
+	^spec name withArticle, ': ', bytes printString! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:27'!
+fillFrom: anObject 
+
+	self assert: anObject size == bytes size.
+	bytes replaceFrom: 1 to: bytes size with: anObject startingAt: 1! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:38'!
+headerFlags 
+
+	| byte variable small |
+	byte := 1.
+	variable := 2.
+	small := self isSmall ifTrue: [ 16r80 ] ifFalse: [ 0 ].
+	^ byte | variable | small! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:57'!
+headerHash 
+
+	^ hash! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:11:08'!
+headerHash: anInteger 
+
+	hash := anInteger! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:12:42'!
+size 
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ bytes size! !
+
+!ByteObjectMap methodsFor: 'converting' stamp: 'KenD 2/22/2021 14:08:13'!
+asString 
+
+	^ bytes allButLast asString! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:05:48'!
+new: anRGBehavior size: anInteger 
+
+	^ self new
+		initializeAs: anRGBehavior sized: anInteger! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:06:08'!
+new: anRGBehavior valued: bytes 
+	"self assert: anRGBehavior isBytes."
+	
+	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
+
+!ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
+initialize 
+
+	shapes := Dictionary new! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:41'!
+at: type 
+
+	^shapes at: type! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:06'!
+indexInCurrentOf: varname at: type 
+
+	| species slot |
+	species := Smalltalk at: type asSymbol.
+	slot := species slotNamed: varname.
+	slot isNil
+		ifTrue: [ self error: 'inst var ' , varname , ' not found' ].
+	^ slot index! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:16:44'!
+add: structure 
+
+	shapes at: structure name put: structure! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:47'!
+indexOf: varname at: type 
+
+	| shape |
+	shape := shapes at: type ifAbsent: [
+		^self indexInCurrentOf: varname at: type].
+	^shape indexOf: varname! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:29'!
+load: aClassDefinition 
+
+	| shape |
+	shape := ObjectShape new loadFrom: aClassDefinition.
+	self add: shape! !
+
+!ShapeMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:16:01'!
+new 
+
+	^self basicNew initialize! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:04'!
+initialize 
+
+	hash := 0! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:18'!
+initializeAs: anRGBehavior sized: size 
+
+	self assert: anRGBehavior notNil.
+	self assert: anRGBehavior isPointers.
+	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
+	spec := anRGBehavior.
+	slots := Array new: self instSize + size! !
+
+!SlotObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:53:24'!
+validate 
+
+	super validate.
+	slots withIndexDo:[:value :index | self assert: value notNil ]! !
+
+!SlotObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:52:58'!
+slotsDo: aBlock 
+
+	slots do: aBlock! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:45'!
+arrayedSize 
+
+	"
+	 Return the size of the arrayed part of this object, that this,
+	 the value of size field in object header minus the instSize. 
+	"
+
+	^ self size - self instSize! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:22'!
+asBoolean 
+	spec name = #True ifTrue: [ ^true ].	spec name = #False ifTrue: [ ^false ].
+	self assert: false! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:40'!
+at: index 
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: slots size - self instSize).
+	^slots at: self instSize + index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:52'!
+at: index put: value 
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+	self assert: spec isVariable.
+	self assert: (index between: 1 and: slots size - self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: self instSize + index put: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:07'!
+atAllPut: value 
+
+	slots atAllPut: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:18'!
+basicAt: index 
+	"Return indexed value at given raw index, starting with 1"
+
+	self assert: (index between: 1 and: slots size).
+	^ slots at: index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:32'!
+bodySizeInBytes 
+	
+	^ self sizeInBytes! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:48:52'!
+doesNotUnderstand: aMessage 
+	"Assume setter or accessor and try to do the right thing"
+	| sel ivars |
+	sel := aMessage selector.
+	ivars := self allInstVarNames.
+	sel isUnary
+		ifTrue: [ (ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel ] ].
+	(sel isKeyword and: [ sel numArgs == 1 ])
+		ifTrue: [ sel := sel allButLast.
+			(ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel put: aMessage arguments first ] ].
+	^ super doesNotUnderstand: aMessage! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:20'!
+headerFlags 
+
+	| variable named small |
+	variable := spec isVariable ifTrue: [2] ifFalse: [0].
+	named := spec instSize == 0 ifTrue: [0] ifFalse: [4].
+	small := self isSmall ifTrue: [16r80] ifFalse: [0].
+	^ variable | named | small! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:31'!
+headerHash 
+
+	^hash! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:43'!
+headerHash: anInteger 
+
+	hash := anInteger! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:28'!
+size 
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ slots size! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:56'!
+sizeInBytes 
+
+	^ self size * self wordSize! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:09'!
+slotAt: index 
+	"Get named slot at given `index`, starting with 1. This CANNOT be used 
+	 for accessing indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:"
+	
+	self assert: (index between: 1 and: self instSize).
+	^slots at: index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:24'!
+slotAt: index put: value 
+	"Set named slot at given `index` to `value`. This CANNOT be used 
+	 for setting indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:put:"
+	
+	self assert: (index between: 1 and: self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: index put: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:35'!
+slots 
+
+	^slots! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:54:19'!
+value 
+
+	| message |
+	(self allInstVarNames includes: #value) ifFalse: [ ^super value ].
+	message := Message selector: #value.
+	^ self doesNotUnderstand: message! !
+
+!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:44:48'!
+new: anRGBehavior size: size withAll: value 
+
+	| obj |
+	obj := self new: anRGBehavior size: size.
+	^obj atAllPut: value; yourself! !
+
+!SmallintObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:58:25'!
+isImmediate 
+
+	^ true! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:39'!
+initializeAs: anRGBehavior sized: size 
+
+	self shouldNotImplement! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:49'!
+initializeAs: anRGBehavior valued: anInteger 
+
+	self assert: anRGBehavior name == #SmallInteger.
+	self assert: anInteger isInteger.
+	spec := anRGBehavior.
+	value := anInteger! !
+
+!SmallintObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 14:02:57'!
+validate 
+
+	super validate.
+"	self assert: value isSmallInteger "
+	self assert: value class == SmallInteger! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:56:49'!
+at: index 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:06'!
+at: index put: anObject 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:21'!
+hash 
+
+	^ value hash! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:21'!
+size 
+	"I have zero object slots"
+	^ 0! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:32'!
+slotAt: index 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:42'!
+slotAt: index put: anObject 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:00:55'!
+value 
+
+	^value! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:01:10'!
+value: aSmallInteger 
+
+	value := aSmallInteger! !
+
+!SmallintObjectMap methodsFor: 'comparing' stamp: 'KenD 2/22/2021 13:56:26'!
+= anObject 
+
+	anObject class == self class
+		ifFalse: [ ^ false ].
+	^value == anObject value! !
+
+!SmallintObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:55:55'!
+new: anRGBehavior valued: anInteger 
+
+	^self new initializeAs: anRGBehavior valued: anInteger! !
 
 !ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:18'!
 initialize 
@@ -984,48 +1458,3 @@ asIdentifierNode
 asSelectorNode 
 
 	^compiler selectorNode symbol: value; stretch: stretch! !
-
-!ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
-initialize 
-
-	shapes := Dictionary new! !
-
-!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:41'!
-at: type 
-
-	^shapes at: type! !
-
-!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:06'!
-indexInCurrentOf: varname at: type 
-
-	| species slot |
-	species := Smalltalk at: type asSymbol.
-	slot := species slotNamed: varname.
-	slot isNil
-		ifTrue: [ self error: 'inst var ' , varname , ' not found' ].
-	^ slot index! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:16:44'!
-add: structure 
-
-	shapes at: structure name put: structure! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:47'!
-indexOf: varname at: type 
-
-	| shape |
-	shape := shapes at: type ifAbsent: [
-		^self indexInCurrentOf: varname at: type].
-	^shape indexOf: varname! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:29'!
-load: aClassDefinition 
-
-	| shape |
-	shape := ObjectShape new loadFrom: aClassDefinition.
-	self add: shape! !
-
-!ShapeMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:16:01'!
-new 
-
-	^self basicNew initialize! !
