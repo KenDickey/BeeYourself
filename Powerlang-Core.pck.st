@@ -1,11 +1,41 @@
-'From Cuis 5.0 [latest update: #4530] on 21 February 2021 at 2:03:07 pm'!
+'From Cuis 5.0 [latest update: #4530] on 22 February 2021 at 1:38:33 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 5!
+!provides: 'Powerlang-Core' 1 6!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
 
+
+!classDefinition: #ObjectMap category: 'Powerlang-Core'!
+Object subclass: #ObjectMap
+	instanceVariableNames: 'behavior spec'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectMap class' category: 'Powerlang-Core'!
+ObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectShape category: 'Powerlang-Core'!
+Object subclass: #ObjectShape
+	instanceVariableNames: 'name fields'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectShape class' category: 'Powerlang-Core'!
+ObjectShape class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpression category: 'Powerlang-Core'!
+Object subclass: #SExpression
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SExpression class' category: 'Powerlang-Core'!
+SExpression class
+	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
 Object subclass: #SParseTreeVisitor
@@ -57,6 +87,16 @@ SToken subclass: #SParseNode
 SParseNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SLiteralNode category: 'Powerlang-Core'!
+SParseNode subclass: #SLiteralNode
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralNode class' category: 'Powerlang-Core'!
+SLiteralNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
@@ -87,11 +127,335 @@ SSymbolicToken subclass: #SStringToken
 SStringToken class
 	instanceVariableNames: ''!
 
+!classDefinition: #ShapeMap category: 'Powerlang-Core'!
+Object subclass: #ShapeMap
+	instanceVariableNames: 'shapes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ShapeMap class' category: 'Powerlang-Core'!
+ShapeMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
+Object subclass: #SmallintObjectMap
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
+SmallintObjectMap class
+	instanceVariableNames: ''!
+
+
+!SExpression commentStamp: '<historical>' prior: 0!
+I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
+!
+
+!ShapeMap commentStamp: '<historical>' prior: 0!
+I represent the shape of objects as used by mirrors. Mirrors
+access instance variables by name, asking the runtime the for
+the offsets of the instVars.!
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
+isBytes 
+
+	^ false! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:00'!
+isPointers 
+
+	^ false! !
+
+!ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
+printOn: aStream 
+
+	aStream nextPutAll: 'Shape of '; nextPutAll: name! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:24:03'!
+name 
+
+	^name! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
 
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
 comment 
 
 	^comments notNil ifTrue: [comments anyOne]! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
+isImmediate 
+
+	^ false! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:14'!
+isSmall 
+
+	^self size < 256! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:31:21'!
+initializeAs: anRGBehavior sized: size 
+
+	self subclassResponsibility! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:33'!
+nilAll: nilObject! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:41'!
+nilWith: nilObject ! !
+
+!ObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:35:51'!
+slotsDo: aBlock
+
+	self notYetImplemented ! !
+
+!ObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:38:23'!
+validate 
+	
+	self assert: behavior notNil! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:28:54'!
+arrayedSize 
+
+	^self size! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:11'!
+at: index 
+
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:24'!
+at: index put: value 
+
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:36'!
+behavior 
+
+	^behavior! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:49'!
+behavior: anObjectMap 
+
+	behavior := anObjectMap! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:03'!
+bodySizeInBytes 
+
+	"Return the size of object body(s) in bytes,
+	 padded if a byte object"
+	^ self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:14'!
+classname 
+
+	^spec name! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:30'!
+headerSizeInBytes 
+	"
+		Return the size of object header in bytes, 
+		including both small and large part (if any).
+	"
+	
+	^ self isSmall ifTrue: [ 8 ] ifFalse: [ 16 ]! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:31:00'!
+headerSmallSize 
+
+	"Return value of 'size' field of small header"
+	 | size |	
+ 	size := self size.
+  	^ size < 256 ifTrue: [ size ] ifFalse: [ 0 ]! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:29'!
+size 
+
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:43'!
+sizeInBytes 
+
+	"Return the size of object in bytes without padding"
+	^ self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:03'!
+slotAt: index 
+
+	"Get named slot at given `index`, starting with 1. This CANNOT be used 
+	 for accessing indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:26'!
+slotAt: index put: value 
+
+	"Set named slot at given `index` to `value`. This CANNOT be used 
+	 for setting indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:put:"
+	
+	self subclassResponsibility! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:47'!
+slotNamed: name 
+
+	"Get a named slot with given `name`"
+
+	| index |
+	index := self allInstVarNames indexOf: name.
+	index == 0
+		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
+	^ self slotAt: index! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:35:02'!
+slotNamed: name put: value 
+
+	"Set a named slot with given `name` to `value`"
+
+	| index |
+	index := self allInstVarNames indexOf: name.
+	index == 0
+		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
+	^ self slotAt: index put: value! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:35'!
+spec 
+
+	^ spec! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:51'!
+wordSize 
+
+	"Return the size in bytes of the word (i.e, a reference to an object)"
+	
+	^ 8 "For now, 64bit only!!"! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:26:08'!
+classFor: anRGBehavior 
+
+	anRGBehavior name == #SmallInteger ifTrue: [^SmallintObjectMap].
+	^anRGBehavior isBytes
+		ifTrue: [ ByteObjectMap ]
+		ifFalse: [ SlotObjectMap ]! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:00'!
+new: anRGBehavior 
+	
+	^self new: anRGBehavior size: 0! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:19'!
+new: anRGBehavior size: size 
+
+	| class |
+	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
+	class := self classFor: anRGBehavior.
+	^ class new initializeAs: anRGBehavior sized: size! !
+
+!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:18'!
+initialize 
+
+	fields := Dictionary new! !
+
+!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:52'!
+loadFrom: aClassDefinition 
+
+	name := aClassDefinition name asSymbol.
+	aClassDefinition allInstVarNames
+		withIndexDo: [:ivarName :i | self indexOf: ivarName be: i]! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:45'!
+indexOf: ivarName 
+	
+	^fields at: ivarName asString! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:57'!
+indexOf: ivarName be: i 
+
+	fields at: ivarName put: i! !
+
+!ObjectShape class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:21:32'!
+new 
+
+	^self basicNew initialize! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
+printOn: aStream indent: anInteger 
+
+	super printOn: aStream! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:04:54'!
+isAssignment 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:01'!
+isCascade 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:10'!
+isCascadeMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:16'!
+isIdentifier 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:23'!
+isInstVar 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:32'!
+isLiteral 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:39'!
+isMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:48'!
+isMethod 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:55'!
+isReturn 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:06:02'!
+isSuper 
+
+	^false! !
+
+!SExpression methodsFor: 'visiting' stamp: 'KenD 2/22/2021 13:04:25'!
+acceptVisitor: visitor 
+
+	^self subclassResponsibility! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
@@ -123,10 +487,10 @@ visitCascadeMessage: aCascadeMessageNode
 
 	^self visitMessage: aCascadeMessageNode! !
 
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:02:31'!
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 15:54:18'!
 visitForeignNode: anForeignNode 
 
-	^self visitLiteral: anForeignNode "Bee code lacks $^ ??"! !
+	^self visitLiteral: anForeignNode ! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:29'!
 visitIdentifier: anIdentifierNode 
@@ -488,6 +852,51 @@ acceptVisitor: visitor
 
 	^visitor visitParseNode: self! !
 
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:41'!
+hasSymbol 
+
+	^value isSymbol! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:28'!
+isEvaluable 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:19'!
+isImmediate 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:00'!
+isLiteral 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:23'!
+value 
+
+	^value! !
+
+!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:34'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteralNode methodsFor: 'emitCode' stamp: 'KenD 2/22/2021 13:02:25'!
+emitLoadAusing: anSExpressionNativizer 
+
+	anSExpressionNativizer encodeLoadAwithLiteral: value! !
+
+!SLiteralNode methodsFor: 'private' stamp: 'KenD 2/22/2021 13:01:22'!
+beSymbol 
+
+	value := value asSymbol! !
+
+!SLiteralNode methodsFor: 'visiting' stamp: 'KenD 2/22/2021 12:55:31'!
+acceptVisitor: visitor 
+	
+	^visitor visitLiteral: self! !
+
 !SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
 value 
 
@@ -575,3 +984,48 @@ asIdentifierNode
 asSelectorNode 
 
 	^compiler selectorNode symbol: value; stretch: stretch! !
+
+!ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
+initialize 
+
+	shapes := Dictionary new! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:41'!
+at: type 
+
+	^shapes at: type! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:06'!
+indexInCurrentOf: varname at: type 
+
+	| species slot |
+	species := Smalltalk at: type asSymbol.
+	slot := species slotNamed: varname.
+	slot isNil
+		ifTrue: [ self error: 'inst var ' , varname , ' not found' ].
+	^ slot index! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:16:44'!
+add: structure 
+
+	shapes at: structure name put: structure! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:47'!
+indexOf: varname at: type 
+
+	| shape |
+	shape := shapes at: type ifAbsent: [
+		^self indexInCurrentOf: varname at: type].
+	^shape indexOf: varname! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:29'!
+load: aClassDefinition 
+
+	| shape |
+	shape := ObjectShape new loadFrom: aClassDefinition.
+	self add: shape! !
+
+!ShapeMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:16:01'!
+new 
+
+	^self basicNew initialize! !
