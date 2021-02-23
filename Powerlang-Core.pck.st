@@ -1,11 +1,21 @@
-'From Cuis 5.0 [latest update: #4530] on 22 February 2021 at 2:14:34 pm'!
+'From Cuis 5.0 [latest update: #4530] on 23 February 2021 at 2:51:59 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 7!
+!provides: 'Powerlang-Core' 1 9!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
 
+
+!classDefinition: #AstBindingTypes category: 'Powerlang-Core'!
+PSharedPool subclass: #AstBindingTypes
+	instanceVariableNames: ''
+	classVariableNames: 'ArgumentId ClassVarId ConstantPoolId EnsureAisSmallIntegerId EnsureRisSmallIntegerId FalseId GlobalClassId GlobalValueId InstVarId LoadAvisitingArgumentId LoadAwithArgumentId LoadAwithClassVarId LoadAwithConstPoolId LoadAwithFalseId LoadAwithGlobalId LoadAwithInstVarId LoadAwithLiteralId LoadAwithNilId LoadAwithPoolVarId LoadAwithSelfId LoadAwithTemporaryId LoadAwithTrueId LoadRvisitingReceiverId LoadRwithArgumentId LoadRwithClassVarId LoadRwithConstPoolId LoadRwithFalseId LoadRwithGlobalId LoadRwithInstVarId LoadRwithLiteralId LoadRwithNilId LoadRwithPoolVarId LoadRwithSelfId LoadRwithTemporaryId LoadRwithTrueId NilId PoolVarId PopRid PushRid SelfId SuperId TemporaryId TrueId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core'!
+AstBindingTypes class
+	instanceVariableNames: ''!
 
 !classDefinition: #ObjectMap category: 'Powerlang-Core'!
 Object subclass: #ObjectMap
@@ -77,6 +87,26 @@ Object subclass: #SExpression
 SExpression class
 	instanceVariableNames: ''!
 
+!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
+SExpression subclass: #SIdenitifier
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
+SIdenitifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
+SExpression subclass: #SLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
+SLiteralVar class
+	instanceVariableNames: ''!
+
 !classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
 Object subclass: #SParseTreeVisitor
 	instanceVariableNames: ''
@@ -125,6 +155,16 @@ SToken subclass: #SParseNode
 	category: 'Powerlang-Core'!
 !classDefinition: 'SParseNode class' category: 'Powerlang-Core'!
 SParseNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdentifierNode category: 'Powerlang-Core'!
+SParseNode subclass: #SIdentifierNode
+	instanceVariableNames: 'name binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SIdentifierNode class' category: 'Powerlang-Core'!
+SIdentifierNode class
 	instanceVariableNames: ''!
 
 !classDefinition: #SLiteralNode category: 'Powerlang-Core'!
@@ -258,10 +298,76 @@ printOn: aStream
 
 	self printOn: aStream indent: 0! !
 
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:16'!
+isVariable 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:17:50'!
+binding 
+
+	^binding! !
+
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
 comment 
 
 	^comments notNil ifTrue: [comments anyOne]! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:24:21'!
+binding 
+
+	^binding! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:28:51'!
+name 
+
+	^name! !
+
+!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 14:51:53'!
+initialize 
+	NilId := 1.
+	TrueId := 2.
+	FalseId := 3.
+	ArgumentId := 4.
+	TemporaryId := 5.
+	SelfId := 6.
+	SuperId := 7.
+	InstVarId := 8.
+	ClassVarId := 9.
+	GlobalValueId := 10.
+	GlobalClassId := 11.
+	PoolVarId := 12.
+	ConstantPoolId := 13.
+	LoadRwithSelfId := 20.
+	LoadAwithSelfId := 21.
+	LoadRwithInstVarId := 22.
+	LoadAwithInstVarId := 23.
+	LoadRvisitingReceiverId := 24.
+	LoadAvisitingArgumentId := 25.
+	LoadRwithLiteralId := 26.
+	LoadAwithLiteralId := 27.
+	EnsureRisSmallIntegerId := 28.
+	EnsureAisSmallIntegerId := 29.
+	LoadRwithArgumentId := 30.
+	LoadAwithArgumentId := 31.
+	LoadRwithTemporaryId := 32.
+	LoadAwithTemporaryId := 33.
+	LoadRwithNilId := 34.
+	LoadAwithNilId := 35.
+	LoadRwithFalseId := 36.
+	LoadAwithFalseId := 37.
+	LoadRwithTrueId := 38.
+	LoadAwithTrueId := 39.
+	LoadRwithGlobalId := 40.
+	LoadAwithGlobalId := 41.
+	LoadRwithClassVarId := 42.
+	LoadAwithClassVarId := 43.
+	LoadRwithPoolVarId := 44.
+	LoadAwithPoolVarId := 45.
+	LoadRwithConstPoolId := 46.
+	LoadAwithConstPoolId := 47.
+	PushRid := 48.
+	PopRid := 49! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
@@ -931,6 +1037,85 @@ acceptVisitor: visitor
 
 	^self subclassResponsibility! !
 
+!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self! !
+
+!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{IdentifierId. ';
+		print: binding;
+		nextPutAll: '}'! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
+isArgument 
+
+	^binding isArgument! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
+isAssociation 
+
+	^binding isAssociation! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
+isIdentifier 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
+isInstVar 
+
+	^binding isInstVar! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
+isLiteral 
+
+	^binding isLiteral! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
+isSelf 
+	
+	^binding isSelf! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
+isSelfOrSuper 
+
+	^binding isSelf or: [binding isSuper]! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
+isSuper 
+
+	^binding isSuper! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
+isTemporary 
+
+	^binding isTemporary! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeIdentifier! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
+index 
+
+	^index! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
+index: anInteger 
+
+	index := anInteger! !
+
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
 
@@ -1326,6 +1511,118 @@ acceptVisitor: visitor
 
 	^visitor visitParseNode: self! !
 
+!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 2/23/2021 14:29:21'!
+name: aString 
+
+	name := aString reduced! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:23:55'!
+beAssigned 
+
+	| immutable |
+	binding canBeAssigned ifTrue: [^self].
+	immutable := binding isClassBinding
+		ifTrue: ['class']
+		ifFalse: [compiler activeScope describe: binding name].
+	self compileError: 'cannot assign to ' , immutable! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:29:35'!
+resolveAssigning: aBoolean 
+	| scope |
+	scope := compiler activeScope.
+	binding := scope resolve: name.
+	binding isUnresolved ifFalse: [^binding].
+	(scope hasMultipleBindingsFor: name)
+		ifTrue: [self compileError: 'variable belongs in multiple pools'].
+	compiler undeclaredErrorAt: self stretch assignment: aBoolean.
+	^binding := scope resolve: name! !
+
+!SIdentifierNode methodsFor: 'emitCode' stamp: 'KenD 2/23/2021 14:26:14'!
+emitLoadAusing: anAstcodeEncoder 
+
+	binding emitLoadAusing: anAstcodeEncoder! !
+
+!SIdentifierNode methodsFor: 'initialization' stamp: 'KenD 2/23/2021 14:26:31'!
+nitialize 
+
+	super initialize.
+	binding := UnresolvedBinding default! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:24:42'!
+checkLowercase 
+	| char |
+	char := name first.
+	(char isLetter and: [char isUppercase]) ifFalse: [^self].
+	self compileWarning: name storeString , ' should start with lowercase'! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:26:53'!
+isEvaluable 
+
+	^self isIdentifierLiteral! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:06'!
+isIdentifier 
+
+	^true! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:15'!
+isIdentifierLiteral 
+
+	binding isUnresolved ifFalse: [^binding isLiteral].
+	^self ast ifNil: [false] ifNotNil: [:ast | | b |
+		b := ast scope resolve: name.
+		b isLiteral]! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:40'!
+isImmediate 
+
+	^true! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:54'!
+isMethodArgument 
+	| ast |
+	binding isArgument ifFalse: [^false].
+	ast := self ast ifNil: [^false].
+	^ast arguments includes: self declaration! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:13'!
+isMethodTemporary 
+
+	^self ast temporaries includes: self declaration! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:22'!
+isSelf 
+
+	^binding isSelf! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:33'!
+sSuper 
+
+	^binding isSuper! !
+
+!SIdentifierNode methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:23:40'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:06'!
+declaration 
+
+	^binding declaration! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:20'!
+defineArgumentIn: aScriptScope 
+
+	binding := aScriptScope defineArgument: name.
+	binding declaration: self! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:37'!
+defineTemporaryIn: scope 
+
+	binding := scope defineTemporary: name.
+	binding declaration: self! !
+
 !SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:41'!
 hasSymbol 
 
@@ -1458,3 +1755,4 @@ asIdentifierNode
 asSelectorNode 
 
 	^compiler selectorNode symbol: value; stretch: stretch! !
+AstBindingTypes initialize!
