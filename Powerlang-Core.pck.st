@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 23 February 2021 at 2:51:59 pm'!
+'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 11:51:42 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 9!
+!provides: 'Powerlang-Core' 1 10!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -15,6 +15,76 @@ PSharedPool subclass: #AstBindingTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core'!
 AstBindingTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstNodeTypes category: 'Powerlang-Core'!
+PSharedPool subclass: #AstNodeTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core'!
+AstNodeTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClosureElementTypes category: 'Powerlang-Core'!
+PSharedPool subclass: #ClosureElementTypes
+	instanceVariableNames: ''
+	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ClosureElementTypes class' category: 'Powerlang-Core'!
+ClosureElementTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionTypes category: 'Powerlang-Core'!
+PSharedPool subclass: #SExpressionTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core'!
+SExpressionTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #Assembly category: 'Powerlang-Core'!
+Object subclass: #Assembly
+	instanceVariableNames: 'labels instructions source parser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Assembly class' category: 'Powerlang-Core'!
+Assembly class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeDecoder category: 'Powerlang-Core'!
+Object subclass: #AstcodeDecoder
+	instanceVariableNames: 'method stream nodeTypes bindingTypes'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'AstcodeDecoder class' category: 'Powerlang-Core'!
+AstcodeDecoder class
+	instanceVariableNames: ''!
+
+!classDefinition: #Binding category: 'Powerlang-Core'!
+Object subclass: #Binding
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Binding class' category: 'Powerlang-Core'!
+Binding class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssociationBinding category: 'Powerlang-Core'!
+Binding subclass: #AssociationBinding
+	instanceVariableNames: 'association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AssociationBinding class' category: 'Powerlang-Core'!
+AssociationBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectMap category: 'Powerlang-Core'!
@@ -117,6 +187,16 @@ Object subclass: #SParseTreeVisitor
 SParseTreeVisitor class
 	instanceVariableNames: ''!
 
+!classDefinition: #AstcodeEncoder category: 'Powerlang-Core'!
+SParseTreeVisitor subclass: #AstcodeEncoder
+	instanceVariableNames: 'method stream script'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes private private'
+	category: 'Powerlang-Core'!
+!classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core'!
+AstcodeEncoder class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSmalltalkScanner category: 'Powerlang-Core'!
 Object subclass: #SSmalltalkScanner
 	instanceVariableNames: 'compiler stream'
@@ -177,6 +257,16 @@ SParseNode subclass: #SLiteralNode
 SLiteralNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SScriptNode category: 'Powerlang-Core'!
+SParseNode subclass: #SScriptNode
+	instanceVariableNames: 'statements arguments temporaries children scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SScriptNode class' category: 'Powerlang-Core'!
+SScriptNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
@@ -216,6 +306,18 @@ the offsets of the instVars.!
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
+
+!Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
+printOn: aStream 
+
+	aStream nextPutAll: name; nextPutAll: ' ('.
+	super printOn: aStream.
+	aStream nextPutAll: ')'! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
+name 
+
+	^name! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
 isBytes 
@@ -368,6 +470,503 @@ initialize
 	LoadAwithConstPoolId := 47.
 	PushRid := 48.
 	PopRid := 49! !
+
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:01:35'!
+initialize 
+
+	MethodId := 1.
+	BlockId := 2.
+	IdentifierId := 3.
+	LiteralId := 4.
+	MessageId := 5.
+	CascadeId := 6.
+	BraceId := 7.
+	AssignmentId := 8.
+	ReturnId := 9.
+	PragmaId := 10! !
+
+!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:07:20'!
+initialize 
+
+	Self := 0.
+	LocalArgument := 1.
+	Environment := 2.
+	EnvironmentValue := 3! !
+
+!SExpressionTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:04:29'!
+initialize 
+
+	MethodId := 1.
+	BlockId := 2.
+	IdentifierId := 3.
+	LiteralId := 4.
+	MessageId :=5.
+	CascadeId := 6.
+	BraceId := 7.
+	AssignmentId := 8.
+	ReturnId := 9! !
+
+!Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:22'!
+parser: anAssemblerParser 
+
+	parser := anAssemblerParser! !
+
+!Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:34'!
+source: aString 
+
+	source := aString! !
+
+!Assembly methodsFor: 'parsing' stamp: 'KenD 2/24/2021 11:20:57'!
+parse 
+	| everything |
+	everything := parser parse: source.
+	everything do: [:token | 
+		token isString
+			ifTrue: [labels at: token allButLast put: instructions size]
+			ifFalse: [instructions add: token]]! !
+
+!Assembly methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:20:02'!
+initialize 
+
+	super initialize.
+	labels := Dictionary new.
+	instructions := OrderedCollection new.
+	parser := AssemblerParser new! !
+
+!Assembly class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:18:38'!
+new 
+
+	^super new initialize! !
+
+!Assembly class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:19:17'!
+on: aString 
+
+	^self new source: aString! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:30:04'!
+bindingTypeOf: id 
+	
+	^bindingTypes at: id! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:07'!
+literalAt: anInteger 
+
+	^method at: anInteger! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:20'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:43'!
+next 
+
+	^stream next! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:54'!
+nextInteger 
+
+	^stream next! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:05'!
+nodeTypeOf: id 
+
+	^nodeTypes at: id! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:17'!
+stream: aStream 
+
+	stream := aStream! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:18'!
+decodeArgument 
+
+	^SArgumentBinding new
+		index: self nextInteger;
+		environment: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:41'!
+decodeAssignment 
+	| assignment codes |
+	assignment := SAssignment new.
+	codes := stream upToEnd collect: [:elem | self decodeNode: elem].
+	assignment expression: codes last.
+	1 to: codes size - 1 do: [:i | | identifier |
+		identifier := codes at: i.
+		assignment assign: identifier].
+	^assignment! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:24'!
+decodeBlock 
+	| expression next block index |
+	expression := SBlock new.
+	next := stream peek.
+	next !!= 0
+		ifTrue: [ index := stream next. block := method at: index.
+			expression
+				compiledCode: block;
+				index: index;
+				capturedVariables: stream next ]
+		ifFalse: [ stream next.
+			expression inlinedArgs: stream next ].
+	expression statements: self decodeStatements.
+	^ expression! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:52'!
+decodeCascade 
+	| receiver messages prev |
+	receiver := self decodeNode: stream next.
+	prev := stream.
+	messages := stream upToEnd collect: [:elem | 
+		stream := elem readStream.
+		SCascadeMessage decodeUsing: self].
+	stream := prev.
+	^SCascade new receiver: receiver; messages: messages! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:14'!
+decodeCascadeMessage 
+	| index selector arguments |
+	index := stream next.
+	selector := index = 0 ifTrue: [stream next] ifFalse: [method at: index].
+	arguments := stream upToEnd collect: [:node | self decodeNode: node].
+	^SCascadeMessage new selector: selector; arguments: arguments! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:30'!
+decodeClassBinding 
+	| index assoc |
+		index := self nextInteger.
+
+	assoc := method at: index.
+	^ SClassBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:45'!
+decodeClassVar 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SClassVarBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:08'!
+decodeConstantPoolVar 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SConstantPoolBinding new
+		index: index;
+		association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:31'!
+decodeGlobalBinding 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SGlobalBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:47'!
+decodeIdentifier 
+	| type binding |
+	type := self bindingTypeOf: self nextInteger.
+	binding := type decodeUsing: self.
+	^ SIdentifier new binding: binding! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:05'!
+decodeInlineNodes: anArray
+	| prev result type decoded |
+	anArray ifNil: [ ^ #() ].
+	prev _ stream.
+	result _ OrderedCollection new.
+	stream _ anArray readStream.
+	[ stream atEnd ] whileFalse: [
+		type _ self nodeTypeOf: stream next.
+		decoded _ type decodeUsing: self.
+		result add: decoded ].
+	stream _ prev.
+	^ result! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:26'!
+decodeInstVar 
+
+	^SInstVarBinding new index: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:42'!
+decodeLiteral 
+	| index value |
+	index := self nextInteger.
+	value := index = 0
+		ifTrue: [ stream next ]
+		ifFalse: [ method at: index ].
+	^ SLiteral new index: index; value: value! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:10'!
+decodeMessage 
+	| index selector receiver arguments opcodes |
+	index := stream next.
+	selector := index = 0
+		ifTrue: [ stream next ]
+		ifFalse: [ method at: index ].
+	receiver := self decodeNode: stream next.
+	arguments := self decodeNodes: stream next.
+	stream atEnd
+		ifFalse: [ opcodes := stream peek = 0
+				ifTrue: [ stream next.
+					#inlined ]
+				ifFalse: [ self decodeInlineNodes: stream next ] ].
+	^ SMessage new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		opcodes: opcodes! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:41'!
+decodeMethod 
+	| type node next pragma |
+	type := stream next.
+	type !!= MethodId
+		ifTrue: [ self error: 'method astcode expected' ].
+	node := SMethod new.
+	next := stream peek.
+	(next = PragmaId)
+		ifTrue:
+			[ stream next.
+			pragma := SPragma new
+				name: stream next.
+			node pragma: pragma ].
+		 node
+			compiledCode: method;
+		statements: self decodeStatements.
+	^ node! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:06'!
+decodeNode: anArray 
+	| prev type result |
+	prev := stream.
+	stream := anArray readStream.
+	type := self nodeTypeOf: stream next.
+	result := type decodeUsing: self.
+	stream := prev.
+	^result
+! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:21'!
+decodeNodes: anArray 
+	anArray ifNil: [^#(  )].
+	^anArray collect: [:arg | self decodeNode: arg  ]! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:34'!
+decodePoolVar 
+	| index assoc |
+	index := self nextInteger.
+
+	assoc := method at: index.
+	^ SPoolVarBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:54'!
+decodeReturn 
+	| expression local |
+	local := stream next.
+	expression := self decodeNode: stream next.
+	^SReturn new local: local; expression: expression! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:15'!
+decodeStatement: anArray 
+
+	^self decodeNode: anArray! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:29'!
+decodeStatements 
+
+	^stream upToEnd collect: [:statement | self decodeStatement: statement]! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:43'!
+decodeTemporary 
+
+	^STemporaryBinding new
+		index: self nextInteger;
+		environment: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:39:27'!
+initialize 
+	nodeTypes := Dictionary new: 40.
+	bindingTypes := Dictionary new: 20.
+	nodeTypes
+		at: AssignmentId put: SAssignment;
+		at: BlockId put: SBlock;
+		at: CascadeId put: SCascade;
+		at: LiteralId put: SLiteral;
+		at: IdentifierId put: SIdentifier;
+		at: MessageId put: SMessage;
+		at: ReturnId put: SReturn;
+		at: LoadRwithSelfId put: LoadRwithSelf;
+		at: LoadAwithSelfId put: LoadAwithSelf;
+		at: LoadRwithNilId put: LoadRwithNil;
+		at: LoadAwithNilId put: LoadAwithNil;
+		at: LoadRwithFalseId put: LoadRwithFalse;
+		at: LoadAwithFalseId put: LoadAwithFalse;
+		at: LoadRwithTrueId put: LoadRwithTrue;
+		at: LoadAwithTrueId put: LoadAwithTrue;
+		at: LoadRwithArgumentId put: LoadRwithArgument;
+		at: LoadAwithArgumentId put: LoadAwithArgument;
+		at: LoadRwithTemporaryId put: LoadRwithTemporary;
+		at: LoadAwithTemporaryId put: LoadAwithTemporary;
+		at: LoadRwithInstVarId put: LoadRwithInstVar;
+		at: LoadAwithInstVarId put: LoadAwithInstVar;
+		at: LoadAwithGlobalId put: LoadAwithGlobal;
+		at: LoadAwithClassVarId put: LoadAwithClassVar;
+		at: LoadAwithPoolVarId put: LoadAwithPoolVar;
+		at: LoadAwithConstPoolId put: LoadAwithConstPoolVar;
+		at: LoadRvisitingReceiverId put: LoadRvisitingReceiver;
+		at: LoadAvisitingArgumentId put: LoadAvisitingArgument;
+		"		at: LoadRwithLiteralId put: LoadRwithLiteral;"
+			at: LoadAwithLiteralId put: LoadAwithLiteral;
+		at: EnsureRisSmallIntegerId put: EnsureRSmallInteger;
+		at: EnsureAisSmallIntegerId put: EnsureASmallInteger;
+		at: PushRid put: PushRopcode;
+		at: PopRid put: PopRopcode.
+	bindingTypes
+		at: NilId put: SNilBinding;
+		at: TrueId put: STrueBinding;
+		at: FalseId put: SFalseBinding;
+		at: ArgumentId put: SArgumentBinding;
+		at: TemporaryId put: STemporaryBinding;
+		at: SelfId put: SSelfBinding;
+		at: SuperId put: SSuperBinding;
+		at: InstVarId put: SInstVarBinding;
+		at: ClassVarId put: SClassVarBinding;
+		at: GlobalValueId put: SGlobalBinding;
+		at: GlobalClassId put: SClassBinding;
+		at: PoolVarId put: SPoolVarBinding;
+		at: ConstantPoolId put: SConstantPoolBinding! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:07:26'!
+declaration 
+
+	^self! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:18'!
+literal
+
+	^nil! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:52'!
+name: aString 
+
+	name := aString! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:06:52'!
+canBeAssigned 
+
+	^true! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:20'!
+isArgument 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:30'!
+isClassBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:38'!
+isClassVariable 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:52'!
+isConstantBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:13'!
+isGlobal 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:20'!
+isInStack 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:28'!
+isInstVar 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:38'!
+isLiteral 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:51'!
+isLocal 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:59'!
+isPoolVariableBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:07'!
+isSelf 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:43'!
+isSelfOrSuper 
+
+	^self isSelf or: [self isSuper]! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:23'!
+isSuper 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:33'!
+isTemporary 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:56'!
+isUnresolved 
+
+	^false! !
+
+!Binding methodsFor: 'actions' stamp: 'KenD 2/24/2021 11:05:41'!
+beReferencedFrom: aScriptNode
+
+	self notYetImplemented ! !
+
+!Binding methodsFor: 'emitCode' stamp: 'KenD 2/24/2021 11:09:17'!
+encodeUsing: anAstcodeEncoder 
+
+	self assert: false! !
+
+!AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
+usesSymbols 
+
+	^false! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:30'!
+association 
+
+	^association! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:41'!
+association: anAssociation 
+
+	association := anAssociation.
+	name := anAssociation key! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:25:02'!
+literal 
+
+	^association! !
+
+!AssociationBinding class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:23:29'!
+on: anAssociation 
+
+	^self new association: anAssociation! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
@@ -1668,6 +2267,108 @@ acceptVisitor: visitor
 	
 	^visitor visitLiteral: self! !
 
+!SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
+useSelf 
+
+	scope captureSelf! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:04'!
+addChild: aBlockNode 
+
+	children add: aBlockNode! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:49'!
+addStatements: anOrderedCollection 
+
+	statements addAll: anOrderedCollection! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:58'!
+arguments 
+
+	^arguments! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:07'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:47'!
+children 
+
+	^children! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:57'!
+environmentSize 
+
+	^scope environmentSize! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:02'!
+realScript 
+
+	self subclassResponsibility! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:34'!
+scope 
+
+	^scope! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:27'!
+statements 
+
+	^statements! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:40'!
+temporaries 
+
+	^temporaries! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:55'!
+temporaries: aCollection 
+
+	temporaries := aCollection! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:46:36'!
+bindLocals 
+
+	arguments do: [:arg | arg defineArgumentIn: scope].
+	temporaries do: [:temp | temp checkLowercase; defineTemporaryIn: scope].
+	children do: [:block | block bindLocals]! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:48:42'!
+positionLocals 
+
+	scope positionLocals.
+	children do: [:b | b positionLocals]! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:49:21'!
+reference: aBinding 
+
+	aBinding beReferencedFrom: self! !
+
+!SScriptNode methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 11:48:26'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	aBoolean ifTrue: [
+		arguments do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean].
+		temporaries do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean]].
+	statements do: [:s | s nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SScriptNode methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:47:49'!
+initialize 
+
+	super initialize.
+	statements := OrderedCollection new.
+	arguments := #().
+	temporaries := #().
+	children := OrderedCollection new! !
+
+!SScriptNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:47:31'!
+hasAssign 
+
+	statements do: [:s | s hasAssign ifTrue: [^true]].
+	^false! !
+
 !SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
 value 
 
@@ -1756,3 +2457,6 @@ asSelectorNode
 
 	^compiler selectorNode symbol: value; stretch: stretch! !
 AstBindingTypes initialize!
+AstNodeTypes initialize!
+ClosureElementTypes initialize!
+SExpressionTypes initialize!
