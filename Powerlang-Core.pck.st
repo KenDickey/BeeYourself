@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 11:51:42 am'!
+'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 2:48:27 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 10!
+!provides: 'Powerlang-Core' 1 11!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -37,6 +37,26 @@ PSharedPool subclass: #ClosureElementTypes
 ClosureElementTypes class
 	instanceVariableNames: ''!
 
+!classDefinition: #OperandTypeFlags category: 'Powerlang-Core'!
+PSharedPool subclass: #OperandTypeFlags
+	instanceVariableNames: ''
+	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core'!
+OperandTypeFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #Registers category: 'Powerlang-Core'!
+PSharedPool subclass: #Registers
+	instanceVariableNames: ''
+	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Registers class' category: 'Powerlang-Core'!
+Registers class
+	instanceVariableNames: ''!
+
 !classDefinition: #SExpressionTypes category: 'Powerlang-Core'!
 PSharedPool subclass: #SExpressionTypes
 	instanceVariableNames: ''
@@ -45,6 +65,26 @@ PSharedPool subclass: #SExpressionTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core'!
 SExpressionTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #ABI category: 'Powerlang-Core'!
+Object subclass: #ABI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'ABI class' category: 'Powerlang-Core'!
+ABI class
+	instanceVariableNames: ''!
+
+!classDefinition: #X64ABI category: 'Powerlang-Core'!
+ABI subclass: #X64ABI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'X64ABI class' category: 'Powerlang-Core'!
+X64ABI class
 	instanceVariableNames: ''!
 
 !classDefinition: #Assembly category: 'Powerlang-Core'!
@@ -85,6 +125,36 @@ Binding subclass: #AssociationBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'AssociationBinding class' category: 'Powerlang-Core'!
 AssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAOperand category: 'Powerlang-Core'!
+Object subclass: #ISAOperand
+	instanceVariableNames: 'length'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAOperand class' category: 'Powerlang-Core'!
+ISAOperand class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAOperandType category: 'Powerlang-Core'!
+Object subclass: #ISAOperandType
+	instanceVariableNames: 'type length memoryLength flags'
+	classVariableNames: 'Types'
+	poolDictionaries: 'private Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAOperandType class' category: 'Powerlang-Core'!
+ISAOperandType class
+	instanceVariableNames: ''!
+
+!classDefinition: #OOperand category: 'Powerlang-Core'!
+Object subclass: #OOperand
+	instanceVariableNames: 'instruction name nextUse'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'OOperand class' category: 'Powerlang-Core'!
+OOperand class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectMap category: 'Powerlang-Core'!
@@ -145,6 +215,26 @@ Object subclass: #ObjectShape
 	category: 'Powerlang-Core'!
 !classDefinition: 'ObjectShape class' category: 'Powerlang-Core'!
 ObjectShape class
+	instanceVariableNames: ''!
+
+!classDefinition: #Opcode category: 'Powerlang-Core'!
+Object subclass: #Opcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Opcode class' category: 'Powerlang-Core'!
+Opcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBinding category: 'Powerlang-Core'!
+Object subclass: #SBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SBinding class' category: 'Powerlang-Core'!
+SBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #SExpression category: 'Powerlang-Core'!
@@ -267,6 +357,16 @@ SParseNode subclass: #SScriptNode
 SScriptNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SSelectorNode category: 'Powerlang-Core'!
+SParseNode subclass: #SSelectorNode
+	instanceVariableNames: 'symbol keywords'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSelectorNode class' category: 'Powerlang-Core'!
+SSelectorNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
@@ -298,6 +398,34 @@ SStringToken class
 	instanceVariableNames: ''!
 
 
+!OperandTypeFlags commentStamp: '<historical>' prior: 0!
+WARNING: x86 specific!
+
+!ABI commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
+!X64ABI commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
+!ISAOperand commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!ISAOperandType commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OOperand commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !ShapeMap commentStamp: '<historical>' prior: 0!
 I represent the shape of objects as used by mirrors. Mirrors
 access instance variables by name, asking the runtime the for
@@ -315,6 +443,25 @@ printOn: aStream
 	aStream nextPutAll: ')'! !
 
 !Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
+name 
+
+	^name! !
+
+!OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
+printOn: aStream 
+	aStream
+		nextPutAll: '[op #' 
+			, name printString , 
+			'@' 
+			, instruction printString
+			, ']'! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:35'!
+definition 
+
+	^instruction atOperand: name! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:33'!
 name 
 
 	^name! !
@@ -394,6 +541,11 @@ printOn: aStream
 name 
 
 	^name! !
+
+!SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
+name 
+
+	^self printString! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
 printOn: aStream 
@@ -493,6 +645,24 @@ initialize
 	Environment := 2.
 	EnvironmentValue := 3! !
 
+!OperandTypeFlags class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 14:02:21'!
+initialize
+	MemoryType _ 4.
+	RegisterGroupMask _ 3840.
+	ConstantType _ 2.
+	RegisterSIMD _ 256.
+	ImmediateType _ 1.
+	RegisterGP _ 0.
+	RegisterType _ 8.
+	RegisterSegment _ 512.
+	RegisterSpecific _ 768.! !
+
+!Registers class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 13:30:29'!
+initialize 
+	"Nothing to be done here, the initialization is done 
+	  in Register class >> initializeRegisters."
+! !
+
 !SExpressionTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:04:29'!
 initialize 
 
@@ -505,6 +675,84 @@ initialize
 	BraceId := 7.
 	AssignmentId := 8.
 	ReturnId := 9! !
+
+!ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
+is32bits 
+
+	^TargetOSPlatform targetWordSizeInBits= 32! !
+
+!ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:38'!
+is64bits 
+
+	^TargetOSPlatform targetWordSizeInBits= 64! !
+
+!ABI class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 14:39:04'!
+forCurrent 
+
+	^self currentClass new! !
+
+!ABI class methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:38:33'!
+currentClass 
+	| platform |
+	platform := TargetOSPlatform current.
+	platform isWin64 ifTrue: [ ^WinX64ABI ].
+	platform isUnix64 ifTrue: [ ^SysVX64ABI ].
+	self assert: false.! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:43:57'!
+bits 
+
+	^64! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:44:29'!
+regA 
+
+	^RDX! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:44:45'!
+regE 
+
+	^RDI! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:45:09'!
+regFP 
+
+	^RBP! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:45:25'!
+regG 
+
+	^R15! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:46:42'!
+regR 
+
+	^RAX! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:47:00'!
+regS 
+
+	^RSI! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:47:10'!
+regSP
+
+	^RSP! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:47:26'!
+regT
+
+	^RCX! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:47:58'!
+wordSize 
+
+	^8 "Bytes"! !
+
+!X64ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:47:53'!
+wordSizeShift 
+
+	^3! !
 
 !Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:22'!
 parser: anAssemblerParser 
@@ -967,6 +1215,191 @@ literal
 on: anAssociation 
 
 	^self new association: anAssociation! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
+isDirectMemoryReference 
+
+	^false! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:58'!
+isImmediate 
+
+	^false! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:38:08'!
+isMemory 
+
+	^false! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:38:17'!
+isTemplate 
+
+	^false! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:55:01'!
+needsExtraBit 
+
+	^false! !
+
+!ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:56:08'!
+prefers: anOperandType to: anotherOperandType 
+
+	^false! !
+
+!ISAOperand methodsFor: 'services' stamp: 'KenD 2/24/2021 13:57:12'!
+template 
+
+	^self! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:35:38'!
+baseExtension 
+
+	^0! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:37:28'!
+indexExtension 
+
+	^0! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:38:30'!
+length 
+
+	^length! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:38:41'!
+length: anInteger 
+
+	length := anInteger! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:54:48'!
+memoryLength 
+
+	^length! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:55:27'!
+offsetOfIndex: index 
+
+	length = 64 ifTrue: [^index - 1 bitShift: 3].
+	length = 32 ifTrue: [^index - 1 bitShift: 2].
+	length =  8 ifTrue: [^index - 1].
+	self error: 'invalid operand'! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:55:40'!
+operand1 
+
+	^self! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:55:50'!
+operand2 
+
+	^self! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:56:25'!
+regExtension 
+
+	^0! !
+
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:56:45'!
+sizeInBytes 
+
+	^length // 8! !
+
+!ISAOperand methodsFor: 'operators' stamp: 'KenD 2/24/2021 13:37:09'!
+, anISAOperand 
+
+	^{self. anISAOperand}! !
+
+!ISAOperand class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 13:35:08'!
+new 
+
+	^super new initialize! !
+
+!OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
+asOperand 
+
+	self halt! !
+
+!OOperand methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 14:12:24'!
+usesDo: aBlock 
+
+	aBlock value: self.
+	nextUse ifNotNil: [nextUse usesDo: aBlock]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:54'!
+addUse: anOperand 
+
+	self deny: self == anOperand.
+	nextUse ifNil: [nextUse := anOperand] ifNotNil: [nextUse addUse: anOperand]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:43'!
+at: anInstruction named: operandName 
+
+	^self new instruction: anInstruction; name: operandName! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:54'!
+disolveReplacingWith: otherInstruction 
+
+	self definition removeUse: instruction.
+	instruction atOperand: name put: otherInstruction.
+	otherInstruction addUse: instruction at: name! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:12'!
+instruction 
+
+	^instruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:41'!
+name: operandName 
+	name := operandName! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:52'!
+nextUse 
+
+	^nextUse! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:25'!
+nstruction: anInstruction 
+
+	instruction := anInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:03'!
+removeUse: anInstruction 
+
+	nextUse instruction == anInstruction
+		ifTrue: [nextUse := nextUse nextUse]
+		ifFalse: [nextUse removeUse: anInstruction]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:14'!
+removeUse: anInstruction at: aName 
+
+	(nextUse instruction == anInstruction and: [nextUse name = aName])
+		ifTrue: [nextUse := nextUse nextUse]
+		ifFalse: [nextUse removeUse: anInstruction at: aName]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:26'!
+replaceAllUsesWith: otherInstruction 
+
+	self replaceUseWith: otherInstruction.
+	nextUse ifNotNil: [nextUse replaceAllUsesWith: otherInstruction]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:42'!
+replaceUseWith: otherInstruction 
+
+	self deny: otherInstruction class == OOperand.
+	instruction atOperand: name put: otherInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:55'!
+user 
+
+	^instruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:59'!
+valued: anInstruction 
+	^self new value: anInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:17'!
+valued: anInstruction in: containingInstruction 
+	^self new value: anInstruction; instruction: containingInstruction! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
@@ -1575,6 +2008,76 @@ indexOf: ivarName be: i
 new 
 
 	^self basicNew initialize! !
+
+!Opcode methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 14:04:47'!
+nativizeUsing: anAssembler for: messageNativizer
+
+	self nativizeUsing: anAssembler! !
+
+!SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
+decodeUsing: anAstcodeDecoder 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:18:28'!
+assign: value within: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:20:38'!
+valueWithin: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:48'!
+isArgument 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:56'!
+isAssociation 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:03'!
+isClassBinding 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:09'!
+isClassVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:18'!
+isInstVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:26'!
+isLiteral 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:34'!
+isPoolVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:40'!
+isSelf 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:48'!
+isSuper 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:56'!
+isTemporary 
+
+	^false! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
 printOn: aStream indent: anInteger 
@@ -2369,6 +2872,63 @@ hasAssign
 	statements do: [:s | s hasAssign ifTrue: [^true]].
 	^false! !
 
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:10'!
+hasSymbol 
+
+	^symbol isSymbol! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:26'!
+isBinary 
+
+	^symbol isBinary! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:43'!
+isSelector
+
+	^true! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:15:26'!
+value 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:24'!
+addKeyword: aSelectorNode 
+
+	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
+	keywords add: aSelectorNode! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:52'!
+end 
+
+	stretch end ifNotNil: [:e | ^e].
+	^keywords notNil ifTrue: [keywords last end]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:23'!
+keywords 
+
+	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:17'!
+positions 
+
+	^self keywords collect: [:node | node position]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:36'!
+symbol 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:47'!
+symbol: aString 
+
+	symbol := aString asSymbol! !
+
+!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 2/24/2021 13:12:01'!
+acceptVisitor: visitor 
+
+	^visitor visitSelector: self! !
+
 !SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
 value 
 
@@ -2459,4 +3019,6 @@ asSelectorNode
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
+OperandTypeFlags initialize!
+Registers initialize!
 SExpressionTypes initialize!
