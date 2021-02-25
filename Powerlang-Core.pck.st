@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 4:24:22 pm'!
+'From Cuis 5.0 [latest update: #4530] on 25 February 2021 at 2:21:36 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 12!
+!provides: 'Powerlang-Core' 1 13!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -65,6 +65,26 @@ PSharedPool subclass: #SExpressionTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core'!
 SExpressionTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssemblerGrammar category: 'Powerlang-Core'!
+PPCompositeParser subclass: #AssemblerGrammar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AssemblerGrammar class' category: 'Powerlang-Core'!
+AssemblerGrammar class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssemblerParser category: 'Powerlang-Core'!
+AssemblerGrammar subclass: #AssemblerParser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AssemblerParser class' category: 'Powerlang-Core'!
+AssemblerParser class
 	instanceVariableNames: ''!
 
 !classDefinition: #ABI category: 'Powerlang-Core'!
@@ -157,6 +177,36 @@ Binding subclass: #AssociationBinding
 AssociationBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #LiteralBinding category: 'Powerlang-Core'!
+Binding subclass: #LiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LiteralBinding class' category: 'Powerlang-Core'!
+LiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalBinding category: 'Powerlang-Core'!
+Binding subclass: #LocalBinding
+	instanceVariableNames: 'index environment declaration'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LocalBinding class' category: 'Powerlang-Core'!
+LocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentBinding category: 'Powerlang-Core'!
+LocalBinding subclass: #ArgumentBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ArgumentBinding class' category: 'Powerlang-Core'!
+ArgumentBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #ISAOperand category: 'Powerlang-Core'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
@@ -175,6 +225,76 @@ Object subclass: #ISAOperandType
 	category: 'Powerlang-Core'!
 !classDefinition: 'ISAOperandType class' category: 'Powerlang-Core'!
 ISAOperandType class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalEnvironment category: 'Powerlang-Core'!
+Object subclass: #LocalEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'LocalEnvironment class' category: 'Powerlang-Core'!
+LocalEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArrayEnvironment category: 'Powerlang-Core'!
+LocalEnvironment subclass: #ArrayEnvironment
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core'!
+ArrayEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackEnvironment category: 'Powerlang-Core'!
+LocalEnvironment subclass: #StackEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackEnvironment class' category: 'Powerlang-Core'!
+StackEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentEnvironment category: 'Powerlang-Core'!
+StackEnvironment subclass: #ArgumentEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ArgumentEnvironment class' category: 'Powerlang-Core'!
+ArgumentEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #Mirror category: 'Powerlang-Core'!
+Object subclass: #Mirror
+	instanceVariableNames: 'handle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Mirror class' category: 'Powerlang-Core'!
+Mirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMirror category: 'Powerlang-Core'!
+Mirror subclass: #ObjectMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectMirror class' category: 'Powerlang-Core'!
+ObjectMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #BehaviorMirror category: 'Powerlang-Core'!
+ObjectMirror subclass: #BehaviorMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'BehaviorMirror class' category: 'Powerlang-Core'!
+BehaviorMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #OOperand category: 'Powerlang-Core'!
@@ -311,7 +431,7 @@ SParseTreeVisitor class
 SParseTreeVisitor subclass: #AstcodeEncoder
 	instanceVariableNames: 'method stream script'
 	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes private private'
+	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
 	category: 'Powerlang-Core'!
 !classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core'!
 AstcodeEncoder class
@@ -427,9 +547,31 @@ SSymbolicToken subclass: #SStringToken
 SStringToken class
 	instanceVariableNames: ''!
 
+!classDefinition: #AssociationMirror category: 'Powerlang-Core'!
+ProtoObject subclass: #AssociationMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'AssociationMirror class' category: 'Powerlang-Core'!
+AssociationMirror class
+	instanceVariableNames: ''!
+
 
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
 WARNING: x86 specific!
+
+!AssemblerGrammar commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
+!AssemblerParser commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
 
 !ABI commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -494,6 +636,17 @@ printOn: aStream
 name 
 
 	^name! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
+environment 
+
+	^environment index! !
+
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
+methodDictionary 
+	| slot |
+	slot := handle slotAt: 1.
+	^self methodDictionaryMirrorOn: slot! !
 
 !OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
 printOn: aStream 
@@ -723,6 +876,391 @@ initialize
 	BraceId := 7.
 	AssignmentId := 8.
 	ReturnId := 9! !
+
+!AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
+comma 
+
+	^$, asParser trim! !
+
+!AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:31:12'!
+imm 
+
+	^self immH / self immD! !
+
+!AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:31:24'!
+immD 
+
+	^self sign , self decimal! !
+
+!AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:31:34'!
+immH 
+
+	^self hex! !
+
+!AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:36:11'!
+separator 
+
+	^#blank asParser star flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:32:32'!
+abelName 
+
+	^($@ asParser , #word asParser plus) flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:29:20'!
+base 
+
+	^self reg! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:30:20'!
+constant 
+
+	^self hex / self decimal! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:30:33'!
+decimal 
+
+	^#digit asParser plus flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:30:44'!
+displacement 
+
+	^self operator , self constant! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:30:58'!
+hex 
+
+	^'0x' asParser , #hex asParser plus! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:36:38'!
+ib1 
+
+	^self displacement / self constant! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:31:49'!
+index 
+
+	^self sum , self reg! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:31:59'!
+instruction 
+
+	^self prefix optional , self mnemonic trim , self operands! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:32:20'!
+label 
+
+	^(self labelName , $: asParser) flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:32:47'!
+memory 
+
+	^self memorySize optional , $[ asParser trim
+		, (self segment , ':' asParser) optional
+		, self sib
+		, $] asParser trim! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:33:13'!
+memorySize 
+
+	^'qword' asParser / 'dword' asParser / 'word' asParser / 'bword' asParser
+		/ 'byte' asParser
+		/ 'xmmword' asParser
+		/ 'ymmword' asParser
+		/ 'zmmword' asParser
+		, 'ptr' asParser trim optional! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:33:30'!
+mnemonic 
+
+	^(#letter asParser , (#letter asParser / #digit asParser) star) flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:33:43'!
+mul 
+
+	^$* asParser trim flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:33:54'!
+operand 
+
+	^self memory / self reg / self imm / self labelName! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:34:08'!
+operands 
+
+	^(self operands3 / self operands2 / self operands1) optional! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:34:20'!
+operands1 
+
+	^self operand! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:34:29'!
+operands2 
+
+	^self operand , self comma , self operand! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:34:40'!
+operands3 
+
+	^self operand , self comma , self operand , self comma , self operand! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:34:54'!
+operator 
+
+	^($+ asParser / $- asParser) trim
+! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:35:07'!
+prefix 
+
+	^PPChoiceParser
+		withAll: (#(	'lock' 'repne' 'repnz' 'repe' 'repz'  'rep')
+			collect: [:name | name asParser trim])! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:35:27'!
+reg 
+
+	^ (PPChoiceParser
+		withAll:
+			((Registers asArray sort: [ :a :b | a name size > b name size ])
+				collect: [ :r | r name asParser ])) flatten! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:35:50'!
+scale 
+
+	^self mul , ($1 asParser / $2 asParser / $4 asParser / $8 asParser)! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:35:59'!
+segment 
+
+	^'cs' asParser / 'ds' asParser / 'ss' asParser / 'es' asParser
+		/ 'fs' asParser
+		/ 'gs' asParser! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:36:23'!
+sib 
+
+	^self sib1 / self sib3 / self sib2! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:36:49'!
+sib2 
+
+	^self base , self index optional , self scale optional
+		, self displacement optional! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:39:25'!
+sib3 
+
+	^self reg , self scale , self displacement! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:39:39'!
+sign 
+
+	^($+ asParser / $- asParser) trim optional! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:39:51'!
+start 
+
+	^self label / self instruction
+		, (#blank asParser plus flatten , (self label / self instruction)) star! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:40:01'!
+sum 
+
+	^$+ asParser trim flatten! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:41:30'!
+bitLengthOf: anInteger 
+
+	(anInteger between: -16r80 and: 16r7F) ifTrue: [^8].
+	(anInteger between: -16r8000 and: 16r7FFF) ifTrue: [^16].
+	(anInteger between: -16r80000000 and: 16r7FFFFFFF) ifTrue: [^32].
+	(anInteger between: -16r8000000000000000 and: 16r7FFFFFFFFFFFFFFF)
+		ifTrue: [^64].
+	(anInteger
+		between: -16r80000000000000000000000000000000
+		and: 16r7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+		ifTrue: [^128].
+	^nil! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:03'!
+decimal 
+
+	^super decimal ==> [:node | node asInteger]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:13'!
+displacement 
+
+	^super displacement
+		==> [:nodes | nodes first = $-
+			ifTrue: [nodes second negated]
+			ifFalse: [nodes second]]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:28'!
+hex 
+
+	^super hex
+		==> [:nodes | Integer readFrom: nodes second readStream radix: 16]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:45'!
+immD 
+
+	^super immD ==> [:nodes | | sign value |
+		sign := nodes first = $- ifTrue: [-1] ifFalse: [1].
+		value := nodes second * sign.
+		ISAImmediate new value: value]
+! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:43:01'!
+immH 
+
+	^super immH ==> [:value | | s len |
+		len := self bitLengthOf: value.
+		s := self signInteger: value.
+		s < 0 ifTrue: [len := len // 2].
+		ISAImmediate new value: s; length: len]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:43:16'!
+index 
+
+	^super index ==> [:nodes | nodes second]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:43:29'!
+instruction 
+
+	^super instruction ==> [:nodes | 
+		ISAInstruction new
+			prefix: nodes first;
+			mnemonic: nodes second;
+			operands: (nodes third ifNil: #())]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:43:58'!
+memory 
+
+	^super memory ==> [:nodes | | memory |
+		memory := nodes fourth.
+		nodes third ifNotNil: [:seg | memory segment: seg first].
+		nodes first ifNotNil: [:len | memory length: len].
+		memory]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:44:13'!
+memorySize 
+
+	^super memorySize ==> [:nodes | | c index |
+		index := 'bwdqxyz' indexOf: nodes first first.
+		#(8 16 32 64 128 256 512) at: index]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:44:38'!
+operands 
+
+	^super operands ==> [:nodes | | reg |
+		nodes notNil ifTrue: [
+			reg := nodes
+				detect: [:op | op isInteger not
+					and: [op isString not]
+					and: [op isRegister]]
+				ifNone: nil.
+			reg notNil ifTrue: [
+				nodes
+					select: [:op | op isInteger not
+						and: [op isMemory]
+						and: [op length isNil]]
+					thenDo: [:op | op length: reg length]]].
+		nodes]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:44:55'!
+operands1 
+
+	^super operands1 ==> [:node | {node}]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:45:04'!
+operands2 
+
+	^super operands2 ==> [:nodes | {nodes first. nodes third}]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:45:14'!
+operands3 
+
+	^super operands3 ==> [:nodes | {nodes first. nodes third. nodes fifth}]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:46:17'!
+parseInstruction: aString 
+
+	| array |
+	array := self parse: aString.
+	^array anyOne! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:46:36'!
+prefix 
+
+	^super prefix ==> [:name | InstructionPrefix prefixes at: name asUppercase]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:46:53'!
+reg 
+
+	^super reg ==> [:nodes | Register named: nodes]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:47:04'!
+scale 
+
+	^super scale ==> [:nodes | nodes second digitValue]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:47:14'!
+segment 
+
+	^super segment ==> [:nodes | Register named: nodes]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:47:26'!
+sib1 
+
+	^super sib1 ==> [:node | MemoryOperand new displacement: node]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:47:40'!
+sib2 
+
+	^super sib2 ==> [:nodes | 
+		MemoryOperand new
+			base: nodes first;
+			index: nodes second;
+			scale: nodes third;
+			displacement: nodes fourth]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:47:50'!
+sib3 
+
+	^super sib3 ==> [:nodes | 
+		MemoryOperand new
+			index: nodes first;
+			scale: nodes second;
+			displacement: nodes third]! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:48:04'!
+signInteger: anInteger 
+
+	anInteger < 0 ifTrue: [^anInteger].
+	anInteger < 16r80 ifTrue: [^anInteger].
+	anInteger < 16r100 ifTrue: [^anInteger - 16r100].
+	anInteger < 16r8000 ifTrue: [^anInteger].
+	anInteger < 16r10000 ifTrue: [^anInteger - 16r10000].
+	anInteger < 16r80000000 ifTrue: [^anInteger].
+	anInteger < 16r100000000 ifTrue: [^anInteger - 16r100000000].
+	anInteger < 16r8000000000000000 ifTrue: [^anInteger].
+	anInteger < 16r10000000000000000
+		ifTrue: [^anInteger - 16r10000000000000000].
+	^anInteger! !
+
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:48:20'!
+start 
+
+	^super start ==> [:nodes | | tail |
+		tail := nodes second collect: [:a | a second].
+		Array with: nodes first withAll: tail]! !
+
+!AssemblerParser methodsFor: 'private' stamp: 'KenD 2/25/2021 12:41:44'!
+comma 
+
+	^super comma ==> [:nodes | ]! !
 
 !ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
 is32bits 
@@ -2183,6 +2721,112 @@ on: anAssociation
 
 	^self new association: anAssociation! !
 
+!LiteralBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:53:29'!
+isLiteral
+
+	^true! !
+
+!LocalBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:55:22'!
+beInArray 
+
+	environment := ArrayEnvironment new! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:13'!
+isInStack 
+
+	^environment isStack! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:32'!
+isLocal 
+
+	^true! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:03'!
+sInArray 
+
+	^self isInStack not! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:35'!
+declaration 
+
+	^declaration! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:43'!
+declaration: anIdentifierNode 
+
+	declaration := anIdentifierNode! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:04'!
+environmentIndex 
+
+	^environment index! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:17'!
+environmentIndex: anInteger 
+
+	environment index: anInteger! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:27'!
+environmentObject 
+
+	^environment! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:38'!
+index
+
+	^index! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:47'!
+index: aNumber 
+
+	index := aNumber! !
+
+!ArgumentBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:00:20'!
+description 
+
+	^'argument ' , name! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:59:46'!
+beInlined 
+
+	environment := InlinedArgEnvironment new! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 13:01:28'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeArgument: index env: environment! !
+
+!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:02:17'!
+initialize 
+
+	super initialize.
+	environment := ArgumentEnvironment new! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:00:00'!
+canBeAssigned 
+
+	^false! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:01:53'!
+index: aNumber 
+
+	index := aNumber! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:34'!
+isArgument 
+
+	^true! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:55'!
+isInlined 
+
+	^environment isInlinedArgument! !
+
+!ArgumentBinding methodsFor: 'private' stamp: 'KenD 2/25/2021 13:01:12'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithArg: index env: environment! !
+
 !ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
 isDirectMemoryReference 
 
@@ -2280,6 +2924,177 @@ sizeInBytes
 new 
 
 	^super new initialize! !
+
+!LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:58:34'!
+isInlinedArgument 
+
+	^false! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:43'!
+isCurrent 
+
+	^index isNil! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:52'!
+isIndirect 
+
+	^self isCurrent not! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:12:05'!
+isStack 
+
+	^false! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:07'!
+environmentType 
+
+	^EnvironmentValue! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:19'!
+index 
+
+	^index! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:26'!
+index: anInteger 
+
+	index := anInteger! !
+
+!StackEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:06:37'!
+isStack 
+
+	^true! !
+
+!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:06:18'!
+index 
+
+	^nil! !
+
+!ArgumentEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:07:51'!
+environmentType 
+
+	^LocalArgument! !
+
+!Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:23'!
+handle 
+
+	^handle! !
+
+!Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:32'!
+handle: anObjectHandle 
+
+	handle := anObjectHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:19:10'!
+asLocalInteger 
+
+	^handle asLocalInteger! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:19:20'!
+associationMirrorOn: methodDictionaryHandle 
+
+	^AssociationMirror on: methodDictionaryHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:19:33'!
+behaviorMirrorOn: behaviorHandle 
+
+	^BehaviorMirror on: behaviorHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:19:47'!
+classMirrorOn: classHandle 
+
+	^ClassMirror on: classHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:19:58'!
+closureMirrorOn: closureHandle 
+
+	^ ClosureMirror on: closureHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:20:15'!
+compiledBlockMirrorOn: aCompiledBlockHandle 
+
+	^ CompiledBlockMirror on: aCompiledBlockHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:20:27'!
+compiledMethodMirrorOn: methodDictionaryHandle 
+
+	^CompiledMethodMirror on: methodDictionaryHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:20:39'!
+dictionaryMirrorOn: classHandle 
+
+	^DictionaryMirror on: classHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:21:44'!
+metaclassMirrorOn: classHandle 
+
+	^MetaclassMirror on: classHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:21:57'!
+methodDictionaryMirrorOn: methodDictionaryHandle 
+
+	^MethodDictionaryMirror on: methodDictionaryHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:22:17'!
+objectMirrorOn: objectHandle 
+
+	^ObjectMirror on: objectHandle! !
+
+!Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:22:31'!
+speciesMirrorOn: classHandle 
+
+	^SpeciesMirror on: classHandle! !
+
+!Mirror class methodsFor: 'instance creation' stamp: 'KenD 2/25/2021 13:18:36'!
+on: handle 
+
+	^self new handle: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:51:50'!
+asAssociationMirror 
+
+	^self associationMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/25/2021 13:51:24'!
+_gate 
+
+	^self! !
+
+!ObjectMirror methodsFor: 'comparing' stamp: 'KenD 2/25/2021 13:50:51'!
+= anObject 
+	^self class = anObject class and: [handle = anObject handle]! !
+
+!BehaviorMirror methodsFor: 'nativizing' stamp: 'KenD 2/25/2021 13:46:39'!
+compiledMethodFor: aSymbol 
+	| method next |
+	method := self methodDictionary compiledMethodFor: aSymbol.
+	method ifNotNil: [^method].
+	next := self next.
+	^next reflectsNil ifFalse: [next compiledMethodFor: aSymbol]! !
+
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:45:50'!
+at: i 
+
+	self assert: false! !
+
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:46:05'!
+classBinding 
+	| class |
+	class := self getInstVarNamed: #class.
+	^class asSpeciesMirror! !
+
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:47:02'!
+instanceClass 
+	| behavior class |
+	behavior := self.
+	10
+		timesRepeat: [ class := behavior classBinding.
+			class reflectsNil
+				ifFalse: [ ^ class ].
+			behavior := self next.
+			behavior reflectsNil 
+				ifTrue: [ self error: 'behavior does not have a class' ] ].
+	self error: 'could not find the class corresponding to this behavior'! !
 
 !OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
 asOperand 
@@ -3280,6 +4095,368 @@ new
 
 	^super new initialize! !
 
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:39:18'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:29:05'!
+encodeArgument: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: ArgumentId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:00'!
+encodeClassBinding: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: GlobalClassId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:25'!
+encodeClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: ClassVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:09'!
+encodeClosureElements: aBlockNode 
+	| scope parent |
+	scope := aBlockNode scope.
+	parent := aBlockNode realParent.
+	^Array streamContents: [:s |
+		scope capturesSelf ifTrue: [ s nextPut: Self ].
+		scope capturedEnvironments do: [:e | | index |
+			e == parent ifTrue: [s nextPut: Environment] ifFalse: [
+				index := aBlockNode environmentIndexOf: e.
+				self assert: index notNil.
+				s nextPut: EnvironmentValue; nextPut: index]].
+		scope capturedArguments do: [:a | | binding |
+			binding := aBlockNode parent scope resolve: a name.
+			s 	nextPut: binding environmentType; nextPut: binding index]]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:31'!
+encodeFalse 
+
+	stream nextPut: FalseId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:49'!
+encodeGlobalVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: GlobalValueId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:03'!
+encodeInlinedMessage: aMessageNode 
+
+	self nextTypePut: 0! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:18'!
+encodeInstVar: index 
+
+	stream nextPut: InstVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:31'!
+encodeLoadAwithArg: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithArgumentId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:50'!
+encodeLoadAwithClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithClassVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:10'!
+encodeLoadAwithConstPoolVar: value 
+	| index |
+	index := method indexOf: value ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithConstPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:39'!
+encodeLoadAwithGlobal: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithGlobalId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:53'!
+encodeLoadAwithInstVar: anInteger 
+
+	stream nextPut: LoadAwithInstVarId; nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:04'!
+encodeLoadAwithLiteral: value 
+	| index |
+	index := method indexOf: value.
+	stream nextPut: LoadAwithLiteralId; nextPut: index.
+	index = 0 ifTrue: [stream nextPut: value]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:14'!
+encodeLoadAwithNil 
+
+	stream nextPut: LoadAwithNilId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:30'!
+encodeLoadAwithPoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithPoolVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:42'!
+encodeLoadAwithSelf 
+
+	stream nextPut: LoadAwithSelfId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:57'!
+encodeLoadAwithTemp: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithTemporaryId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:11'!
+encodeLoadRvisitingReceiver 
+
+	stream nextPut: LoadRvisitingReceiverId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:20'!
+encodeNil 
+
+	stream nextPut: NilId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:37'!
+encodeOptimizedBinary: aMessageNode 
+	| optimizer |
+	optimizer := BinaryMessageOptimizer on: aMessageNode using: self.
+	self nestedEncode: [optimizer emitOpcodes]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:00'!
+encodeOptimizedMessage: aMessageNode 
+	| selector |
+	selector := aMessageNode selector.
+	aMessageNode isInlined ifTrue: [^self encodeInlinedMessage: aMessageNode].
+	(BinaryMessageOptimizer optimizesMessage: selector value) ifFalse: [^self].
+	aMessageNode arguments size = 1
+		ifTrue: [^self encodeOptimizedBinary: aMessageNode]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:12'!
+encodePoolConst: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: ConstantPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:32'!
+encodePoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: PoolVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:48'!
+encodePopR 
+
+	stream nextPut: PopRid! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:00'!
+encodePushR 
+
+	stream nextPut: PushRid! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:13'!
+encodeSelf 
+
+	stream nextPut: SelfId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:35'!
+encodeSuper 
+	
+	stream nextPut: SuperId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:55'!
+encodeTemporary: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: TemporaryId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:04'!
+encodeTrue 
+
+	stream nextPut: TrueId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:15'!
+encodedEnvironment: aLocalEnvironment 
+
+	aLocalEnvironment isStack
+		ifTrue: [ ^ aLocalEnvironment isInlinedArgument ifTrue: [-1] ifFalse: [nil] ].
+	aLocalEnvironment isCurrent
+		ifTrue: [ ^ 0 ].
+	^ aLocalEnvironment index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:39:50'!
+nestedEncode: aBlock 
+	| prev nested |
+	prev := stream.
+	nested := Array streamContents: [:s | 
+		stream := s.
+		aBlock value.
+		stream contents].
+	stream := prev.
+	stream nextPut: nested
+! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:44'!
+nextPut: anInteger 
+
+	stream nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:55'!
+nextTypePut: anInteger 
+
+	stream nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:38:34'!
+initialize 
+
+	stream := #() writeStream! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:28:41'!
+compiledBlockIndexOf: aBlockNode 
+
+	| index |
+	index := method
+		findFirst: [:literal | literal isBlock
+			and: [literal id == aBlockNode index]].
+	^index! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:14'!
+visitAssignment: anAssignmentNode 
+	self nextTypePut: AssignmentId.
+	anAssignmentNode assignees
+		do: [:node | self nestedEncode: [node acceptVisitor: self]].
+	self nestedEncode: [anAssignmentNode expression acceptVisitor: self]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:31'!
+visitBlock: aBlockNode 
+	| args |
+	self nextTypePut: BlockId.
+	aBlockNode isInlined
+		ifTrue: [ stream nextPut: 0. args := aBlockNode arguments collect: [:id | id binding index]. 
+			stream nextPut: args asArray ]
+		ifFalse: [ | index captured |
+			index := self compiledBlockIndexOf: aBlockNode.
+			self nextPut: index.
+			captured := self encodeClosureElements: aBlockNode.
+			stream nextPut: captured ].
+	self visitScript: aBlockNode! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:50'!
+visitBraceNode: aBraceNode 
+
+	aBraceNode isLiteral
+		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
+		ifFalse: [self visitCascade: aBraceNode asMessageNode]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:07'!
+visitCascade: aCascadeNode 
+
+	self
+		nextTypePut: CascadeId;
+		nestedEncode: [aCascadeNode receiver acceptVisitor: self].
+	aCascadeNode messages
+		do: [:node | self nestedEncode: [self visitCascadeMessage: node]]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:21'!
+visitCascadeMessage: aCascadeMessageNode 
+	| symbol selector |
+	symbol := aCascadeMessageNode selector symbol.
+	selector := method indexOf: symbol.
+	self nextPut: selector.
+	selector = 0 ifTrue: [self nextPut: symbol].
+	aCascadeMessageNode arguments do: [:arg | 
+		self nestedEncode: [arg acceptVisitor: self]]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:43'!
+visitIdentifier: anIdentifierNode 
+
+	self nextTypePut: IdentifierId.
+	anIdentifierNode binding encodeUsing: self! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:01'!
+visitLiteral: aLiteralNode 
+	| index |
+	index := method indexOf: aLiteralNode value.
+	self nextTypePut: LiteralId; nextPut: index.
+	index = 0 ifTrue: [self nextPut: aLiteralNode value]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:38'!
+visitMessage: aMessageNode 
+	| symbol selector |
+	symbol := aMessageNode selector symbol.
+	selector := method indexOf: symbol.
+	self
+		nextTypePut: MessageId;
+		nextPut: selector.
+	selector = 0
+		ifTrue: [ self nextPut: symbol ].
+	self nestedEncode: [ aMessageNode receiver acceptVisitor: self ].
+	self
+		nestedEncode: [ aMessageNode arguments 
+					do: [ :arg | self nestedEncode: [arg acceptVisitor: self] ] ].
+	self encodeOptimizedMessage: aMessageNode! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:55'!
+visitMethod: aMethodNode 
+	| pragma |
+	self nextTypePut: MethodId.
+	pragma := aMethodNode pragma.
+	pragma isUsed ifTrue: [ self nextTypePut: PragmaId; nextPut: pragma name ].
+	self visitScript: aMethodNode.
+	^stream contents! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:15'!
+visitParseNode: aParseNode 
+	^self assert: false! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:32'!
+visitReturn: aReturnNode 
+
+	self
+		nextTypePut: ReturnId;
+		nextPut: script realScript isMethod;
+		nestedEncode: [aReturnNode expression acceptVisitor: self]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:43'!
+visitScript: aScriptNode 
+	| prev |
+	prev := script.
+	script := aScriptNode.
+	aScriptNode statements
+		do: [:node | self nestedEncode: [node acceptVisitor: self]].
+	script := prev! !
+
 !SToken methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:24:19'!
 isDelimitedIdentifier 
 
@@ -3983,6 +5160,21 @@ asIdentifierNode
 asSelectorNode 
 
 	^compiler selectorNode symbol: value; stretch: stretch! !
+
+!AssociationMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:26:08'!
+key 
+
+	^self getInstVarNamed: #key! !
+
+!AssociationMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:26:24'!
+structureType 
+
+	^#Association! !
+
+!AssociationMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:26:34'!
+value 
+
+	^self getInstVarNamed: #value! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
