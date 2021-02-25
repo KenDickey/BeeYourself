@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 2:48:27 pm'!
+'From Cuis 5.0 [latest update: #4530] on 24 February 2021 at 4:24:22 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 11!
+!provides: 'Powerlang-Core' 1 12!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -85,6 +85,36 @@ ABI subclass: #X64ABI
 	category: 'Powerlang-Core'!
 !classDefinition: 'X64ABI class' category: 'Powerlang-Core'!
 X64ABI class
+	instanceVariableNames: ''!
+
+!classDefinition: #SysVX64ABI category: 'Powerlang-Core'!
+X64ABI subclass: #SysVX64ABI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SysVX64ABI class' category: 'Powerlang-Core'!
+SysVX64ABI class
+	instanceVariableNames: ''!
+
+!classDefinition: #X86ABI category: 'Powerlang-Core'!
+ABI subclass: #X86ABI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'X86ABI class' category: 'Powerlang-Core'!
+X86ABI class
+	instanceVariableNames: ''!
+
+!classDefinition: #Assembler64 category: 'Powerlang-Core'!
+Object subclass: #Assembler64
+	instanceVariableNames: 'instruction operands1 operands2 operands3 pointer immediate encoder wordSize memory labels'
+	classVariableNames: 'IndexedLabels'
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'Assembler64 class' category: 'Powerlang-Core'!
+Assembler64 class
 	instanceVariableNames: ''!
 
 !classDefinition: #Assembly category: 'Powerlang-Core'!
@@ -413,6 +443,18 @@ Copyright (c) 2020 Aucerna.
 
 Nota Bene: x86 specific!
 
+!X86ABI commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
+!Assembler64 commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
 !ISAOperand commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -434,6 +476,12 @@ the offsets of the instVars.!
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
+
+!Assembler64 methodsFor: 'printing' stamp: 'KenD 2/24/2021 16:13:13'!
+printOn: aStream 
+
+	aStream print: self class; cr; cr;
+		nextPutAll: memory bytes disassembledAmd64! !
 
 !Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
 printOn: aStream 
@@ -753,6 +801,925 @@ wordSize
 wordSizeShift 
 
 	^3! !
+
+!SysVX64ABI methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 15:36:10'!
+emitEntrypoint: anFFIDescriptor with: anAssembler 
+
+	anAssembler saveCallerFrame;
+			pushG;
+		pushNil;
+		pushTrue;
+		pushFalse;
+		pushM.
+	self storeArgumentsInStack: anFFIDescriptor with: anAssembler.! !
+
+!SysVX64ABI methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 15:36:36'!
+popRetaddrAndArgs: anFFIDescriptor with: anAssembler 
+
+	anAssembler
+		popA;
+		popA;
+		popA! !
+
+!SysVX64ABI methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 15:36:51'!
+restoreContext: anFFIDescriptor with: anAssembler 
+
+	self popRetaddrAndArgs: anFFIDescriptor with: anAssembler.
+	anAssembler
+		popM;
+		popFalse;
+		popTrue;
+		popNil;
+		popG;
+		popFP;
+		return! !
+
+!SysVX64ABI methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 15:37:10'!
+storeArgumentsInStack: anFFIDescriptor with: anAssembler 
+
+	anAssembler pushS;
+		loadRwithArgPointer;
+		convertRtoSmallInteger;
+		pushR! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:38:55'!
+bits 
+
+	^32! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:39:30'!
+regA 
+	^EDX! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:39:43'!
+regE
+	^EDI! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:39:57'!
+regFP
+	^EBP! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:40:07'!
+regR
+	^EAX! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:40:20'!
+regS
+	^ESI! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:40:28'!
+regSP
+	^ESP! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:40:42'!
+regT
+	^ECX! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:40:56'!
+wordSize 
+
+	^4 "Bytes"! !
+
+!X86ABI methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:41:08'!
+wordSizeShift 
+
+	^2! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:48:02'!
+addressLength 
+
+	^wordSize * 8! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:48:16'!
+addressSize 
+
+	^wordSize! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:55:49'!
+bytes 
+
+	^memory bytes! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:57:25'!
+clearIntegerBit: op1 
+
+	self and: op1 with: -2! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:57:34'!
+codeSize 
+
+	^memory codeSize! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:13:31'!
+push: op1 
+
+	self assemble: 'push' with: op1! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:14:58'!
+renameByteRegisterIfNeeded: register preserving: preserved during: aBlock 
+
+	self
+		renameByteRegisterIfNeeded: register
+		preserving: preserved
+		preserving: nil
+		during: aBlock! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:15:18'!
+renameByteRegisterIfNeeded: register
+preserving: preserved1
+preserving: preserved2
+during: aBlock 
+	| final |
+	(self addressSize !!= 4 or: [register byte isLongModeOld8BitRegister not])
+		ifTrue: [aBlock value: register]
+		ifFalse: [
+			final := self renameRegisterPreserving: preserved1 preserving: preserved2.
+			self exchange: register e with: final.
+			aBlock value: final.
+			self exchange: final with: register e]! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:15:43'!
+renameRegisterPreserving: preserved1 preserving: preserved2 
+	preserved1 == self regR
+		ifTrue: [preserved2 == self regA
+			ifTrue: [^self regT]
+			ifFalse: [^self regA]].
+	preserved2 == self regR
+		ifTrue: [preserved1 == self regA
+			ifTrue: [^self regT]
+			ifFalse: [^self regA]].
+	^self regR! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:17:15'!
+rotateLeft: op1 count: count 
+
+	self assert: count < 32.
+	self assemble: 'rol' with: op1 with: count
+! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:17:30'!
+rotateRight: op1 count: count 
+
+	self assert: count < 32.
+	self assemble: 'ror' with: op1 with: count! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:17:43'!
+setIntegerBit: op1 
+
+	self assemble: 'or' with: op1 with: 1! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:18:08'!
+shiftLeft: op1 by: count 
+
+	self assert: count < 32.
+	self assemble: 'sal' with: op1 with: count
+! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:18:26'!
+shiftRight: op1 by: op2 
+
+	self assert: (op2 isInteger not or: [op2 < op1 length]).
+	self assemble: 'sar' with: op1 with: op2! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:23:19'!
+stream 
+
+	^memory stream! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:24:01'!
+wordSize: anInteger 
+
+	wordSize := anInteger.
+	encoder wordSize: anInteger! !
+
+!Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 16:24:14'!
+wordSizeShift 
+
+	^wordSize = 8 ifTrue: [3] ifFalse: [2]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 15:48:44'!
+alignTo: aNumber 
+	| current count |
+	current := memory position.
+	count := (current alignedTo: aNumber) - current.
+	self nop: count! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 15:53:58'!
+assembly 
+
+	^memory bytes! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:00'!
+nop 
+
+	self assemble: 'nop'! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:13'!
+nop2 
+
+	memory nextPutAll: #[16r66 16r90]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:25'!
+nop3 
+
+	memory nextPutAll: #[16r0F 16r1F 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:38'!
+nop4 
+
+	memory nextPutAll: #[16r0F 16r1F 16r40 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:49'!
+nop5 
+
+	memory nextPutAll: #[16r0F 16r1F 16r44 16r00 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:10:59'!
+nop6 
+
+	memory nextPutAll: #[16r66 16r0F 16r1F 16r44 16r00 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:11:08'!
+nop7 
+
+	memory nextPutAll: #[16r0F 16r1F 16r80 16r00 16r00 16r00 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:11:19'!
+nop8 
+
+	memory nextPutAll: #[16r0F 16r1F 16r84 16r00 16r00 16r00 16r00 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:11:30'!
+nop9 
+
+	memory nextPutAll: #[16r66 16r0F 16r1F 16r84 16r00 16r00 16r00 16r00 16r00]! !
+
+!Assembler64 methodsFor: 'alignment' stamp: 'KenD 2/24/2021 16:11:54'!
+nop: count 
+	"
+	ShellDLL current openWebPage: 'http://www.felixcloutier.com/x86/NOP.html'
+	"
+	| r |
+	r := count.
+	r >= 9 ifTrue: [
+		r // 9 timesRepeat: [self nop9].
+		r := r \\ 9].
+	r = 8 ifTrue: [^self nop8].
+	r = 7 ifTrue: [^self nop7].
+	r = 6 ifTrue: [^self nop6].
+	r = 5 ifTrue: [^self nop5].
+	r = 4 ifTrue: [^self nop4].
+	r = 3 ifTrue: [^self nop3].
+	r = 2 ifTrue: [^self nop2].
+	^self nop! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:50:10'!
+assemble 
+
+	encoder reset; writeEncodingOn: memory! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:50:22'!
+assemble: mnemonic 
+
+	instruction mnemonic: mnemonic; operands: #().
+	self assemble! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:50:35'!
+assemble: mnemonic with: op 
+	| op1 |
+	op1 := op isInteger ifTrue: [immediate value: op] ifFalse: [op].
+	operands1 at: 1 put: op1.
+	instruction mnemonic: mnemonic; operands: operands1.
+	self assemble! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:50:49'!
+assemble: mnemonic with: op1 with: op2 
+	| op |
+	op := op2 isInteger ifTrue: [immediate value: op2] ifFalse: [op2].
+	operands2
+		at: 1 put: op1;
+		at: 2 put: op.
+	instruction mnemonic: mnemonic; operands: operands2.
+	self assemble! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:51:04'!
+assemble: mnemonic
+with: op1
+with: op2
+with: op3 
+	| op |
+	op := op3 isInteger ifTrue: [immediate value: op3] ifFalse: [op3].
+	operands3
+		at: 1 put: op1;
+		at: 2 put: op2;
+		at: 3 put: op.
+	instruction mnemonic: mnemonic; operands: operands3.
+	self assemble! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:51:17'!
+assemble: mnemonic with: op1 withImm64: op2 
+	| v |
+	v := self regV.
+	self
+		assemble: 'mov' with: v with: op2;
+		assemble: mnemonic with: op1 with: v! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:51:57'!
+assemble: mnemonic with: op1 withImm: imm 
+
+	immediate value: imm.
+	(immediate length <= 32 or: [mnemonic = 'mov' and: [op1 class == Register]])
+		ifTrue: [self assemble: mnemonic with: op1 with: immediate]
+		ifFalse: [self assemble: mnemonic with: op1 withImm64: immediate]! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:52:18'!
+assemble: mnemonic withImm64: op1 
+	| v |
+	v := self regV.
+	self
+		assemble: 'mov' with: v with: op1;
+		assemble: mnemonic with: v! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:52:29'!
+assemble: mnemonic withImm: imm 
+
+	immediate value: imm.
+	immediate length <= 32
+		ifTrue: [self assemble: mnemonic with: immediate]
+		ifFalse: [self assemble: mnemonic withImm64: immediate]! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:52:40'!
+assemble: mnemonic withReg: reg index: index 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: reg;
+		displacement: index - 1 * wordSize.
+	self assemble: mnemonic with: pointer! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:52:55'!
+assemble: mnemonic
+withReg: dst
+withReg: src
+index: index 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: src;
+		displacement: index - 1 * wordSize.
+	self assemble: mnemonic with: dst with: pointer! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:53:07'!
+assembleAddress: mem 
+	| address |
+	address := mem isInteger ifTrue: [mem] ifFalse: [
+		memory addAbsoluteFixup: mem.
+		0].
+	wordSize = 8
+		ifTrue: [memory nextULargePut: address]
+		ifFalse: [memory nextULongPut: address]! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:53:21'!
+assembleByte: byte 
+
+	memory nextBytePut: byte! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:53:32'!
+assembleBytes: aByteArray 
+
+	memory nextBytesPut: aByteArray! !
+
+!Assembler64 methodsFor: 'basic' stamp: 'KenD 2/24/2021 15:53:46'!
+assembleBytes: aByteArray count: integer 
+
+	1 to: integer do: [:i | memory nextPut: (aByteArray byteAt: i)]! !
+
+!Assembler64 methodsFor: 'calls' stamp: 'KenD 2/24/2021 15:56:58'!
+callIndirectReg: reg 
+
+	pointer reset; length: reg length; base: reg.
+	self assemble: 'call' with: pointer! !
+
+!Assembler64 methodsFor: 'calls' stamp: 'KenD 2/24/2021 15:57:13'!
+callTo: label 
+	
+	self jump: 'call' to: label size: 4! !
+
+!Assembler64 methodsFor: 'calls' stamp: 'KenD 2/24/2021 16:12:09'!
+offsetOfIndex: index 
+
+	^index - 1 * wordSize! !
+
+!Assembler64 methodsFor: 'calls' stamp: 'KenD 2/24/2021 16:16:32'!
+return 
+
+	self assemble: 'ret'! !
+
+!Assembler64 methodsFor: 'calls' stamp: 'KenD 2/24/2021 16:16:44'!
+return: anInteger 
+
+	anInteger = 0
+		ifTrue: [self assemble: 'ret']
+		ifFalse: [self assemble: 'ret' with: anInteger * self addressSize]! !
+
+!Assembler64 methodsFor: 'debugging' stamp: 'KenD 2/24/2021 15:55:39'!
+breakpoint 
+
+	self assemble: 'int' with: 3! !
+
+!Assembler64 methodsFor: 'initialization' stamp: 'KenD 2/24/2021 15:59:44'!
+initialize 
+
+	super initialize.
+	instruction := ISAInstruction new.
+	operands1 := Array new: 1.
+	operands2 := Array new: 2.
+	operands3 := Array new: 3.
+	immediate := ISAImmediate new.
+	pointer := MemoryOperand new.
+	encoder := instruction encoder.
+	labels := Dictionary new: 100.
+	memory := RelocatableBuffer new! !
+
+!Assembler64 methodsFor: 'initialization' stamp: 'KenD 2/24/2021 16:15:58'!
+reset 
+	labels := Dictionary new: 100.
+	memory reset! !
+
+!Assembler64 methodsFor: 'integers' stamp: 'KenD 2/24/2021 15:58:37'!
+convertToNativeInteger: reg 
+
+	self assemble: 'sar' with: reg with: 1! !
+
+!Assembler64 methodsFor: 'integers' stamp: 'KenD 2/24/2021 15:58:48'!
+convertToSmallInteger: reg 
+
+	self
+		assemble: 'sal' with: reg with: 1;
+		assemble: 'inc' with: reg! !
+
+!Assembler64 methodsFor: 'integers' stamp: 'KenD 2/24/2021 16:04:16'!
+lastEmittedPointer 
+	| patch |
+	patch := self currentAddress.
+	^patch - wordSize! !
+
+!Assembler64 methodsFor: 'integers' stamp: 'KenD 2/24/2021 16:04:53'!
+leadingRzeroCount 
+	"
+	lzcnt is a special x64 extension: it puts the REX
+	prefix after the first opcode byte. Our x64 
+	encoder doesn't support that, so we fix the
+	bytes by hand
+	"
+	| pos |
+	pos := self currentAddress.
+	self assemble: 'lzcnt' with: self regR with: self regR.
+	memory
+		writeByte: 16rF3 at: pos;
+		writeByte: 16r48 at: pos + 1! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:00:45'!
+jumpIfBelowOrEqualTo: label 
+
+	self nearJump: 'jbe' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:00:57'!
+jumpIfEqualTo: label 
+
+	self nearJump: 'jz' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:01:15'!
+jumpIfGreaterOrEqualSignedTo: label 
+
+	self nearJump: 'jge' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:01:27'!
+jumpIfGreaterSignedTo: label 
+
+	self nearJump: 'jg' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:01:38'!
+jumpIfLessOrEqualSignedTo: label 
+
+	self nearJump: 'jle' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:01:52'!
+jumpIfLessSignedTo: label 
+
+	self nearJump: 'jl' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:02:02'!
+jumpIfNotCarryTo: label 
+
+	self nearJump: 'jnc' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:02:14'!
+jumpIfNotEqualTo: label 
+
+	self nearJump: 'jnz' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:02:24'!
+jumpIfNotOverflowTo: label 
+
+	self nearJump: 'jno' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:02:44'!
+jumpIfNotZeroTo: label 
+
+	self jumpIfNotEqualTo: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:02:56'!
+jumpIfOverflowTo: label 
+
+	self nearJump: 'jo' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:03:09'!
+jumpIfSignTo: label 
+
+	self nearJump: 'js' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:03:20'!
+jumpIfZeroTo: label 
+
+	self jumpIfEqualTo: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:03:38'!
+jumpOver: aBlock 
+	| label |
+	label := self newLabel.
+	self jumpTo: label.
+	aBlock value.
+	self @ label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:03:55'!
+jumpTo: label 
+
+	self nearJump: 'jmp' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:04:06'!
+jumpToReg: reg 
+
+	self assemble: 'jmp' with: reg! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:05:46'!
+load: reg withImmediate: imm 
+
+	self assemble: 'mov' with: reg with: imm! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:18:58'!
+shortJumpIfCarryTo: label 
+
+	self shortJump: 'jc' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:19:09'!
+shortJumpIfEqualTo: label 
+
+	self shortJump: 'jz' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:19:21'!
+shortJumpIfLessOrEqualSignedTo: label 
+
+	self shortJump: 'jle' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:19:33'!
+shortJumpIfLessSignedTo: label 
+
+	self shortJump: 'jl' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:19:45'!
+shortJumpIfNotCarryTo: label 
+
+	self shortJump: 'jnc' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:19:57'!
+shortJumpIfNotEqualTo: label 
+
+	self shortJump: 'jnz' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:20:09'!
+shortJumpIfNotOverflowTo: label 
+
+	self shortJump: 'jno' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:20:22'!
+shortJumpIfNotZeroTo: label 
+
+	self shortJumpIfNotEqualTo: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:20:33'!
+shortJumpIfOverflowTo: label 
+
+	self shortJump: 'jo' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:20:43'!
+shortJumpIfSignTo: label 
+
+	self shortJump: 'js' to: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:20:53'!
+shortJumpIfZeroTo: label 
+
+	self shortJumpIfEqualTo: label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:21:04'!
+shortJumpOver: aBlock 
+	| label |
+	label := self newLabel.
+	self shortJumpTo: label.
+	aBlock value.
+	self @ label! !
+
+!Assembler64 methodsFor: 'jumps' stamp: 'KenD 2/24/2021 16:21:17'!
+shortJumpTo: label 
+
+	self shortJump: 'jmp' to: label! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 15:46:34'!
+@ label 
+
+	self addLabel: label! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 15:47:16'!
+addLabel: aString 
+
+	self addLabel: aString to: self currentAddress! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 15:47:34'!
+addLabel: label to: location 
+	labels at: label put: location! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 15:59:03'!
+currentAddress 
+
+	^memory currentAddress! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 16:08:40'!
+newLabel 
+	| label next |
+	next := labels size + 1.
+	IndexedLabels size < next ifTrue: [self class growIndexedLabelsTo: next].
+	label := IndexedLabels at: next.
+	self addLabel: label to: nil.
+	^label! !
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 16:16:14'!
+resolveLabel: aString 
+
+	^labels at: aString ifAbsent: [self addressOfExternal: aString]! !
+
+!Assembler64 methodsFor: 'relocation' stamp: 'KenD 2/24/2021 15:49:40'!
+applyFixups 
+
+	memory applyFixupsWith: self! !
+
+!Assembler64 methodsFor: 'relocation' stamp: 'KenD 2/24/2021 15:54:48'!
+baseAddress 
+
+	^memory baseAddress! !
+
+!Assembler64 methodsFor: 'relocation' stamp: 'KenD 2/24/2021 16:14:39'!
+relocateTo: address 
+	| delta |
+	delta := address - self baseAddress.
+	labels
+		keysAndValuesDo: [:label :location | labels
+			at: label
+			put: location + delta].
+	memory relocateTo: address with: self! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 15:47:00'!
+add: op1 to: op2 
+
+	self assemble: 'add' with: op2 with: op1! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 15:49:02'!
+and: op1 with: op2 
+
+	self assemble: 'and' with: op1 with: op2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 15:49:12'!
+and: op1 withImm: op2 
+
+	self assemble: 'and' with: op1 withImm: op2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 15:58:17'!
+compare: op1 with: op2 
+
+	self assemble: 'cmp' with: op1 with: op2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 15:59:17'!
+exchange: op1 with: op2 
+
+	self assemble: 'xchg' with: op1 with: op2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 16:06:45'!
+move: reg2 to: reg1 
+
+	self assert: (reg2 class = Register and: [reg1 class = Register]).
+	self assemble: 'mov' with: reg1 with: reg2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 16:12:31'!
+or: op1 with: op2 
+	
+	self assemble: 'or' with: op1 with: op2! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 16:23:34'!
+subtract: op1 from: op2 
+
+	self assemble: 'sub' with: op2 with: op1! !
+
+!Assembler64 methodsFor: 'services' stamp: 'KenD 2/24/2021 16:23:44'!
+testIntegerBit: op1 
+	| op |
+	op := op1 byte.
+	(self addressSize = 4 and: [op isLongModeOld8BitRegister])
+		ifTrue: [op := op1].
+	self assemble: 'test' with: op with: 1! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 15:54:32'!
+at: position putPointer: value 
+	| original |
+	original := memory position.
+	[
+		memory position: position.
+		wordSize = 8
+			ifTrue: [memory nextULargePut: value]
+			ifFalse: [memory nextULongPut: value]]
+		ensure: [memory position: original]! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:05:12'!
+load: reg1 from: reg2 atIndex: index 
+
+	| offset |
+	offset := reg1 offsetOfIndex: index.
+	pointer
+		reset;
+		length: reg1 length;
+		base: reg2;
+		displacement: offset.
+	self assemble: 'mov' with: reg1 with: pointer! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:05:29'!
+load: reg1 from: reg2 atIndexAt: reg3 
+	pointer
+		reset;
+		length: reg1 length;
+		base: reg2;
+		index: reg3;
+		scale: reg1 sizeInBytes;
+		displacement: 0 - reg1 sizeInBytes.
+	self assemble: 'mov' with: reg1 with: pointer! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:06:00'!
+loadZeroExtendByte: reg1 from: reg2 atIndex: index 
+
+	self loadZeroExtendByte: reg1 from: reg2 atOffset: index - 1! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:06:13'!
+loadZeroExtendByte: reg1 from: reg2 atIndexAt: reg3 
+
+	pointer
+		reset;
+		length: 8;
+		base: reg2;
+		index: reg3;
+		displacement: -1.
+	self assemble: 'movzx' with: reg1 with: pointer! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:06:26'!
+loadZeroExtendByte: reg1 from: reg2 atOffset: offset 
+
+	pointer
+		reset;
+		length: 8;
+		base: reg2;
+		displacement: offset.
+	self assemble: 'movzx' with: reg1 with: pointer! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:13:46'!
+putPointer: oop at: position 
+	| original |
+	original := memory position.
+	[
+		memory position: position.
+		wordSize = 8
+			ifTrue: [memory nextULargePut: oop]
+			ifFalse: [memory nextULongPut: oop]]
+		ensure: [memory position: original]! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:21:32'!
+store: reg1 in: reg2 index: index 
+	| offset |
+	offset := reg1 offsetOfIndex: index.
+	pointer
+		reset;
+		length: reg1 length;
+		base: reg2;
+		displacement: offset.
+	self assemble: 'mov' with: pointer with: reg1! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:22:22'!
+store: op1 in: reg2 indexAt: reg3 
+
+	pointer
+		reset;
+		length: op1 length;
+		base: reg2;
+		index: reg3;
+		scale: op1 sizeInBytes;
+		displacement: 0 - op1 sizeInBytes.
+	self assemble: 'mov' with: pointer with: op1! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:22:33'!
+storeByte: value in: reg2 index: index 
+
+	self storeByte: value in: reg2 offset: index - 1! !
+
+!Assembler64 methodsFor: 'storing' stamp: 'KenD 2/24/2021 16:22:45'!
+storeByte: byte in: reg2 offset: offset 
+
+	pointer
+		reset;
+		length: 8;
+		base: reg2;
+		displacement: offset.
+	self assemble: 'mov' with: pointer with: byte! !
+
+!Assembler64 methodsFor: 'private' stamp: 'KenD 2/24/2021 15:55:16'!
+bitLengthOf: anInteger 
+
+	(anInteger between: -16r80 and: 16r7F) ifTrue: [^8].
+	(anInteger between: -16r8000 and: 16r7FFF) ifTrue: [^16].
+	(anInteger between: -16r80000000 and: 16r7FFFFFFF) ifTrue: [^32].
+	(anInteger between: -16r8000000000000000 and: 16r7FFFFFFFFFFFFFFF)
+		ifTrue: [^64].
+	(anInteger
+		between: -16r80000000000000000000000000000000
+		and: 16r7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+		ifTrue: [^128].
+	^nil! !
+
+!Assembler64 methodsFor: 'private' stamp: 'KenD 2/24/2021 16:12:45'!
+pop: op1 
+
+	self assemble: 'pop' with: op1! !
+
+!Assembler64 methodsFor: 'private' stamp: 'KenD 2/24/2021 16:14:14'!
+regV 
+	^R11! !
+
+!Assembler64 methodsFor: 'private - jumps' stamp: 'KenD 2/24/2021 16:00:23'!
+jump: mnemonic to: label size: n 
+	| placeholder end |
+	placeholder := 1 bitShift: n - 1 * 8.
+	self assemble: mnemonic with: placeholder.
+	end := memory position.
+	memory
+		skip: -1;
+		nextPut: 0;
+		skip: n negated;
+		addRelativeFixup: label size: n;
+		position: end! !
+
+!Assembler64 methodsFor: 'private - jumps' stamp: 'KenD 2/24/2021 16:07:28'!
+nativeCode 
+
+	^ NativeCode new code: memory bytes! !
+
+!Assembler64 methodsFor: 'private - jumps' stamp: 'KenD 2/24/2021 16:07:47'!
+nearJump: mnemonic to: label 
+
+	self jump: mnemonic to: label size: 4! !
+
+!Assembler64 methodsFor: 'private - jumps' stamp: 'KenD 2/24/2021 16:18:40'!
+shortJump: mnemonic to: label 
+
+	self jump: mnemonic to: label size: 1! !
+
+!Assembler64 class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 15:45:27'!
+growIndexedLabelsTo: anInteger 
+	| new |
+	new := (IndexedLabels size + 1 to: anInteger)
+		collect: [:i | ('@' , i asString) asSymbol].
+	IndexedLabels := IndexedLabels , new! !
+
+!Assembler64 class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 15:45:38'!
+initialize 
+	self initializeIndexedLabels! !
+
+!Assembler64 class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 15:45:53'!
+initializeIndexedLabels 
+
+	IndexedLabels := #().
+	self growIndexedLabelsTo: 100! !
+
+!Assembler64 class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 15:46:02'!
+new 
+
+	^super new initialize! !
 
 !Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:22'!
 parser: anAssemblerParser 
@@ -3022,3 +3989,4 @@ ClosureElementTypes initialize!
 OperandTypeFlags initialize!
 Registers initialize!
 SExpressionTypes initialize!
+Assembler64 initialize!
