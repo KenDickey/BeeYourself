@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 25 February 2021 at 2:21:36 pm'!
+'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 9:26:06 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 13!
+!provides: 'Powerlang-Core' 1 14!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -35,6 +35,26 @@ PSharedPool subclass: #ClosureElementTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'ClosureElementTypes class' category: 'Powerlang-Core'!
 ClosureElementTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core'!
+PSharedPool subclass: #ObjectHeaderMasks
+	instanceVariableNames: ''
+	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectHeaderMasks class' category: 'Powerlang-Core'!
+ObjectHeaderMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectHeaderOffsets category: 'Powerlang-Core'!
+PSharedPool subclass: #ObjectHeaderOffsets
+	instanceVariableNames: ''
+	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectHeaderOffsets class' category: 'Powerlang-Core'!
+ObjectHeaderOffsets class
 	instanceVariableNames: ''!
 
 !classDefinition: #OperandTypeFlags category: 'Powerlang-Core'!
@@ -305,6 +325,16 @@ Object subclass: #OOperand
 	category: 'Powerlang-Core'!
 !classDefinition: 'OOperand class' category: 'Powerlang-Core'!
 OOperand class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectFormat category: 'Powerlang-Core'!
+Object subclass: #ObjectFormat
+	instanceVariableNames: 'runtime storage'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectFormat class' category: 'Powerlang-Core'!
+ObjectFormat class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectMap category: 'Powerlang-Core'!
@@ -642,6 +672,22 @@ environment
 
 	^environment index! !
 
+!ObjectMirror methodsFor: 'printing' stamp: 'KenD 2/27/2021 09:10:14'!
+printOn: aStream 
+	| description |
+	self reflectsInteger
+		ifTrue: [ ^ aStream
+				nextPutAll: 'SMI (';
+				print: self asLocalInteger;
+				nextPut: $) ].
+	description := [ self reflectedClass localName withArticle ]
+		on: Error
+		do: [ 'broken class' ].
+	aStream
+		nextPutAll:
+			self class name withArticle , '(' , handle printString , ', '
+				, description , ')'! !
+
 !BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
 methodDictionary 
 	| slot |
@@ -845,6 +891,48 @@ initialize
 	LocalArgument := 1.
 	Environment := 2.
 	EnvironmentValue := 3! !
+
+!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:22:14'!
+initialize 
+	"Bit Flags"
+	IsBytes      := 16r01.
+	IsArrayed := 16r02.
+	IsNamed   := 16r04.
+	IsSmall     := 16r80! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
+behaviorOffset
+
+	^BehaviorOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
+flagsOffset
+
+	^FlagsOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
+hashOffset
+
+	^HashOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
+largeSizeOffset
+
+	^LargeSizeOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
+sizeOffset
+
+	^SizeOffset! !
+
+!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:17:52'!
+initialize 
+	"Offsets in Bytes"
+	BehaviorOffset := -4.
+	FlagsOffset := -5.
+	SizeOffset := -6.
+	HashOffset := -8.
+	LargeSizeOffset := -16! !
 
 !OperandTypeFlags class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 14:02:21'!
 initialize
@@ -3050,19 +3138,273 @@ on: handle
 
 	^self new handle: handle! !
 
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:25:55'!
+at: index 
+	| slot |
+	slot := self reflectedClass instSize + index.
+	^self slotAt: slot! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:26:45'!
+bytes 
+
+	^handle asLocalBytes! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:28:32'!
+getInstVarAt: index 
+
+	^self slotAt: index! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:28:44'!
+getInstVarNamed: name 
+	| index |
+	index := handle indexOf: name for: self.
+	index = 0 ifTrue: [self error: 'instance variable not found'].
+	^self slotAt: index! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:29:01'!
+hash 
+
+	^ handle hash! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:08:10'!
+localDeepCopy 
+
+	self reflectsInteger
+		ifTrue: [ ^ self asLocalInteger ].
+	^ (1 to: self size)
+		collect: [ :i | | slot |
+			slot := self slotAt: i.
+			slot localDeepCopy ]! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:09:02'!
+localDescription 
+	| class name |
+	self reflectsInteger
+		ifTrue: [ ^ 'int ' , self asLocalInteger printString ].
+	^ [ class := self reflectedClass.
+	name := class localName.
+	(name = 'String' or: [ name = 'Symbol' ])
+		ifTrue: [ ^ name , ' <' , self asLocalString , '>' ].
+	name withArticle]
+		on: StorageReadError
+		do: [ self printString , '(could not be read)' ]! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:12:06'!
+setInstVarAt: index with: value 
+
+	^ self slotAt: index put: value! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:12:22'!
+size 
+
+	^handle size - self reflectedClass instSize! !
+
+!ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:14:01'!
+slotSize 
+
+	^ handle size! !
+
+!ObjectMirror methodsFor: 'comparing' stamp: 'KenD 2/25/2021 13:50:51'!
+= anObject 
+	^self class = anObject class and: [handle = anObject handle]! !
+
+!ObjectMirror methodsFor: 'comparing' stamp: 'KenD 2/25/2021 14:28:09'!
+equals: anotherObject 
+
+	^ (anotherObject isKindOf: self class)
+		and: [ handle = anotherObject handle ]! !
+
+!ObjectMirror methodsFor: 'converting' stamp: 'KenD 2/27/2021 09:09:53'!
+mirage 
+
+	^handle mirage! !
+
+!ObjectMirror methodsFor: 'enumerating' stamp: 'KenD 2/25/2021 14:27:52'!
+do: aBlock 
+	1 to: self size do: [:index | | slot |
+		slot := self slotAt: index.
+		aBlock value: slot]! !
+
+!ObjectMirror methodsFor: 'evaluating' stamp: 'KenD 2/27/2021 09:06:56'!
+invoke: method with: arguments 
+	| interpreter |
+	interpreter := SmalltalkInterpreter on: self with: arguments for: method.
+	^ interpreter evaluate: method! !
+
 !ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 13:51:50'!
 asAssociationMirror 
 
 	^self associationMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:23:08'!
+asBehaviorMirror 
+
+	^self behaviorMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:23:21'!
+asBlockMirror 
+
+	^ self compiledBlockMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:23:41'!
+asByteArray 
+
+	^self bytes! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:23:56'!
+asClassMirror 
+
+	^self classMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:24:07'!
+asClosureMirror 
+
+	^ self closureMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:24:21'!
+asDictionaryMirror 
+
+	^self dictionaryMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:24:32'!
+asLocalArray 
+	| size |
+	size := self size.
+	^(1 to: size) collect: [:i | self slotAt: i]! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:24:42'!
+asLocalInteger 
+
+	^handle asLocalInteger! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:24:51'!
+asLocalString 
+
+	^handle asLocalString! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:25:03'!
+asMethodMirror 
+
+	^self compiledMethodMirrorOn: handle! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:25:15'!
+asSpeciesMirror 
+	^(self speciesMirrorOn: handle) reflectsMetaclass
+		ifTrue: [self metaclassMirrorOn: handle]
+		ifFalse: [self classMirrorOn: handle]! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:25:26'!
+asStringMirror 
+
+	^self! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:25:35'!
+asSubject 
+
+	^handle mirage! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/25/2021 14:27:21'!
+dispatch: aMessage from: parentInterpreter 
+	| method interpreter |
+	method := self lookup: aMessage selector.
+	method ifNil: [ self assert: false ].
+	interpreter := parentInterpreter class
+		on: self
+		with: aMessage arguments
+		for: method.
+	^ interpreter
+		parent: parentInterpreter;
+		evaluate: method! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:07:38'!
+localClassname 
+
+	^self reflectedClass localName! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:10:29'!
+reflectedBehavior 
+	| behavior |
+	behavior := handle getBehavior.
+	^self behaviorMirrorOn: behavior! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:10:39'!
+reflectedClass 
+
+	^handle getClass! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:12:35'!
+slotAt: index 
+
+	| slot |
+	slot := handle slotAt: index.
+	^self objectMirrorOn: slot! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:13:11'!
+slotAt: index put: value 
+
+	handle slotAt: index put: value _gate handle oid.
+	^ value! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:13:46'!
+slotOf: species named: name 
+	| index |
+	index := handle indexOf: name inStructureOf: species name asSymbol.
+	^self slotAt: index! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:14:22'!
+structure 
+
+	^handle structureOf: self structureType! !
+
+!ObjectMirror methodsFor: 'meta accessing' stamp: 'KenD 2/27/2021 09:14:35'!
+structureType 
+
+	^self subclassResponsibility! !
+
+!ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/27/2021 09:09:24'!
+lookup: aSelector 
+
+	^self reflectedBehavior compiledMethodFor: aSelector! !
+
+!ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/27/2021 09:10:54'!
+reflectsInteger 
+
+	^handle isInteger! !
+
+!ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/27/2021 09:11:08'!
+reflectsLargeObject 
+
+	^handle isLarge! !
+
+!ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/27/2021 09:11:44'!
+reflectsNil 
+
+	^handle = handle nilObject! !
 
 !ObjectMirror methodsFor: 'nativizing' stamp: 'KenD 2/25/2021 13:51:24'!
 _gate 
 
 	^self! !
 
-!ObjectMirror methodsFor: 'comparing' stamp: 'KenD 2/25/2021 13:50:51'!
-= anObject 
-	^self class = anObject class and: [handle = anObject handle]! !
+!ObjectMirror methodsFor: 'testing' stamp: 'KenD 2/25/2021 14:26:29'!
+basicFlags 
+
+	^handle basicFlags! !
+
+!ObjectMirror methodsFor: 'testing' stamp: 'KenD 2/27/2021 09:11:20'!
+eflectsMethodDictionary 
+
+	^false! !
+
+!ObjectMirror methodsFor: 'testing' stamp: 'KenD 2/27/2021 09:07:22'!
+largeSize 
+
+	^handle largeSize! !
+
+!ObjectMirror methodsFor: 'testing' stamp: 'KenD 2/25/2021 14:27:00'!
+ontains: anAddress 
+
+	^anAddress >= handle oid and: [anAddress < (handle oid + self size)]! !
 
 !BehaviorMirror methodsFor: 'nativizing' stamp: 'KenD 2/25/2021 13:46:39'!
 compiledMethodFor: aSymbol 
@@ -3182,6 +3524,64 @@ valued: anInstruction
 !OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:17'!
 valued: anInstruction in: containingInstruction 
 	^self new value: anInstruction; instruction: containingInstruction! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:13'!
+bytesOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self bytesOf: oid count: size! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:30'!
+bytesOf: oid count: size 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:42'!
+runtime 
+
+	^ runtime! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:50'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:59'!
+sizeOf: oid 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:08'!
+storage 
+
+	^ storage! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:17'!
+storage: anObject 
+
+	storage := anObject! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:31'!
+stringOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self stringOf: oid count: size - 1! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:42'!
+stringOf: oid count: size 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:55'!
+symbolOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self stringOf: oid count: size! !
+
+!ObjectFormat class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 09:23:44'!
+on: storage 
+
+	^self new storage: storage! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
@@ -5178,6 +5578,8 @@ value
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
+ObjectHeaderMasks initialize!
+ObjectHeaderOffsets initialize!
 OperandTypeFlags initialize!
 Registers initialize!
 SExpressionTypes initialize!
