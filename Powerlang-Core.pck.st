@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 1:25:16 pm'!
+'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 4:12:10 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 16!
+!provides: 'Powerlang-Core' 1 18!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -95,6 +95,16 @@ PSharedPool subclass: #SExpressionTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core'!
 SExpressionTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #SendSiteFlags category: 'Powerlang-Core'!
+PSharedPool subclass: #SendSiteFlags
+	instanceVariableNames: ''
+	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core'!
+SendSiteFlags class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core'!
@@ -517,6 +527,16 @@ SExpression subclass: #SLiteralVar
 SLiteralVar class
 	instanceVariableNames: ''!
 
+!classDefinition: #SExpressionInterpreter category: 'Powerlang-Core'!
+Object subclass: #SExpressionInterpreter
+	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'SExpressionInterpreter class' category: 'Powerlang-Core'!
+SExpressionInterpreter class
+	instanceVariableNames: ''!
+
 !classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
 Object subclass: #SParseTreeVisitor
 	instanceVariableNames: ''
@@ -655,6 +675,16 @@ Object subclass: #ScriptScope
 	category: 'Powerlang-Core'!
 !classDefinition: 'ScriptScope class' category: 'Powerlang-Core'!
 ScriptScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #SendSite category: 'Powerlang-Core'!
+Object subclass: #SendSite
+	instanceVariableNames: 'instructions selector cache tally format'
+	classVariableNames: ''
+	poolDictionaries: 'SendSiteFlags'
+	category: 'Powerlang-Core'!
+!classDefinition: 'SendSite class' category: 'Powerlang-Core'!
+SendSite class
 	instanceVariableNames: ''!
 
 
@@ -912,6 +942,29 @@ binding
 
 	^binding! !
 
+!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 2/27/2021 16:04:01'!
+printOn: aStream 
+	aStream
+		nextPutAll: self class name withArticle;
+		cr;
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		cr.
+	aStream
+		nextPutAll: 'rcvr -> ';
+		print: receiver _gate handle;
+		cr.
+	arguments
+		withIndexDo: [ :a :i | 
+			aStream
+				nextPutAll: 'arg ';
+				print: i;
+				nextPutAll: ' -> ';
+				print: a _gate;
+				cr ].
+	aStream nextPutAll: method source! !
+
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
 comment 
 
@@ -1120,6 +1173,15 @@ initialize
 	BraceId := 7.
 	AssignmentId := 8.
 	ReturnId := 9! !
+
+!SendSiteFlags class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 13:29:35'!
+initialize 
+	"Bitflags"
+	IsStaticSend    := 16r01.
+	IsSuperSend    := 16r02.
+	IsPolymorphic := 16r04.
+	HasBeenReset := 16r08
+		! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
@@ -5282,6 +5344,310 @@ index: anInteger
 
 	index := anInteger! !
 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
+isitReturn: anSReturn 
+
+	returnValue := anSReturn expression acceptVisitor: self.
+	returned := true.
+	^returnValue! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:17'!
+visitArgument: anSIdentifier 
+
+	^arguments at: anSIdentifier binding index! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:32'!
+visitAssignment: anSAssignment 
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:48'!
+visitBlock: anSBlock 
+	| closure handle |
+	closure := anSBlock isInlined
+		           ifTrue: [ SCompiledBlock new newClosure home: self ]
+		           ifFalse: [ self captureClosure: anSBlock ].
+	blockAstcodes at: closure block put: anSBlock.
+	self halt.
+	"	handle := LocalHandle on: closure within: localRuntime."
+	^ handle mirage! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:24'!
+visitIdentifier: anSIdentifier 
+
+	^anSIdentifier binding valueWithin: self! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:37'!
+visitMessage: anSMessage 
+	| msgReceiver msgArguments selector message |
+	msgReceiver := anSMessage receiver acceptVisitor: self.
+	msgArguments := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := anSMessage selector.
+	message := MessageSend
+		receiver: msgReceiver
+		selector: selector
+		arguments: msgArguments.
+	 (self isSpecial: selector)
+		ifTrue: [ ^self dispatchSpecial: message ].
+	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
+	^self dispatch: message to: msgReceiver! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:10'!
+visitMethod: anSMethod 
+	| primitive value |
+	primitive := anSMethod primitive.
+	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
+	environment := Array new: method environmentCount.
+	value := self visitScript: anSMethod.
+	^returned ifTrue: [ value ] ifFalse: [ receiver ]! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:57'!
+visitScript: anSScript 
+	| result |
+	anSScript statements do: [:node | 
+		result := node acceptVisitor: self.
+		returned ifTrue: [^returnValue]
+	].
+	^result! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:11:12'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:00:53'!
+instVarAt: anInteger 
+
+	^receiver _gate slotAt: anInteger! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:18'!
+instVarAt: index put: aValue 
+
+	^ receiver _gate handle slotAt: index put: aValue _gate handle oid! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:43'!
+method 
+
+	^method! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:03'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod.
+	temporaries := Array new: aCompiledMethod tempCount! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:25'!
+mirageOnBoolean: aBoolean 
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:37'!
+mirageOnInteger: anInteger 
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := runtime integerHandle: anInteger.
+	^ handle mirage! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:52'!
+mirageOnObject: anObject 
+
+	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
+	self assert: false! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:16'!
+parent 
+
+	^parent! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:26'!
+parent: anInterpreter 
+
+	parent := anInterpreter! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:16'!
+receiver 
+
+	^receiver! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:26'!
+receiver: anObject 
+
+	receiver := anObject.
+	returnValue := anObject! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:11'!
+temporaryAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:46'!
+temporaryAt: index in: anInteger put: aValue 
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:56:58'!
+argumentAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:13'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:30'!
+captureClosure: anSBlock 
+	| closure s i type env arg |
+	closure := anSBlock compiledCode newClosure home: self.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:12'!
+dispatch: message to: msgReceiver 
+
+	^ self subclassResponsibility! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:23'!
+dispatchSpecial: message 
+
+		^self subclassResponsibility ! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:36'!
+environmentFor: anInteger 
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:57'!
+evaluate: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	^ self visitMethod: anSCompiledMethod sexpressions! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:13'!
+evaluateClosure: aPClosure 
+
+	^self evaluateClosure: aPClosure withArgs: {}! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:25'!
+evaluateClosure: aPClosure with: anObject 
+
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:37'!
+evaluateClosure: aPClosure with: anObject with: anotherObject 
+
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:58'!
+evaluateClosure: aPClosure withArgs: anArray 
+	| oldArgs oldTemps oldEnv block sblock result |
+	block := aPClosure block.
+	sblock := blockAstcodes at: block.
+	sblock isInlined ifTrue: [
+			 anArray with: sblock inlinedArgs do: [:arg :i | temporaries at: i put: arg].
+			^ self visitScript: sblock ].
+	oldArgs := arguments.
+	oldTemps := temporaries.
+	oldEnv := environment.
+	arguments := anArray.
+	temporaries := Array new: block tempCount.
+	environment := aPClosure.
+	result := self visitScript: sblock.
+	environment := oldEnv.
+	temporaries := oldTemps.
+	arguments := oldArgs.
+	^ result! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:04:48'!
+subjectOn: anObjectHandle 
+
+	^ anObjectHandle maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:19'!
+subjectOnBoolean: aBoolean in: aRuntime 
+	| t f |
+	^ aBoolean
+		ifTrue: [ t := aRuntime true. 
+			(t oid = true) ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] 
+		]
+		ifFalse: [ f := aRuntime false. 
+			(f oid = false) ifTrue: [ f mirage ] ifFalse: [ f maneuverer]
+		] ! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:42'!
+subjectOnObject: anObjectHandle 
+
+	^ anObjectHandle maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:54'!
+subjectOnObjectOk: anObjectHandle 
+
+	^ self maneuvererOn: anObjectHandle! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:32'!
+ubjectOnInteger: anInteger in: aRuntime 
+
+	^ (aRuntime integerHandle: anInteger) maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:00:30'!
+initialize 
+
+	returned := false.
+	blockAstcodes := IdentityDictionary new! !
+
+!SExpressionInterpreter methodsFor: 'testing' stamp: 'KenD 2/27/2021 16:01:33'!
+isSpecial: aSelectorMirror 
+
+	^ self subclassResponsibility ! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:13'!
+new 
+
+	^self basicNew initialize! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:31'!
+on: receiverMirror with: arguments for: method 
+
+	^self new
+		receiver: receiverMirror;
+		arguments: arguments;
+		method: method! !
+
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
 
@@ -6580,6 +6946,50 @@ new
 on: aScriptNode 
 
 	^self new script: aScriptNode! !
+
+!SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:32:12'!
+instructions: aByteArray 
+
+	instructions := aByteArray! !
+
+!SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:32:41'!
+invoke: anSCompiledMethod using: invokeInstructions 
+
+	instructions := invokeInstructions.
+	selector := anSCompiledMethod selector.
+	cache := anSCompiledMethod! !
+
+!SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:33:21'!
+lookup: aSymbol using: lookupInstructions 
+
+	instructions := lookupInstructions.
+	selector := aSymbol! !
+
+!SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:33:55'!
+selector 
+
+	^selector! !
+
+!SendSite methodsFor: 'converting' stamp: 'KenD 2/27/2021 13:31:44'!
+beSuperSend 
+
+	format := format bitOr: IsSuperSend! !
+
+!SendSite methodsFor: 'initialization' stamp: 'KenD 2/27/2021 13:32:00'!
+initialize 
+
+	tally := 0.
+	format := 0! !
+
+!SendSite methodsFor: 'testing' stamp: 'KenD 2/27/2021 13:33:01'!
+isSuperSend 
+
+	^(format bitAnd: IsSuperSend) == IsSuperSend! !
+
+!SendSite methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 13:34:18'!
+selector: aSymbol 
+
+	selector := aSymbol! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
@@ -6589,4 +6999,5 @@ OperandTypeFlags initialize!
 Prefixes initialize!
 Registers initialize!
 SExpressionTypes initialize!
+SendSiteFlags initialize!
 Assembler64 initialize!
