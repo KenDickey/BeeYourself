@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 4:12:10 pm'!
+'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 5:02:04 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 18!
+!provides: 'Powerlang-Core' 1 19!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -297,6 +297,16 @@ Object subclass: #ISAOperandType
 ISAOperandType class
 	instanceVariableNames: ''!
 
+!classDefinition: #ImageSegmentWriter category: 'Powerlang-Core'!
+Object subclass: #ImageSegmentWriter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ImageSegmentWriter class' category: 'Powerlang-Core'!
+ImageSegmentWriter class
+	instanceVariableNames: ''!
+
 !classDefinition: #InstructionPrefix category: 'Powerlang-Core'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
@@ -535,6 +545,16 @@ Object subclass: #SExpressionInterpreter
 	category: 'Powerlang-Core'!
 !classDefinition: 'SExpressionInterpreter class' category: 'Powerlang-Core'!
 SExpressionInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionNativizer category: 'Powerlang-Core'!
+Object subclass: #SExpressionNativizer
+	instanceVariableNames: 'environment assembler method remainingBlocks safepointCheck mainCode stackCount fallbacks activeScript'
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'SExpressionNativizer class' category: 'Powerlang-Core'!
+SExpressionNativizer class
 	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
@@ -5647,6 +5667,868 @@ on: receiverMirror with: arguments for: method
 		receiver: receiverMirror;
 		arguments: arguments;
 		method: method! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:28:00'!
+addFallback: aBlock 
+
+	fallbacks add: aBlock! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:28:12'!
+argumentAt: index in: envIndex 
+
+	envIndex ifNil: [ ^ self argumentInStackAt: index ].
+	envIndex < 0
+		ifTrue: [ self argumentInlinedAt: index ]
+		ifFalse: [ self argumentInEnvironmentAt: index ]! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:28:31'!
+argumentCount 
+
+	^activeScript argumentCount! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:29:31'!
+argumentInlinedAt: index 
+
+	self temporaryInStackAt: index! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:39:49'!
+environment: aNativizationEnvironment 
+
+	environment := aNativizationEnvironment.
+	assembler wordSize: environment wordSize! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:47:00'!
+method 
+
+	^method! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:47:09'!
+methodLiteralAt: anInteger 
+
+	^ method at: anInteger! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:47:20'!
+methodLiteralFrom: anInteger 
+
+	^ method at: anInteger! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:47:33'!
+nativeCode 
+
+	^mainCode! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:54:55'!
+temporaryAt: index in: envIndex 
+
+	envIndex 
+		ifNil: [ self temporaryInStackAt: index ]
+		ifNotNil: [ self temporaryInEnvironment: envIndex at: index ]! !
+
+!SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:55:35'!
+temporaryAt: index in: envIndex put: dummy 
+
+	envIndex 
+		ifNil: [self temporaryInStackAtPut: index ] 
+		ifNotNil: [ self temporaryInEnvironment: envIndex atPut: index]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:28:42'!
+argumentInEnvironmentAt: index 
+
+	assembler loadRwithEindex: index + SClosure instSize! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:29:04'!
+argumentInStackAt: index 
+	| args end |
+	args := self argumentCount.
+	method hasFrame ifTrue: [ 
+		end := 3 + args.
+	assembler loadRwithFPindex: end - index ] ifFalse: [ 
+		end := 2 + args.
+		assembler  loadRwithSPindex: end - index
+	 ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:29:42'!
+associationValueAt: anInteger 
+	| literal |
+	literal := self methodLiteralAt: anInteger.
+	assembler
+		loadRwithLiteral: literal;
+		loadRwithRindex: 2! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:30:05'!
+associationValueAt: anInteger put: dummy 
+	| literal |
+	literal := self methodLiteralAt: anInteger.
+	assembler
+		loadAwithLiteral: literal;
+		storeRinAindex: 2;
+		pushA.
+	self emitWriteBarrier ! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:30:25'!
+captureClosure: anSBlock 
+	| slot variables |
+	self instantiateClosure: anSBlock.
+	slot := 3.
+	variables := anSBlock capturedVariables readStream.
+	[ variables atEnd ]
+		whileFalse: [ self captureVariable: variables index: slot.
+			slot := slot + 1 ].
+	anSBlock capturesHome
+		ifTrue: [ self emitSend: #saveHomeFrame ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:32:04'!
+captureVariable: stream index: anInteger 
+	| type pos |
+	type := stream next.
+	type = nil ifTrue: [^self].
+	type = Self ifTrue: [^assembler storeSinRindex: anInteger].
+	type = Environment ifTrue: [^assembler storeEinRindex: anInteger].
+	pos := stream next.
+	type = LocalArgument ifTrue: [
+		assembler
+			loadTwithFPindex: pos + 2;
+			storeTinRindex: anInteger].
+	type = EnvironmentValue
+		ifTrue: [assembler loadTwithEindex: pos; storeTinRindex: anInteger]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:32:52'!
+constPoolValueAt: anInteger 
+	| literal |
+	literal := self methodLiteralAt: anInteger.
+	assembler loadRwithLiteral: literal! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:33:07'!
+dropTos 
+
+	assembler dropTos: 1.
+	^stackCount := stackCount - 1! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:33:33'!
+emitBlockPrologue: anSBlock 
+
+	assembler saveCallerFrame.
+	self
+		loadBlockSelf: anSBlock compiledCode;
+		loadBlockNativeCode;
+		pushNativeCode;
+		pushEnvironments;
+		initializeTemporaries: anSBlock tempCount! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:33:49'!
+emitCallbackEpilogue 
+
+	assembler restoreCallerFrame.
+	environment abi
+		restoreContext: method descriptor with: assembler! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:34:59'!
+emitCallbackPrologue 
+	| retaddr |
+	environment abi emitEntrypoint: method descriptor with: assembler.
+	retaddr := 0.
+	assembler
+		pushImmediate: retaddr;
+		xorFPwithFP;
+		loadLongMwithIPoffset: 0 
+				- assembler currentAddress 
+				+ ImageSegmentWriter behaviorOffset;
+		loadMwithMindex: SCallbackMethod behaviorNativeCodeSlot;
+		loadGwithLiteral: environment globals;
+		loadNilWithLiteral: nil;
+		loadTrueWithLiteral: true;
+		loadFalseWithLiteral: false;
+		loadEwithNil;
+		loadRwithMindex: (NativeCode indexOfSlot: 'compiledCode');
+		loadRwithRindex: (SCallbackMethod indexOfSlot: 'receiver')! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:35:14'!
+emitEpilogue 
+
+	method hasBlocks
+		ifTrue: [ assembler restoreCallerEnvironment ].
+	method isCallback
+		ifTrue: [ ^ self emitCallbackEpilogue ].
+	method isFrameless
+		ifFalse: [ assembler restoreCallerFrame ].
+	assembler
+		restoreCallerSelf;
+		restoreCallerM;
+		return! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:35:31'!
+emitFFICall 
+
+	self loadObject: method.
+	assembler pushR; pushS.
+	self emitSend: #_ffiCall:.
+	assembler
+		restoreCallerFrame;
+		restoreCallerSelf;
+		restoreCallerM;
+		return! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:35:43'!
+emitFallbacks 
+
+	fallbacks do: [:block | block value]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:35:55'!
+emitFramedMethodPrologue 
+
+	assembler
+		saveCallerFrame;
+		pushR;
+		initializeS.
+	method isCalloutMethod
+		ifTrue: [ self emitFFICall ]
+		ifFalse: [ self
+				pushNativeCode;
+				initializeMethodEnvironment;
+				initializeMethodTemporaries;
+				emitSafepointCheck ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:36:12'!
+emitFramelessMethodPrologue 
+
+	method capturesSelf
+		ifTrue: [ assembler initializeS ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:36:25'!
+emitMethodPrologue 
+
+	method isCallback
+		ifTrue: [ ^self
+				emitCallbackPrologue;
+				emitFramedMethodPrologue ].
+	method isFrameless
+		ifTrue: [ self emitFramelessMethodPrologue ]
+		ifFalse: [ self emitFramedMethodPrologue ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:37:14'!
+emitSafepointCheck 
+	"?? NO-OP or notYetImplemented?? "
+	
+! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:37:25'!
+emitSend: selector 
+ 	| linker |
+	linker := environment messageLinker.
+	method isDebuggable
+		ifTrue: [ linker emitSendDebuggable: selector using: assembler ]
+		ifFalse: [ linker emitSend: selector using: assembler ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:39:07'!
+emitSend: selector super: aBoolean
+	| linker |
+	linker _ environment messageLinker.
+	method isDebuggable
+		ifTrue: [
+			aBoolean
+				ifTrue: [
+					linker
+						emitSendSuperDebuggable: selector
+						from: method classBinding
+						using: assembler ]
+				ifFalse: [
+					linker
+						emitSendDebuggable: selector
+						using: assembler ]]
+		ifFalse: [
+			aBoolean
+				ifTrue: [
+					linker
+						emitSendSuper: selector
+						from: method classBinding
+						using: assembler ]
+				ifFalse: [
+					linker
+						emitSend: selector
+						using: assembler ]].! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:39:19'!
+emitWriteBarrier 
+
+	assembler
+		loadAwithGlobal: #WriteBarrier;
+		callIndirectA;
+		discardArguments: 1! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:40:05'!
+falseLiteral 
+
+	assembler loadRwithFalse! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:40:42'!
+initializeMethodEnvironment 
+	method hasBlocks
+		ifFalse: [ ^ self ].
+	assembler pushE.
+	method hasEnvironment
+		ifTrue: [ assembler
+				pushSmallInteger: method environmentCount;
+				loadRwithM.
+			self emitSend: #newEnvironment:.
+			assembler
+				loadEwithR;
+				pushE ]
+		ifFalse: [ assembler pushNil ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:41:43'!
+instanceVarAt: index 
+
+	assembler loadRwithSindex: index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:42:28'!
+instanceVarAt: index put: value 
+
+	assembler storeRinSindex: index; pushS.
+	self emitWriteBarrier! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:42:46'!
+instantiateClosure: anSBlock 
+
+	self loadLiteralAt: anSBlock index; emitSend: #newClosure! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:43:00'!
+loadAwithArgument: index in: envIndex 
+
+	envIndex
+		ifNil: [ ^ self loadAwithArgumentInStackAt: index ]. envIndex < 0
+		ifTrue: [ self loadAwithArgumentInlinedAt: index ]
+		ifFalse: [ self loadAwithArgumentInEnvironment: envIndex at: index ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:43:14'!
+loadAwithArgumentInEnvironment: envIndex at: index 
+	| offset |
+	envIndex = 0
+		ifTrue: [ assembler loadAwithEindex: index + SClosure instSize ]
+		ifFalse: [ offset := activeScript offsetOfEnvironment: envIndex.
+			assembler
+				loadAwithEindex: envIndex + SClosure instSize;
+				loadAwithAindex: index + offset ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:43:47'!
+loadAwithArgumentInStackAt: index 
+	| end |
+	end := 3 + self argumentCount.
+	assembler loadAwithFPindex: end - index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:43:57'!
+loadAwithArgumentInlinedAt: index 
+
+	self loadAwithTemporaryInStackAt: index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:44:18'!
+loadAwithStack: anInteger 
+
+	assembler loadAwithFPindex: 1 - anInteger! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:44:29'!
+loadAwithTemporary: index in: envIndex 
+
+	envIndex
+		ifNil: [ self loadAwithTemporaryInStackAt: index ]
+		ifNotNil: [ 
+		self loadAwithTemporaryInEnvironment: envIndex at: index ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:45:02'!
+loadAwithTemporaryInEnvironment: envIndex at: index 
+	| offset |
+	envIndex = 0
+		ifTrue: [offset := activeScript offsetOfCurrentEnvironment. 
+			     assembler loadAwithEindex: index + offset ]
+		ifFalse: [ offset := activeScript offsetOfEnvironment: envIndex.
+			assembler
+				loadAwithEindex: envIndex + SClosure instSize;
+				loadAwithAindex: index + offset ]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:45:23'!
+loadAwithTemporaryInStackAt: index 
+	| start |
+	start := self pushesEnvironments
+			         ifTrue: [ -3 ]
+			         ifFalse: [ -1 ].
+	^ assembler loadAwithFPindex: start - index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:45:37'!
+loadBlockNativeCode 
+	| block nativeCode |
+	block := SClosure indexOfSlot: 'block'.
+	nativeCode := SCompiledBlock indexOfSlot: 'nativeCode'.
+	assembler
+		loadMwithRindex: block;
+		loadMwithMindex: nativeCode! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:45:50'!
+loadBlockSelf: aCompiledBlock 
+	| offset | 
+	aCompiledBlock capturesSelf
+		ifTrue: [ offset := aCompiledBlock capturesHome
+				ifTrue: [ 1 ]
+				ifFalse: [ 0 ].
+			assembler loadSwithRindex: SClosure instSize + 1 + offset ]
+		ifFalse: [ assembler loadSwithNil ].
+	assembler pushS! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:46:05'!
+loadLiteralAt: anInteger 
+	| literal |
+	literal := self methodLiteralAt: anInteger.
+	assembler loadRwithLiteral: literal! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:46:17'!
+loadObject: anObject 
+
+	assembler 	 loadRwithLiteral:  anObject! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:46:28'!
+loadRwithStack: anInteger 
+
+	assembler loadRwithFPindex: 1 - anInteger! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:46:37'!
+loadTwithStack: anInteger 
+
+	assembler loadTwithFPindex: 1 - anInteger! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:47:50'!
+nativize 
+
+	method sexpressions acceptVisitor: self.
+	[remainingBlocks isEmpty]
+		whileFalse: [self nativizeBlock: remainingBlocks removeFirst]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:48:03'!
+nativize: aCompiledMethod 
+
+	self
+		resetFor: aCompiledMethod;
+		nativize.
+	^ aCompiledMethod nativeCode: mainCode! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:48:19'!
+nativizeBlock: anSBlock 
+	| statements |
+	self resetForBlock: anSBlock.
+	activeScript := anSBlock.
+	self emitBlockPrologue: anSBlock.
+	statements := anSBlock statements.
+	statements do: [:s | s acceptVisitor: self].
+	self saveContextSwitchPoint.
+	(statements isEmpty orNot: [statements last isReturn])
+		ifTrue: [self emitEpilogue].
+	self emitFallbacks.
+	anSBlock compiledCode nativeCode: assembler applyFixups nativeCode! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:48:39'!
+nilLiteral 
+
+	assembler loadRwithNil! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:48:53'!
+popR 
+
+	assembler popR.
+	stackCount := stackCount - 1! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:49:03'!
+pushEnvironments 
+
+	assembler pushE; loadEwithR; pushE! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:49:14'!
+pushNativeCode
+
+	assembler pushM! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:49:24'!
+pushR 
+
+	assembler pushR.
+	^stackCount := stackCount + 1! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:52:35'!
+receiver 
+
+	assembler loadRwithS! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:53:45'!
+saveContextSwitchPoint 
+
+	method isDebuggable
+		ifFalse: [ ^ self ].
+	assembler
+		pushA;
+		pushT;
+		pushR.
+	environment messageLinker emitSend: #signalStep using: assembler.
+	assembler
+		popR;
+		popT;
+		popA! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:54:04'!
+saveMethodCode 
+
+	mainCode := assembler
+		            applyFixups;
+		            nativeCode! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:54:14'!
+sendMustBeBoolean 
+
+	self emitSend: #mustBeBoolean! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:54:23'!
+storeRInStack: index 
+
+	assembler storeRinFPindex: 1 - index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:55:59'!
+temporaryInEnvironment: envIndex at: index 
+	| offset |
+	envIndex = 0
+		ifTrue: [offset := activeScript offsetOfCurrentEnvironment. 
+				assembler loadRwithEindex: index + offset ]
+		ifFalse: [ 
+			offset := activeScript offsetOfEnvironment: envIndex.
+			assembler
+				loadRwithEindex: envIndex + SClosure instSize ;
+				loadRwithRindex: index + offset]! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:56:28'!
+temporaryInEnvironment: envIndex atPut: index 
+	| offset |
+	envIndex = 0
+		ifTrue: [ offset := activeScript offsetOfCurrentEnvironment.
+			assembler
+				storeRinEindex: index + offset;
+				pushE ]
+		ifFalse: [ offset := activeScript offsetOfEnvironment: envIndex.
+			assembler
+				loadTwithEindex: envIndex + SClosure instSize ;
+				storeRinTindex: index + offset;
+				pushT ].
+	self emitWriteBarrier! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:56:52'!
+temporaryInStackAt: index 
+	| start |
+	start := self pushesEnvironments
+			         ifTrue: [ -3 ]
+			         ifFalse: [ -1 ].
+	^ assembler loadRwithFPindex: start - index .! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:57:36'!
+temporaryInStackAtPut: index 
+	| start |
+	start := (self pushesEnvironments)
+		         ifTrue: [ -3 ]
+		         ifFalse: [ -1 ].
+	assembler storeRinFPindex: start - index! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:57:46'!
+trueLiteral 
+
+	assembler loadRwithTrue! !
+
+!SExpressionNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 16:57:57'!
+visitAssignment: anSAssignment 
+
+	anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees do: [ :a | 
+		a binding assign: nil within: self ]! !
+
+!SExpressionNativizer methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:40:21'!
+initialize 
+
+	super initialize.
+	assembler := TemplateAssembler64 new! !
+
+!SExpressionNativizer methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:41:11'!
+initializeMethodTemporaries
+
+	self initializeTemporaries: method tempCount! !
+
+!SExpressionNativizer methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:41:24'!
+initializeTemporaries: count 
+
+	count = 0
+		ifTrue: [ ^ self ].
+	count <= 6
+		ifTrue: [ count timesRepeat: [ assembler pushNil ] ]
+		ifFalse: [ assembler
+				loop: [ assembler pushNil ] times: count ]! !
+
+!SExpressionNativizer methodsFor: 'services' stamp: 'KenD 2/27/2021 16:53:13'!
+resetFor: aCompiledMethod 
+	| fixed |
+	method := aCompiledMethod.
+	fallbacks := OrderedCollection new.
+	remainingBlocks := OrderedCollection new.
+	fixed := aCompiledMethod hasBlocks ifTrue: [4] ifFalse: [2].
+	stackCount := aCompiledMethod tempCount + fixed.
+	assembler reset! !
+
+!SExpressionNativizer methodsFor: 'services' stamp: 'KenD 2/27/2021 16:53:27'!
+resetForBlock: anSBlock 
+
+	fallbacks := OrderedCollection new.
+	stackCount := anSBlock tempCount + 4.
+	assembler reset! !
+
+!SExpressionNativizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 16:52:21'!
+pushesEnvironments
+
+	^method hasBlocks! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:58:27'!
+visitBlock: anSBlock 
+	anSBlock isInlined
+		ifTrue: [ ^ anSBlock statements do: [ :s | s acceptVisitor: self ] ].
+	remainingBlocks add: anSBlock.
+	self captureClosure: anSBlock ! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:59:12'!
+visitCascade: anSCascade 
+	| receiver index |
+	receiver := anSCascade receiver.
+	receiver acceptVisitor: self.
+	index := self pushR.
+	anSCascade messages
+		do: [ :m | 
+			self 
+				visitCascadeMessage: m 
+				receiver: index 
+				super: receiver isSuper ].
+	self dropTos! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:59:28'!
+visitCascadeMessage: anSCascadeMessage receiver: index super: aBoolean 
+	| arguments |
+	arguments := anSCascadeMessage arguments.
+	arguments
+		do: [ :node | 
+			node acceptVisitor: self.
+			self pushR ].
+	self
+		loadRwithStack: index;
+		emitSend: anSCascadeMessage selector super: aBoolean.
+	stackCount := stackCount - arguments size! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:59:43'!
+visitIdentifier: anSIdentifier 
+
+	anSIdentifier binding valueWithin: self! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:59:55'!
+visitInlinedMessage: anSMessage 
+	| nativizer |
+	nativizer := InlinedMessageNativizer new
+		message: anSMessage;
+		assembler: assembler;
+		nativizer: self.
+	nativizer inlineMessage! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 17:00:07'!
+visitLiteral: anSLiteral 
+	| value |
+	value := anSLiteral value.
+	value isSmallInteger
+		ifTrue: [ assembler loadRwithSmallInteger: value ]
+		ifFalse: [ self loadLiteralAt: anSLiteral index ]! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 17:00:23'!
+visitMessage: anSMessage 
+	| arguments index |
+	anSMessage isInlined
+		ifTrue: [ ^ self visitInlinedMessage: anSMessage ].
+	anSMessage isOptimized
+		ifTrue: [ ^ self visitOptimizedMessage: anSMessage ].
+	anSMessage receiver acceptVisitor: self.
+	arguments := anSMessage arguments.
+	arguments isEmpty
+		ifFalse: [ index := self pushR.
+			arguments
+				do: [ :node | 
+					node acceptVisitor: self.
+					self pushR ].
+			self loadRwithStack: index ].
+	self emitSend: anSMessage selector super: anSMessage receiver isSuper.
+	stackCount := stackCount - arguments size.
+	arguments isEmpty
+		ifFalse: [ self dropTos ]! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 17:00:38'!
+visitMethod: anSMethod 
+	| statements returned |
+	activeScript := anSMethod.
+	self emitMethodPrologue.
+	statements := anSMethod statements.
+	statements do: [ :s | s acceptVisitor: self ].
+	(statements notEmpty andNot: [ statements last isReturn ])
+		ifTrue: [ assembler loadRwithS ].
+	returned := statements notEmpty and: [ 	
+	statements last isReturn].
+	returned ifFalse: [ self emitEpilogue ].
+	self
+		emitFallbacks;
+		saveMethodCode! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 17:00:53'!
+visitOptimizedMessage: anSMessage 
+	| nativizer |
+	nativizer := BinaryMessageNativizer new
+		message: anSMessage;
+		assembler: assembler;
+		nativizer: self.
+	nativizer inlineMessage! !
+
+!SExpressionNativizer methodsFor: 'visiting' stamp: 'KenD 2/27/2021 17:01:39'!
+visitReturn: anSReturn 
+
+	anSReturn expression acceptVisitor: self.
+	anSReturn local 
+		ifTrue: [ self emitEpilogue ] 
+		ifFalse: [ assembler
+  			         pushR;
+     			        loadRwithE.
+        self emitSend: #_return: ] ! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:15:13'!
+assemblyFor: anSCompiledMethod 
+
+	^ NativizationEnvironment forTesting newExpressionNativizer nativize:
+		  anSCompiledMethod! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:15:35'!
+assemblyForBlock 
+
+	^self assemblyForSource: 'foo [1] value'! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:15:49'!
+assemblyForIfTrue 
+
+	^self assemblyForSource: 'foo x ifTrue: [1]' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:16:04'!
+assemblyForMessage 
+
+	^self assemblyForSource: 'foo self bar'! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:23:01'!
+assemblyForMessageCascade 
+
+	^self assemblyForSource: 'foo self bar; baz'! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:23:24'!
+assemblyForMethod: aCompiledMethod 
+
+	^self
+		assemblyForSource: aCompiledMethod sourceCode
+		in: aCompiledMethod classBinding value.! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:23:37'!
+assemblyForPoint_1_plus_y 
+
+	^self assemblyForSource: 'foo 1 + y' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:23:48'!
+assemblyForPoint_ret_x_eq_1 
+
+	^ self assemblyForSource: 'foo ^x = 1' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:23:59'!
+assemblyForPoint_x 
+
+	^ self assemblyForMethod: Point >> #x! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:24:12'!
+assemblyForPoint_x_eq_1 
+
+	^self assemblyForSource: 'foo x = 1' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:24:22'!
+assemblyForPoint_x_eq_eq_1 
+
+	^self assemblyForSource: 'foo x == 1' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:24:36'!
+assemblyForPoint_x_plus_1 
+
+	^self assemblyForSource: 'foo x + 1' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:24:48'!
+assemblyForPoint_x_plus_y 
+
+	^self assemblyForSource: 'foo x + y' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:25:04'!
+assemblyForSource: aString 
+
+	^self assemblyForSource: aString in: UndefinedObject! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:25:17'!
+assemblyForSource: aString in: aSpecies 
+	| method |
+	method := SCompiler compile: aString in: aSpecies.
+	^self assemblyFor: method! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:25:40'!
+assemblyForSourceOrig: aString 
+
+	^self assemblyForSourceOrig: aString in: UndefinedObject! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:26:07'!
+assemblyForSourceOrig: aString in: aSpecies 
+	| method |
+	method := SCompiler compile: aString in: aSpecies.
+	^self assemblyOrigFor: method! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:26:18'!
+assemblyForWhileTrue 
+	
+	^self assemblyForSource: 'foo [x := x + 1. true] whileTrue' in: Point! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:26:28'!
+assemblyOrigFor: aCompiledMethod 
+
+	^ NativizationEnvironment forTesting nativize:
+		  aCompiledMethod! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:26:41'!
+methodBasicAdd 
+	| source |
+	source := 'basicAdd: anObject
+	end = contents size ifTrue: [self makeRoomBehind].
+	end := end + 1.
+	contents at: end put: anObject.
+	^anObject'.
+	^self methodForSource: source in: OrderedCollection! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:26:55'!
+methodForSource: aString 
+
+	^self methodForSource: aString in: UndefinedObject! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:27:06'!
+methodForSource: aString in: aSpecies 
+	| method |
+	method := SCompiler compile: aString in: aSpecies.
+	^self nativize: method! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:27:20'!
+methodWithBlock 
+
+	^self methodForSource: 'foo [1] value'! !
+
+!SExpressionNativizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 16:27:36'!
+nativize: aCompiledMethod 
+
+	^ NativizationEnvironment forTesting newExpressionNativizer
+		nativize: aCompiledMethod! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
