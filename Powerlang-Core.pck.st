@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 27 February 2021 at 5:02:04 pm'!
+'From Cuis 5.0 [latest update: #4530] on 28 February 2021 at 1:33:22 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 19!
+!provides: 'Powerlang-Core' 1 21!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -277,6 +277,36 @@ Binding subclass: #SelfBinding
 SelfBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #Bridge category: 'Powerlang-Core'!
+Object subclass: #Bridge
+	instanceVariableNames: 'cache objects runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Bridge class' category: 'Powerlang-Core'!
+Bridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkBridge category: 'Powerlang-Core'!
+Bridge subclass: #SmalltalkBridge
+	instanceVariableNames: 'nilObj trueObj falseObj'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SmalltalkBridge class' category: 'Powerlang-Core'!
+SmalltalkBridge class
+	instanceVariableNames: 'falseObj'!
+
+!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core'!
+SmalltalkBridge subclass: #BootstrappedPstBridge
+	instanceVariableNames: 'bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core'!
+BootstrappedPstBridge class
+	instanceVariableNames: ''!
+
 !classDefinition: #ISAOperand category: 'Powerlang-Core'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
@@ -425,6 +455,16 @@ Object subclass: #ObjectFormat
 	category: 'Powerlang-Core'!
 !classDefinition: 'ObjectFormat class' category: 'Powerlang-Core'!
 ObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #BootstrapObjectFormat category: 'Powerlang-Core'!
+ObjectFormat subclass: #BootstrapObjectFormat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'BootstrapObjectFormat class' category: 'Powerlang-Core'!
+BootstrapObjectFormat class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectMap category: 'Powerlang-Core'!
@@ -697,6 +737,16 @@ Object subclass: #ScriptScope
 ScriptScope class
 	instanceVariableNames: ''!
 
+!classDefinition: #BlockScope category: 'Powerlang-Core'!
+ScriptScope subclass: #BlockScope
+	instanceVariableNames: 'environments captured'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'BlockScope class' category: 'Powerlang-Core'!
+BlockScope class
+	instanceVariableNames: ''!
+
 !classDefinition: #SendSite category: 'Powerlang-Core'!
 Object subclass: #SendSite
 	instanceVariableNames: 'instructions selector cache tally format'
@@ -705,6 +755,46 @@ Object subclass: #SendSite
 	category: 'Powerlang-Core'!
 !classDefinition: 'SendSite class' category: 'Powerlang-Core'!
 SendSite class
+	instanceVariableNames: ''!
+
+!classDefinition: #Storage category: 'Powerlang-Core'!
+Object subclass: #Storage
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Storage class' category: 'Powerlang-Core'!
+Storage class
+	instanceVariableNames: ''!
+
+!classDefinition: #BootstrapStorage category: 'Powerlang-Core'!
+Storage subclass: #BootstrapStorage
+	instanceVariableNames: 'bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'BootstrapStorage class' category: 'Powerlang-Core'!
+BootstrapStorage class
+	instanceVariableNames: ''!
+
+!classDefinition: #ByteArrayAdapter category: 'Powerlang-Core'!
+Storage subclass: #ByteArrayAdapter
+	instanceVariableNames: 'bytes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ByteArrayAdapter class' category: 'Powerlang-Core'!
+ByteArrayAdapter class
+	instanceVariableNames: ''!
+
+!classDefinition: #StorageReadError category: 'Powerlang-Core'!
+Object subclass: #StorageReadError
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
+StorageReadError class
 	instanceVariableNames: ''!
 
 
@@ -747,6 +837,13 @@ Copyright (c) 2020 Aucerna.
 
 Nota Bene: x86 specific!
 
+!Bridge commentStamp: '<historical>' prior: 0!
+I am the one in charge of 'discovering' well known objects in
+the remote image, giving my clients handles to them. For example,
+the Smalltalk bridge allows to get a handle to the remote Smalltalk
+object. Subclasses of SmalltalkBridge implement this functionality,
+as it is runtime specific.!
+
 !ISAOperand commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -780,6 +877,12 @@ the offsets of the instVars.!
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
+
+!Storage commentStamp: '<historical>' prior: 0!
+?? Subclass Error ??!
+
+!StorageReadError commentStamp: '<historical>' prior: 0!
+?? Subclass Error ??!
 
 !Assembler64 methodsFor: 'printing' stamp: 'KenD 2/24/2021 16:13:13'!
 printOn: aStream 
@@ -3707,6 +3810,126 @@ isSelf
 
 	^true! !
 
+!Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
+initialize 
+
+	cache := IdentityDictionary new.
+	objects := Dictionary new! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:03:48'!
+globalNamed: aSymbol 
+
+	^objects at: aSymbol ifAbsentPut: [self findGlobalNamed: aSymbol]! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:02'!
+globalNamed: aSymbol ifAbsent: aBlock 
+
+	^objects at: aSymbol ifAbsent: aBlock! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:46'!
+mirrorOn: address 
+
+	^(runtime handleOn: address) mirror! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:59'!
+name: object as: name 
+
+	^objects at: name put: object! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:05:12'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!Bridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:03:11'!
+new 
+
+	^self basicNew initialize! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:36'!
+setFalseObj: aFalse
+
+	falseObj := aFalse! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:15:47'!
+setNilObj: aNil
+
+	nilObj := aNil! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:14'!
+setTrueObj: aTrue
+
+	trueObj := aTrue! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:33'!
+false 
+
+	^falseObj! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:28'!
+findRootObjects 
+
+	self subclassResponsibility
+! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:44'!
+nil 
+
+	^nilObj! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:56'!
+smalltalk 
+
+	^self
+		globalNamed: #Smalltalk
+		ifAbsent: [self update; globalNamed: #Smalltalk]! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:08:09'!
+true 
+
+	^trueObj! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:08:51'!
+update 
+
+	self findRootObjects! !
+
+!SmalltalkBridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:06:56'!
+new 
+
+	^self basicNew initialize! !
+
+!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:20:12'!
+findRootObjects 
+
+	super setNilObj: (ObjectHandle 
+						on: bootstrapper nilObject 
+						within: runtime).
+	super setTrueObj: (ObjectHandle 
+						on: bootstrapper trueObject 
+						within: runtime).
+	super setFalseObj: (ObjectHandle 
+						on: bootstrapper falseObject 
+						within: runtime)! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:09:50'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:10:07'!
+findNilObject 
+
+	^ nilObj := ObjectHandle
+		on: runtime storage nilObject
+		within: runtime! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:21:20'!
+updateGlobals 
+
+	bootstrapper globals 
+		keysAndValuesDo: [:name :obj | objects at: name put: obj ]! !
+
 !ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
 isDirectMemoryReference 
 
@@ -4546,6 +4769,98 @@ symbolOf: oid
 on: storage 
 
 	^self new storage: storage! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:09'!
+arrayedSizeOf: oid 
+
+	^ oid arrayedSize! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:17'!
+arrayedSlotOf: oid at: index 
+
+	^ oid at: index! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:30'!
+arrayedSlotOf: oid at: index put: anotherOid 
+
+	^ oid at: index put: anotherOid! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:39'!
+behaviorOf: oid 
+
+	^oid behavior! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:50'!
+bytesOf: oid count: size 
+
+	^oid bytes copyFrom: 1 to: size! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:04'!
+classOf: anObjectHandle 
+	| oid behavior handle class |
+	oid := anObjectHandle oid.
+	(self isInteger: oid) ifTrue: [ 
+		class := storage classNamed: 'SmallInteger'.
+		^(anObjectHandle runtime handleOn: class) mirror asClassMirror].
+	behavior := self behaviorOf: oid.
+	handle := anObjectHandle runtime handleOn: behavior.
+	^handle mirror asBehaviorMirror instanceClass! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:55'!
+integerOf: oid 
+
+	self assert: oid isImmediate.
+	^ oid value! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:58:56'!
+labelFor: oid 
+	| c |
+	(self isInteger: oid) 
+		ifTrue: [ ^'SMI 0x', (self integerOf: oid) printString ].
+	(storage nameOf: oid) ifNotNil: [:name | ^name].
+	c := self classOf: (runtime handleOn: oid).
+	^c localName! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:59:22'!
+newInteger: anInteger 
+
+	^storage newSmallInteger: anInteger! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:13'!
+sizeOf: oid 
+
+	^oid size! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:31'!
+slotOf: oid at: index 
+
+	^ oid slotAt: index! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:42'!
+stringOf: oid count: size 
+
+	^(oid bytes copyFrom: 1 to: size) asString! !
+
+!BootstrapObjectFormat methodsFor: 'printing' stamp: 'KenD 2/28/2021 12:59:55'!
+print: oid on: aStream 
+	| label |
+	label := self labelFor: oid.
+	aStream
+		nextPut: $@;
+		nextPutAll: label;
+		nextPutAll: ' [size: 0x';
+		nextPutAll: (self sizeOf: oid) printStringHex;
+		nextPut: $]! !
+
+!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:07'!
+isBytes: oid 
+
+	^oid isBytes! !
+
+!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:40'!
+isInteger: oid 
+
+	^oid isImmediate! !
 
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
@@ -7829,6 +8144,223 @@ on: aScriptNode
 
 	^self new script: aScriptNode! !
 
+!BlockScope methodsFor: 'initialization' stamp: 'KenD 2/28/2021 12:47:45'!
+initialize 
+
+	super initialize.
+	captured := StaticBinder new.
+	environments := OrderedCollection new! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:27'!
+capturedArguments 
+
+	^captured select: [:b | b isArgument]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:41'!
+capturedEnvironmentIndexOf: aScriptNode 
+	| index |
+	aScriptNode realScript == script realScript
+		ifTrue: [ ^ nil ].
+	index := environments indexOf: aScriptNode ifAbsent: nil.
+	self assert: index notNil.
+	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:06'!
+capturesSelf 
+
+	^captureSelf! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:57'!
+environmentIndexOf: aScriptNode 
+	"
+	temporal compatibility
+	"
+	(aScriptNode isKindOf: SScriptNode)
+		ifFalse: [ self assert: false. ^nil ].
+	^self capturedEnvironmentIndexOf: aScriptNode! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:17'!
+environmentSizeUpToCapturedArguments 
+
+	^self environmentSizeUpToEnvironments + self capturedArguments size! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:29'!
+environmentSizeUpToEnvironments 
+	| receiver |
+	receiver := self capturesSelf ifTrue: [ 1 ] ifFalse: [ 0 ].
+	^receiver + environments size! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:47'!
+environments 
+	"
+	compatibility, removes the home environment
+	"
+	| first |
+	environments isEmpty ifTrue: [^#()].
+	first := environments first.
+	^first isMethod ifTrue: [environments allButFirst] ifFalse: [environments]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:21'!
+home 
+	| first |
+	environments isEmpty ifTrue: [^nil].
+	first := environments first.
+	^first isMethod ifTrue: [first]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:59'!
+localBindings 
+
+	^super localBindings , captured values! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:48:26'!
+parent 
+
+	^script parent scope! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:53:17'!
+scriptDefining: aString 
+
+	(self defines: aString) ifTrue: [^script].
+	^self parent scriptDefining: aString! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:41:40'!
+captureArgument: anArgumentBinding 
+	| name |
+	name := anArgumentBinding name.
+	^captured at: name ifAbsentPut: [| transferred copy |
+		transferred := self parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
+			ifTrue: [anArgumentBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:19'!
+captureEnvironment: aScriptNode 
+
+	script == aScriptNode ifTrue: [^self].
+	(environments identityIncludes: aScriptNode) ifTrue: [^self].
+	self realParent captureEnvironment: aScriptNode.
+	aScriptNode isMethod
+		ifTrue: [environments addFirst: aScriptNode]
+		ifFalse: [environments addLast: aScriptNode]! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:37'!
+captureLocal: aLocalBinding 
+
+	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
+	^aLocalBinding isTemporary
+		ifTrue: [self captureTemporary: aLocalBinding]
+		ifFalse: [self captureArgument: aLocalBinding]! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:52'!
+captureSelf 
+
+	captureSelf ifTrue: [^self].
+	captureSelf := true.
+	self parent captureSelf! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:43:07'!
+captureTemporary: aTemporaryBinding 
+	| name |
+	name := aTemporaryBinding name.
+	(self defines: name) ifTrue: [^aTemporaryBinding].
+	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
+		parent := self parent.
+		declaration := parent scriptDefining: name.
+		self realScope captureEnvironment: declaration realScript.
+		transferred := parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		copy isInArray ifTrue: [aTemporaryBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:44:16'!
+capturedEnvironments 
+
+	^environments! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:51:56'!
+resolve: aString 
+
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self parent resolve: aString! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:53:01'!
+resolveLocal: aString 
+
+	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^captured at: aString! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:44:37'!
+capturesHome 
+
+	^self home notNil! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:47:01'!
+hasMultipleBindingsFor: aString 
+	"
+	temporal compatibility
+	"
+	^self parent hasMultipleBindingsFor: aString! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:48:57'!
+positionCapturedArgument: anArgumentBinding 
+
+	anArgumentBinding index: self growEnvironment! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:09'!
+positionCapturedLocals 
+
+	script isInlined ifTrue: [^self].
+	envSize := self environmentSizeUpToEnvironments.
+	captured do: [:binding | 
+		binding isArgument
+			ifTrue: [self positionCapturedArgument: binding]
+			ifFalse: [self positionCapturedTemporary: binding]]! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:30'!
+positionCapturedTemporary: aTemporaryBinding 
+	| outest index declaration |
+	outest := self scriptDefining: aTemporaryBinding name.
+	index := self capturedEnvironmentIndexOf: outest realScript.
+	aTemporaryBinding environmentIndex: index.
+	declaration := outest scope resolve: aTemporaryBinding name.
+	self assert: declaration index isInteger.
+	aTemporaryBinding index: declaration index! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:50:56'!
+positionDefinedArgumentsIn: aScriptScope 
+
+	arguments do: [:binding | | index |
+		index := binding isInArray
+			ifTrue: [aScriptScope growEnvironment]
+			ifFalse: [aScriptScope growStack].
+		binding index: index]! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:51:14'!
+positionLocals 
+
+	self positionCapturedLocals.
+	super positionLocals! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:53:34'!
+transferLocal: name 
+	| binding copy |
+	(self resolveLocal: name) ifNotNil: [:b | ^b].
+	binding := self parent transferLocal: name.
+	copy := self copyLocal: binding.
+	captured at: name put: copy.
+	^copy! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:45:42'!
+copyLocal: binding 
+
+	^script isInlined ifTrue: [binding] ifFalse: [binding copy beInArray]! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:51:31'!
+realParent 
+
+	^script realParent scope! !
+
 !SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:32:12'!
 instructions: aByteArray 
 
@@ -7872,6 +8404,165 @@ isSuperSend
 selector: aSymbol 
 
 	selector := aSymbol! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:30'!
+arrayedSlotOf: base at: index put: value 
+
+	^ self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:45'!
+new: oid 
+
+	^self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:56'!
+slotOf: base at: index 
+
+	^ self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:24:06'!
+slotOf: base at: index put: value 
+
+	^self subclassResponsibility! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:26:51'!
+arrayedSlotOf: oid at: index put: anotherOid 
+	"fixme: this message should be sent to ObjectFormat"
+	^ oid at: index put: anotherOid! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:01'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:14'!
+new: oid 
+	| meta base behavior |
+	meta := oid spec.
+	self assert: meta isMeta.
+	base := meta baseClass.
+	behavior := bootstrapper instanceBehaviorOfSpec: base.
+	^ (ObjectMap new: base) behavior: behavior; atAllPut: bootstrapper nilObject! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:39'!
+new: oid sized: anInteger 
+	| meta base behavior |
+	meta := oid spec.
+	self assert: meta isMeta.
+	base := meta baseClass.
+	behavior := bootstrapper instanceBehaviorOfSpec: base.
+	^ (ObjectMap new: base size: anInteger)
+		behavior: behavior;
+		atAllPut: bootstrapper nilObject! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:09'!
+newClosure: anObjectHandle 
+	| size |
+	size := anObjectHandle target size.
+	^ bootstrapper new: #Closure sized: size! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:23'!
+slotOf: anObjectMap at: index put: value 
+
+	index <= anObjectMap size
+		ifTrue: [ anObjectMap slotAt: index put: value ]
+		ifFalse: [ anObjectMap at: index put: value ].
+	^ value! !
+
+!BootstrapStorage class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:26:24'!
+on: aSmalltalkBootstrapper 
+
+	^ self new bootstrapper: aSmalltalkBootstrapper! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:35'!
+bytes: aByteArray 
+
+	bytes := aByteArray! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:52'!
+bytesAt: base sized: size 
+
+	^ bytes copyFrom: base + 1 to: base + size! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:05'!
+slotOf: base at: index 
+
+	^ self uint64atOffset: base + (8 * (index - 1))! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:18'!
+slotOf: base at: index put: value 
+
+	^ self uint64atOffset: base + ((index - 1) * 8) put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:35'!
+stringAt: base sized: size 
+
+	^ (self bytesAt: base sized: size) asString! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:46'!
+uint16atOffset: anInteger 
+
+	^ bytes unsignedShortAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:57'!
+uint16atOffset: anInteger put: value 
+
+	^ bytes unsignedShortAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:07'!
+uint16of: base atOffset: offset 
+
+	^ self uint16atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:18'!
+uint32atOffset: anInteger 
+
+	^ bytes unsignedLongAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:29'!
+uint32atOffset: anInteger put: value 
+
+	^ bytes unsignedLongAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:40'!
+uint32of: base atOffset: offset 
+
+	^ self uint32atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:59'!
+uint64atOffset: anInteger 
+
+	^ bytes unsignedLongLongAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:10'!
+uint64atOffset: anInteger put: value 
+
+	^ bytes unsignedLongLongAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:21'!
+uint8atOffset: anInteger 
+
+	^ bytes unsignedByteAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:34'!
+uint8atOffset: anInteger put: value 
+
+	^ bytes unsignedByteAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:45'!
+uint8of: base atOffset: offset 
+
+	^ self uint8atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:33:02'!
+wordSize 
+
+	^8! !
+
+!ByteArrayAdapter class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:29:15'!
+on: aByteArray 
+
+	^self new bytes: aByteArray! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
