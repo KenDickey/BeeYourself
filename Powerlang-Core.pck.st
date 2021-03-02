@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 28 February 2021 at 1:33:22 pm'!
+'From Cuis 5.0 [latest update: #4530] on 1 March 2021 at 4:45:57 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 21!
+!provides: 'Powerlang-Core' 1 22!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -105,6 +105,16 @@ PSharedPool subclass: #SendSiteFlags
 	category: 'Powerlang-Core'!
 !classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core'!
 SendSiteFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #SpeciesFormatMasks category: 'Powerlang-Core'!
+PSharedPool subclass: #SpeciesFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: 'InstSize IsPointers'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SpeciesFormatMasks class' category: 'Powerlang-Core'!
+SpeciesFormatMasks class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core'!
@@ -235,6 +245,26 @@ Binding subclass: #AssociationBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'AssociationBinding class' category: 'Powerlang-Core'!
 AssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #GlobalBinding category: 'Powerlang-Core'!
+AssociationBinding subclass: #GlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'GlobalBinding class' category: 'Powerlang-Core'!
+GlobalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassBinding category: 'Powerlang-Core'!
+GlobalBinding subclass: #ClassBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ClassBinding class' category: 'Powerlang-Core'!
+ClassBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #LiteralBinding category: 'Powerlang-Core'!
@@ -435,6 +465,26 @@ ObjectMirror subclass: #BehaviorMirror
 	category: 'Powerlang-Core'!
 !classDefinition: 'BehaviorMirror class' category: 'Powerlang-Core'!
 BehaviorMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #SpeciesMirror category: 'Powerlang-Core'!
+ObjectMirror subclass: #SpeciesMirror
+	instanceVariableNames: ''
+	classVariableNames: 'Flags'
+	poolDictionaries: 'SpeciesFormatMasks'
+	category: 'Powerlang-Core'!
+!classDefinition: 'SpeciesMirror class' category: 'Powerlang-Core'!
+SpeciesMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassMirror category: 'Powerlang-Core'!
+SpeciesMirror subclass: #ClassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ClassMirror class' category: 'Powerlang-Core'!
+ClassMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #OOperand category: 'Powerlang-Core'!
@@ -950,6 +1000,89 @@ methodDictionary
 	slot := handle slotAt: 1.
 	^self methodDictionaryMirrorOn: slot! !
 
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:33:14'!
+allInstVarNames 
+
+	^(self withAllSuperclasses reversed 
+		gather: [:class | class instVarNames]) asArray! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:34:21'!
+allSuperclasses 
+	| superclasses |
+	superclasses := OrderedCollection new.
+	self allSuperclassesDo: [:s | superclasses add: s].
+	^superclasses! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:58'!
+superclass 
+	| name |
+	name := self getInstVarNamed: #superclass.
+	^name asSpeciesMirror! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:39:22'!
+withAllSuperclasses 
+
+	^ OrderedCollection new
+		add: self;
+		addAll: self allSuperclasses; yourself! !
+
+!SpeciesMirror methodsFor: 'iterating' stamp: 'KenD 3/1/2021 16:34:37'!
+allSuperclassesDo: aBlock 
+	| superclass |
+	superclass := self superclass.
+	superclass reflectsNil ifTrue: [^self].
+	aBlock value: superclass.
+	superclass allSuperclassesDo: aBlock	! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:55'!
+instSize 
+	"optimize: 
+	self isPointers
+		ifTrue: [	(self getInstVarNamed: #format) asLocalInteger & InstSize ]
+		ifFalse: [ 0 ]"
+
+	| vars s parents |
+	vars := self getInstVarNamed: #instanceVariables.
+	s := self superclass.
+	parents := s reflectsNil
+		ifTrue: [ 0 ]
+		ifFalse: [ s instSize ].
+	^ parents + vars slotSize! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:36:16'!
+instVarNames 
+	| instVars |
+	instVars := self getInstVarNamed: #instanceVariables.
+	instVars reflectsNil ifTrue: [^#()].
+	^instVars reflectsBytesObject
+		ifTrue: [instVars asLocalString substrings]
+		ifFalse: [instVars asLocalArray collect: #asLocalString]
+! !
+
+!SpeciesMirror methodsFor: 'printing' stamp: 'KenD 3/1/2021 16:37:49'!
+printOn: aStream 
+	| name | 
+	super printOn: aStream.
+	name := [self localName] on: Error do: ['Broken'].
+	aStream nextPutAll: '[' , name , ']'! !
+
+!SpeciesMirror methodsFor: 'testing' stamp: 'KenD 3/1/2021 16:36:42'!
+isPointers 
+	^ (self getInstVarNamed: #format) asLocalInteger 
+		anyMask: self pointersFlag! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:00'!
+name 
+	| name |
+	name := self getInstVarNamed: #name.
+	^name asStringMirror! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:21'!
+subclasses 
+	| subclasses |
+	subclasses := self getInstVarNamed: #subclasses.
+	^subclasses reflectsNil ifTrue: [Array new] ifFalse: [subclasses]! !
+
 !OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
 printOn: aStream 
 	aStream
@@ -1305,6 +1438,14 @@ initialize
 	IsPolymorphic := 16r04.
 	HasBeenReset := 16r08
 		! !
+
+!SpeciesFormatMasks class methodsFor: 'class initialization' stamp: 'KenD 3/1/2021 09:15:29'!
+initialize
+	"BitMasks should be in ObjectHeaderMasks ??"
+	"flagsMask -> 16r000000FF"
+	InstSize    := 16rFF000000.
+	IsPointers := 16r00000002 "ObjectHeaderMasks isArrayed"
+! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
@@ -3648,7 +3789,7 @@ beReferencedFrom: aScriptNode
 
 	self notYetImplemented ! !
 
-!Binding methodsFor: 'emitCode' stamp: 'KenD 2/24/2021 11:09:17'!
+!Binding methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 11:09:17'!
 encodeUsing: anAstcodeEncoder 
 
 	self assert: false! !
@@ -3678,6 +3819,45 @@ literal
 on: anAssociation 
 
 	^self new association: anAssociation! !
+
+!GlobalBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:43:12'!
+isGlobal 
+
+	^true! !
+
+!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:39:02'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithGlobal: association! !
+
+!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:42:54'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeGlobalVar: association! !
+
+!GlobalBinding class methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:37:51'!
+usesSymbols 
+
+	^true! !
+
+!GlobalBinding class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:37:20'!
+on: anAssociation 
+	| v class |
+	v := anAssociation value.
+	class := (v isSpecies or: [ v class == SlotObjectMap and: [v spec isMeta]])
+		ifTrue: [ ClassBinding ]
+		ifFalse: [ GlobalBinding ].
+	^ class new association: anAssociation! !
+
+!ClassBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:44:11'!
+isClassBinding 
+
+	^true! !
+
+!ClassBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:44:25'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeClassBinding: association! !
 
 !LiteralBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:53:29'!
 isLiteral
@@ -4624,6 +4804,72 @@ instanceClass
 			behavior reflectsNil 
 				ifTrue: [ self error: 'behavior does not have a class' ] ].
 	self error: 'could not find the class corresponding to this behavior'! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:01'!
+compiledMethodFor: selector 
+
+	^self instBehavior compiledMethodFor: selector! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
+indexOfSlot: name 
+	| instVars |
+	instVars := self allInstVarNames.
+	^instVars indexOf: name ifAbsent: 0! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:37:05'!
+localName 
+
+	^self subclassResponsibility 
+! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:16'!
+project 
+
+	^nil! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:34'!
+reflectsMetaclass 
+	| metasize |
+	metasize := 6.
+	^handle size = metasize! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:44'!
+structureType 
+
+	^#Species! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:38'!
+instBehavior 
+	| name |
+	name := self getInstVarNamed: #instanceBehavior.
+	^name asBehaviorMirror! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:05'!
+classVariables 
+	| classVariables |
+	classVariables := self getInstVarNamed: #classVariables.
+	classVariables reflectsNil ifTrue: [^Dictionary new].
+	^classVariables! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:21'!
+instanceClass 
+
+	^self! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:36'!
+localEquivalent 
+
+	^handle runtime objectModel at: self localName asSymbol! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:50'!
+localName 
+
+	^self name asLocalString! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:10'!
+structureType 
+
+	^#Class! !
 
 !OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
 asOperand 
@@ -8573,4 +8819,5 @@ Prefixes initialize!
 Registers initialize!
 SExpressionTypes initialize!
 SendSiteFlags initialize!
+SpeciesFormatMasks initialize!
 Assembler64 initialize!
