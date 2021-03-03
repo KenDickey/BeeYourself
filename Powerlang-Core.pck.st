@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 2 March 2021 at 1:39:12 pm'!
+'From Cuis 5.0 [latest update: #4530] on 3 March 2021 at 11:35:46 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 23!
+!provides: 'Powerlang-Core' 1 24!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -437,6 +437,26 @@ Object subclass: #ISAOperandType
 ISAOperandType class
 	instanceVariableNames: ''!
 
+!classDefinition: #IdentifierBinder category: 'Powerlang-Core'!
+Object subclass: #IdentifierBinder
+	instanceVariableNames: 'contents'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'IdentifierBinder class' category: 'Powerlang-Core'!
+IdentifierBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #DynamicBinder category: 'Powerlang-Core'!
+IdentifierBinder subclass: #DynamicBinder
+	instanceVariableNames: 'type'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'DynamicBinder class' category: 'Powerlang-Core'!
+DynamicBinder class
+	instanceVariableNames: ''!
+
 !classDefinition: #ImageSegmentWriter category: 'Powerlang-Core'!
 Object subclass: #ImageSegmentWriter
 	instanceVariableNames: ''
@@ -545,6 +565,36 @@ MessageLinker subclass: #CompositeMessageLinker
 	category: 'Powerlang-Core'!
 !classDefinition: 'CompositeMessageLinker class' category: 'Powerlang-Core'!
 CompositeMessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodEvaluator category: 'Powerlang-Core'!
+Object subclass: #MethodEvaluator
+	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
+	classVariableNames: 'Undermessages'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'MethodEvaluator class' category: 'Powerlang-Core'!
+MethodEvaluator class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodLookup category: 'Powerlang-Core'!
+Object subclass: #MethodLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MethodLookup class' category: 'Powerlang-Core'!
+MethodLookup class
+	instanceVariableNames: ''!
+
+!classDefinition: #EmulationLookup category: 'Powerlang-Core'!
+MethodLookup subclass: #EmulationLookup
+	instanceVariableNames: 'spec globals cache'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'EmulationLookup class' category: 'Powerlang-Core'!
+EmulationLookup class
 	instanceVariableNames: ''!
 
 !classDefinition: #Mirror category: 'Powerlang-Core'!
@@ -1167,6 +1217,11 @@ printOn: aStream
 
 	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
 
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
+
 !InstructionPrefix methodsFor: 'printing' stamp: 'KenD 2/27/2021 13:15:20'!
 printOn: aStream 
 
@@ -1182,6 +1237,25 @@ printOn: aStream
 name 
 
 	^name! !
+
+!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
+printOn: aStream 
+
+ 	self backtrace
+		do: [ :frame | 
+			frame do: [ :elem | elem printOn: aStream ]
+				   separatedBy: [ aStream nextPutAll: '. ' ].
+			aStream cr ]
+! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
+compile: anRGMethod 
+	| compiler method |
+	compiler := SCompiler namespace: globals.
+	method := compiler
+		forClass: anRGMethod parent;
+		compile: anRGMethod sourceCode.
+	^ method! !
 
 !ObjectMirror methodsFor: 'printing' stamp: 'KenD 2/27/2021 09:10:14'!
 printOn: aStream 
@@ -4667,6 +4741,102 @@ new
 
 	^super new initialize! !
 
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
+printOn: aStream indent: anInteger 
+
+	self subclassResponsibility! !
+
+!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:15'!
+contents 
+
+	^contents! !
+
+!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:25'!
+keyFor: aString 
+
+	^self subclassResponsibility! !
+
+!IdentifierBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:42:51'!
+new 
+	^super new initialize! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:41'!
+at: aString 
+	| key assoc |
+	key := self keyFor: aString.
+	key ifNil: [ ^nil ].
+	assoc := contents associationAt: key ifAbsent: [^nil].
+	^(type on: assoc) name: key! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:59'!
+at: aString ifPresent: aBlock 
+	| binding |
+	binding := self at: aString.
+	^binding notNil ifTrue: [aBlock value: binding]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:11'!
+at: aString put: anObject 
+	| key |
+	key := self keyFor: aString.
+	self assert: contents !!== Smalltalk.
+	contents at: key put: anObject! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:25'!
+contents: aDictionary 
+
+	contents := aDictionary! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:37'!
+keyFor: aString 
+
+	^type usesSymbols ifTrue: [aString existingSymbol] ifFalse: [aString]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:47:34'!
+poolNamed: aSymbol ifPresent: aBlock 
+	| pool |
+	pool := contents at: aSymbol ifAbsent: nil.
+	^pool notNil ifTrue: [aBlock evaluateWith: pool]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:02:55'!
+type: aClass 
+
+	type := aClass! !
+
+!DynamicBinder methodsFor: 'initialization' stamp: 'KenD 3/3/2021 10:46:50'!
+on: aDictionary type: aClass 
+
+	contents := aDictionary.
+	type := aClass! !
+
+!DynamicBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:02:14'!
+printOn: aStream indent: anInteger 
+	aStream
+		tab: anInteger;
+		nextPutAll: 'binder for ';
+		nextPutAll: type name;
+		nextPutAll: ': '.
+	type == GlobalBinding
+		ifTrue: [aStream nextPut: $G] "??? … ???"
+		ifFalse: [contents keys asArray printOn: aStream]! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:44:52'!
+of: type 
+
+	^self new type: type! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:05'!
+on: aPoolDictionary 
+	| type |
+	type := aPoolDictionary isConstant
+		ifTrue: [ConstantPoolBinding]
+		ifFalse: [PoolVarBinding].
+	^self new on: aPoolDictionary type: type! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:21'!
+on: aDictionary of: type 
+
+	^self new on: aDictionary type: type! !
+
 !InstructionPrefix methodsFor: 'writing' stamp: 'KenD 2/27/2021 13:16:29'!
 writeOn: anInstruction 
 
@@ -4915,6 +5085,716 @@ dispatchLinkerFor: selector
 	^candidates
 		detect: [:linker | linker canInline: selector]
 		ifNone: [self error: 'cannot dispatch ', selector storeString]! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
+argumentAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:05'!
+arguments 
+
+	^arguments! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:16'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:24'!
+associationValueAt: anInteger 
+
+	^ (method at: anInteger) value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:34'!
+associationValueAt: anInteger put: value 
+	| association |
+	association := (method at: anInteger).
+	^association value: value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:01'!
+beBlock 
+	
+	isBlock := true! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:11'!
+blockAstcodesOf: anSCompiledBlock 
+
+	^blockAstcodes at: anSCompiledBlock! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:23'!
+blockOf: anObjectMap 
+
+	^closures at: anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:36'!
+booleanFor: aBoolean 
+
+	^ aBoolean
+		ifTrue: [ system true ]
+		ifFalse: [ system false ]! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:11:10'!
+captureClosure: anSBlock with: block 
+	| closure s i type env arg |
+	closure := system newClosure: block environmentCount.
+	closures at: closure put: block.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment ].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:08'!
+closures 
+
+	^closures! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:20'!
+constPoolValueAt: anInteger 
+
+	^ method at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:13:59'!
+environment: anObjectMap 
+
+	environment := anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:14:24'!
+environmentFor: anInteger 
+"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. 
+"
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:22:34'!
+falseLiteral 
+
+	^ system false! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:06'!
+instanceVarAt: anInteger 
+
+	^ receiver slotAt: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:17'!
+instanceVarAt: index put: aValue 
+
+	^ receiver slotAt: index put: aValue! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:28'!
+integerFor: anInteger 
+
+	^ system newInteger: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:11'!
+literal: anObject 
+
+	^anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:22'!
+method 
+
+	^method! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:36'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	temporaries := Array new: anSCompiledMethod tempCount! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:48'!
+nilLiteral 
+
+	^ system nil! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:57'!
+parent 
+
+	^parent! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:05'!
+parent: anInterpreter 
+
+	parent := anInterpreter! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:29'!
+primitive: primitive 
+	| result |
+	result := self evaluatePrimitive: primitive.
+	returning ifTrue: [ ^self ].
+	system popFrame.
+	self returning: result! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:26:59'!
+receiver 
+
+	^receiver! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:10'!
+receiver: anObject 
+
+	receiver := anObject.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:24'!
+returning: anObject 
+
+	returning := true.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:15'!
+system: anEmulator 
+
+	system := anEmulator! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:27'!
+temporaryAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:40'!
+temporaryAt: index in: anInteger put: aValue 
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue
+! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:55'!
+trueLiteral 
+
+	^system true! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:13:04'!
+dispatchUndermessage: message 
+	| selector recv args result |
+	selector := message selector.
+	recv := message receiver.
+	args := message arguments.
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:27:51'!
+staticSend: selector to: recv with: args 
+	| result |
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:09:45'!
+backtrace 
+	| bt next |
+	bt := OrderedCollection new.
+	next := self.
+	[ next notNil ]
+		whileTrue: [ bt
+				add:
+					{next method signature.
+					next receiver} , next arguments.
+			next := next parent ].
+	^ bt! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:14:55'!
+evaluate 
+
+	system pushFrame: self.
+	^ self visitMethod: method sexpressions! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:18'!
+evaluateBlock: sblock args: anArray 
+	" as this block is inlined, we didn't capture parent environment.
+	Thus, we don't know if environment is a closure or a method home.
+	We unwind to that environment and clean up later if it was a closure. "
+
+	anArray
+		with: sblock inlinedArgs
+		do: [ :arg :i | temporaries at: i put: arg ].
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:36'!
+evaluateBlock: sblock args: anArray closure: closure 
+	" inlined blocks can only return to their real parent environment.
+	Here we complete the non-local return process for them, unwinding
+	to the real home environment "
+
+	temporaries := Array new: sblock tempCount.
+	environment := closure.
+	arguments := anArray.
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:51'!
+evaluateClosure: aPClosure 
+
+	^self evaluateClosure: aPClosure withArgs: {}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:45'!
+evaluateClosure: aPClosure with: anObject 
+
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:58'!
+evaluateClosure: aPClosure with: anObject with: anotherObject 
+
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:17:12'!
+evaluateClosure: closure withArgs: anArray 
+	| frame block sblock evaluator result |
+	frame := system builderOf: closure.
+	block := frame blockOf: closure.
+	sblock := frame blockAstcodesOf: block.
+	evaluator := frame copy beBlock.
+	system pushFrame: evaluator.
+	result := sblock isInlined
+		ifTrue: [ evaluator evaluateBlock: sblock args: anArray ]
+		ifFalse: [ evaluator evaluateBlock: sblock args: anArray closure: closure ].
+	returning ifFalse: [ system popFrame ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:19:55'!
+evaluatePrimitive: primitive 
+	| index size argument value |
+	primitive = #Behavior
+		ifTrue: [ ^ receiver isImmediate
+				ifTrue: [ system smallintBehavior ]
+				ifFalse: [ receiver behavior ] ].
+	primitive = #UnderSize
+		ifTrue: [ ^ self integerFor: receiver size ].
+	primitive = #Size
+		ifTrue: [ ^ self integerFor: receiver arrayedSize ].
+	primitive = #At
+		ifTrue: [ index := arguments first value.
+			value := receiver at: index.
+			^ receiver isBytes
+				ifTrue: [ self integerFor: value ]
+				ifFalse: [ value ] ].
+	primitive = #AtPut
+		ifTrue: [ index := arguments first value.
+			^ receiver at: index put: arguments second ].
+	primitive = #New
+		ifTrue: [ ^ system newSlotsOf: receiver spec instanceSide sized: 0].
+	primitive = #NewSized
+		ifTrue: [ size := arguments first value.
+			^ system newOf: receiver spec instanceSide sized: size ].
+	primitive = #NewBytes
+		ifTrue: [ size := arguments first value.
+			^ system newBytesOf: receiver spec instanceSide sized: size ].
+	primitive = #Equal
+		ifTrue: [ argument := arguments first.
+			^ self
+				booleanFor:
+					(receiver == argument
+						or: [ receiver isImmediate
+								and: [ argument isImmediate and: [ receiver value = argument value ] ] ]) ].
+	primitive = #SMIPlus
+		ifTrue: [ ^ self integerFor: receiver value + arguments first value ].
+	primitive = #SMIMinus
+		ifTrue: [ ^ self integerFor: receiver value - arguments first value ].
+	primitive = #SMITimes
+		ifTrue: [ ^ self integerFor: receiver value * arguments first value ].
+	primitive = #SMIIntDiv
+		ifTrue: [ ^ self integerFor: receiver value // arguments first value ].
+	primitive = #SMIIntQuot
+		ifTrue: [ ^ self integerFor: receiver value \\ arguments first value ].
+	primitive = #SMIBitAnd
+		ifTrue: [ ^ self integerFor: (receiver value bitAnd: arguments first value) ].
+	primitive = #SMIBitXor
+		ifTrue: [ ^ self integerFor: (receiver value bitXor: arguments first value) ].
+	primitive = #SMIBitShift
+		ifTrue:
+			[ ^ self integerFor: (receiver value bitShift: arguments first value) ].
+	primitive = #SMIHighBit
+		ifTrue: [ ^ self integerFor: receiver value highBit ].
+	primitive = #SMIGreaterThan
+		ifTrue: [ ^ self booleanFor: receiver value > arguments first value ].
+	primitive = #SMIGreaterEqualThan
+		ifTrue: [ ^ self booleanFor: receiver value >= arguments first value ].
+	primitive = #SMIEqual
+		ifTrue: [ ^ self booleanFor: receiver value = arguments first value ].
+	primitive = #SMINotEqual
+		ifTrue: [ ^ self booleanFor: receiver value !!= arguments first value ].
+	primitive = #SMISize
+		ifTrue: [ ^ self integerFor: receiver value bytesCount ].
+	primitive = #ClosureValue
+		ifTrue: [ ^ self evaluatePrimitiveClosureValue ].
+	primitive = #ClosureValueWithArgs
+		ifTrue: [ ^ self evaluatePrimitiveClosureValueWithArgs ].
+	primitive = #ClosureWhileTrue
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileTrue ].
+	primitive = #ClosureWhileFalse
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileFalse ].
+	primitive = #ClosureArgumentCount
+		ifTrue: [ ^ self evaluatePrimitiveClosureArgumentCount ].
+	primitive = #StringReplaceFromToWithStartingAt
+		ifTrue: [ receiver bytes
+				replaceFrom: arguments first value
+				to: arguments second value
+				with: arguments third bytes
+				startingAt: arguments fourth value.
+			^ receiver ].
+	primitive = #FloatNew
+		ifTrue: [ ^ system newBytesOf: receiver spec instanceSide sized: 8 ].
+	primitive = #PrimeFor
+		ifTrue: [ ^ self evaluatePrimitivePrimeFor ].
+	self assert: false
+! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:20:47'!
+evaluatePrimitiveClosureArgumentCount 
+	| frame block |
+	frame := system builderOf: receiver. 
+	block := frame blockOf: receiver.
+	^ self integerFor: block argumentCount! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:01'!
+evaluatePrimitiveClosureValue 
+
+	^ self evaluateClosure: receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:11'!
+evaluatePrimitiveClosureValueWithArgs 
+
+	^ self evaluateClosure: receiver withArgs: arguments! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:23'!
+evaluatePrimitiveClosureWhileFalse 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver.
+	returning
+		ifTrue: [ ^ returnValue ].
+	system booleanFrom: result ]
+		whileFalse: [ self evaluateClosure: arg.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:45'!
+evaluatePrimitiveClosureWhileTrue 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver. returning ifTrue: [^returnValue].
+	system booleanFrom: result ] whileTrue: [ self evaluateClosure: arg. returning ifTrue: [^returnValue]].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:00'!
+evaluatePrimitiveHash 
+	| hash |
+	hash := receiver headerHash.
+	hash = 0 ifTrue: [ hash := system nextHash. receiver headerHash: hash ].
+	^ self integerFor: hash! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:16'!
+evaluatePrimitivePrimeFor 
+	| num result |
+	num := arguments first value.
+	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
+		detect: [ :i | i >= num ].
+	^ self integerFor: result! !
+
+!MethodEvaluator methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:22:52'!
+initialize 
+
+	blockAstcodes := IdentityDictionary new.
+	closures := IdentityDictionary new.
+	returning := false.
+	isBlock := false! !
+
+!MethodEvaluator methodsFor: 'services' stamp: 'KenD 3/3/2021 11:11:55'!
+classBinding 
+
+	^method classBinding! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:10:54'!
+built: closure 
+
+	^closures includesKey: closure! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:23:38'!
+isHomeOf: env 
+
+	^ environment == env andNot: [ isBlock ]! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:24:00'!
+isUndermessage: selector 
+
+	^ Undermessages includes: selector! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:27'!
+visitArgument: anSIdentifier 
+
+	^arguments at: anSIdentifier binding index! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:37'!
+visitAssignment: anSAssignment 
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:53'!
+visitBlock: anSBlock 
+	| block closure |
+	block := anSBlock isInlined
+		ifTrue: [ SCompiledBlock new ]
+		ifFalse: [ anSBlock compiledCode ].
+	closure := self captureClosure: anSBlock with: block.
+	blockAstcodes at: block put: anSBlock.
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:04'!
+visitCascade: anSCascade 
+	| recv args selector last |
+	recv := anSCascade receiver acceptVisitor: self.
+	anSCascade messages
+		do: [ :msg | 
+			args := msg arguments collect: [ :code | code acceptVisitor: self ].
+			selector := system symbolFrom: msg selector.
+			last := system
+				send: selector
+				to: recv
+				with: args
+				super: anSCascade receiver isSuper ].
+	^ last! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:25'!
+visitIdentifier: anSIdentifier 
+
+	^anSIdentifier binding valueWithin: self! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:36'!
+visitLiteral: anSLiteral 
+
+	^ system transferLiteral: anSLiteral value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:49'!
+visitMessage: anSMessage 
+	| recv args selector message |
+	recv := anSMessage receiver acceptVisitor: self.
+	args := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := system symbolFrom: anSMessage selector.
+	self assert: selector !!== #error:.
+	^ system send: selector to: recv with: args super: anSMessage receiver isSuper! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:39'!
+visitMethod: anSMethod 
+	| primitive |
+	primitive := anSMethod primitive.
+	primitive 
+		ifNil: [	self visitScript: anSMethod] 
+		ifNotNil: [ self primitive: primitive ].
+	^ returning
+		ifTrue: [ returnValue ]
+		ifFalse: [ system popFrame.  receiver ]! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:58'!
+visitReturn: anSReturn 
+	| value home |
+	value := anSReturn expression acceptVisitor: self.
+	"it could happen that while we were going to return, the
+	expression contained a non-local return that was reached.
+	In that case we just keep unwinding without altering the
+	unwindLimit"
+	returning
+		ifTrue: [ ^ returnValue ].
+	home := anSReturn local
+		ifTrue: [ environment ]
+		ifFalse: [ environment at: 1 ].
+	system unwindUpTo: home returning: value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:12'!
+visitScript: anSScript 
+	| result |
+	anSScript statements
+		do: [ :node | 
+			result := node acceptVisitor: self.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:26'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!MethodEvaluator class methodsFor: 'class initialization' stamp: 'KenD 3/3/2021 11:07:59'!
+initialize 
+"
+	self initialize
+"
+
+	Undermessages := #(_basicAt: #_basicAt:put: 
+		_bitShiftLeft: _byteAt: #_byteAt:put: 
+		_smallSize _largeSize _isSmallInteger 
+		_basicHash _basicHash: 
+		_smallIntegerByteAt: 
+		_uShortAtOffset: _uShortAtOffset:put:)
+! !
+
+!MethodLookup methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 11:04:34'!
+lookup: aSymbol on: aSubject 
+
+	^self subclassResponsibility! !
+
+!EmulationLookup methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:34:32'!
+initialize 
+
+	cache := Dictionary new! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:06'!
+compiledMethodFor: anRGMethod 
+	| method |
+	cache at: anRGMethod ifPresent: [ :cm | ^ cm ].
+	method := self compile: anRGMethod.
+	^ cache at: anRGMethod put: method! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:19'!
+globals: aPoolDictionary 
+
+	globals := aPoolDictionary! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:45'!
+lookup: aSymbol on: aSubject 
+	| behavior classname |
+	classname := aSubject _gate handle oid classname.
+	behavior := spec at: classname.
+	^ self lookup: aSymbol startingAt: behavior! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:58'!
+lookup: aSymbol startingAt: aBehavior 
+	| next m c |
+	next := aBehavior.
+	[ m := next methodNamed: aSymbol.
+	m ifNotNil: [ ^ self compiledMethodFor: m ].
+	next := next superclass.
+	next notNil ] whileTrue.
+	^ aBehavior isMeta
+		ifTrue: [ c := aBehavior environment at: #Class.
+			self lookup: aSymbol startingAt: c ]! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:14'!
+lookupSuper: aSymbol on: aSubject from: classname 
+	| behavior |
+	cache at: classname -> aSymbol ifPresent: [ :cached | ^ cached ].
+	behavior := spec at: classname.
+	^ self lookup: aSymbol startingAt: behavior! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:25'!
+spec 
+
+	^spec! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:34'!
+spec: anRGEnvironment 
+
+	spec := anRGEnvironment! !
 
 !Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:23'!
 handle 
@@ -9978,3 +10858,4 @@ SExpressionTypes initialize!
 SendSiteFlags initialize!
 SpeciesFormatMasks initialize!
 Assembler64 initialize!
+MethodEvaluator initialize!
