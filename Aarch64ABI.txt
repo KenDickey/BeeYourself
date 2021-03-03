@@ -1,0 +1,291 @@
+;;; References:
+
+;;; _Programmer's Guide for ARMv8-A_
+;;;  https://developer.arm.com/docs/den0024/a
+
+;;; _Procedure Call Standard for the ARM 64-bit Architecture (AArch64)_
+;;;  http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/IHI0055B_aapcs64.pdf
+;;;  https://developer.arm.com/docs/ihi0055/latest/procedure-call-standard-for-the-arm-64-bit-architecture
+
+;;; _ARM A64 Instruction Set Architecture ARMv8, for ARMv8-A architecture profile_
+;;;  https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf
+
+;;; _ARM Architecture Reference Manual ARMv8, for ARMv8-A architecture profile_
+;;; https://developer.arm.com/docs/ddi0487/latest/arm-architecture-reference-manual-armv8-for-armv8-a-architecture-profile
+
+Aarch64 ABI Design Notes
+================================
+
+Execution context
+*****************
+
+The DMR is designed as a register machine with a stack. There is a set
+of abstract registers, which are mapped to concrete ones depending on
+the target processor ISA:
+
+.. csv-table:: Registers!
+   :header: "Abstract name", "Concrete name (Aarch64)", "Type", "Description"
+   :widths: 20, 20, 20, 40
+//  XZR:	Zero register -- reads zero, writes ignored
+   "IP", "***",    "callee-saved", "Instruction Pointer" NB: synthesized
+   "FP", "FP=X29", "callee-saved", "Stack Frame Pointer"
+   "LR", "LR-X30", "callee-saved", "Link Register"
+// [NB: r31 encodes as SP or XZR depending on instruction!]
+   "SP", "SP",     "callee-saved", "Stack Pointer" // MUST BE QUAD ALIGNED!!
+//  X0-X7:	C argument/result registers;   calleR-save
+//  X8: 	C address of structure result; calleR-save
+   "R",  "X0", "volatile", "Receiver and Return value pointer"
+   "A1", "X1", "volatile", "Argument1"
+   "A2", "X2", "volatile", "Argument2"
+   "A3", "X3", "volatile", "Argument3"
+   "A4", "X4", "volatile", "Argument4"
+//  X9-X15 Scratch/Temp registers, calleR-save [calleE scratch]
+   "T1", "X9",  "volatile", "Temporary/Scratch"
+   "T2", "X10", "volatile", "Temporary/Scratch"
+   "T3", "X11", "volatile", "Temporary/Scratch"
+   "T4", "X12", "volatile", "Temporary/Scratch"
+   "V1", "X13", "volatile", "Volatile"
+   "V2", "X14", "volatile", "Volatile"
+   "V3", "X15", "volatile", "Volatile"
+// X19-X28 all callE saved"
+   "M", "X19", "callee-saved", "Method/Block native context"
+   "S", "X20", "callee-saved", "Self"
+   "E", "X21", "callee-saved", "Environment"
+// Thread? X22?
+// GC Alloc & Limit
+   "Alloc", "x23", "allocation pointer"
+   "Limit", "X24", "allocation limit"
+// Useful Constants
+   "nil",   "X25", "fixed", "nil"
+   "true",  "X26", "fixed", "true"
+   "false", "X27", "fixed", "false"
+   "G",     "X28", "fixed", "commonly used Global objects"
+
+IP (Instruction Pointer), SP (Stack Pointer), and FP (Frame Pointer) are
+self describing. R register contains the Receiver at the instant at
+which a message is going to be sent, and contains the Return value at the moment when
+a method is about to exit. When entering a method, R register (which is volatile) is
+stored into S (Self), which is callee-saved. This allows to have a pointer to self permanently
+in a register while executing a method. Previous S is restored by the callee at exit,
+loading it from the stack frame of the caller. M (currenty executing Method) provides
+access to a method or block's
+native code and literals. NativeCode objects (the ones pointed by M) know the CompiledMethod
+or CompiledBlock that generated them, and the literals used within native code. They also
+point to the byte array that holds the machine instructions to be used by the processor.
+M is restored when returning in the same way than S. 
+A, T and V register names are just denotational.
+This means they were named like that because of their main uses, but they can be used
+for different things. They are usually free, ready for usage. We describe the way they
+work first and give some examples later.
+A (Arg0) is used whenever a register is needed for fast/inline arguments,
+like with inlined binary integer operations. It is not used for passing real
+arguments in message sends. 
+T (Temp0) is used to store temporary values during operations that require a free register.
+V (Val0) is used to load constants. It is needed because typical ISAs do not let use full
+64-bit constants in instructions, so to use a big constant (like a pointer) you
+must first load it into some register.
+Nil, true and false registers are loaded when entering from C code, and leave like
+that forever (as in C they are callee-saved, it is not necessary to restore them
+when calling C code).
+
+
+Arguments, temporaries and environment
+**************************************
+??? REVISIT THIS !!! ???
+Arguments are pushed into the stack from left to right. They are not passed in
+registers because that would complicate the general design and also debugging.
+??? Use the registers! ???
+Temporaries are stored in the stack for the same reasons. Leftmost temporary
+is pushed first, which usually means it is stored at the higher addresses
+(amd64). When a method has temporaries shared with child blocks, or non-local
+returns, it creates an environment and pushes it (and the previous one) into
+the stack before temporaries. The environment is an object of class array,
+that will have as many slots as shared temporaries.
+
+Block closures also create an environment, again of a size that is equal
+to the amount of temporaries they share with their child blocks.
+
+
+;;; C call ABI:
+;;;  Register usage: [Xn=>Double[64bits], Wn=>Word[32bits]]
+;;;   XZR:	Zero register -- reads zero, writes ignored
+;;;   X0-X7:	C argument/result registers;   calleR-save
+;;;   X8:	C address of structure result; calleR-save
+;;;   X9-X15	Scratch/Temp registers, calleR-save [calleE scratch]
+;;;   X16-X17 [IP0,IP1]: intra-procedure-call scratch registers (linker uses)
+;;;   X18:	Platform specific use [avoid]
+;;;   X19-X28	calleE-save
+;;;   X29=FP:	frame-pointer
+;;;   X30=LR:	link-register
+;;;   SP:	Stack Pointer [4 lower bits 0 -> 16-byte aligned]
+;;;   NZCV:	Status/flags Register [Neg/Zero/Carry/oVerflow]
+;;; [NB: r31 encodes as SP or XZR depending on instruction]
+;;; [NB: PC is _NOT_ a named register and is not directly available; use ADR/ADRP]
+;;; Floating Point Registers [D=Double[64],Q=Quad[128],W=Word[32],H=Half[16],B=Byte[8]]
+;;;   D0-D7	floating point arg/result; calleR-save
+;;;   D8-D15:	calleE-MUST-save
+;;;   D16-D31:	Scratch/Temp; calleR-save
+;;;   FPSR:	Floating Point Status Register
+
+;;; Float  values returned in D0-D7
+;;; Scalar values returned in X0-X7; Struct Addr in X8 [NB!]
+;;;
+;;; Struct return space alloc'ed by Caller and address is passed in X8
+
+;;; Alignment:
+;;;   double-floats & 64-bit integers are 8-byte aligned in structs
+;;;   double-floats & 64-bit integers are 8-byte aligned on the stack
+;;;   stack must be 16-byte/quad-word aligned (SP mod 16 == 0)
+
+;;; Addressing:
+;;;  Where the PC is read by an instruction to compute a PC-relative address,
+;;;   then its value is the address of THAT instruction. Unlike A32 and T32,
+;;;   there is _NO_ implied offset of 4 or 8 bytes.
+
+;;;  Any scalar 64-bit index register to be added to the 64-bit base register,
+;;;   with optional scaling of the index by the access size.
+;;;  Additionally, optional sign or zero-extension of a 32-bit value
+;;;   within an index register, again with optional scaling.
+
+
+;;; PC
+;;;  The only instructions that read the PC are those whose function it is to compute a
+;;; PC-relative address (ADR, ADRP, literal load, and direct branches), and the
+;;; branch-and-link instructions that store a return address in the link register (BL and
+;;; BLR). The only way to modify the program counter is using branch, exception
+;;; generation and exception return instructions.
+;;; Where the PC is read by an instruction to compute a PC-relative address, then its
+;;; value is the address of _that_ instruction. Unlike A32 and T32, there is no implied
+;;; offset of 4 or 8 bytes.
+
+;;;                                          ^
+;;;  Typical C STACK FRAME [AArch64 ABI]     ^
+;;;                                          FP"
+;;;          :--------------------------:    ^
+;;;          :       LR"                :    ^
+;;;          :--------------------------:    ^
+;;;          :       FP"                :>>--^ <<FP'
+;;;          :--------------------------:         ^
+;;;          :  Stack Args Area         :         ^
+;;;          :       ...                :         ^
+;;;  CALLER  :                          :<<--SP'  ^  CALLER
+;;;  ~~~~~~  :--~--~--~--~--~--~--~--~--:         ^  ~~~~~~
+;;;  CALLEE  |                          |         ^  CALLEE
+;;;          |    LOCAL VARIABLES       |         ^
+;;;          |        ...               |         ^  
+;;;          |--------------------------|         ^
+;;;          |    CALLEE SAVE AREA      |         ^
+;;;          |                          |         ^
+;;;          |--------------------------|         ^
+;;;          |       LR'                |         ^
+;;;          |--------------------------|         ^
+;;; FP >>-->>|       FP'                |>>-------^
+;;;          |--------------------------|
+;;;          |  Stack Args Area         |   
+;;;          |       ...                |   ...
+;;;          |                          | LDR/STR Xn,[SP,#0x8]
+;;; SP >>-->>|                          | LDR/STR Xn,[SP,#0x0]
+;;;          |--------------------------|
+;;;          |                          |
+;;;             ..lower addresses--
+
+;;; Decrement SP to push, a.k.a "full descending"
+
+
+      #|
+@@@FIXME: CHECK@@@  Frame Layout
+                   +---------------------------+
+                   |                           |
+                   |    incoming stack args    |
+  sp+36+R+X+Y+Z+W: |                           |
+                   +---------------------------+<- 16-byte boundary
+                   |                           | 
+                   |    saved int reg args     | 0-8 doubles
+    sp+36+R+X+Y+Z: |                           |
+                   +---------------------------+
+                   |                           | 
+                   |   pad double if necessary | 0-1 doubles
+      sp+36+R+X+Y: |                           |
+                   +---------------------------+<- 16-byte boundary
+                   |                           | 
+                   |   saved float reg args    | 0-16 doubles
+        sp+36+R+X: |                           |
+                   +---------------------------+<- 16-byte boundary
+                   |                           | 
+                   |      &-return space       | up to 8 doubles
+          sp+36+R: |                           |
+                   +---------------------------+<- 16-byte boundary
+                   |                           | 
+                   |   pad double if necessary | 0-1 doubles
+            sp+36: |                           |
+                   +---------------------------+
+                   |                           |
+                   |   callee-save regs + lr   | ?? doubles
+             sp+0: |                           | 
+                   +---------------------------+<- 16-byte boundary
+
+      X = 0 or 4 (depending on whether pad is present)
+      Y = int-reg-bytes
+      Z = float-reg-bytes
+|#
+=== thisPC.c ====
+/* gcc -march=armv8-a thisPC.c --save-temps -o thisPC 
+   objdump -d thisPC
+*/
+
+#include <stdio.h>
+#include <inttypes.h>
+
+/* No AArch64 PC register */
+uint64_t pc_here() {
+  asm ( "ADR X0, .") ;
+}
+
+void main()
+{ 
+  uint64_t pc_val = pc_here();
+  printf( "\nPC relative address (ADR) delta zero is %lu = 0x%lX \n\n",  pc_val, pc_val );
+}
+===========immed64.c=====
+/* gcc -g -march=armv8-a immed64.c --save-temps -o immed64 
+   objdump -d immed64 > immed64.asm
+*/
+
+#include <stdio.h>
+#include <inttypes.h>
+
+/* No AArch64 PC register */
+uint64_t da_test() {
+  asm ( "adr x1, #16" ) ; /* X1 := 2 opcodes + 64 bits = 16 bytes ahead */
+  asm ( "br  x1" ) ; /* br ahead: */
+  asm ( "orn  x0, x8,  x2, lsl #4" )   ; /* AA221100 */
+  asm ( "orn x29, x6, x27, asr #51 " ) ; /* AABBCCDD */
+  /* ahead: */
+  asm ( "ldr x0, [x1, #-8]" ) ; /* load 64 bit literal -> x0 */
+  /* and return */
+}
+
+void main()
+{ 
+  uint64_t pc_val = da_test();
+  printf( "\nImmediate inline 64 is %lu = 0x%lX \n\n",  pc_val, pc_val );
+}
+
+/*
+d503201fd503201f0000000000000838 <da_test>:
+adr+0  838:   10000081        adr     x1, 848 <da_test+0x10>
+adr+4  83c:   d61f0020        br      x1
+adr+8  840:   aa221100        orn     x0, x8, x2, lsl #4
+adr+16 844:   aabbccdd        orn     x29, x6, x27, asr #51
+adr+20 848:   f85f8020        ldur    x0, [x1, #-8]
+adr+24 84c:   d503201f        nop
+adr+28 850:   d65f03c0        ret
+
+ >>> ./immed64 
+
+ Immediate inline 64 is 12302652059506839808 = 0xAABBCCDDAA221100 
+
+ */
+
+=== E O F ===
+
