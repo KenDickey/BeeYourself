@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 3 March 2021 at 11:35:46 am'!
+'From Cuis 5.0 [latest update: #4530] on 4 March 2021 at 8:42:53 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 24!
+!provides: 'Powerlang-Core' 1 26!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -55,6 +55,16 @@ PSharedPool subclass: #CompiledMethodFormatMasks
 	category: 'Powerlang-Core'!
 !classDefinition: 'CompiledMethodFormatMasks class' category: 'Powerlang-Core'!
 CompiledMethodFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #FrameOffsets category: 'Powerlang-Core'!
+PSharedPool subclass: #FrameOffsets
+	instanceVariableNames: ''
+	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'FrameOffsets class' category: 'Powerlang-Core'!
+FrameOffsets class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core'!
@@ -327,6 +337,16 @@ Binding subclass: #LiteralBinding
 LiteralBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #FalseBinding category: 'Powerlang-Core'!
+LiteralBinding subclass: #FalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'FalseBinding class' category: 'Powerlang-Core'!
+FalseBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #LocalBinding category: 'Powerlang-Core'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
@@ -417,6 +437,16 @@ Gate subclass: #MirageGate
 MirageGate class
 	instanceVariableNames: ''!
 
+!classDefinition: #Handle category: 'Powerlang-Core'!
+Object subclass: #Handle
+	instanceVariableNames: 'runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Handle class' category: 'Powerlang-Core'!
+Handle class
+	instanceVariableNames: ''!
+
 !classDefinition: #ISAOperand category: 'Powerlang-Core'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
@@ -457,9 +487,19 @@ IdentifierBinder subclass: #DynamicBinder
 DynamicBinder class
 	instanceVariableNames: ''!
 
+!classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core'!
+Object subclass: #ImageSegmentBuilder
+	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ImageSegmentBuilder class' category: 'Powerlang-Core'!
+ImageSegmentBuilder class
+	instanceVariableNames: ''!
+
 !classDefinition: #ImageSegmentWriter category: 'Powerlang-Core'!
 Object subclass: #ImageSegmentWriter
-	instanceVariableNames: ''
+	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
@@ -565,6 +605,16 @@ MessageLinker subclass: #CompositeMessageLinker
 	category: 'Powerlang-Core'!
 !classDefinition: 'CompositeMessageLinker class' category: 'Powerlang-Core'!
 CompositeMessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #HaltingSend category: 'Powerlang-Core'!
+MessageLinker subclass: #HaltingSend
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'HaltingSend class' category: 'Powerlang-Core'!
+HaltingSend class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodEvaluator category: 'Powerlang-Core'!
@@ -805,6 +855,36 @@ Object subclass: #Opcode
 	category: 'Powerlang-Core'!
 !classDefinition: 'Opcode class' category: 'Powerlang-Core'!
 Opcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureSmallIntegerOpcode category: 'Powerlang-Core'!
+Opcode subclass: #EnsureSmallIntegerOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'EnsureSmallIntegerOpcode class' category: 'Powerlang-Core'!
+EnsureSmallIntegerOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureASmallInteger category: 'Powerlang-Core'!
+EnsureSmallIntegerOpcode subclass: #EnsureASmallInteger
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'EnsureASmallInteger class' category: 'Powerlang-Core'!
+EnsureASmallInteger class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureRSmallInteger category: 'Powerlang-Core'!
+EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'EnsureRSmallInteger class' category: 'Powerlang-Core'!
+EnsureRSmallInteger class
 	instanceVariableNames: ''!
 
 !classDefinition: #SBinding category: 'Powerlang-Core'!
@@ -1202,6 +1282,11 @@ name
 
 	^name! !
 
+!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
+name 
+
+	^'false'! !
+
 !LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
 environment 
 
@@ -1221,6 +1306,16 @@ printOn: aStream
 printOn: aStream 
 
 	self printOn: aStream indent: 0! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
+methods 
+
+	^methods! !
+
+!ImageSegmentBuilder methodsFor: 'compiling' stamp: 'KenD 3/4/2021 08:16:47'!
+compile: anRGMethod 
+
+	^runtime compile: anRGMethod! !
 
 !InstructionPrefix methodsFor: 'printing' stamp: 'KenD 2/27/2021 13:15:20'!
 printOn: aStream 
@@ -4214,6 +4309,16 @@ isLiteral
 
 	^true! !
 
+!FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 13:07:44'!
+value 
+
+	^false! !
+
+!FalseBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:07:22'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeFalse! !
+
 !LocalBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:55:22'!
 beInArray 
 
@@ -4643,6 +4748,31 @@ dispatchRemote: aMessage from: parentInterpreter
 		parent: parentInterpreter;
 		evaluate: method! !
 
+!Handle methodsFor: 'testing' stamp: 'KenD 3/3/2021 13:12:02'!
+isLocal 
+
+	^runtime isLocal! !
+
+!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:38'!
+runtime 
+
+	^runtime! !
+
+!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:51'!
+runtime: aRuntime 
+	
+	runtime := aRuntime! !
+
+!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:11:38'!
+handleOn: objectId 
+
+	^self class on: objectId within: runtime! !
+
+!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:12:18'!
+objectHandleOn: objectId 
+
+	^ ObjectHandle on: objectId within: runtime! !
+
 !ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
 isDirectMemoryReference 
 
@@ -4836,6 +4966,540 @@ on: aPoolDictionary
 on: aDictionary of: type 
 
 	^self new on: aDictionary type: type! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:13:30'!
+classSpecs 
+
+	^ self spec allClasses! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:15:39'!
+classes 
+
+	^classes! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:20:03'!
+image 
+
+	^ image! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:26'!
+module 
+
+	^ module! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:04'!
+newSymbol: aSymbol 
+
+	^runtime newSymbol: aSymbol! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:22'!
+runtime 
+
+	^ runtime! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:12:24'!
+specAt: aSymbol 
+
+	^ self spec at: aSymbol! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:29:54'!
+writer 
+
+	^ ImageSegmentWriter new roots:
+		objects;
+		module: module;
+		wordSize: image wordSize;
+		yourself! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:04'!
+nativizeForDMR 
+
+	DMRBootstrapper new
+		image: image;
+		builder: self;
+		nativize;
+		initializeKernelModule! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:38'!
+newCallback: aNativeCode bytesFrom: aByteArray 
+	| code original behavior class |
+	code := image newBytesFrom: aByteArray.
+	original := code behavior.
+	behavior := image newSlots: 'CallbackBehavior'.
+	class := original slotNamed: 'class'.
+	behavior
+		slotNamed: 'class' put: class;
+		methods: original methods;
+		next: image nil;
+		nativeCode: aNativeCode.
+	code behavior: behavior.
+	^ code! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:24:45'!
+newMethod: anAstcode 
+selector: aSymbol 
+in: classname 
+format: anInteger 
+literals: anArray 
+	| method astcodes class selector format |
+	method := image newSlots: 'CompiledMethod'.
+	astcodes := self transferAstcodesFrom: anAstcode.
+	class := image classNamed: classname.
+	selector := image newSymbol: aSymbol.
+	format := image newInteger: anInteger.
+	method
+		nativeCode: image nil;
+		astcodes: astcodes;
+		class: class;
+		selector: selector;
+		format: format;
+		source: image nil.
+	^ method! !
+
+!ImageSegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:20:38'!
+initialize 
+
+	index := OrderedDictionary new.
+	classes := OrderedDictionary new.
+	methods := OrderedDictionary new.
+	globals := VirtualDictionary new.
+	objects := OrderedCollection new! !
+
+!ImageSegmentBuilder methodsFor: 'printing' stamp: 'KenD 3/4/2021 08:22:07'!
+log: aString 
+
+	Transcript
+		show: aString;
+		cr! !
+
+!ImageSegmentBuilder methodsFor: 'validating' stamp: 'KenD 3/4/2021 08:29:04'!
+validate 
+
+	objects do:[:obj | obj validate]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:12:46'!
+addObjectDeep: anObject 
+
+	self assert: (anObject isKindOf: ObjectMap).
+	anObject isImport
+		ifTrue: [ ^ self addImport: anObject ].
+	anObject isImmediate
+		ifTrue: [ ^ self ].
+	(objects includes: anObject)
+		ifTrue: [ ^ self ].
+	objects add: anObject.
+	anObject slotsDo: [ :s | self addObjectDeep: s ].
+	^ anObject! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:13:04'!
+bootstrapModule 
+
+	runtime send: #bootstrap to: module! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:16:19'!
+createLoadAction 
+
+	^ image nil! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:33'!
+createMethodDictionary: species sized: anInteger 
+	| behavior md size dictionary |
+	behavior := species instanceBehavior.
+	md := image classNamed: #MethodDictionary.
+	size := image newInteger: anInteger.
+	dictionary := runtime send: #new: to: md with: {size}.
+	behavior methods: dictionary.
+	^dictionary! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:48'!
+export: anObject as: aSymbol 
+
+	runtime globals at: aSymbol put: anObject! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:01'!
+fillClasses 
+	| class meta |
+	self classSpecs
+		do: [ :def | 
+			self log: 'filling ' , def name , '...'.
+			class := image classFor: def.
+			meta := class behavior slotNamed: #class.
+			self
+				fillSpecies: meta with: def metaclass;
+				fillSpecies: class with: def ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:59'!
+fillSpecies: species with: classDefinition 
+	| dictionary smethod transferred |
+	dictionary := self
+		createMethodDictionary: species
+		sized: classDefinition methods size.
+	classDefinition methods
+		do: [ :methodDefinition | 
+			smethod := runtime compile: methodDefinition.
+			methods at: methodDefinition put: smethod.
+			transferred := self transferMethod: smethod in: species.
+			runtime
+				send: #basicAt:put:
+				to: dictionary
+				with:
+					{transferred selector.
+					transferred} ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:19:27'!
+generateModule 
+	| class dictionary exports array assocs |
+	class := image classNamed: self moduleName.
+	dictionary := image classNamed: #Dictionary.
+	module := runtime send: #basicNew to: class.
+	exports := runtime send: #new to: dictionary.
+	array := runtime send: #declaredGlobals to: module.
+	assocs := runtime declareGlobals: array.
+	assocs := image newArray: assocs.
+	runtime send: #addAll: to: exports with: {assocs}.
+	module exports: exports.
+	"self classes
+		do: [ :c | | args |
+			args := Array with: c name with: c.
+			runtime send: #at:put: to: exports with: args ]."
+! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:06'!
+initialize32BitImage 
+
+	image := VirtualSmalltalkImage fromSpec
+		wordSize: 4;
+		genesis.
+	runtime := VirtualSmalltalkRuntime new image: image; initializeClassPools
+! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:30'!
+initialize64BitImage 
+
+	image := VirtualSmalltalkImage fromSpec
+		wordSize: 8;
+		genesis.
+	runtime := VirtualSmalltalkRuntime new
+		image: image;
+		initializeClassPools! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:23:57'!
+newClassVarDictionary: anArray 
+	| dict |
+	dict := runtime newDictionary.
+	anArray do: [ :assoc | runtime send: #add: to: dict with: {assoc} ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:37'!
+transferArrayDeep: anArray 
+	| copy transferred |
+	copy := image newSlots: 'Array' sized: anArray size.
+	anArray
+		withIndexDo: [ :elem :i | 
+			transferred := elem isInteger
+				ifTrue: [ image newInteger: elem ]
+				ifFalse: [ self transferArrayDeep: elem ].
+			copy at: i put: transferred ].
+	^ copy! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:53'!
+transferAstcodesFrom: anArray 
+	| copy transferred |
+	copy := image newSlots: 'Array' sized: anArray size.
+	anArray
+		withIndexDo: [ :elem :i | 
+			transferred := elem isInteger
+				ifTrue: [ image newInteger: elem ]
+				ifFalse: [ self transferAstcodesFrom: elem ].
+			copy at: i put: transferred ].
+	^ copy! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:21'!
+transferMethod: anSCompiledMethod in: species 
+	| size classname transferred astcodes selector format literal tliteral |
+	(image includes: anSCompiledMethod)
+		ifTrue: [ self assert: false ].
+	size := anSCompiledMethod size.
+	classname := anSCompiledMethod isCallback
+		ifTrue: [ 'CallbackMethod' ]
+		ifFalse: [ 'CompiledMethod' ].
+	transferred := image newSlots: classname sized: size.
+	image map: anSCompiledMethod to: transferred.
+	astcodes := image transferLiteralDeep: anSCompiledMethod astcodes.
+	selector := image newSymbol: anSCompiledMethod selector.
+	format := image newInteger: anSCompiledMethod format.
+	transferred
+		astcodes: astcodes;
+		class: species;
+		selector: selector;
+		format: format;
+		source: image nil.
+	1 to: size do: [ :i | 
+		literal := anSCompiledMethod at: i.
+		tliteral := image transferLiteralDeep: literal.
+		transferred at: i put: tliteral ].
+	^ transferred! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:46'!
+transferSimpleLiterals: method 
+	"fixme: to be used by emulator only"
+	| literal class |
+	1 to: method size do: [ :i | 
+		literal := method at: i.
+		class := literal class.
+		((class inheritsFrom: ObjectMap)
+			or: [ class = SCompiledBlock ])
+			ifFalse: [ method at: i put: (self transferLiteralDeep: literal) ] ].
+	^ method! !
+
+!ImageSegmentBuilder methodsFor: 'visiting' stamp: 'KenD 3/4/2021 08:25:12'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:34:29'!
+addClosure 
+	| remaining obj b |
+	remaining := OrderedCollection withAll: roots.
+	remaining do: [ :s | offsets at: s put: nil ].
+	[ remaining isEmpty ]
+		whileFalse: [ obj := remaining removeFirst.
+			objects add: obj.
+			b := obj behavior.
+			(offsets includesKey: b)
+				ifFalse: [ offsets at: b put: nil. remaining add: b ].
+			obj
+				slotsDo: [ :s | 
+					(s isImmediate or: [ offsets includesKey: s ])
+						ifFalse: [ offsets at: s put: nil.
+							remaining add: s ] ] ]! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:09'!
+base 
+"
+	Return preferred base address for this segment
+"
+	^ base! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:32'!
+base: anInteger 
+"
+	 Set the preferred base address for this segment. 
+	 This is a hint only, loaders may load a segment
+	 at a different address but then they must relocate.
+"
+	base := anInteger! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:36:59'!
+image 
+
+	^stream contents! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:00'!
+module: aSlotObjectMap 
+
+	module := aSlotObjectMap! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:11'!
+nextHash 
+	|  result |
+	result := nextHash.
+	nextHash := nextHash linearFeedbackShiftRandom: 16rB9C8.
+	^result! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:35'!
+objects 
+
+	^ objects! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:44'!
+objectsOffset 
+
+	^self class objectsOffset! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:52'!
+offsetOf: anObjectMap 
+
+	^ offsets at: anObjectMap! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:00'!
+roots: aCollection 
+
+	roots := aCollection! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:15'!
+space: aGCSpace 
+
+	space := aGCSpace! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:38'!
+stream: aWriteStream 
+
+	stream := aWriteStream! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:52'!
+wordSize: anInteger 
+
+	wordSize := anInteger! !
+
+!ImageSegmentWriter methodsFor: 'encoding' stamp: 'KenD 3/4/2021 08:36:46'!
+encodedReferenceTo: anObject 
+	| offset |
+	anObject isImmediate
+		ifTrue: [ ^ anObject value * 2 + 1 ].
+	offset := offsets at: anObject.
+	^base + offset! !
+
+!ImageSegmentWriter methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:37:20'!
+initialize 
+
+	offsets := IdentityDictionary new.
+	objects := OrderedCollection new.
+	stream := #[] writeStream.
+	nextHash := 1.
+	base := 0! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:36:00'!
+configureSpace 
+	| basemap free limit |
+	basemap := SmallintObjectMap new value: base // 2.
+	free := SmallintObjectMap new value: (base + size) // 2.
+	limit := SmallintObjectMap new value: (base + size + 16r20000 // 2).
+	space
+		base: basemap;
+		nextFree: free;
+		softLimit: limit;
+		commitedLimit: limit;
+		reservedLimit: limit! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:37:40'!
+layoutObjects 
+	| offset oop |
+	offset := self objectsOffset.
+	objects
+		do: [ :obj | 
+			oop := offset + obj headerSizeInBytes.
+			offsets at: obj put: oop.
+			offset := oop + obj bodySizeInBytes ].
+	size := offset! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:14'!
+write 
+
+	self
+		addClosure;
+		layoutObjects;
+		configureSpace;
+		writeSignature;
+		writeHeader;
+		writeObjects! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:35'!
+writeHeader 
+	"See ImageSegment.h for structure of a segment header"
+	| reserved |
+	reserved := (space reservedLimit value - space base value) * 2.
+	stream uint64le: base; uint64le: size; uint64le: reserved.
+	self writeReferenceTo: module! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:54'!
+writeObjectBody: obj 
+	obj isBytes
+		ifTrue: [ self writeObjectBytes: obj ]
+		ifFalse: [ self writeObjectSlots: obj ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:08'!
+writeObjectBytes: obj 
+	| current aligned |
+	stream nextBytesPutAll: obj bytes.
+	current := stream position.
+	aligned := current alignedTo: wordSize.
+	aligned - current timesRepeat: [ stream nextPut: 0 ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:22'!
+writeObjectHeader: obj 
+	| behavior |
+	obj isSmall
+		ifFalse: [ stream
+				uint32le: obj size;
+				uint32le: 0 ].
+	behavior := self encodedReferenceTo: obj behavior.
+	stream
+		uint16le: obj headerHash;
+		nextPut: obj headerSmallSize;
+		nextPut: obj headerFlags;
+		uint32le: behavior.
+	self assert: stream position == (self offsetOf: obj)! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:41'!
+writeObjectSlots: obj 
+
+	obj slots do: [ :slot | self writeReferenceTo: slot ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:53'!
+writeObjects 
+	self assert: stream position == self objectsOffset.
+	objects
+		do: [ :obj | 
+			self
+				writeObjectHeader: obj;
+				writeObjectBody: obj ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:03'!
+writeReferenceTo: slot 
+	| encoded |
+	encoded := self encodedReferenceTo: slot.
+	wordSize = 8
+		ifFalse: [ self assert: false ].
+	stream uint64le: encoded! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:15'!
+writeSignature 
+
+	stream
+		nextBytesPutAll: 'P_IM_S';
+		nextPut: Character lf asInteger;
+		nextPut: 0! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:27'!
+writeTo: aStream 
+
+	self stream: aStream.
+	self write.
+! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:39'!
+writeToFile: filename 
+	filename asFileReference binaryWriteStreamDo: [ :fileStream |
+		| bytes |
+		
+		"Bit stupid - we write into internal ByteArray backed stream and
+      then write it to real file. That's because WriteStream and ZnWriteStream
+      are not polymorphic. Sigh"
+		bytes := ByteArray streamContents:[:byteStream | self writeTo: byteStream ].
+		fileStream nextPutAll: bytes.
+	]! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:06'!
+behaviorOffset 
+"
+	The offset at which the behavior is from the oop (negated)
+	[Oop is pointer to 1st slot, behavior is slot preceeding].
+"
+
+	^ -4! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:26'!
+nilOffset 
+
+	^self objectsOffset + 8! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:57'!
+objectsOffset 
+"
+	The offset at which header terminates and objects are stored.
+	See ImageSegment.h for structure of a segment header
+"
+	^40! !
 
 !InstructionPrefix methodsFor: 'writing' stamp: 'KenD 2/27/2021 13:16:29'!
 writeOn: anInstruction 
@@ -5085,6 +5749,11 @@ dispatchLinkerFor: selector
 	^candidates
 		detect: [:linker | linker canInline: selector]
 		ifNone: [self error: 'cannot dispatch ', selector storeString]! !
+
+!HaltingSend methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:10:17'!
+emitSend: aSymbol using: anAssembler 
+
+	anAssembler breakpoint! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -7402,6 +8071,25 @@ new
 nativizeUsing: anAssembler for: messageNativizer
 
 	self nativizeUsing: anAssembler! !
+
+!EnsureSmallIntegerOpcode class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 13:03:09'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!EnsureASmallInteger methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:05:02'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	anAssembler
+		testIntegerBitOf: anAssembler regA8;
+		jumpIfZeroTo: messageNativizer failLabel! !
+
+!EnsureRSmallInteger methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:06:01'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	anAssembler
+		testIntegerBitOf: anAssembler regR8;
+		jumpIfZeroTo: messageNativizer failLabel! !
 
 !SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
 decodeUsing: anAstcodeDecoder 
