@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 4 March 2021 at 8:42:53 am'!
+'From Cuis 5.0 [latest update: #4530] on 7 March 2021 at 11:57:44 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 26!
+!provides: 'Powerlang-Core' 1 27!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -65,6 +65,16 @@ PSharedPool subclass: #FrameOffsets
 	category: 'Powerlang-Core'!
 !classDefinition: 'FrameOffsets class' category: 'Powerlang-Core'!
 FrameOffsets class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core'!
+PSharedPool subclass: #InlineMessageLinkerFlags
+	instanceVariableNames: ''
+	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core'!
+InlineMessageLinkerFlags class
 	instanceVariableNames: ''!
 
 !classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core'!
@@ -507,6 +517,16 @@ Object subclass: #ImageSegmentWriter
 ImageSegmentWriter class
 	instanceVariableNames: ''!
 
+!classDefinition: #InlinedMessageNativizer category: 'Powerlang-Core'!
+Object subclass: #InlinedMessageNativizer
+	instanceVariableNames: 'message assembler nativizer start end'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'InlinedMessageNativizer class' category: 'Powerlang-Core'!
+InlinedMessageNativizer class
+	instanceVariableNames: ''!
+
 !classDefinition: #InstructionPrefix category: 'Powerlang-Core'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
@@ -567,6 +587,16 @@ StackEnvironment subclass: #ArgumentEnvironment
 ArgumentEnvironment class
 	instanceVariableNames: ''!
 
+!classDefinition: #InlinedArgEnvironment category: 'Powerlang-Core'!
+StackEnvironment subclass: #InlinedArgEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'InlinedArgEnvironment class' category: 'Powerlang-Core'!
+InlinedArgEnvironment class
+	instanceVariableNames: ''!
+
 !classDefinition: #LocalHandle category: 'Powerlang-Core'!
 Object subclass: #LocalHandle
 	instanceVariableNames: ''
@@ -615,6 +645,16 @@ MessageLinker subclass: #HaltingSend
 	category: 'Powerlang-Core'!
 !classDefinition: 'HaltingSend class' category: 'Powerlang-Core'!
 HaltingSend class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinker category: 'Powerlang-Core'!
+MessageLinker subclass: #InlineMessageLinker
+	instanceVariableNames: 'assembler map'
+	classVariableNames: ''
+	poolDictionaries: 'InlineMessageLinkerFlags Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'InlineMessageLinker class' category: 'Powerlang-Core'!
+InlineMessageLinker class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodEvaluator category: 'Powerlang-Core'!
@@ -1693,6 +1733,15 @@ initialize
 	LocalArgument := 1.
 	Environment := 2.
 	EnvironmentValue := 3! !
+
+!InlineMessageLinkerFlags class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 08:33:16'!
+initialize 
+
+	_Flags := -5.
+	_SmallSize := -6.
+	_Hash := -8.
+	_Reserved := -2.
+	_ExtendedSize := -3.! !
 
 !ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:22:14'!
 initialize 
@@ -5501,6 +5550,505 @@ objectsOffset
 "
 	^40! !
 
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:22:44'!
+inlineAnd 
+	| skip conditions |
+	skip := assembler newLabel.
+	conditions := Array
+		with: message receiver
+		withAll: message arguments allButLast.
+	conditions do: [ :c | self inlineAndCondition: c skip: skip ].
+	message arguments last statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler @ skip! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:23:05'!
+inlineAndCondition: anSExpression skip: skip 
+	| retry failed |
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+	anSExpression acceptVisitor: nativizer.
+	assembler
+		@ retry;
+		compareRwithFalse;
+		jumpIfEqualTo: skip;
+		compareRwithTrue;
+		jumpIfNotEqualTo: failed.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:23:28'!
+inlineAndNot 
+	| skip conditions |
+	skip := assembler newLabel.
+	conditions := Array
+		with: message receiver
+		withAll: message arguments allButLast.
+	conditions do: [ :c | self inlineAndCondition: c skip: skip ].
+	message arguments last statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	self negateBoolean.
+assembler		@ skip! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:23:46'!
+inlineBinaryWhile: aBoolean 
+	| retry failed block continue |
+	start := assembler newLabel.
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+	block := assembler newLabel.
+	continue := assembler newLabel.
+	assembler
+		alignTo: 16;
+		@ start.
+	message receiver statements do: [ :s | s acceptVisitor: nativizer ].
+	assembler
+		@ retry;
+		compareRwithBoolean: aBoolean;
+		jumpIfEqualTo: block;
+		compareRwithBoolean: aBoolean not;
+		jumpIfNotEqualTo: failed;
+		jumpTo: continue;
+		@ block.
+	message arguments first statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler
+		jumpTo: start;
+		@ continue.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:24:31'!
+inlineBranchIf: aBoolean 
+	| retry failed first second |
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+	end := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	first := aBoolean not.
+	second := aBoolean.
+	assembler
+		@ retry;
+		loadAwithR;
+		loadRwithNil;
+		compareAwithBoolean: first;
+		jumpIfEqualTo: end;
+		compareAwithBoolean: second;
+		jumpIfNotEqualTo: failed.
+	message arguments first statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler @ end.
+	nativizer
+		addFallback: [ assembler @ failed; loadRwithA.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:24:52'!
+inlineBranchIfNil: aBoolean 
+
+	end := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	assembler
+		compareRwithNil.
+	aBoolean
+		ifTrue: [ assembler jumpIfNotEqualTo: end ]
+		ifFalse: [ assembler jumpIfEqualTo: end ].
+	message arguments first acceptVisitor: nativizer.
+	assembler @ end
+! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:25:12'!
+inlineBranchIfNilIfNotNil: aBoolean 
+	| second |
+	second := assembler newLabel.
+	end := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	assembler compareRwithNil.
+	aBoolean
+		ifTrue: [ assembler jumpIfNotEqualTo: second ]
+		ifFalse: [ assembler jumpIfEqualTo: second ].
+	message arguments first acceptVisitor: nativizer.
+	assembler
+		jumpTo: end;
+		@ second.
+	message arguments first acceptVisitor: nativizer.
+	assembler @ end! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:25:30'!
+inlineIfTrueIfFalse: aBoolean 
+	| retry other failed first second |
+	retry := assembler newLabel.
+	other := assembler newLabel.
+	failed := assembler newLabel.
+	end := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	first := aBoolean not.
+	second := aBoolean.
+	assembler
+		@ retry;
+		compareRwithBoolean: first;
+		jumpIfEqualTo: other;
+		compareRwithBoolean: second;
+		jumpIfNotEqualTo: failed.
+	message arguments first statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler
+		jumpTo: end;
+		@ other.
+	message arguments second statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler @ end.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:25:55'!
+inlineMessage 
+	| selector |
+	selector := message selector.
+	selector = #ifTrue:
+		ifTrue: [ ^ self inlineBranchIf: true ].
+	selector = #ifFalse:
+		ifTrue: [ ^ self inlineBranchIf: false ].
+	selector = #ifNil:
+		ifTrue: [ ^ self inlineBranchIfNil: true ].
+	selector = #ifNotNil:
+		ifTrue: [ ^ self inlineBranchIfNil: false ].
+	selector = #ifNil:ifNotNil:
+		ifTrue: [ ^ self inlineBranchIfNilIfNotNil: true ].
+	selector = #ifNil:ifNotNil:
+		ifTrue: [ ^ self inlineBranchIfNilIfNotNil: false ].
+	selector = #ifTrue:ifFalse:
+		ifTrue: [ ^ self inlineIfTrueIfFalse: true ].
+	selector = #ifFalse:ifTrue:
+		ifTrue: [ ^ self inlineIfTrueIfFalse: false ].
+	selector = #whileTrue
+		ifTrue: [ ^ self inlineUnitaryWhile: true ].
+	selector = #whileFalse
+		ifTrue: [ ^ self inlineUnitaryWhile: false ].
+	selector = #whileTrue:
+		ifTrue: [ ^ self inlineBinaryWhile: true ].
+	selector = #whileFalse:
+		ifTrue: [ ^ self inlineBinaryWhile: false ].
+	selector = #repeat
+		ifTrue: [ ^ self inlineRepeat ].
+	selector = #to:do:
+		ifTrue: [ ^ self inlineToDo ].
+	selector = #to:by:do:
+		ifTrue: [ ^ self inlineToByDo].
+	selector = #timesRepeat:
+		ifTrue: [ ^ self inlineTimesRepeat ].
+	(selector beginsWith: #or:)
+		ifTrue: [ ^ self inlineOr ].
+	(selector beginsWith: #and:)
+		ifTrue: [ ^ self inlineAnd ].
+	selector = #andNot:
+		ifTrue: [ ^ self inlineAndNot ].
+	selector = #orNot:
+		ifTrue: [ ^ self inlineOrNot ].
+	self assert: false! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:26:34'!
+inlineOr 
+	| skip conditions |
+	skip := assembler newLabel.
+	conditions := Array
+		with: message receiver
+		withAll: message arguments allButLast.
+	conditions do: [ :c | self inlineOrCondition: c skip: skip ].
+	message arguments last statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	assembler @ skip! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:26:51'!
+inlineOrBlock: b skip: skip 
+	| retry failed |
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+	b statements acceptVisitor: nativizer.
+	assembler
+		@ retry;
+		compareRwithTrue;
+		jumpIfEqualTo: skip;
+		compareRwithFalse;
+		jumpIfNotEqualTo: failed.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:27:03'!
+inlineOrCondition: anSExpression skip: skip 
+	| retry failed |
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+	
+	anSExpression acceptVisitor: nativizer.
+	assembler
+		@ retry;
+		compareRwithTrue;
+		jumpIfEqualTo: skip;
+		compareRwithFalse;
+		jumpIfNotEqualTo: failed.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:27:17'!
+inlineOrNot 
+	| skip conditions |
+	skip := assembler newLabel.
+	conditions := Array
+		with: message receiver
+		withAll: message arguments allButLast.
+	conditions do: [ :c | self inlineOrCondition: c skip: skip ].
+	message arguments last statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	self negateBoolean.
+	assembler @ skip! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:27:26'!
+inlineRepeat 
+	start := assembler newLabel.
+	assembler
+		alignTo: 16;
+		@ start.
+	message receiver statements do: [ :s | s acceptVisitor: nativizer ].
+	assembler jumpTo: start! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:27:42'!
+inlineTimesRepeat 
+	| head block continue nonInteger nonDecrementable current |
+	head := assembler newLabel.
+	block := assembler newLabel.
+	continue := assembler newLabel.
+	nonInteger := assembler newLabel.
+	nonDecrementable := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	current := nativizer pushR.
+	assembler
+		alignTo: 16;
+		@ head;
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonInteger;
+		compareRwithSmallInteger: 0;
+		jumpIfLessOrEqualSignedTo: continue;
+		@ block.
+	message arguments first statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	nativizer loadRwithStack: current.
+	assembler
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonDecrementable;
+		subFromRconstant: 2.
+	nativizer storeRInStack: current.
+	assembler
+		jumpTo: head;
+		@ continue.
+	nativizer
+		dropTos;
+		addFallback: [ assembler
+				@ nonDecrementable;
+				pushSmallInteger: 1.
+			nativizer
+				emitSend: #-;
+				storeRInStack: current.
+			assembler jumpTo: head ];
+		addFallback: [ assembler
+				@ nonInteger;
+				pushSmallInteger: 0.
+			nativizer emitSend: #>.
+			assembler
+				compareRwithTrue;
+				jumpIfEqualTo: block;
+				jumpTo: continue ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:28:15'!
+inlineToByDo 
+	| head block continue nonInteger nonIncrementable overflow current limit by increment |
+	head := assembler newLabel.
+	block := assembler newLabel.
+	continue := assembler newLabel.
+	nonInteger := assembler newLabel.
+	nonIncrementable := assembler newLabel.
+	overflow := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	current := message arguments third inlinedArgs first.
+	nativizer temporaryInStackAtPut: current.
+	message arguments first acceptVisitor: nativizer.
+	limit := nativizer pushR.
+	assembler loadAwithR.
+	nativizer temporaryInStackAt: current.
+	assembler
+		alignTo: 16;
+		@ head;
+		testIntegerBitOf: assembler regA8;
+		jumpIfZeroTo: nonInteger;
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonInteger;
+		compareRwithA.
+	by := message arguments second value.
+	by > 0
+		ifTrue: [ assembler jumpIfGreaterSignedTo: continue ]
+		ifFalse: [ assembler jumpIfLessSignedTo: continue ].
+	increment := (assembler smallInteger: by) - 1.
+	assembler @ block.
+	message arguments third statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	nativizer temporaryInStackAt: current.
+	assembler
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonIncrementable;
+		addRconstant: increment;
+		jumpIfOverflowTo: overflow.
+	nativizer
+		temporaryInStackAtPut: current;
+		loadAwithStack: limit.
+	assembler
+		jumpTo: head;
+		@ continue.
+	nativizer dropTos;
+		addFallback: [ assembler
+				@ overflow;
+				subFromRconstant: increment;
+				@ nonIncrementable;
+				pushSmallInteger: 1.
+			nativizer
+				emitSend: #+;
+				temporaryInStackAtPut: current;
+				loadAwithStack: limit.
+			assembler jumpTo: head ];
+		addFallback: [ assembler
+				@ nonInteger;
+				pushA.
+			nativizer emitSend: #<=.
+			assembler
+				compareRwithTrue;
+				jumpIfEqualTo: block;
+				jumpTo: continue ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:28:37'!
+inlineToDo 
+	| head block continue nonInteger nonIncrementable overflow current limit |
+	head := assembler newLabel.
+	block := assembler newLabel.
+	continue := assembler newLabel.
+	nonInteger := assembler newLabel.
+	nonIncrementable := assembler newLabel.
+	overflow := assembler newLabel.
+	message receiver acceptVisitor: nativizer.
+	current := message arguments second inlinedArgs first.
+	nativizer temporaryInStackAtPut: current.
+	message arguments first acceptVisitor: nativizer.
+	limit := nativizer pushR.
+	assembler loadAwithR.
+	nativizer temporaryInStackAt: current.
+	assembler
+		alignTo: 16;
+		@ head;
+		testIntegerBitOf: assembler regA8;
+		jumpIfZeroTo: nonInteger;
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonInteger;
+		compareRwithA;
+		jumpIfGreaterSignedTo: continue;
+		@ block.
+	message arguments second statements
+		do: [ :s | s acceptVisitor: nativizer ].
+	nativizer temporaryInStackAt: current.
+	assembler
+		testIntegerBitOf: assembler regR8;
+		jumpIfZeroTo: nonIncrementable;
+		addRconstant: 2;
+		jumpIfOverflowTo: overflow.
+	nativizer
+		temporaryInStackAtPut: current;
+		loadAwithStack: limit.
+	assembler
+		jumpTo: head;
+		@ continue.
+	nativizer dropTos;
+		addFallback: [ assembler
+				@ overflow;
+				subFromRconstant: 2;
+				@ nonIncrementable;
+				pushSmallInteger: 1.
+			nativizer
+				emitSend: #+;
+				temporaryInStackAtPut: current;
+				loadAwithStack: limit.
+			assembler jumpTo: head ];
+		addFallback: [ assembler
+				@ nonInteger;
+				pushA.
+			nativizer emitSend: #<=.
+			assembler
+				compareRwithTrue;
+				jumpIfEqualTo: block;
+				jumpTo: continue ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:29:03'!
+inlineUnitaryWhile: aBoolean 
+	| continue failed |
+	start := assembler newLabel.
+	continue := assembler newLabel.
+	failed := assembler newLabel.
+	assembler
+		alignTo: 16;
+		@ start.
+	message receiver statements do: [ :s | s acceptVisitor: nativizer ].
+	assembler
+		compareRwithBoolean: aBoolean;
+		jumpIfEqualTo: start;
+		compareRwithBoolean: aBoolean not;
+		jumpIfNotEqualTo: failed;
+		@ continue.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: continue ]! !
+
+!InlinedMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 08:30:05'!
+negateBoolean 
+	| retry failed done |
+	retry := assembler newLabel.
+	failed := assembler newLabel.
+		done := assembler newLabel.
+	assembler
+		@ retry;
+		loadAwithR;
+		loadRwithFalse;
+		compareRwithA;
+		jumpIfEqualTo: done;
+		loadRwithTrue;
+		compareRwithA;
+		jumpIfNotEqualTo: failed; @done.
+	nativizer
+		addFallback: [ assembler @ failed.
+			nativizer sendMustBeBoolean.
+			assembler jumpTo: retry ]! !
+
+!InlinedMessageNativizer methodsFor: 'accessing' stamp: 'KenD 3/7/2021 08:21:40'!
+assembler: anAssembler 
+
+	assembler := anAssembler ! !
+
+!InlinedMessageNativizer methodsFor: 'accessing' stamp: 'KenD 3/7/2021 08:29:18'!
+message: aMessageAstcode 
+
+	message := aMessageAstcode ! !
+
+!InlinedMessageNativizer methodsFor: 'accessing' stamp: 'KenD 3/7/2021 08:29:26'!
+nativizer: anAstcodeNativizer 
+
+	nativizer := anAstcodeNativizer ! !
+
 !InstructionPrefix methodsFor: 'writing' stamp: 'KenD 2/27/2021 13:16:29'!
 writeOn: anInstruction 
 
@@ -5708,6 +6256,11 @@ environmentType
 
 	^LocalArgument! !
 
+!InlinedArgEnvironment methodsFor: 'testing' stamp: 'KenD 3/7/2021 08:17:09'!
+isInlinedArgument 
+
+	^true! !
+
 !MessageLinker methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:39:52'!
 filter: anObject 
 
@@ -5754,6 +6307,909 @@ dispatchLinkerFor: selector
 emitSend: aSymbol using: anAssembler 
 
 	anAssembler breakpoint! !
+
+!InlineMessageLinker methodsFor: 'accessing' stamp: 'KenD 3/7/2021 08:34:48'!
+supported 
+	| selectors |
+	selectors := self organization selectorsFor: #'private - assemble'.
+	^selectors collect: [:selector | | cm |
+		cm := self >> selector.
+		cm literals last -> selector]. ! !
+
+!InlineMessageLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 11:50:49'!
+emitByteAtOffset: offset 
+
+	assembler
+		loadZeroExtendByteRwithRindex: offset + 1;
+		convertRtoSmallInteger ! !
+
+!InlineMessageLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 11:51:25'!
+emitByteAtOffsetPut: offset 
+	| nonInteger |
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		storeByteAinRindex: offset + 1;
+		@ nonInteger ! !
+
+!InlineMessageLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 11:51:38'!
+emitSend: aSymbol using: anAssembler 
+	| arity selector | 
+	assembler := anAssembler.
+	arity := aSymbol arity. 
+	arity > 2 ifTrue: [assembler pop: assembler regS].
+	arity > 1 ifTrue: [assembler pop: assembler regT].
+	arity > 0 ifTrue: [assembler pop: assembler regA].
+	self assert: arity <= 3 .
+	selector := map at: aSymbol.
+	self perform: selector! !
+
+!InlineMessageLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/7/2021 11:51:53'!
+emitSendDebuggable: aSymbol using: anAssembler 
+
+	self emitSend: aSymbol using: anAssembler ! !
+
+!InlineMessageLinker methodsFor: 'initialization' stamp: 'KenD 3/7/2021 11:52:17'!
+initialize 
+
+	map := self class supported asDictionary.
+	self filter: map keys asIdentitySet! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:35:12'!
+assembleAsFloatInto 
+
+	#_asFloatInto:.
+	assembler
+		loadX0withRasDouble;
+		storeLargeX0inA.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:35:26'!
+assembleAsNative 
+	| noninteger |
+	#_asNative.
+	noninteger := assembler labeledIntegerBitTestOfR.
+	assembler
+		convertRtoNativeInteger;
+		@ noninteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:35:40'!
+assembleAsObject 
+	#_asObject.
+	assembler clearSafeRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:35:52'!
+assembleAsPointer 
+	| nonInteger |
+	#_asPointer.
+	nonInteger := assembler labeledIntegerBitTestOfR.
+	assembler
+		convertRtoNativeInteger;
+		@ nonInteger;
+		ensureSafeRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:45:41'!
+assembleAsSmallInteger 
+
+	#_asSmallInteger.
+	assembler convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:36:34'!
+assembleBasicAt 
+	| oop |
+	#_basicAt:.
+	oop := assembler labeledIntegerNativizationOfA.
+	assembler
+		loadRwithRatA;
+		@ oop! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:36:49'!
+assembleBasicAtPut 
+	| nonInteger |
+	#_basicAt:put:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		storeTinRatA;
+		@ nonInteger;
+		loadRwithT! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:37:05'!
+assembleBasicCopyFromToWith 
+
+	#_basicCopyFrom:to:with:.
+	assembler
+		pushE;
+		convertAtoNativeInteger;
+		convertTtoNativeInteger;
+		loadEwithAddressOfRatA;
+		loadSwithAddressOfSatA;
+		subAfromT;
+		addToTconstant: 1;
+		moveTslots;
+		popE! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:37:21'!
+assembleBasicFlags 
+
+	#_basicFlags.
+	self emitByteAtOffset: _Flags! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:37:32'!
+assembleBasicFlagsPut 
+
+	#_basicFlags:.
+	self emitByteAtOffsetPut: _Flags! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:37:44'!
+assembleBasicHash 
+
+	#_basicHash.
+	assembler
+		loadZeroExtendShortRwithRoffset: _Hash;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:37:56'!
+assembleBasicHashPut 
+	| nonInteger |
+	#_basicHash:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		storeShortAinRoffset: _Hash;
+		@ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:38:25'!
+assembleBasicSize 
+
+	#_smallSize.
+	self emitByteAtOffset: _SmallSize! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:38:21'!
+assembleBasicSizePut 
+
+	#_smallSize:.
+	self emitByteAtOffsetPut: _SmallSize! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:38:35'!
+assembleBasicULongAt 
+	| nonInteger |
+	#_basicULongAt:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		loadZeroExtendLongRwithRatA;
+		@ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:38:48'!
+assembleBasicULongAtPut 
+	| nonInteger |
+	#_basicULongAt:put:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		storeLongTinRatA;
+		@ nonInteger;
+		loadRwithT! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:39:00'!
+assembleBeCurrent 
+
+	#_beCurrent.
+	assembler
+		loadRwithRindex: 1;
+		clearSafeRintegerBit;
+		loadFPwithR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:39:11'!
+assembleBeEnvironment 
+
+	#_beEnvironment.
+	assembler loadEwithR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:39:22'!
+assembleBeFramePointer 
+
+	#_beFramePointer.
+	assembler storeRinFPindex: 1! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:39:34'!
+assembleBitShiftLeft 
+	| success |
+	#_bitShiftLeft:.
+	success := assembler newLabel.
+	assembler
+		loadTwithA;
+		loadAwithR;
+		clearSafeRintegerBit;
+		convertTtoNativeInteger;
+		shiftLeftRwithT;
+		ensureSafeRintegerBit;
+		pushR;
+		shiftRightRwithT;
+		ensureSafeRintegerBit;
+		compareRwithA;
+		popR;
+		shortJumpIfEqualTo: success;
+		loadRwithNil;
+		@ success! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:39:51'!
+assembleBitShiftRight 
+
+	#_bitShiftRight:.
+	assembler
+		move: assembler regA to: assembler regT;
+		convertToNativeInteger: assembler regT;
+		shiftRight: assembler regR by: assembler regT b;
+		setIntegerBit: assembler regR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:40:01'!
+assembleBusyWait 
+	| loop |
+	#_busyWait.
+	loop := assembler newLabel.
+	assembler
+		loadTwithImmediate: 0;
+		@ loop;
+		exchangeRindirectWithT;
+		compareTwithImmediate: 0;
+		shortJumpIfEqualTo: loop! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:40:15'!
+assembleByteAt 
+	| nonInteger |
+	#_byteAt:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		loadZeroExtendByteRwithRatA;
+		convertRtoSmallInteger;
+		@ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:40:30'!
+assembleByteAtPut 
+	| nonInteger1 nonInteger2 |
+	#_byteAt:put:.
+	nonInteger1 := assembler labeledIntegerNativizationOfA.
+	nonInteger2 := assembler labeledIntegerNativizationOfT.
+	assembler
+		storeByteTinRatA;
+		@ nonInteger1;
+		@ nonInteger2;
+		loadRwithT;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:41:19'!
+assembleCDeclCallWithArguments 
+
+	#_cdeclCallWithArguments:.
+	assembler
+		loadZeroExtendByteTwithAindex: _SmallSize + 1;
+		shiftTright: assembler wordSizeShift;
+		pushS;
+		saveCallerFrame;
+		subTslotsToSP;
+		assemble: 'and' with: assembler regSP with: -16;
+		loopTtimes: [ assembler
+				load: assembler regS
+					from: assembler regA
+					atIndexAt: assembler regT;
+				store: assembler regS 
+					in: assembler regSP 
+					indexAt: assembler regT ].
+	assembler addressSize = 8
+		ifTrue: [ self loadArgumentsIntoRegisters ].
+	assembler
+		callR;
+		restoreCallerFrame;
+		popS! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:41:43'!
+assembleCallWithArguments 
+
+	#_stdcallWithArguments:.
+	assembler
+		loadZeroExtendByteTwithAindex: _SmallSize + 1;
+		shiftTright: assembler wordSizeShift;
+		loopTtimes: [ assembler pushAatToffset: 0 - assembler addressSize ].
+	assembler addressSize = 8
+		ifTrue: [ self loadArgumentsIntoRegisters ].
+	assembler callR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:41:55'!
+assembleEnvironment 
+
+	#_environment.
+	assembler loadRwithE! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:42:06'!
+assembleExpandInStackSized 
+
+	#_expandInStackSized:.
+	assembler
+		convertAtoNativeInteger;
+		loadTwithA;
+		loopTtimes: [ assembler
+				pushIndirectR;
+				addRconstant: assembler addressSize ]! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:42:17'!
+assembleExtendedSize 
+
+	#_largeSize.
+	assembler
+		loadZeroExtendLongRwithRindex: _ExtendedSize;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:42:37'!
+assembleFloatEquals 
+"
+	first compare magnitudes to set error bit if NaN
+"
+	#_floatEquals:.
+	assembler
+		pushR;
+		loadLargeX0withRindirect;
+		compareLessThanLargeX0withAindirect;
+		popR;
+		loadLargeX0withRindirect;
+		compareEqualLargeX0withAindirect;
+		loadRwithX0;
+		addRconstant: 1;
+		convertRtoSmallInteger.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:42:53'!
+assembleFloatFractionPartInto 
+
+	#_floatFractionPartInto:.
+	assembler
+		loadLargeX0withRindirect;
+		loadX1roundingX0;
+		subDoubleX1fromX0;
+		storeLargeX0inA.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:43:08'!
+assembleFloatLessThan 
+
+	#_floatLessThan:.
+	assembler
+		loadLargeX0withRindirect;
+		compareLessThanLargeX0withAindirect;
+		loadRwithX0;
+		addRconstant: 1;
+		convertRtoSmallInteger.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:43:17'!
+assembleFloatMinusInto 
+
+	#_floatMinus:into:.
+	assembler
+		loadLargeX0withRindirect;
+		loadLargeX1withAindirect;
+		subDoubleX1fromX0;
+		storeLargeX0inT.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:43:30'!
+assembleFloatMultiplyInto 
+
+	#_floatMultiply:into:.
+	assembler
+		loadLargeX0withRindirect;
+		loadLargeX1withAindirect;
+		multiplyDoubleX0byX1;
+		storeLargeX0inT.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:43:42'!
+assembleFloatPlusInto 
+
+	#_floatPlus:into:.
+	assembler
+		loadLargeX0withRindirect;
+		loadLargeX1withAindirect;
+		addDoubleX1toX0;
+		storeLargeX0inT.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:43:54'!
+assembleFloatQuotientInto 
+
+	#_floatQuotient:into:.
+	assembler
+		loadLargeX0withRindirect;
+		loadLargeX1withAindirect;
+		divideDoubleX0byX1;
+		storeLargeX0inT.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:44:09'!
+assembleFloatSqrtInto 
+
+	#_floatSqrtInto:.
+	assembler
+		loadLargeX0withRindirect;
+		sqrtDoubleX0;
+		storeLargeX0inA.
+	self readFloatStatus! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:44:22'!
+assembleFloatTruncated 
+
+	#_floatTruncated.
+	assembler loadRconvertingDoublePointedByR.
+	self readFloatStatus.
+	assembler convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:48:53'!
+assembleFramePointer 
+
+	#_framePointer.
+	assembler loadRwithFPindex: 1! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:49:06'!
+assembleGetTIBValue 
+	| nonInteger |
+	#_getThreadInformationBlockValue.
+	nonInteger := assembler labeledIntegerNativizationOfR.
+	assembler
+		loadRwithTIBatIndexR;
+		@ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 08:49:31'!
+assembleGetThreadValue 
+	| nonInteger uninitialized |
+		#_getThreadValue.
+	nonInteger := assembler labeledIntegerNativizationOfR.
+	uninitialized := assembler newLabel.
+	assembler
+		loadRwithThreadVariableAtIndexR;
+		compareRwithImmediate: 0;
+		shortJumpIfEqualTo: uninitialized.
+	assembler
+		jumpOver: [ assembler
+				@ uninitialized;
+				@ nonInteger;
+				loadRwithNil ]
+! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:40:07'!
+assembleHigh16 
+
+	#_high16.
+	assembler wordSize > 4
+		ifTrue: [ assembler clearRhighHalf ].
+	assembler
+		shiftRright: 15;
+		ensureSafeRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:40:20'!
+assembleHigh32 
+
+	#_high32.
+	assembler
+		shiftLogicalRright: 31;
+		ensureSafeRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:40:32'!
+assembleHoldRefererIfNeeded 
+
+	#_holdRefererIfNeeded:.
+	assembler
+		pushA;
+		loadAwithGlobal: #WriteBarrier;
+		callIndirectA;
+		popA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:40:47'!
+assembleIntegerMultiplyByInto 
+
+	#_integerMultiplyBy:into:.
+	assembler
+		convertRtoNativeInteger;
+		convertAtoNativeInteger;
+		multiplyRbyA;
+		storeRinTindex: 1;
+		storeAinTindex: 2;
+		loadRwithT! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:40:59'!
+assembleInvoke 
+
+	#_invoke:.
+	assembler
+		loadMwithA;
+		callIndirectM! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:41:26'!
+assembleLoadFloatStatusFrom 
+
+	#_status:.
+	assembler loadMXCSRfromA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:41:36'!
+assembleLow16 
+
+	#_low16.
+	assembler
+		andRwithImmediate: 16rFFFF;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:41:48'!
+assembleLow32 
+
+	#_low32.
+	assembler wordSize > 4
+		ifTrue: [ assembler
+				andRwithImmediate: 16rFFFFFFFF;
+				convertRtoSmallInteger ]! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:41:57'!
+assembleNativeHalt 
+
+	#_halt.
+	assembler breakpoint! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:42:10'!
+assembleNilSlots 
+
+	#_nilSlots:.
+	assembler
+		pushE;
+		loadEwithR;
+		loadRwithNil;
+		loadTwithA;
+		convertTtoNativeInteger;
+		writeTslots;
+		popE! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:42:29'!
+assembleObjectAtOffset 
+	| nonInteger1 |
+	#_objectAtOffset:.
+	nonInteger1 := assembler labeledIntegerNativizationOfA.
+	assembler
+		loadRwithRatOffsetA;
+		@ nonInteger1! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:42:41'!
+assembleObjectAtOffsetPut 
+	| oop |
+	#_objectAtOffset:put:.
+	oop := assembler labeledIntegerNativizationOfA.
+	assembler
+		storeTinRatOffsetA;
+		@ oop;
+		loadRwithT;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:42:55'!
+assembleOop 
+
+	#_oop.
+	^ assembler convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:43:04'!
+assembleQuotientTowardZero 
+
+	#_quotientTowardZero:.
+	assembler
+		convertRtoNativeInteger;
+		convertAtoNativeInteger;
+		loadTwithA;
+		divideRbyT;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:43:14'!
+assembleRelease 
+
+	#_release.
+	assembler
+		lock;
+		decRindirect! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:43:28'!
+assembleRemainderTowardZero 
+	| adapt convert |
+	#_remainderTowardZero:.
+	adapt := assembler newLabel.
+	convert := assembler newLabel.
+	assembler
+		convertRtoNativeInteger;
+		convertAtoNativeInteger;
+		loadTwithA;
+		xorAwithR;
+		jumpIfSignTo: adapt;
+		divideRbyT;
+		loadRwithA;
+		jumpTo: convert;
+		@ adapt;
+		divideRbyT;
+		loadRwithA;
+		testRwithR;
+		jumpIfZeroTo: convert;
+		addTtoR;
+		@ convert;
+		convertRtoSmallInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:43:47'!
+assembleRestore 
+
+	#_restore.
+	assembler loadEwithR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:44:02'!
+assembleRestoreAndTransferControlWithContext 
+
+	#_restoreAndTransferControlWithContext:.
+	assembler
+		clearSafeRintegerBit;
+		loadFPwithR;
+		loadSPwithFP;
+		loadRwithA;
+		clearSafeRintegerBit;
+		loadFPwithR;
+		popR;
+		loadEwithR;
+		restoreCallerSelf;
+		restoreCallerM;
+		loadRwithS;
+		return: 0
+! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:44:20'!
+assembleRestoreWithContext 
+
+	#_restoreWithContext:.
+	assembler
+		clearSafeRintegerBit;
+		loadFPwithR;
+		loadSPwithFP;
+		loadRwithA;
+		clearSafeRintegerBit;
+		loadFPwithR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:44:29'!
+assembleSaveCurrentEnvironment 
+
+	#_saveCurrentEnvironment.
+	assembler
+		clearSafeRintegerBit;
+		pushE;
+		popT;
+		storeTinRindex: 1;
+		ensureSafeRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:44:40'!
+assembleSetTIBValue 
+
+	#_setThreadInformationBlockValue:.
+	assembler
+		convertRtoNativeInteger;
+		storeTIBwithAatIndexR! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:45:51'!
+assembleSetThreadValue 
+	| nonInteger |
+	#_setThreadValue:.
+	nonInteger := assembler labeledIntegerNativizationOfR.
+	assembler
+		storeAinThreadVariableAtIndexR;
+		convertRtoSmallInteger.
+	assembler @ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:45:09'!
+assembleSmallIntegerByteAt 
+	| nonInteger |
+	#_smallIntegerByteAt:.
+	nonInteger := assembler labeledIntegerNativizationOfA.
+	assembler
+		convertRtoNativeInteger;
+		pushR;
+		loadZeroExtendByteRwithSPatA;
+		convertRtoSmallInteger;
+		popA;
+		@ nonInteger! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:46:02'!
+assembleStoreDoubleResult 
+
+	#_storeDoubleResult.
+	assembler storeDoubleResultInRindirect! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:46:12'!
+assembleStoreFloatStatusInto 
+
+	#_readStatusOn:.
+	assembler storeMXCSRintoA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:46:22'!
+assembleTestSmallInteger 
+	| integer |
+	#_isSmallInteger.
+	integer := assembler newLabel.
+	assembler
+		testPropertyAt;
+		loadRwithTrue;
+		shortJumpIfNotZeroTo: integer;
+		loadRwithFalse;
+		@ integer! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:46:44'!
+assembleThisContext 
+
+	#_thisContext.
+	assembler loadRwithFP ensureRintegerBit! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:48:00'!
+assembleTimesTwoPower 
+
+	#_timesTwoPower:.
+	assembler clearFPUFlags scaleFloatOnRWithA clearFPUFlags! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:48:15'!
+assembleTransferControlDiscardingLastArgTo 
+
+	#_transferControlDiscardingLastArgTo:.
+	assembler
+		restoreCallerFrame;
+		popSPindirect;
+		loadMwithA;
+		jumpToMindex: 1! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:48:29'!
+assembleTransferControlTo 
+
+	#_transferControlTo:.
+	assembler restoreCallerFrame; loadMwithA; jumpToMindex: 1! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:48:48'!
+assembleULargeAtOffset 
+	| overflow1 overflow2 end |
+	#_uLargeAtOffset:.
+	overflow1 := assembler newLabel.
+	overflow2 := assembler newLabel.
+	end := assembler newLabel.
+	assembler
+		convertAtoNativeInteger;
+		loadRwithRatOffsetA;
+		shiftRleft: 1;
+		shortJumpIfCarryTo: overflow1;
+		shortJumpIfSignTo: overflow2;
+		ensureRintegerBit;
+		shortJumpTo: end.
+	assembler
+		@ overflow1;
+		@ overflow2;
+		loadRwithNil;
+		@ end! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:49:12'!
+assembleULargeAtOffsetInto 
+
+	#_uLargeAtOffset:into:.
+	assembler
+		convertAtoNativeInteger;
+		loadAwithRoffsetAtA;
+		storeAinTindex: 1;
+		loadRwithT! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:49:26'!
+assembleULargeAtOffsetPut 
+	| end notSmall |
+	#_uLargeAtOffset:put:.
+	notSmall := assembler
+		convertAtoNativeInteger;
+		labeledIntegerBitTestOfT.
+	end := assembler newLabel.
+	assembler
+		convertTtoNativeInteger;
+		shortJumpTo: end;
+		@ notSmall;
+		loadTwithTindex: 1;
+		@ end;
+		storeTinRatOffsetA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:49:41'!
+assembleULongAtOffset 
+	| overflow1 overflow2 end |
+	#_uLongAtOffset:.
+	overflow1 := assembler newLabel.
+	overflow2 := assembler newLabel.
+	end := assembler newLabel.
+	assembler
+		convertAtoNativeInteger;
+		loadLongRwithRatOffsetA;
+		shiftRleft: 1;
+		shortJumpIfCarryTo: overflow1;
+		shortJumpIfSignTo: overflow2;
+		ensureRintegerBit;
+		shortJumpTo: end.
+	assembler
+		@ overflow1;
+		@ overflow2;
+		loadRwithNil;
+		@ end! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:49:57'!
+assembleULongAtOffsetInto 
+
+	#_uLongAtOffset:into:.
+	assembler
+		convertAtoNativeInteger;
+		loadLongRwithRatOffsetA;
+		storeRinTindex: 1;
+		loadRwithT! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:50:10'!
+assembleULongAtOffsetPut 
+	| end oop |
+	#_uLongAtOffset:put:.
+	oop := assembler
+		convertAtoNativeInteger;
+		labeledIntegerBitTestOfT.
+	end := assembler newLabel.
+	assembler
+		convertTtoNativeInteger;
+		shortJumpTo: end;
+		@ oop;
+		loadTwithTindex: 1;
+		@ end;
+		storeLongTinRatOffsetA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:50:27'!
+assembleUShortAtOffsetPut 
+	| end notSmall |
+	#_uShortAtOffset:put:.
+	notSmall := assembler
+		convertAtoNativeInteger;
+		labeledIntegerBitTestOfT.
+	end := assembler newLabel.
+	assembler
+		convertTtoNativeInteger;
+		shortJumpTo: end.
+	assembler
+		@ notSmall;
+		loadTwithTindex: 1;
+		@ end;
+		storeShortTinRatOffsetA! !
+
+!InlineMessageLinker methodsFor: 'private - assemble' stamp: 'KenD 3/7/2021 11:50:38'!
+assembleZeroSlots 
+	#_zeroSlots:.
+	assembler
+		pushE;
+		loadEwithR;
+		loadRwithImmediate: 0;
+		loadTwithA;
+		convertTtoNativeInteger;
+		writeTslots;
+		popE! !
+
+!InlineMessageLinker methodsFor: 'private - helpers' stamp: 'KenD 3/7/2021 11:56:05'!
+loadArgumentsIntoRegisters 
+
+	assembler
+		load: RCX from: RSP atIndex: 1;
+		load: RDX from: RSP atIndex: 2;
+		load: R8 from: RSP atIndex: 3;
+		load: R9 from: RSP atIndex: 4;
+		assemble: 'movq' with: XMM0 with: RCX;
+		assemble: 'movq' with: XMM1 with: RDX;
+		assemble: 'movq' with: XMM2 with: R8;
+		assemble: 'movq' with: XMM3 with: R9 ! !
+
+!InlineMessageLinker methodsFor: 'private - helpers' stamp: 'KenD 3/7/2021 11:57:22'!
+readFPUStatus 
+
+	assembler
+		loadAwithKnown: #FloatStatus;
+		readFPUStatusOnA! !
+
+!InlineMessageLinker methodsFor: 'private - helpers' stamp: 'KenD 3/7/2021 11:57:36'!
+readFloatStatus 
+
+	assembler
+		loadAwithKnown: #FloatStatus;
+		storeMXCSRintoA! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -11537,6 +12993,7 @@ on: aByteArray
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
+InlineMessageLinkerFlags initialize!
 ObjectHeaderMasks initialize!
 ObjectHeaderOffsets initialize!
 OperandTypeFlags initialize!
