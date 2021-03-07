@@ -1,0 +1,206 @@
+==============================================
+Notes for Hitchhikers Guide to the Bee Runtime
+==============================================
+
+/bootstrap/src/Powerlang-Core/
+SmalltalkInterpreter.class.st:
+ underprimitives := #(_basicAt: #_basicAt:put: _byteAt: #_byteAt:put:
+ 		_smallSize _largeSize _isSmallInteger _basicHash _basicHash:)
+
+/bootstrap/src/Powerlang-Core/
+VirtualSmalltalkRuntime.class.st:
+ Undermessages := #(_basicAt: #_basicAt:put: _bitShiftLeft: _byteAt: #_byteAt:put:
+ 	       _smallSize _largeSize _isSmallInteger _basicHash _basicHash:
+               _smallIntegerByteAt: _uShortAtOffset: #_uShortAtOffset:put:)
+
+bootstrap/specs/bee-dmr/Kernel/ProtoObject.st:
+{ #category : #underprimitives }
+_basicAt
+_highHalf
+_low32
+_lowHalf
+_oop  [	^self _asPointer * 2 ]   'Nota Bene!'
+primitiveSize
+smallOop
+
+
+bootstrap/specs/bee-dmr/Kernel/ProtoObject.st:{ #category : #private }
+ProtoObject class >> staticSelectors [
+	"
+	(NativizationEnvironment primitiveObjectMethods collect: #selector) sort
+	"
+	^#(
+_beArrayed _beBytes _beLarge _beNamed _beNotRemembered _beRemembered _beSecondGeneration
+_beSeen _beSmall _beSpecial _beNotSpecial _beUnseen
+_copyBasicHeaderFrom: _copyHeaderSized:from:
+_flagsMask: _flagsSet:
+_hasBeenSeen _headerSizeInBytes
+_isArrayed _isBit1Set _isBytes _isEphemeron _isFixed _isLarge _hasNamedSlots _isProxy _isRemembered
+_isSecondGeneration _isSmall _isSpecial _largeSize:
+_maskBit1 _nextBasePointer _objectFromBasePointer _pointersSize
+_setBit1 _size _sizeInBytes _strongPointersSize )
+]
+
+=========================
+Powerlang-Core/InlineMessageLinker.class.st:InlineMessageLinker >> assembleAsPointer [
+Powerlang-Core/InlineMessageLinker.class.st:    #_asPointer.
+Powerlang-Core/OptimizingCodeEmitter.class.st:OptimizingCodeEmitter >> assembleAsPointer: asNativeSend [
+Powerlang-Core/OptimizingCodeEmitter.class.st:          at: #_asPointer put: #AsPointer;
+Powerlang-Core/OptimizingInstructionFragmenter.class.st:                at: #_asPointer put: #Unary:;
+Powerlang-Core/OptimizingTwoAddressEnforcer.class.st:   (#(_asNative _asObject _asPointer _asSmallInteger)
+=========================
+bootstrap/specs/bee-dmr/Nativization/OCompiler/
+{ #category : #unclassified }
+OptimizingTwoAddressEnforcer >> visitUnary: instruction [
+	| receiver dest |
+	(#(_asNative _asObject _asPointer _asSmallInteger)
+		includes: instruction name)
+		ifFalse: [^self].
+	receiver := allocation at: instruction receiver.
+	dest := allocation at: instruction.
+	receiver == dest ifTrue: [^self].
+	self convert: instruction copyingReceiverInto: dest
+]
+=========================
+{ #category : #unclassified }
+OptimizingTwoAddressEnforcer >> convert: instruction copyingReceiverInto: dest [
+	| load |
+	load := OUnaryOperation receiver: instruction receiver name: #copy.
+	instruction receiver
+		addUse: load at: #receiver;
+		removeUse: instruction.
+	instruction beforeInsert: load; receiver: load.
+	allocation at: load put: dest
+]
+
+=========================
+bootstrap/src/Powerlang-Core/DMRBootstrapper.class.st:
+{ #category : #initialization }
+DMRBootstrapper >> inlinedMethods [
+	| map |
+	map := {(#ProtoObject
+	->
+	#(#objectAtValid: #objectAtValid:put: #behavior #class #primitiveAt: #_cachedLookup: #_cachedLookup:in:)).
+	(#Object
+	->
+	#(#byteAtValid: #byteAtValid:put: #basicObjectIndexOf: #at:put:)).
+	(#Species
+	->
+	#(#instSize #_instancesAreArrayed #_instancesHavePointers #memory #instanceBehavior
+		#primitiveNew #primitiveNew:)).
+	(#CompiledMethod
+	->
+	#(#prepareForExecution #isNativized #nativeCode #blockCount #literalIndexFrom:)).
+	(#CompiledBlock
+	-> #(#argumentCount #blockNumber #blockCode #method)).
+	(#NativeCode
+	-> #(#code)).
+	(#GCSpace
+	-> #(#commitedLimit #nextFree #nextFree:)).
+	(#CharacterArray
+	-> #(#characterAtValid:))}.
+	^ builder undermethods , (builder methodSubset: map)
+]
+
+===========
+
+{ #category : #initialization }
+DMRBootstrapper >> optimizedMethods [
+	| map |
+	map := {(#ProtoObject
+	->
+	 #(behavior class primitiveAt: #primitiveAt:put: #initializeExtended:contentSize:)).
+	(#Object
+	->
+	 #(at: #at:put: basicByteAt: #basicByteAt:put: byteAtValid: #byteAtValid:put:
+	basicObjectAt: #basicObjectAt:put: #replaceBytesForwardFrom:to:with:startingAt:)).
+	(#SendSite
+	->
+	 #(_dispatchOn: #_dispatchOn:startingAt: _dispatchDebuggableOn: #_dispatchDebuggableOn:startingAt:)).
+	(#Species
+	->
+	 #(#allocate:size: primitiveNew primitiveNew: instSize primitiveNewBytes: primitiveNewPointers:)).
+	(#'Float class'
+	-> #(new)).
+	(#CompiledBlock
+	-> #(argumentCount arity blockCode method)).
+	(#Closure
+	-> #(value value: #value:value:)).
+	(#CompiledMethod
+	-> #(blockCount isNativized)).
+	(#String
+	-> #(at: #at:put: byteAt: #byteAt:put:)).
+	(#GCSpace
+	-> #(lockedAllocateIfPossible: lockedAllocateUnsafe: shallowCopy:)).
+	(#Memory
+	-> #(shallowCopy:))}.
+	^ builder undermethods , (builder methodSubset: map)
+]
+=========================
+{ #category : #initialization }
+DMRBootstrapper >> initializeNativizerGlobals [
+	| smi items |
+	smi := image classNamed: #SmallInteger.
+	nativizer globalNamed: #SmallIntegerBehavior put: smi behavior.
+	items := {
+	(#Lookup	-> (NativeCode new code: 'Lookup Placeholder')).
+	(#LookupSuper	-> (NativeCode new code: 'LookupSuper Placeholder')).
+	(#DebuggableLookup
+			-> (NativeCode new code: 'DebuggableLookup placeholder')).
+	(#DebuggableLookupSuper
+			-> (NativeCode new code: 'DebuggableLookupSuper placeholder')).
+	(#Invoke 	-> (NativeCode new code: 'Invoke placeholder')).
+	(#Safepoint 	-> (NativeCode new code: 'SafepointCheck placeholder')).
+	(#WriteBarrier 	-> (NativeCode new code: 'Write Barrier placeholder'))}
+		asDictionary.
+	items
+		keysAndValuesDo: [ :key :placeholder | nativizer globalNamed: key put: placeholder ]
+]
+=========================
+{ #category : #initialization }
+DMRBootstrapper >> invokedMethods [
+	| map |
+	map := {
+	(#ProtoObject
+		 -> #(behavior class primitiveAt: #initializeExtended:contentSize:)).
+	(#Object -> #(#_replaceFrom:to:with:)).
+	(#Species ->
+	  #(#allocate:size: instanceBehavior _instancesAreArrayed _instancesHavePointers
+	    #nil:slotsOf: memory primitiveNewBytes: primitiveNewPointers: #zero:bytesOf:))}.
+
+	^ builder undermethods , (builder methodSubset: map)
+]
+=========================
+{ #category : #initialization }
+DMRBootstrapper >> nativizeInvoke [
+	| invoke |
+	invoke := builder compile: builder => #SendSite >> #_invokeOn:.
+	nativizer nativizeOptimizing: invoke.
+	self transfer: invoke in: #ProtoObject asNativizerGlobal: #Invoke
+]
+=========================
+{ #category : #initialization }
+DMRBootstrapper >> nativizeLookup [
+	| n transferred species lookup lookupSuper |
+	n := LookupNativizer new
+		bootstrapper: self;
+		nativizeMethods.
+	lookup := n methodFor: #_dispatchOn:.
+	lookupSuper := n methodFor: #_dispatchOn:startingAt:.
+	n methods
+		do: [ :m | 
+			species := image speciesFor: image => m classBinding name.
+			transferred := builder transferMethod: m in: species.
+			image map: m to: transferred ];
+		do: [ :m | 
+			transferred := image surrogateFor: m.
+			self transferNativeCode: m nativeCode of: transferred ].
+	transferred := (image surrogateFor: lookup) nativeCode.
+	self mapNativizerGlobal: #Lookup to: transferred.
+	transferred := (image surrogateFor: lookupSuper) nativeCode.
+	self mapNativizerGlobal: #LookupSuper to: transferred
+]
+=========================
+bootstrap/src/Powerlang-Core/MethodEvaluator.class.st has complete St Eval !!
+bootstrap/src/Powerlang-Core/InlineMessageLinker.class.st has instruction macro-assembler!!
+=========================
