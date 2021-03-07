@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 7 March 2021 at 11:57:44 am'!
+'From Cuis 5.0 [latest update: #4530] on 7 March 2021 at 1:46:01 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 27!
+!provides: 'Powerlang-Core' 1 28!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -25,6 +25,16 @@ PSharedPool subclass: #AstNodeTypes
 	category: 'Powerlang-Core'!
 !classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core'!
 AstNodeTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
+PSharedPool subclass: #CharacterConstants
+	instanceVariableNames: ''
+	classVariableNames: 'Cr Lf Space Tab'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
+CharacterConstants class
 	instanceVariableNames: ''!
 
 !classDefinition: #ClosureElementTypes category: 'Powerlang-Core'!
@@ -527,6 +537,16 @@ Object subclass: #InlinedMessageNativizer
 InlinedMessageNativizer class
 	instanceVariableNames: ''!
 
+!classDefinition: #InstructionEncoder category: 'Powerlang-Core'!
+Object subclass: #InstructionEncoder
+	instanceVariableNames: 'instruction spec stream prefixes rex vex opcode modrm sib displacement immediate immediate2 wordSize'
+	classVariableNames: 'Cache'
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'InstructionEncoder class' category: 'Powerlang-Core'!
+InstructionEncoder class
+	instanceVariableNames: ''!
+
 !classDefinition: #InstructionPrefix category: 'Powerlang-Core'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
@@ -545,6 +565,16 @@ InstructionPrefix subclass: #SegmentPrefix
 	category: 'Powerlang-Core'!
 !classDefinition: 'SegmentPrefix class' category: 'Powerlang-Core'!
 SegmentPrefix class
+	instanceVariableNames: ''!
+
+!classDefinition: #InstructionSpec category: 'Powerlang-Core'!
+Object subclass: #InstructionSpec
+	instanceVariableNames: 'opcode primary extension instruction opEncoding properties implicitRead implicitWrite implicitUndef useful protected mode compat features atnt preferred description prefixes mnemonic operands'
+	classVariableNames: 'Specs'
+	poolDictionaries: 'CharacterConstants'
+	category: 'Powerlang-Core'!
+!classDefinition: 'InstructionSpec class' category: 'Powerlang-Core'!
+InstructionSpec class
 	instanceVariableNames: ''!
 
 !classDefinition: #LocalEnvironment category: 'Powerlang-Core'!
@@ -927,6 +957,16 @@ EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
 EnsureRSmallInteger class
 	instanceVariableNames: ''!
 
+!classDefinition: #OperandEncoding category: 'Powerlang-Core'!
+Object subclass: #OperandEncoding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'OperandEncoding class' category: 'Powerlang-Core'!
+OperandEncoding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SBinding category: 'Powerlang-Core'!
 Object subclass: #SBinding
 	instanceVariableNames: ''
@@ -1272,6 +1312,13 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!InstructionEncoder commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific
+!
+
 !InstructionPrefix commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
@@ -1279,6 +1326,12 @@ Copyright (c) 2020 Aucerna.
 Nota Bene: Intel/x86 specific!
 
 !SegmentPrefix commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: Intel/x86 specific!
+
+!InstructionSpec commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
@@ -1372,6 +1425,12 @@ printOn: aStream
 name 
 
 	^name! !
+
+!InstructionSpec methodsFor: 'printing' stamp: 'KenD 3/7/2021 13:16:59'!
+printOn: aStream 
+
+	instruction isNil ifTrue: [^super printOn: aStream].
+	aStream nextPutAll: instruction! !
 
 !MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
 printOn: aStream 
@@ -1725,6 +1784,14 @@ initialize
 	AssignmentId := 8.
 	ReturnId := 9.
 	PragmaId := 10! !
+
+!CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 12:37:28'!
+initialize 
+
+	Cr        := Character cr.
+	Lf        := Character lf.
+	Tab     := Character tab.
+	Space := Character space.! !
 
 !ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:07:20'!
 initialize 
@@ -6049,6 +6116,559 @@ nativizer: anAstcodeNativizer
 
 	nativizer := anAstcodeNativizer ! !
 
+!InstructionEncoder methodsFor: 'caching' stamp: 'KenD 3/7/2021 12:09:00'!
+checkCache64 
+
+	Cache keysAndValuesDo: [:k :v | | s |
+		s := InstructionSpec
+			bestMatchForMnemonic: k mnemonic
+			operands: k operands
+			wordSize: 8.
+		self assert: s = v]! !
+
+!InstructionEncoder methodsFor: 'caching' stamp: 'KenD 3/7/2021 12:09:33'!
+initializeCache 
+
+	Cache := Dictionary new! !
+
+!InstructionEncoder methodsFor: 'caching' stamp: 'KenD 3/7/2021 12:09:42'!
+invalidateCache 
+
+	Cache removeAll! !
+
+!InstructionEncoder methodsFor: 'initialization' stamp: 'KenD 3/7/2021 12:19:07'!
+initialize 
+
+	super initialize.
+	wordSize := 8! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:10:29'!
+arity 
+
+	^spec arity! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:10:40'!
+at: position 
+	| pos |
+	pos := stream position.
+	^[stream position: position; peek] ensure: [stream position: pos]! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:14:53'!
+bestMatchingSpec 
+	| template s |
+	template := instruction template.
+	s := Cache at: template ifAbsent: nil.
+	s notNil ifTrue: [^s].
+	s := InstructionSpec
+		bestMatchForMnemonic: template mnemonic
+		operands: template operands
+		wordSize: wordSize.
+	Cache at: template copy put: s.
+	^s! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:15:05'!
+displacementOffset 
+
+	^displacement! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:17:05'!
+immediate2: aByteArray 
+
+	stream position: immediate2; nextPutAll: aByteArray! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:17:15'!
+immediate2Offset 
+
+	^immediate2! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:17:28'!
+immediate: aByteArray 
+
+	immediate isNil ifTrue: [
+		immediate := stream position.
+		modrm isNil ifTrue: [modrm := sib := displacement := immediate]].
+	stream position: immediate.
+	aByteArray isCollection
+		ifTrue: [stream nextPutAll: aByteArray]
+		ifFalse: [stream nextPut: aByteArray].
+	immediate2 := stream position! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:17:38'!
+immediateOffset 
+
+	^immediate! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:17:48'!
+indexExtension 
+
+	^instruction operands maxValue: [:op | op indexExtension]! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:19:23'!
+instruction: anISAInstruction 
+
+	instruction := anISAInstruction.
+	instruction useTemplate! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:23:44'!
+reg: aRegister 
+	| index prev |
+	modrm isNil
+		ifTrue: [modrm := stream position]
+		ifFalse: [prev := stream position].
+	stream position: modrm.
+	index := aRegister isInteger ifTrue: [aRegister] ifFalse: [aRegister index].
+	self
+		writeMid: index;
+		rexR: index > 7.
+	sib := stream position.
+	(prev notNil and: [prev > sib]) ifTrue: [stream position: prev]! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:24:10'!
+reset 
+
+	spec := rex := modrm := sib := displacement := immediate := nil! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:25:52'!
+rm: anInteger 
+
+	modrm isNil ifTrue: [modrm := stream position].
+	stream position: modrm.
+	self
+		writeLo: anInteger;
+		rexB: anInteger > 7.
+	sib := stream position.
+	self writeSib; writeDisplacement! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:26:10'!
+spec 
+
+	spec notNil ifTrue: [^spec].
+	^spec := self bestMatchingSpec! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:27:29'!
+vreg: aRegister 
+	| index |
+	modrm isNil ifTrue: [modrm := stream position].
+	stream position: modrm.
+	index := aRegister isInteger ifTrue: [aRegister] ifFalse: [aRegister index].
+	self
+		writeMid: index;
+		vexR: index < 8.
+	sib := stream position! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:27:44'!
+vrm: anInteger 
+
+	modrm isNil ifTrue: [modrm := stream position].
+	stream position: modrm.
+	self
+		writeLo: anInteger;
+		vexB: anInteger < 8;
+		vexX: self rexX = 0.
+	sib := stream position.
+	self writeSib; writeDisplacement! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:28:12'!
+wordSize 
+
+	^wordSize! !
+
+!InstructionEncoder methodsFor: 'accessing' stamp: 'KenD 3/7/2021 12:28:24'!
+wordSize: anInteger 
+
+	self assert: (anInteger = 4 or: [anInteger = 8]).
+	wordSize := anInteger! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:15:37'!
+hasDisplacement 
+
+	^instruction hasDisplacement! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:15:55'!
+hasModRM 
+
+	^spec hasModRM! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:16:03'!
+hasRex 
+
+	^vex > rex! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:16:14'!
+hasSib 
+	
+	^instruction hasSib! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:16:24'!
+hasVex 
+
+	^opcode > vex! !
+
+!InstructionEncoder methodsFor: 'testing' stamp: 'KenD 3/7/2021 12:22:30'!
+overridesOperandSize 
+	| operands op |
+	operands := instruction operands.
+	operands size = 0 ifTrue: [^false].
+	op := operands first.
+	(op isRegister and: [op isSegment]) ifTrue: [^false].
+	op memoryLength = 16 ifTrue: [
+		^instruction mnemonic first = $f
+			ifTrue: [spec operands first length !!= 16]
+			ifFalse: [true]].
+	operands with: spec operands do: [:a :f | 
+		(a isImmediate not
+			and: [a memoryLength !!= f memoryLength]
+			and: [a memoryLength !!= f length]
+			and: [(a isMemory and: [f name = 'm']) not])
+			ifTrue: [^true]].
+	^false! !
+
+!InstructionEncoder methodsFor: 'printing' stamp: 'KenD 3/7/2021 12:19:50'!
+legacyMap 
+
+	^String streamContents: [:strm | 
+		(prefixes to: rex - 1)
+			do: [:i | | p |
+				p := self at: i.
+				strm nextPutAll: p hex]
+			separatedBy: [strm space]]! !
+
+!InstructionEncoder methodsFor: 'printing' stamp: 'KenD 3/7/2021 12:23:24'!
+prefixesMap 
+	| parts |
+	parts := {self legacyMap. self rexMap. self vexMap}.
+	parts := parts select: #notEmpty.
+	^String
+		streamContents: [:strm | parts do: [:p | strm nextPutAll: p; space]]! !
+
+!InstructionEncoder methodsFor: 'printing' stamp: 'KenD 3/7/2021 12:24:53'!
+rexMap 
+
+	^String streamContents: [:strm | 
+		(rex to: vex - 1)
+			do: [:i | | p |
+				p := self at: i.
+				REXPrefix print: p on: strm]
+			separatedBy: [strm space]]! !
+
+!InstructionEncoder methodsFor: 'printing' stamp: 'KenD 3/7/2021 12:26:44'!
+vexMap 
+
+	^String streamContents: [:strm | 
+		(vex to: opcode - 1)
+			do: [:i | | p |
+				p := self at: i.
+				VEXPrefix print: p on: strm]
+			separatedBy: [strm space]]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:20:38'!
+mmmmm: anInteger 
+	| pos byte |
+	pos := stream position.
+	byte := stream position: vex + 1; peek.
+	byte := byte bitOr: anInteger.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:20:50'!
+opcode: aByteArray 
+	| pos |
+	pos := stream position.
+	stream
+		position: opcode;
+		nextPutAll: aByteArray;
+		position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:21:00'!
+operand1 
+
+	^instruction operand1! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:21:08'!
+operand2 
+
+	^instruction operand2! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:21:22'!
+operand3 
+
+	^instruction operand3! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:21:32'!
+operand4 
+
+	^instruction operand4! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:21:43'!
+operands 
+
+	^instruction operands! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:22:56'!
+pp: anInteger 
+	| pos offset byte |
+	pos := stream position.
+	offset := stream peek = 16rC5 ifTrue: [2] ifFalse: [1].
+	byte := stream position: vex + offset; peek.
+	byte := byte bitOr: anInteger.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:24:26'!
+rexB: aBoolean 
+	| pos byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: rex; peek.
+	byte := byte bitOr: REXPrefix b.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:24:37'!
+rexB: aBoolean opcode: aByteArray 
+	(rex isNil or: [rex = opcode]) ifTrue: [
+		rex := opcode.
+		stream position: rex; nextPut: REXPrefix rex value.
+		opcode := opcode + 1].
+	self rexB: aBoolean; opcode: aByteArray.
+	stream position: opcode; skip: aByteArray size! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:25:13'!
+rexR: aBoolean 
+	| pos byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: rex; peek.
+	byte := byte bitOr: REXPrefix r value.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:25:25'!
+rexX 
+
+	self hasSib ifFalse: [^0].
+	instruction operands
+		select: [:op | op isMemory]
+		thenDo: [:op | ^op indexExtension]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:25:37'!
+rexX: aBoolean 
+	| pos byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: rex; peek.
+	byte := byte bitOr: REXPrefix x.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:26:22'!
+vexB: aBoolean 
+	| pos byte |
+	(self at: vex) = 16rC5 ifTrue: [^self].
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: vex + 1; peek.
+	byte := byte bitOr: VEXPrefix b.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:26:32'!
+vexL: aBoolean 
+	| pos offset byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	offset := stream peek = 16rC5 ifTrue: [2] ifFalse: [1].
+	byte := stream position: vex + offset; peek.
+	byte := byte bitOr: VEXPrefix l.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:26:58'!
+vexR: aBoolean 
+	| pos byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: vex + 1; peek.
+	byte := byte bitOr: VEXPrefix r.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:27:08'!
+vexW: aBoolean 
+	| pos byte |
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: vex + 2; peek.
+	byte := byte bitOr: VEXPrefix w.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:27:17'!
+vexX: aBoolean 
+	| pos byte |
+	(self at: vex) = 16rC5 ifTrue: [^self].
+	aBoolean ifFalse: [^self].
+	pos := stream position.
+	byte := stream position: vex + 1; peek.
+	byte := byte bitOr: VEXPrefix x.
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:27:58'!
+vvvv: anInteger 
+	| pos offset byte vvvv |
+	pos := stream position.
+	stream position: vex.
+	offset := stream peek = 16rC5 ifTrue: [1] ifFalse: [2].
+	byte := stream position: vex + offset; peek.
+	vvvv := (anInteger bitInvert bitShift: 3) bitAnd: 2r1111000.
+	byte := (byte bitAnd: 2r10000111) bitOr: vvvv.
+	byte < 0 ifTrue: [byte := 256 + byte].
+	stream nextPut: byte; position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:28:56'!
+writeDisplacement 
+
+	self hasDisplacement ifTrue: [
+		instruction operands
+			select: [:op | op isMemory]
+			thenDo: [:op | stream nextPutAll: op displacementBytes]].
+	immediate isNil ifTrue: [immediate := stream position]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:29:12'!
+writeEncodingOn: aStream 
+
+	stream := aStream.
+	prefixes := rex := vex := stream position.
+	self writePrefixes; writeOpcode; writeOperands! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:29:36'!
+writeExtension: anInteger 
+	| pos bit4 |
+	pos := stream position.
+	stream position: modrm.
+	self writeMid: anInteger.
+	(self hasRex and: [bit4 := anInteger > 7]) ifTrue: [self rexR: bit4].
+	(self hasVex and: [bit4 := anInteger < 8]) ifTrue: [self vexR: bit4].
+	sib := stream position.
+	stream position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:29:47'!
+writeHi: anInteger 
+	| bits byte |
+	bits := (anInteger bitAnd: 8r3) bitShift: 6.
+	byte := stream peek ifNil: 0.
+	byte := (byte bitAnd: 8r77) bitOr: bits.
+	stream nextPut: byte! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:29:59'!
+writeLegacyPrefix: byte 
+
+	stream nextPut: byte.
+	rex := vex := stream position! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:30:08'!
+writeLo: anInteger 
+	| byte modReg rm |
+	byte := stream peek ifNil: 0.
+	modReg := byte bitAnd: 8r370.
+	rm := anInteger bitAnd: 8r7.
+	byte := modReg bitOr: rm.
+	stream nextPut: byte! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:30:17'!
+writeMid: anInteger 
+	| bits byte |
+	bits := (anInteger bitAnd: 8r7) bitShift: 3.
+	byte := stream peek ifNil: 0.
+	byte := (byte bitAnd: 8r307) bitOr: bits.
+	stream nextPut: byte! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:30:26'!
+writeMod 
+	| pos |
+	pos := stream position.
+	stream position: modrm.
+	self writeHi: instruction mod.
+	stream position: pos! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:30:43'!
+writeOpcode 
+
+	stream position: opcode; nextPutAll: spec primaryOpcode.
+	modrm := stream position.
+	spec extension ifNotNil: [:e | self writeExtension: e]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:30:54'!
+writeOperands 
+
+	spec operandEncoding ifNotNil: [:oe | 
+		oe encodeOperands: self.
+		self hasModRM ifTrue: [self writeMod]]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:31:58'!
+writePrefixes 
+	| head p67 p66 |
+	self writeSegmentPrefixes.
+	instruction prefix notNil ifTrue: [instruction prefix writeOn: self].
+	head := self spec prefixes asOrderedCollection.
+	p66 := LegacyPrefix operandSizeOverride.
+	p67 := LegacyPrefix addressSizeOverride.
+	(head anySatisfy: [:p | p = p66 or: [p = p67] or: [p isVex]]) ifFalse: [
+		self overridesOperandSize ifTrue: [head addFirst: p66].
+		(instruction overridesAddressSize: wordSize) ifTrue: [head addFirst: p67]].
+	head do: [:prefix | prefix writeOn: self].
+	((head noneSatisfy: [:p | p isRex or: [p isVex]]) and: [
+		(instruction operands anySatisfy: [:op | op needsExtraBit]) or: [
+			instruction operands
+				anySatisfy: [:op | op = SPL or: [op = BPL] or: [op = SIL] or: [op = DIL]]]])
+		ifTrue: [REXPrefix rex writeOn: self].
+	opcode := stream position! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:32:17'!
+writeRexPrefix: byte 
+
+	self assert: wordSize = 8.
+	stream nextPut: byte.
+	vex := stream position! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:33:00'!
+writeSegmentPrefixes 
+
+	instruction operands
+		select: [:op | op isMemory andNot: [op segment isNil]]
+		thenDo: [:op | | seg |
+			seg := op segment.
+			seg = CS ifTrue: [self writeLegacyPrefix: 16r2E].
+			seg = SS ifTrue: [self writeLegacyPrefix: 16r36].
+			seg = DS ifTrue: [self writeLegacyPrefix: 16r3E].
+			seg = ES ifTrue: [self writeLegacyPrefix: 16r26].
+			seg = FS ifTrue: [self writeLegacyPrefix: 16r64].
+			seg = GS ifTrue: [self writeLegacyPrefix: 16r65]]! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:33:14'!
+writeSib 
+	| operand |
+	self hasSib ifTrue: [
+		operand := instruction operands detect: [:op | op isMemory].
+		stream nextPut: operand sib.
+		opcode - vex > 0
+			ifTrue: [
+				self
+					vexX: operand indexExtension = 0;
+					vexB: operand baseExtension = 0]
+			ifFalse: [
+				self
+					rexX: operand indexExtension > 0;
+					rexB: operand baseExtension > 0]].
+	displacement := stream position! !
+
+!InstructionEncoder methodsFor: 'encoding' stamp: 'KenD 3/7/2021 12:33:25'!
+writeVexPrefix: aByteArray 
+
+	vex := stream position.
+	stream nextPutAll: aByteArray! !
+
+!InstructionEncoder class methodsFor: 'instance creation' stamp: 'KenD 3/7/2021 12:10:01'!
+new 
+
+	^super new initialize! !
+
+!InstructionEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 12:18:39'!
+initialize 
+
+	self initializeCache! !
+
 !InstructionPrefix methodsFor: 'writing' stamp: 'KenD 2/27/2021 13:16:29'!
 writeOn: anInstruction 
 
@@ -6205,6 +6825,461 @@ named: aString
 ss 
 
 	^self new name: 'ss:'; value: 16r36! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:02'!
+arity 
+
+	^operands size! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:13'!
+atnt 
+
+	^atnt! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:22'!
+compat 
+
+	^compat! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:30'!
+description 
+
+	^description! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:39'!
+encodingSelectors 
+
+	opEncoding isNil ifTrue: [^#()].
+	^opEncoding selectors! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:48'!
+existsInWordSize: wordSize 
+
+	^wordSize = 8 ifTrue: [mode first = $V] ifFalse: [compat first = $V]! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:56'!
+extension 
+
+	^extension! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:09:05'!
+family 
+
+	^Specs at: mnemonic! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:09:14'!
+features 
+
+	^features! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:37:27'!
+fromString: aString
+	| fields |
+	"fields := Tab split: aString."
+	fields := aString subStrings: Character tab asString.
+	self
+		instruction: fields second;
+		opcode: fields first;
+		operandEncoding: fields third trimBlanks.
+	properties := fields at: 4.
+	implicitRead := fields at: 5.
+	implicitWrite := fields at: 6.
+	implicitUndef := fields at: 7.
+	useful := fields at: 8.
+	protected := (fields at: 9) = 'YES'.
+	mode := fields at: 10.
+	compat := fields at: 11.
+	features := fields at: 12.
+	atnt := fields at: 13.
+	preferred := (fields at: 14) = 'YES'.
+	description := fields at: 15.
+	self fixDocumentation! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:11:14'!
+implicitRead 
+
+	^implicitRead! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:11:22'!
+implicitUndef 
+
+	^implicitUndef! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:11:34'!
+implicitWrite 
+
+	^implicitWrite! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:12:06'!
+instruction 
+
+	^instruction! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:42:22'!
+instruction: aString 
+	| substrings |
+	instruction := aString asLowercase.
+	substrings := (instruction copyReplaceAll: "replaceAllSubstrings:" ',' with: ' ') substrings.
+	mnemonic := substrings first.
+	self operandsFrom: substrings! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:13:24'!
+legacyPrefixesFrom: aStream 
+	| prefix |
+	aStream peekForAll: 'PREF.'.
+	[| hex |
+		hex := aStream peek: 2.
+		hex !!= 'RE' and: [hex !!= 'VE'] and: [hex size = 2] and: [
+			prefix := LegacyPrefix
+				withValue: hex first asUppercase digitValue * 16
+					+ hex second asUppercase digitValue.
+			prefix notNil]]
+		whileTrue: [
+			prefixes add: prefix.
+			aStream upTo: Space]! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:13:35'!
+mnemonic 
+
+	^mnemonic! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:13:43'!
+mode 
+
+	^mode! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:13:53'!
+opcode 
+
+	^opcode! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:14:04'!
+opcode: aString 
+	| reader |
+	opcode := self opcodeFrom: aString.
+	reader := opcode readStream.
+	prefixes := OrderedCollection new.
+	self
+		legacyPrefixesFrom: reader;
+		rexPrefixFrom: reader;
+		vexPrefixFrom: reader;
+		primaryOpcodeFrom: reader;
+		opcodeExtensionFrom: reader.
+	prefixes := prefixes asArray! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:14:42'!
+opcodeExtensionFrom: aStream 
+
+	(aStream peekFor: $/) ifFalse: [^self].
+	extension := aStream peek digitValue < 8 ifTrue: [aStream next digitValue]! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:42:58'!
+opcodeFrom: aString 
+
+	(aString includesSubString: '66') ifTrue: [^aString].
+	(instruction endsWith: '16, imm8') ifTrue: [^'66 ' , aString].
+	(instruction endsWith: '16, imm16') ifTrue: [^'66 ' , aString].
+	(instruction endsWith: ' ax, imm16') ifTrue: [^'66 ' , aString].
+	^aString! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:15:10'!
+operand: index of: decoder 
+	| op type |
+	op := opEncoding operand: index of: decoder.
+	type := operands at: index.
+	type isMoff ifTrue: [^type operandFrom: op value].
+	op isMemory ifTrue: [op length: type memoryLength].
+	op isImmediate ifTrue: [op length: type length].
+	^op! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:15:22'!
+operandEncoding 
+
+	^opEncoding! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:15:34'!
+operandEncoding: aString 
+
+	opEncoding := OperandEncoding named: aString! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:15:43'!
+operandLength 
+
+	operands do: [:op | op length ifNotNil: [:l | ^l]].
+	^nil! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:15:52'!
+operands 
+
+	^operands! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:16:15'!
+prefixes 
+
+	^prefixes! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:16:23'!
+primaryOpcode 
+
+	^primary! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:16:34'!
+primaryOpcodeFrom: aStream 
+	| oc |
+	primary := #[].
+	[
+		aStream atEnd not
+			and: [
+				oc := aStream peek: 2.
+				oc := self fixOpcode: oc.
+				oc size = 2]
+			and: [oc asUppercase = oc]
+			and: [oc conform: [:ch | ch isHexDigit]]]
+		whileTrue: [
+			primary := primary
+				copyWith: oc first digitValue * 16 + oc second digitValue.
+			aStream upTo: Space]! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:14'!
+properties 
+
+	^properties! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:23'!
+protected 
+
+	^protected! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:34'!
+rexPrefixFrom: aStream 
+	| rex |
+	(aStream peekForAll: 'REX') ifTrue: [
+		aStream skip: 'REX' size negated.
+		rex := REXPrefix fromStream: aStream.
+		aStream upTo: Space.
+		prefixes add: rex]! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:43'!
+useful 
+
+	^useful! !
+
+!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:53'!
+vexPrefixFrom: aStream 
+	| vex |
+	(aStream peekForAll: 'VEX') ifTrue: [
+		aStream skip: 'VEX' size negated.
+		vex := VEXPrefix fromStream: aStream.
+		prefixes add: vex]! !
+
+!InstructionSpec methodsFor: 'initialization' stamp: 'KenD 3/7/2021 13:09:42'!
+fixDocumentation 
+
+	(mnemonic = 'enter' and: [operands second length = 16])
+		ifTrue: [operands swap: 1 with: 2].
+	(mnemonic = 'pushq' and: [operands first length !!= 16])
+		ifTrue: [mnemonic := 'push'].
+	(instruction = 'vmovsd xmm1, xmm2, xmm3' and: [primary = #[16r11]]) ifTrue: [
+		operands swap: 1 with: 3.
+		instruction := 'vmovsd xmm3, xmm2, xmm1']! !
+
+!InstructionSpec methodsFor: 'initialization' stamp: 'KenD 3/7/2021 13:09:53'!
+fixOpcode: oc 
+
+	^oc = '0f' ifTrue: ['0F'] ifFalse: [oc]! !
+
+!InstructionSpec methodsFor: 'initialization' stamp: 'KenD 3/7/2021 13:16:05'!
+operandsFrom: substrings 
+
+	operands := substrings allButFirst collect: [:s | ISAOperandType named: s]! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:07:39'!
+acceptsOperands: aCollection 
+
+	operands size = aCollection size ifFalse: [^false].
+	aCollection
+		with: operands
+		do: [:real :spec | (real isCompatibleWith: spec) ifFalse: [^false]].
+	^true! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:10:29'!
+hasImmediate2Data 
+
+	^opEncoding usesImmediate2! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:10:41'!
+hasImmediateData 
+
+	^opEncoding usesImmediate! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:10:52'!
+hasModRM 
+	| arity |
+	extension notNil ifTrue: [^true].
+	arity := self arity.
+	arity = 0 ifTrue: [^false].
+	(arity = 1 and: [operands first isConstant]) ifTrue: [^false].
+	^opEncoding usesModRM! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:11:05'!
+hasOperandEncoding: anOperandEncoding 
+
+	opEncoding = anOperandEncoding ifTrue: [^true].
+	(opEncoding isNil and: [anOperandEncoding name = 'NP']) ifTrue: [^true].
+	^opEncoding name = 'NP' and: [anOperandEncoding isNil]! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:12:33'!
+isLike: anInstructionSpec 
+
+	opcode = anInstructionSpec opcode ifFalse: [^false].
+	primary = anInstructionSpec primaryOpcode ifFalse: [^false].
+	extension = anInstructionSpec extension ifFalse: [^false].
+	(self hasOperandEncoding: anInstructionSpec operandEncoding)
+		ifFalse: [^false].
+	properties = anInstructionSpec properties ifFalse: [^false].
+	implicitRead = anInstructionSpec implicitRead ifFalse: [^false].
+	implicitWrite = anInstructionSpec implicitWrite ifFalse: [^false].
+	implicitUndef = anInstructionSpec implicitUndef ifFalse: [^false].
+	useful = anInstructionSpec useful ifFalse: [^false].
+	protected = anInstructionSpec protected ifFalse: [^false].
+	mode = anInstructionSpec mode ifFalse: [^false].
+	compat = anInstructionSpec compat ifFalse: [^false].
+	features = anInstructionSpec features ifFalse: [^false].
+	preferred = anInstructionSpec isPreferred ifFalse: [^false].
+	prefixes = anInstructionSpec prefixes ifFalse: [^false].
+	^operands = anInstructionSpec operands! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:12:58'!
+isPreferred 
+
+	^preferred! !
+
+!InstructionSpec methodsFor: 'testing' stamp: 'KenD 3/7/2021 13:13:06'!
+isPreferredTo: otherSpec for: realOperands 
+
+	1 to: operands size do: [:i | | real this other |
+		real := realOperands at: i.
+		this := operands at: i.
+		other := otherSpec operands at: i.
+		(real prefers: this to: other) ifTrue: [^true]].
+	^false! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:39:59'!
+addendum32 
+	^'
+FF /2	CALL r/m32	M		rdi rsi rdx rcx r8 r9 rax xmm0 xmm1 xmm2 xmm3 xmm4 xmm5 xmm6 xmm7	RAX RDX XMM0 XMM1	RDI RSI RCX R8 R9 R10 R11 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15			NE	V				Call near, absolute indirect, address given in r/m32.
+48 +rw	DEC r16 	O							NE	V				Decrement r16 by 1.
+48 +rd	DEC r32	O							NE	V				Decrement r32 by 1.
+40 +rw 	INC r16 	O							NE	V				Increment word register by 1.
+40 +rd 	INC r32 	O							NE	V				Increment doubleword register by 1.
+FF /4 	JMP r/m32 	M	R						NS	V				Jump near, absolute indirect, address given in r/m32. Not supported in 64-bit mode.
+
+66 REX.W+ 0F 3A 22 /r ib 	PINSRQ xmm1, r/m64, imm8 	RMI							NE	V	SSE4_1	pinsrq		Insert a qword integer value from r/m64 into the xmm1 at the destination element specified by imm8.
+8F /0 	POP r/m32 	M		RSP	RSP				NE	V				Pop top of stack into m32; increment stack pointer.
+58 +rd 	POP r32 	O		RSP	RSP				NE	V				Pop top of stack into r32; increment stack pointer.
+FF /6	PUSH r/m32	M		RSP	RSP				NE	V				Push r/m32.
+50 +rd	PUSH r32	O		RSP	RSP				NE	V			YES	Push r32.'! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:40:23'!
+bestMatchForMnemonic: aString operands: operands 
+	| current family |
+	current := nil.
+	family := Specs at: aString.
+	family do: [:spec | | fits |
+		fits := spec acceptsOperands: operands.
+		fits ifTrue: [
+			spec isPreferred ifTrue: [^spec].
+			(current isNil or: [spec isPreferredTo: current for: operands])
+				ifTrue: [current := spec]]].
+	current ifNil: [self error: 'cannot identify the instruction'].
+	^current! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:40:38'!
+bestMatchForMnemonic: aString operands: operands wordSize: wordSize 
+	| current family |
+	current := nil.
+	family := Specs at: aString.
+	family
+		select: [:spec | (spec existsInWordSize: wordSize)
+			and: [spec acceptsOperands: operands]]
+		thenDo: [:spec | 
+			spec isPreferred ifTrue: [^spec].
+			(current isNil or: [spec isPreferredTo: current for: operands])
+				ifTrue: [current := spec]].
+	current ifNil: [self error: 'cannot identify the instruction'].
+	^current! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:40:57'!
+byteSpecs 
+
+	^self selectSpecs: [:s | s opcode includesString: '+r']! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:44:06'!
+selectSpecs: aBlock 
+
+	^Array
+		streamContents: [:strm | Specs
+			do: [:specs | specs select: aBlock thenDo: [:s | strm nextPut: s]]]! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:44:28'!
+specsByOpcode 
+	| specs |
+	specs := Dictionary new.
+	Specs do: [:family | 
+		family do: [:s | | group |
+			group := specs at: s primaryOpcode 
+						ifAbsentPut: [OrderedCollection new].
+			group add: s]].
+	^specs! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 12:44:41'!
+specsCollect: aBlock 
+
+	^Array streamContents: [:strm | 
+		Specs
+			do: [:specs | specs
+				collect: aBlock
+				thenDo: [:aspect | strm nextPut: aspect]]]! !
+
+!InstructionSpec class methodsFor: 'private' stamp: 'KenD 3/7/2021 13:26:46'!
+x86
+
+	^(self package fullFileName asFileEntry parent  // 'x86.txt')  textContents ! !
+
+!InstructionSpec class methodsFor: 'instance creation' stamp: 'KenD 3/7/2021 12:41:20'!
+fromString: aString 
+
+	^self new fromString: aString! !
+
+!InstructionSpec class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 13:29:23'!
+initialize 
+"
+	self initialize.
+"
+	OperandEncoding initializeEncodings.
+	Prefixes initialize.
+	VEXPrefix initializeSignatures.
+	self initializeSpecs.
+	Smalltalk at: #Decoder64 ifPresent: [ :d | d initializeSpecs ]! !
+
+!InstructionSpec class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 13:44:22'!
+initializeSpecs 
+"
+	self initializeSpecs.
+"
+	| dict reader |
+	dict := Dictionary new.
+	reader := (self x86 , self addendum32) readStream.
+	reader nextLine.
+	[reader atEnd] whileFalse: [| line spec family |
+		line := reader nextLine.
+		line withBlanksTrimmed notEmpty ifTrue: [
+			spec := self fromString: line.
+			family := dict at: spec mnemonic 
+					      ifAbsentPut: [OrderedCollection new].
+			(spec arity = 0 orNot: [spec operandEncoding isNil])
+				ifTrue: [family add: spec]]].
+	Specs := dict! !
 
 !LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:58:34'!
 isInlinedArgument 
@@ -12992,6 +14067,7 @@ on: aByteArray
 	^self new bytes: aByteArray! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
+CharacterConstants initialize!
 ClosureElementTypes initialize!
 InlineMessageLinkerFlags initialize!
 ObjectHeaderMasks initialize!
@@ -13003,4 +14079,6 @@ SExpressionTypes initialize!
 SendSiteFlags initialize!
 SpeciesFormatMasks initialize!
 Assembler64 initialize!
+InstructionEncoder initialize!
+InstructionSpec initialize!
 MethodEvaluator initialize!
