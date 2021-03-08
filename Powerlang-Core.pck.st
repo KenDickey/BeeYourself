@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 7 March 2021 at 1:46:01 pm'!
+'From Cuis 5.0 [latest update: #4530] on 8 March 2021 at 11:24:40 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 28!
+!provides: 'Powerlang-Core' 1 29!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -347,6 +347,16 @@ PoolVarBinding subclass: #ConstantPoolBinding
 ConstantPoolBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #InstVarBinding category: 'Powerlang-Core'!
+Binding subclass: #InstVarBinding
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'InstVarBinding class' category: 'Powerlang-Core'!
+InstVarBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #LiteralBinding category: 'Powerlang-Core'!
 Binding subclass: #LiteralBinding
 	instanceVariableNames: ''
@@ -467,6 +477,16 @@ Object subclass: #Handle
 Handle class
 	instanceVariableNames: ''!
 
+!classDefinition: #ISAInstruction category: 'Powerlang-Core'!
+Object subclass: #ISAInstruction
+	instanceVariableNames: 'prefix mnemonic operands template'
+	classVariableNames: ''
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAInstruction class' category: 'Powerlang-Core'!
+ISAInstruction class
+	instanceVariableNames: ''!
+
 !classDefinition: #ISAOperand category: 'Powerlang-Core'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
@@ -475,6 +495,16 @@ Object subclass: #ISAOperand
 	category: 'Powerlang-Core'!
 !classDefinition: 'ISAOperand class' category: 'Powerlang-Core'!
 ISAOperand class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAImmediate category: 'Powerlang-Core'!
+ISAOperand subclass: #ISAImmediate
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAImmediate class' category: 'Powerlang-Core'!
+ISAImmediate class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAOperandType category: 'Powerlang-Core'!
@@ -685,6 +715,16 @@ MessageLinker subclass: #InlineMessageLinker
 	category: 'Powerlang-Core'!
 !classDefinition: 'InlineMessageLinker class' category: 'Powerlang-Core'!
 InlineMessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #InvokeLinker category: 'Powerlang-Core'!
+MessageLinker subclass: #InvokeLinker
+	instanceVariableNames: 'invoker sends'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'InvokeLinker class' category: 'Powerlang-Core'!
+InvokeLinker class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodEvaluator category: 'Powerlang-Core'!
@@ -1308,6 +1348,12 @@ My subclasses implement those different semantics:
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!ISAImmediate commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+NB: x86 specific!
+
 !ISAOperandType commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -1394,6 +1440,21 @@ name
 printOn: aStream 
 
 	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
+
+!ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
+printOn: aStream 
+
+	aStream nextPutAll: mnemonic.
+	operands isNil ifTrue: [^self].
+	operands
+		do: [:op | aStream space; nextPutAll: op asString]
+		separatedBy: [aStream nextPut: $,]! !
+
+!ISAImmediate methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:03:25'!
+printOn: aStream 
+	| v |
+	v := value isNil ifTrue: ['???'] ifFalse: [value hex].
+	aStream nextPutAll: v! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
@@ -4420,6 +4481,36 @@ isConstantBinding
 
 	^true! !
 
+!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:41'!
+index 
+
+	^index! !
+
+!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:51'!
+index: aNumber 
+
+	index := aNumber! !
+
+!InstVarBinding methodsFor: 'actions' stamp: 'KenD 3/8/2021 07:52:56'!
+beReferencedFrom: aScriptNode 
+
+	aScriptNode useSelf! !
+
+!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:13'!
+emitLoadAusing: anSExpressionNativizer 
+
+	anSExpressionNativizer encodeLoadAwithInstVar: index! !
+
+!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:25'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeInstVar: index! !
+
+!InstVarBinding methodsFor: 'testing' stamp: 'KenD 3/8/2021 07:54:09'!
+isInstVar 
+
+	^true! !
+
 !LiteralBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:53:29'!
 isLiteral
 
@@ -4889,6 +4980,283 @@ objectHandleOn: objectId
 
 	^ ObjectHandle on: objectId within: runtime! !
 
+!ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:23:53'!
+updateTemplate: anISAInstruction 
+	| arity array |
+	arity := operands size.
+	array := Array new: arity.
+	1 to: arity do: [:i | array at: i put: (operands at: i) template].
+	anISAInstruction
+		prefix: prefix;
+		mnemonic: mnemonic;
+		operands: array! !
+
+!ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:24:04'!
+useTemplate 
+
+	template := self shallowCopy.
+	mnemonic isNil ifTrue: [^self].
+	template mnemonic: mnemonic; prefix: prefix.
+	operands notNil
+		ifTrue: [template operands: (operands collect: [:op | op template])]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:09:42'!
+arity 
+
+	^operands size! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:10:38'!
+db: byte 
+	| imm |
+	mnemonic := '.db'.
+	imm := ISAImmediate new value: byte.
+	operands := {imm}! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:14:38'!
+hash 
+
+	^prefix hashWith: mnemonic with: self operand1 with: self operand2! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:18:47'!
+mnemonic 
+
+	^mnemonic! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:18:58'!
+mnemonic: aString 
+
+	mnemonic := aString asLowercase.
+	template notNil ifTrue: [template mnemonic: aString]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:19:36'!
+operand1 
+
+	^operands notNil ifTrue: [operands at: 1 ifAbsent: nil]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:19:51'!
+operand2 
+
+	^operands notNil ifTrue: [operands at: 2 ifAbsent: nil]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:19:59'!
+operand3 
+
+	^operands at: 3! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:20:09'!
+operand4 
+
+	^operands at: 4! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:20:33'!
+operandFrom: anObject 
+
+	anObject isInteger ifTrue: [^ISAImmediate new value: anObject].
+	anObject isString ifTrue: [
+		^anObject first = $@
+			ifTrue: [anObject]
+			ifFalse: [MemoryOperand fromString: anObject]].
+	^anObject! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:20:45'!
+operands 
+
+	^operands ifNil: #()! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:20:57'!
+operands: aCollection 
+
+	operands := aCollection collect: [:op | self operandFrom: op].
+	template notNil
+		ifTrue: [template operands: (operands collect: [:op | op template])]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:21:26'!
+prefix 
+
+	^prefix! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:21:40'!
+prefix: aLegacyPrefix 
+
+	prefix := aLegacyPrefix.
+	template notNil ifTrue: [template prefix: aLegacyPrefix]! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:22:43'!
+sizeInBytes32 
+	| stream |
+	stream := #[  ] writeStream.
+	self writeEncoding32On: stream.
+	^ stream size! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:23:00'!
+sizeInBytes64 
+	| stream |
+	stream := #[  ] writeStream.
+	self writeEncoding64On: stream.
+	^ stream size! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:23:09'!
+spec 
+
+	^self encoder spec! !
+
+!ISAInstruction methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:23:19'!
+template 
+
+	^template! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:11:05'!
+encoder 
+
+	^InstructionEncoder new instruction: self! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:11:17'!
+encoding32 
+
+	^ ByteArray streamContents: [ :strm | self writeEncoding32On: strm ]! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:11:47'!
+encoding64 
+
+	^ByteArray streamContents: [:strm | self writeEncoding64On: strm]! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:18:08'!
+jumpOffset32 
+
+	self assert:
+		((self isJump or: [ self isCall ]) and: [ 
+			 operands anyone isImmediate ]).
+	^ operands first value + self sizeInBytes32! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:18:30'!
+jumpOffset64 
+
+	self assert:
+		((self isJump or: [ self isCall ]) and: [ 
+			 operands anyone isImmediate ]).
+	^ operands first value + self sizeInBytes64! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:19:18'!
+mod 
+
+	(operands conform: [:op | op isRegister or: [op isImmediate]])
+		ifTrue: [^2r11].
+	operands do: [:op | op isMemory ifTrue: [^op mod]]! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:24:20'!
+writeEncoding32On: aStream 
+
+	^self encoder wordSize: 4; writeEncodingOn: aStream! !
+
+!ISAInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 11:24:30'!
+writeEncoding64On: aStream 
+
+	^self encoder wordSize: 8; writeEncodingOn: aStream! !
+
+!ISAInstruction methodsFor: 'operators' stamp: 'KenD 3/8/2021 11:09:15'!
+= instruction 
+
+	self class == instruction class ifFalse: [^false].
+	prefix = instruction prefix ifFalse: [^false].
+	mnemonic = instruction mnemonic ifFalse: [^false].
+	(self hasOperands or: [instruction hasOperands]) ifFalse: [^true].
+	operands isNil ifTrue: [^false].
+	operands size = instruction arity ifFalse: [^false].
+	operands
+		with: instruction operands
+		do: [:op1 :op2 | op1 = op2 ifFalse: [^false]].
+	^true! !
+
+!ISAInstruction methodsFor: 'services' stamp: 'KenD 3/8/2021 11:10:22'!
+beTemplate 
+
+	1 to: operands size do: [:i | | op |
+		op := operands at: i.
+		operands at: i put: op template]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:13:47'!
+hasDirectMemoryReference 
+
+	^operands anySatisfy: [:op | op isDirectMemoryReference]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:13:58'!
+hasDisplacement 
+
+	operands isNil ifTrue: [^false].
+	^operands anySatisfy: [:op | op isMemory and: [op hasDisplacement]]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:14:10'!
+hasOperands 
+
+	^operands notNil and: [operands size > 0]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:14:25'!
+hasSib 
+
+	operands isNil ifTrue: [^false].
+	^operands anySatisfy: [:op | op isMemory and: [op hasSib]]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:14:54'!
+isCall 
+
+	^mnemonic = 'call'! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:15:04'!
+isJump 
+
+	^mnemonic first = $j or: [mnemonic beginsWith: 'loop']! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:15:18'!
+isLike: anISAInstruction 
+
+	self class = anISAInstruction class ifFalse: [^false].
+	mnemonic = anISAInstruction mnemonic ifTrue: [^self = anISAInstruction].
+	operands = anISAInstruction operands ifFalse: [^false].
+	^self spec isLike: anISAInstruction spec! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:15:46'!
+isPushFP 
+	| operand |
+	^(mnemonic beginsWith: 'push')
+		and: [
+			operand := operands at: 1.
+			operand isRegister]
+		and: [operand index = RBP index]! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:15:58'!
+isReturn 
+
+	^mnemonic = 'ret'! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:16:21'!
+isTemplate 
+	1 to: operands size
+	   do: [:i | (operands at: i) isTemplate ifFalse: [^false]].
+	^true! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:17:25'!
+isTestAL1 
+
+	mnemonic = 'test' ifFalse: [^false].
+	operands first = AL ifFalse: [^false].
+	operands second isImmediate ifFalse: [^false].
+	^operands second value = 1! !
+
+!ISAInstruction methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:21:10'!
+overridesAddressSize: anInteger 
+	| length |
+	operands isNil ifTrue: [^false].
+	length := anInteger bitShift: 3.
+	^operands
+		anySatisfy: [:op | op isMemory
+			and: [op base notNil]
+			and: [op pointerLength !!= length]]! !
+
+!ISAInstruction class methodsFor: 'instance creation' stamp: 'KenD 3/8/2021 11:08:22'!
+db: byte 
+
+	^self new db: byte! !
+
 !ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
 isDirectMemoryReference 
 
@@ -4986,6 +5354,94 @@ sizeInBytes
 new 
 
 	^super new initialize! !
+
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:01'!
+bytes 
+	| bytes v |
+	bytes := ByteArray new: length // 8.
+	v := value.
+	v < 0 ifTrue: [v := v + (1 bitShift: length)].
+	1 to: bytes size do: [:i | 
+		bytes at: i put: (v bitAnd: 16rFF).
+		v := v bitShift: -8].
+	^bytes! !
+
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:17'!
+defaultLength 
+
+	value < -168000000000000000 ifTrue: [^128].
+	value < -16r80000000 ifTrue: [^64].
+	value < -16r8000 ifTrue: [^32].
+	value < -16r80 ifTrue: [^16].
+	value < 16r80 ifTrue: [^8].
+	value < 16r8000 ifTrue: [^16].
+	value < 16r80000000 ifTrue: [^32].
+	value < 16r8000000000000000 ifTrue: [^64].
+	^128! !
+
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:30'!
+hash 
+
+	^value hashWith: length! !
+
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:03:55'!
+value 
+
+	^value! !
+
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:04:20'!
+value: anInteger 
+
+	value := anInteger.
+	length := self defaultLength
+	^value! !
+
+!ISAImmediate methodsFor: 'services' stamp: 'KenD 3/8/2021 11:03:39'!
+template 
+
+	(0 <= value and: [value < 4]) ifTrue: [^self copy].
+	^self class new value: length; length: length! !
+
+!ISAImmediate methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:01:51'!
+isCompatibleWith: anOperandType 
+
+	(value = 0 and: [anOperandType name = '0']) ifTrue: [^true].
+	(value = 1 and: [anOperandType name = '1']) ifTrue: [^true].
+	(value = 3 and: [anOperandType name = '3']) ifTrue: [^true].
+	^anOperandType isImmediate
+		and: [anOperandType hasImmediateFlag]
+		and: [length <= anOperandType length]! !
+
+!ISAImmediate methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:02:14'!
+isImmediate 
+
+	^true! !
+
+!ISAImmediate methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:02:44'!
+looksLikeAddress 
+
+	^value > 65536 and: [value even]! !
+
+!ISAImmediate methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:02:57'!
+memoryLength 
+
+	^nil! !
+
+!ISAImmediate methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:03:11'!
+prefers: anOperandType to: otherOperandType 
+
+	anOperandType length < otherOperandType length ifTrue: [^true].
+	(value = 0 and: [anOperandType name = '0']) ifTrue: [^true].
+	(value = 1 and: [anOperandType name = '1']) ifTrue: [^true].
+	(value = 3 and: [anOperandType name = '3']) ifTrue: [^true].
+	^false! !
+
+!ISAImmediate methodsFor: 'operators' stamp: 'KenD 3/8/2021 11:00:44'!
+= operand 
+
+	self class == operand class ifFalse: [^false].
+	value = operand value ifFalse: [^false].
+	^length = operand length! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
@@ -8285,6 +8741,45 @@ readFloatStatus
 	assembler
 		loadAwithKnown: #FloatStatus;
 		storeMXCSRintoA! !
+
+!InvokeLinker methodsFor: 'accessing' stamp: 'KenD 3/8/2021 10:51:29'!
+addMethod: aCompiledMethod 
+
+	self addMethod: aCompiledMethod for: aCompiledMethod selector! !
+
+!InvokeLinker methodsFor: 'accessing' stamp: 'KenD 3/8/2021 10:51:48'!
+addMethod: aCompiledMethod for: aSymbol 
+	| instructions send |
+	filter add: aSymbol.
+	instructions := invoker ifNil: [ aCompiledMethod nativeCode code ].
+	send := SendSite new invoke: aCompiledMethod using: instructions.
+	sends at: aSymbol put: send! !
+
+!InvokeLinker methodsFor: 'accessing' stamp: 'KenD 3/8/2021 10:52:40'!
+addMethods: aCollection 
+
+	aCollection do: [:m | self addMethod: m]! !
+
+!InvokeLinker methodsFor: 'accessing' stamp: 'KenD 3/8/2021 10:53:16'!
+invoker: aNativeCode 
+
+	invoker := aNativeCode! !
+
+!InvokeLinker methodsFor: 'initialization' stamp: 'KenD 3/8/2021 10:51:01'!
+initialize 
+
+	super initialize.
+	sends := Dictionary new.
+	self filter: #()! !
+
+!InvokeLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 10:52:59'!
+emitSend: aSymbol using: anAssembler 
+	| send |
+	send := sends at: aSymbol.
+	anAssembler
+		loadAwithLiteral: send;
+		callIndirectA;
+		discardArguments: aSymbol arity! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -14065,6 +14560,11 @@ wordSize
 on: aByteArray 
 
 	^self new bytes: aByteArray! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 3/8/2021 07:55:07'!
+thru: anInteger 
+
+	^Stretch from: self thru: anInteger! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 CharacterConstants initialize!
