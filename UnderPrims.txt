@@ -204,3 +204,28 @@ DMRBootstrapper >> nativizeLookup [
 bootstrap/src/Powerlang-Core/MethodEvaluator.class.st has complete St Eval !!
 bootstrap/src/Powerlang-Core/InlineMessageLinker.class.st has instruction macro-assembler!!
 =========================
+typedef enum
+{
+    IsBytes      = 0x01,
+    IsVariable   = 0x02,
+    IsNamed      = 0x04,
+    IsRemembered = 0x08,
+    IsWeak       = 0x10,
+    HasBeenSeen  = 0x20,
+    IsSecondGen  = 0x40,
+    IsSmall      = 0x80,
+} HeapObjectFlags;
+.....
+    struct SmallHeader
+    {
+    	uint16_t hash;
+    	uint8_t size;
+    	uint8_t flags;
+    	uint32_t behavior;
+......
+    struct LargeHeader
+    {
+    	uint32_t size;
+    	uint32_t padding;
+    	SmallHeader smallHeader;
+......
