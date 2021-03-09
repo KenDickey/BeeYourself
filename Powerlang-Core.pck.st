@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 8 March 2021 at 11:24:40 am'!
+'From Cuis 5.0 [latest update: #4530] on 8 March 2021 at 3:59:58 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 29!
+!provides: 'Powerlang-Core' 1 33!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -235,6 +235,16 @@ Object subclass: #Assembler64
 	category: 'Powerlang-Core'!
 !classDefinition: 'Assembler64 class' category: 'Powerlang-Core'!
 Assembler64 class
+	instanceVariableNames: ''!
+
+!classDefinition: #JITAssembler64 category: 'Powerlang-Core'!
+Assembler64 subclass: #JITAssembler64
+	instanceVariableNames: 'literals'
+	classVariableNames: 'ExternalFunctions'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'JITAssembler64 class' category: 'Powerlang-Core'!
+JITAssembler64 class
 	instanceVariableNames: ''!
 
 !classDefinition: #Assembly category: 'Powerlang-Core'!
@@ -485,6 +495,66 @@ Object subclass: #ISAInstruction
 	category: 'Powerlang-Core'!
 !classDefinition: 'ISAInstruction class' category: 'Powerlang-Core'!
 ISAInstruction class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAInstructionPartReader category: 'Powerlang-Core'!
+Object subclass: #ISAInstructionPartReader
+	instanceVariableNames: 'contents'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAInstructionPartReader class' category: 'Powerlang-Core'!
+ISAInstructionPartReader class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAModRMReader category: 'Powerlang-Core'!
+ISAInstructionPartReader subclass: #ISAModRMReader
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAModRMReader class' category: 'Powerlang-Core'!
+ISAModRMReader class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAOpcodeReader category: 'Powerlang-Core'!
+ISAInstructionPartReader subclass: #ISAOpcodeReader
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAOpcodeReader class' category: 'Powerlang-Core'!
+ISAOpcodeReader class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAPrefixReader category: 'Powerlang-Core'!
+ISAInstructionPartReader subclass: #ISAPrefixReader
+	instanceVariableNames: 'legacy rex vex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAPrefixReader class' category: 'Powerlang-Core'!
+ISAPrefixReader class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISASibReader category: 'Powerlang-Core'!
+ISAInstructionPartReader subclass: #ISASibReader
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISASibReader class' category: 'Powerlang-Core'!
+ISASibReader class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAInstructionReader category: 'Powerlang-Core'!
+Object subclass: #ISAInstructionReader
+	instanceVariableNames: 'prefixes opcode modrm sib displacement immediate'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ISAInstructionReader class' category: 'Powerlang-Core'!
+ISAInstructionReader class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAOperand category: 'Powerlang-Core'!
@@ -1327,6 +1397,12 @@ Copyright (c) 2020 Aucerna.
 
 Nota Bene: x86 specific!
 
+!JITAssembler64 commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86 specific!
+
 !Bridge commentStamp: '<historical>' prior: 0!
 I am the one in charge of 'discovering' well known objects in
 the remote image, giving my clients handles to them. For example,
@@ -1343,6 +1419,31 @@ My subclasses implement those different semantics:
  - MirageGate executes locally, doing lookup within a local specification
    of the behavior of the remote object.
 !
+
+!ISAInstructionPartReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!ISAModRMReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!ISAOpcodeReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!ISAPrefixReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!ISASibReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!ISAInstructionReader commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
 
 !ISAOperand commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -1449,6 +1550,49 @@ printOn: aStream
 	operands
 		do: [:op | aStream space; nextPutAll: op asString]
 		separatedBy: [aStream nextPut: $,]! !
+
+!ISAOpcodeReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:38:44'!
+printOn: aStream 
+
+	contents contents
+		do: [:byte | aStream nextPutAll: byte hex]
+		separatedBy: [aStream nextPut: $.]
+! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:47'!
+printOn: aStream 
+
+	self printLegacyOn: aStream.
+	legacy size > 0 ifTrue: [aStream space].
+	rex notNil ifTrue: [
+		self printRexOn: aStream.
+		aStream space].
+	vex notNil ifTrue: [self printVexOn: aStream]! !
+
+!ISAInstructionReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:33:03'!
+printOn: aStream 
+
+	aStream nextPutAll: prefixes.
+	prefixes size > 0 ifTrue: [aStream nextPutAll: '| '].
+	aStream nextPutAll: opcode.
+	aStream nextPutAll: ' | '.
+	modrm notNil ifTrue: [modrm printOn: aStream].
+	sib notNil ifTrue: [
+		aStream nextPutAll: ' | '.
+		sib printOn: aStream].
+	displacement notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		displacement do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]].
+	immediate notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		immediate do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]]
+! !
 
 !ISAImmediate methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:03:25'!
 printOn: aStream 
@@ -3396,6 +3540,2181 @@ new
 
 	^super new initialize! !
 
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:13:02'!
+addLiteral: anObject 
+	| index | 
+	index := literals
+		indexOf: anObject
+		ifAbsent: [ literals
+				add: anObject;
+				size ].
+	^ index + 2! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:17:30'!
+addressOfExternal: function 
+
+	^ExternalFunctions at: function ifAbsent: nil! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:10:50'!
+aspects 
+
+	^#(#disassembledText32 #disassembledText64)! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:33:17'!
+disassembledText32 
+
+	^self nativeCode disassembledText32! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:34:05'!
+disassembledText64 
+
+	^self nativeCode disassembledText64! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:34:21'!
+discardArguments: anInteger 
+
+	anInteger = 0 ifTrue: [^self].
+	self addSPwithImmediate: anInteger * wordSize! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:34:44'!
+divideDoubleX0byX1 
+
+	self assemble: 'divsd' with: XMM0 with: XMM1! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:35:15'!
+divideRbyT 
+	| conversion |
+	self assert: (self regR r == RAX and: [self regA r == RDX]).
+	conversion := wordSize = 8 ifTrue: ['cqo'] ifFalse: ['cdq'].
+	self
+		assemble: conversion;
+		assemble: 'idiv' with: self regT! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:35:36'!
+dropTopOfFPU 
+"
+	fstp st(0)
+"
+	self assembleBytes: #[16rDD 16rD8]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:35:57'!
+dropTos: count 
+	| imm |
+	imm := count * self addressSize.
+	self assemble: 'add' with: self regSP with: imm! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 13:36:19'!
+dummyPointer 
+	#dontOptimize.
+	^wordSize = 8 ifTrue: [16r1BADADD01BADADD0] ifFalse: [16r1BADADD0]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:21:58'!
+nativeCode 
+
+	^(NativeCode withAll: literals) code: memory bytes! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:30:41'!
+regA 
+
+	^wordSize = 8 ifTrue: [RDX] ifFalse: [EDX]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:31:00'!
+regA8 
+
+	^DL! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:31:20'!
+regB 
+
+	^wordSize = 8 ifTrue: [RBX] ifFalse: [EBX]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:32:00'!
+regC 
+
+	^wordSize = 8 ifTrue: [RBX] ifFalse: [EBX]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:32:38'!
+regE 
+
+	^wordSize = 8 ifTrue: [RDI] ifFalse: [EDI]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:33:01'!
+regFP 
+
+	^wordSize = 8 ifTrue: [RBP] ifFalse: [EBP]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:33:24'!
+regFalse 
+
+	^ R14! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:33:41'!
+regG
+
+	^R15! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:33:58'!
+regIP 
+
+	^ RIP! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:34:11'!
+regM 
+
+	^RBX! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:34:28'!
+regNil 
+
+	^ R12! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:34:53'!
+regR 
+
+	^wordSize = 8 ifTrue: [RAX] ifFalse: [EAX]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:35:41'!
+regR8 
+
+	^AL! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:36:01'!
+regS 
+
+	^wordSize = 8 ifTrue: [RSI] ifFalse: [ESI]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:36:19'!
+regSP 
+
+	^wordSize = 8 ifTrue: [RSP] ifFalse: [ESP]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:36:38'!
+regT 
+
+	^wordSize = 8 ifTrue: [RCX] ifFalse: [ECX]! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:36:55'!
+regT8 
+
+	^ CL! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 14:37:07'!
+regTrue 
+
+	^ R13! !
+
+!JITAssembler64 methodsFor: 'accessing' stamp: 'KenD 3/8/2021 15:58:57'!
+wordSize 
+
+	^wordSize! !
+
+!JITAssembler64 methodsFor: 'services' stamp: 'KenD 3/8/2021 14:38:01'!
+reset 
+
+	super reset.
+	literals := OrderedCollection new! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:12:26'!
+addAtoR 
+
+	self assemble: 'add' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:12:52'!
+addDoubleX1toX0 
+
+	self assemble: 'addsd' with: XMM0 with: XMM1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:17:43'!
+andRwithA 
+
+	self assemble: 'and' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:17:55'!
+andRwithImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'and' with: self regR withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:18:08'!
+andTosWithImmediate: anInteger 
+	#imm8.
+	#imm32.
+	pointer reset; length: self addressLength; base: self regSP.
+	self assemble: 'and' with: pointer withImm: anInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:18:22'!
+buildFrame 
+
+	self
+		push: self regFP;
+		move: self regSP to: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:18:34'!
+callA 
+
+	self assemble: 'call' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:19:13'!
+callIndirectA 
+
+	pointer reset; length: self addressLength; base: self regA.
+	self assemble: 'call' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:19:33'!
+callIndirectM 
+
+	pointer reset; length: self addressLength; base: self regM.
+	self assemble: 'call' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:19:55'!
+callR 
+
+	self assemble: 'call' with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:20:08'!
+clearAintegerBit 
+
+	self assemble: 'dec' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:21:16'!
+clearFPUFlags 
+
+	self assemble: 'fnclex'! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:21:34'!
+clearRhighHalf 
+
+	self assemble: 'mov' with: self regR e with: self regR e! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:21:46'!
+clearRintegerBit 
+
+	self assemble: 'dec' with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:22:21'!
+compare: register withBoolean: aBoolean 
+
+	aBoolean
+		ifTrue: [ self compareWithTrue: register ]
+		ifFalse: [ self compareWithFalse: register ]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:22:53'!
+compare: register withLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self
+		assemble: 'cmp'
+		withReg: register
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:23:14'!
+compareAwithBoolean: aBoolean 
+
+	aBoolean
+		ifTrue: [ self compareAwithTrue ]
+		ifFalse: [ self compareAwithFalse ]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:23:51'!
+compareAwithFalse 
+
+	self assemble: 'cmp' with: self regA with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:24:05'!
+compareAwithImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'cmp' with: self regA withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:24:19'!
+compareAwithSmallInteger: anInteger 
+
+	self compareAwithImmediate: (anInteger bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:24:56'!
+compareAwithTrue 
+
+	self assemble: 'cmp' with: self regA with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:25:15'!
+compareEqualLargeX0withAindirect 
+
+	pointer reset; length: 64; base: self regA.
+	self assemble: 'cmpsd' with: XMM0 with: pointer with: 0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:25:42'!
+compareLessThanLargeX0withAindirect 
+
+	pointer reset; length: 64; base: self regA.
+	self assemble: 'cmpsd' with: XMM0 with: pointer with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:25:57'!
+compareRwithA 
+
+	self assemble: 'cmp' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:26:25'!
+compareRwithBoolean: aBoolean 
+
+	aBoolean
+		ifTrue: [ self compareRwithTrue ]
+		ifFalse: [ self compareRwithFalse ]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:26:53'!
+compareRwithEindex: index 
+
+	self assemble: 'cmp' withReg: self regR withReg: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:27:12'!
+compareRwithFPindex: index 
+
+	self assemble: 'cmp' withReg: self regR withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:27:22'!
+compareRwithFalse 
+
+	self assemble: 'cmp' with: self regR with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:27:37'!
+compareRwithImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'cmp' with: self regR withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:28:07'!
+compareRwithNil 
+
+	self assemble: 'cmp' with: self regR with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:28:25'!
+compareRwithS 
+
+	self assemble: 'cmp' with: self regR with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:28:37'!
+compareRwithSindex: index 
+
+	self assemble: 'cmp' withReg: self regR withReg: self regS index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:29:00'!
+compareRwithSmallInteger: anInteger 
+
+	self compareRwithImmediate: (anInteger bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:29:18'!
+compareRwithTrue 
+
+	self assemble: 'cmp' with: self regR with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:29:27'!
+compareRwithVindex: index 
+
+	self assemble: 'cmp' withReg: self regR withReg: self regV index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:29:39'!
+compareSwithTindex: index 
+
+	self assemble: 'cmp' withReg: self regS withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:29:53'!
+compareTwithA 
+
+	self assemble: 'cmp' with: self regT with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:30:06'!
+compareTwithImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'cmp' with: self regT withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:30:18'!
+compareWithFalse: register 
+
+	self assemble: 'cmp' with: register with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:30:29'!
+compareWithNil: register 
+
+	self assemble: 'cmp' with: register with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:30:48'!
+compareWithTrue: register 
+
+	self assemble: 'cmp' with: register with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:30:57'!
+convertAtoNativeInteger 
+
+	self convertToNativeInteger: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:31:14'!
+convertAtoSmallInteger 
+
+	self convertToSmallInteger: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:31:32'!
+convertRtoNativeInteger 
+
+	self convertToNativeInteger: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:31:42'!
+convertRtoSmallInteger 
+
+	self convertToSmallInteger: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:01'!
+convertTToNativeInteger 
+
+	self convertToNativeInteger: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:09'!
+convertTosToSmallInteger 
+
+	pointer reset; length: self addressLength; base: self regSP.
+	self
+		assemble: 'shl' with: pointer with: 1;
+		assemble: 'inc' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:22'!
+convertTtoNativeInteger 
+
+	self convertToNativeInteger: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:31'!
+dec: op1 
+
+	self assemble: 'dec' with: op1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:43'!
+decR 
+
+	self assemble: 'dec' with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:32:54'!
+decRindirect 
+
+	pointer reset; length: self addressLength; base: self regR.
+	self assemble: 'dec' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:37:26'!
+ensureRintegerBit 
+
+	self assemble: 'or' with: AL with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:37:44'!
+ensureSafeRintegerBit 
+
+	self assemble: 'or' with: AL with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:38:04'!
+exchangeRindirectWithT 
+
+	pointer reset; length: self addressLength; base: self regR.
+	self assemble: 'xchg' with: pointer with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:38:16'!
+incA 
+
+	self assemble: 'inc' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:38:38'!
+incC 
+
+	self assemble: 'inc' with: self regC! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:39:49'!
+initializeS 
+
+	self assemble: 'mov' with: self regS with: self regR
+! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:40:01'!
+jumpIndirectA 
+
+	pointer reset; length: self addressLength; base: self regA.
+	self assemble: 'jmp' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:41:20'!
+jumpToA 
+
+	self assemble: 'jmp' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:41:41'!
+jumpToMindex: index 
+
+	self assemble: 'jmp' withReg: self regM index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:41:53'!
+jumpToS 
+
+	self assemble: 'jmp' with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:42:09'!
+jumpToTindex: index 
+
+	self assemble: 'jmp' withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:42:21'!
+labeledIntegerBitTestOf: aRegister 
+	| label |
+	self testIntegerBitOf: aRegister.
+	label := self newLabel.
+	self shortJumpIfZeroTo: label.
+	^label! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:42:51'!
+labeledIntegerBitTestOfA 
+
+	^self labeledIntegerBitTestOf: self regA8! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:43:11'!
+labeledIntegerBitTestOfR 
+
+	^self labeledIntegerBitTestOf: self regR8! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:43:21'!
+labeledIntegerBitTestOfT 
+
+	^self labeledIntegerBitTestOf: self regT byte! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:43:34'!
+labeledIntegerNativizationOf: aRegister 
+	| label |
+	self convertToNativeInteger: aRegister.
+	label := self newLabel.
+	self shortJumpIfNotCarryTo: label.
+	^label! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:43:49'!
+labeledIntegerNativizationOfA 
+
+	^self labeledIntegerNativizationOf: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:44:40'!
+labeledIntegerNativizationOfR 
+
+	^self labeledIntegerNativizationOf: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:45:04'!
+labeledIntegerNativizationOfT 
+
+	^self labeledIntegerNativizationOf: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:45:15'!
+labeledNonIntegerBitTestOf: aRegister 
+	| label |
+	self testIntegerBitOf: aRegister.
+	label := self newLabel.
+	self shortJumpIfNotZeroTo: label.
+	^label! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:46:02'!
+labeledNonIntegerBitTestOfR 
+
+	^self labeledNonIntegerBitTestOf: self regR8! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:22:10'!
+learSafeRintegerBit 
+
+	immediate value: 16rFE; length: 8.
+	self assemble: 'and' with: AL with: immediate! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:46:13'!
+load: register withLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self
+		assemble: 'mov'
+		withReg: register
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:46:28'!
+loadAwithAindex: index 
+
+	self assemble: 'mov' withReg: self regA withReg: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:47:12'!
+loadAwithBoolean: aBoolean 
+
+	aBoolean ifTrue: [self loadAwithTrue]
+	ifFalse: [self loadAwithFalse]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:47:27'!
+loadAwithEindex: index 
+
+	self assemble: 'mov' withReg: self regA withReg: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:47:38'!
+loadAwithFPindex: index 
+
+	self assemble: 'mov' withReg: self regA withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:47:49'!
+loadAwithFalse 
+
+	self assemble: 'mov' with: self regA with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:48:01'!
+loadAwithGindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regA
+		withReg: self regG
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:48:11'!
+loadAwithGlobal: aSymbol 
+	| index |
+	index := NativizationEnvironment indexOfGlobal: aSymbol.
+	self loadAwithGindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:48:29'!
+loadAwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regA withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:50:56'!
+loadAwithKnown: anObject 
+
+	self breakpoint! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:51:06'!
+loadAwithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadAwithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:51:18'!
+loadAwithMindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regA
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:51:29'!
+loadAwithNil 
+
+	self assemble: 'mov' with: self regA with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:51:40'!
+loadAwithR 
+
+	self assemble: 'mov' with: self regA with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:51:53'!
+loadAwithRindex: index 
+
+	self assemble: 'mov' withReg: self regA withReg: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:52:03'!
+loadAwithRoffsetAtA 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: self regA with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:52:15'!
+loadAwithS 
+
+	self assemble: 'mov' with: self regA with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:52:25'!
+loadAwithSindex: index 
+
+	self assemble: 'mov' withReg: self regA withReg: self regS index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:52:41'!
+loadAwithSmallInteger: anInteger 
+
+	self loadAwithImmediate: (anInteger bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:52:57'!
+loadAwithT 
+
+	self assemble: 'mov' with: self regA with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:53:17'!
+loadAwithTrue 
+
+	self assemble: 'mov' with: self regA with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:53:42'!
+loadEwithFPindex: index 
+
+	self assemble: 'mov' withReg: self regE withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:53:52'!
+loadEwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regE withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:09'!
+loadEwithNil 
+
+	self assemble: 'mov' with: self regE with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:18'!
+loadEwithR 
+
+	self assemble: 'mov' with: self regE with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:28'!
+loadFPwithR 
+
+	self assemble: 'mov' with: self regFP with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:38'!
+loadFPwithSP 
+
+	self assemble: 'mov' with: self regFP with: self regSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:48'!
+loadFalseWithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadFalseWithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:54:57'!
+loadFalseWithMindex: index 
+
+	self assemble: 'mov' withReg: self regFalse withReg: self regM index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:55:09'!
+loadGwithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadGwithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:55:25'!
+loadGwithMindex: index 
+
+	self assemble: 'mov' withReg: self regG withReg: self regM index: index
+! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:55:43'!
+loadLargeX0withRindirect 
+
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'movq' with: XMM0 with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:55:57'!
+loadLargeX1withAindirect 
+
+	pointer reset; length: 64; base: self regA.
+	self assemble: 'movq' with: XMM1 with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:56:10'!
+loadLongMwithIPoffset: anInteger 
+	| instsize |
+	#dontOptimize.
+	instsize := 6.
+	pointer
+		reset;
+		length: 32;
+		base: self regIP;
+		displacement: anInteger - instsize.
+	self assemble: 'mov' with: self regM e with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:56:27'!
+loadLongRWithRAtOffsetA 
+
+	pointer
+		reset;
+		length: 32;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: self regR e with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:56:37'!
+loadLongRwithRatOffsetA 
+
+	pointer
+		reset;
+		length: 32;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: self regR e with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:56:52'!
+loadLongSwithRindex: index 
+	#dontOptimize.
+	pointer
+		reset;
+		length: 32;
+		base: self regR;
+		displacement: index - 1 * 4.
+	self assemble: 'mov' with: self regS e with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:57:11'!
+loadMXCSRfromA 
+
+	pointer reset; length: 32; base: self regA.
+	self assemble: 'ldmxcsr' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:57:21'!
+loadMwithA 
+
+	self assemble: 'mov' with: self regM with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:57:31'!
+loadMwithFPindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regM
+		withReg: self regFP
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:57:45'!
+loadMwithGindex: index 
+
+	self assemble: 'mov' withReg: self regM withReg: self regG index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:57:57'!
+loadMwithGlobal: aSymbol 
+	| index |
+	index := NativizationEnvironment indexOfGlobal: aSymbol.
+	self loadMwithGindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:58:08'!
+loadMwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regM withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:58:17'!
+loadMwithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadMwithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:58:28'!
+loadMwithMindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regM
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:00:27'!
+loadMwithRIPoffset: imm 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: RIP;
+		displacement: imm.
+
+	self assemble: 'lea' with: self regM with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:01:42'!
+loadMwithRindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regM
+		withReg: self regR
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:02:12'!
+loadMwithTindex: index 
+
+	self assemble: 'mov' withReg: self regM withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:02:22'!
+loadNilWithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadNilWithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:02:35'!
+loadNilWithMindex: index 
+
+	self assemble: 'mov' withReg: self regNil withReg: self regM index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:02:45'!
+loadRConvertingDoubleRindirect 
+
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'cvttsd2si' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:02:57'!
+loadRconvertingDoublePointedByR 
+
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'cvttsd2si' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:07'!
+loadRwithA 
+
+	self assemble: 'mov' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:18'!
+loadRwithArgPointer 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regFP;
+		displacement: wordSize * 2.
+	self assemble: 'lea' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:30'!
+loadRwithBoolean: aBoolean 
+
+	aBoolean
+		ifTrue: [ self loadRwithTrue ]
+		ifFalse: [ self loadRwithFalse ]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:39'!
+loadRwithE 
+
+	self assemble: 'mov' with: self regR with: self regE! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:48'!
+loadRwithEindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:03:58'!
+loadRwithFP 
+
+	self assemble: 'mov' with: self regR with: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:04:19'!
+loadRwithFPindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:04:33'!
+loadRwithFalse 
+
+	self assemble: 'mov' with: self regR with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:04:43'!
+loadRwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regR withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:04:55'!
+loadRwithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadRwithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:05:04'!
+loadRwithM 
+
+	self assemble: 'mov' with: self regR with: self regM! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:05:15'!
+loadRwithMindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regR
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:05:27'!
+loadRwithNil 
+
+	self assemble: 'mov' with: self regR with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:05:37'!
+loadRwithRatA 
+
+	self load: self regR from: self regR atIndexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:06:35'!
+loadRwithRatOffsetA 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:06:46'!
+loadRwithRbyte: index 
+
+	pointer
+		reset;
+		length: 8;
+		base: self regR;
+		displacement: index - 1.
+	self
+		assemble: 'mov' with: self regR b with: pointer;
+		andRwithImmediate: 16rFF;
+		convertRtoSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:06:58'!
+loadRwithRindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:07:09'!
+loadRwithRwordAt: index 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regR;
+		displacement: index - 1.
+	self
+		assemble: 'mov' with: self regR with: pointer;
+		andRwithImmediate: 16rFFFF;
+		convertRtoSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:07:19'!
+loadRwithS 
+
+	self assemble: 'mov' with: self regR with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:07:29'!
+loadRwithSP 
+
+	self assemble: 'mov' with: self regR with: self regSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:07:40'!
+loadRwithSPindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regSP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:07:51'!
+loadRwithSbyte: index 
+	pointer
+		reset;
+		length: 8;
+		base: self regS;
+		displacement: index - 1.
+	self
+		assemble: 'mov' with: self regR b with: pointer;
+		andRwithImmediate: 16rFF;
+		convertRtoSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:08:02'!
+loadRwithSindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regS index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:08:10'!
+loadRwithSmallInteger: anInteger 
+
+	self loadRwithImmediate: (anInteger bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:08:21'!
+loadRwithSwordAt: index 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regS;
+		displacement: index - 1.
+	self
+		assemble: 'mov' with: self regR w with: pointer;
+		andRwithImmediate: 16rFFFF;
+		convertRtoSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:08:50'!
+loadRwithT 
+
+	self assemble: 'mov' with: self regR with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:09:17'!
+loadRwithTIBatIndexR 
+	| seg |
+	seg := wordSize = 8 ifTrue: [GS] ifFalse: [FS].
+	pointer
+		reset;
+		length: self addressLength;
+		index: self regR;
+		scale: wordSize;
+		segment: seg.
+	self assemble: 'mov' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:09:49'!
+loadRwithThreadVariableAtIndexR 
+
+	pointer
+		reset;
+		length: self addressLength;
+		index: self regR;
+		scale: wordSize.
+	wordSize = 8
+		ifTrue: [pointer segment: GS; displacement: 16r1480]
+		ifFalse: [pointer segment: FS; displacement: 16rE10].
+	self assemble: 'mov' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:03'!
+loadRwithTindex: index 
+
+	self assemble: 'mov' withReg: self regR withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:15'!
+loadRwithTos 
+
+	pointer reset; length: self addressLength; base: self regSP.
+	self assemble: 'mov' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:25'!
+loadRwithTrue 
+
+	self assemble: 'mov' with: self regR with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:41'!
+loadRwithX0 
+	| mov |
+	mov := wordSize = 8 ifTrue: ['movq'] ifFalse: ['movd'].
+	self assemble: mov with: self regR with: XMM0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:50'!
+loadSPwithFP 
+
+	self assemble: 'mov' with: self regSP with: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:10:59'!
+loadSPwithT 
+
+	self assemble: 'mov' with: self regSP with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:11:11'!
+loadSWithRIndex: index 
+
+	self load: self regS from: self regR atIndex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:11:21'!
+loadSwithA 
+
+	self assemble: 'mov' with: self regS with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:11:37'!
+loadSwithAddressOfSatA 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regS;
+		index: self regA;
+		scale: self regS sizeInBytes;
+		displacement: 0 - self regS sizeInBytes.
+	self assemble: 'lea' with: self regS with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:11:48'!
+loadSwithFPindex: index 
+
+	self assemble: 'mov' withReg: self regS withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:11:56'!
+loadSwithGindex: index 
+
+	self assemble: 'mov' withReg: self regS withReg: self regG index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:12:06'!
+loadSwithGlobal: aSymbol 
+	| index |
+	index := NativizationEnvironment indexOfGlobal: aSymbol.
+	self loadSwithGindex: index
+! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:12:24'!
+loadSwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regS withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:12:34'!
+loadSwithNil 
+
+	self assemble: 'mov' with: self regS with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:12:44'!
+loadSwithRindex: index 
+
+	self assemble: 'mov' withReg: self regS withReg: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:12:52'!
+loadSwithT 
+
+	self assemble: 'mov' with: self regS with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:13:09'!
+loadTrueWithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadTrueWithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:13:43'!
+loadTrueWithMindex: index 
+
+	self assemble: 'mov' withReg: self regTrue withReg: self regM index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:13:53'!
+loadTwithA 
+
+	self assemble: 'mov' with: self regT with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:14:04'!
+loadTwithAindex: index 
+
+	self assemble: 'mov' withReg: self regT withReg: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:14:19'!
+loadTwithEindex: index 
+
+	self assemble: 'mov' withReg: self regT withReg: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:14:49'!
+loadTwithFPindex: index 
+
+	self assemble: 'mov' withReg: self regT withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:14:58'!
+loadTwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regT withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:15:08'!
+loadTwithLiteral: anObject 
+	| index |
+	index := self addLiteral: anObject.
+	self loadTwithMindex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:15:20'!
+loadTwithMindex: index 
+
+	self
+		assemble: 'mov'
+		withReg: self regT
+		withReg: self regM
+		index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:15:33'!
+loadTwithR 
+
+	self assemble: 'mov' with: self regT with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:15:45'!
+loadTwithTindex: index 
+
+	self assemble: 'mov' withReg: self regT withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:16:05'!
+loadVwithImmediate: imm 
+	#imm32.
+	self assemble: 'mov' with: self regV withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:16:14'!
+loadWithFalse: register 
+
+	self assemble: 'mov' with: register with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:16:24'!
+loadWithNil: register 
+
+	self
+		assemble: 'mov'
+		with: register
+		with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:16:38'!
+loadWithTrue: register 
+
+	self assemble: 'mov' with: register with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:16:54'!
+loadX0withRasDouble 
+
+	self assemble: 'cvtsi2sd' with: XMM0 with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:17:19'!
+loadX1roundingX0 
+
+	self assemble: 'roundsd' with: XMM1 with: XMM0 with: 3! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:17:58'!
+loadZeroExtendByteRwithRatA 
+
+	self loadZeroExtendByte: self regR from: self regR atIndexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:18:09'!
+loadZeroExtendByteRwithRindex: index 
+	#dontOptimize.
+	self loadZeroExtendByte: self regR from: self regR atIndex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:18:20'!
+loadZeroExtendByteRwithSPatA 
+
+	self loadZeroExtendByte: self regR from: self regSP atIndexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:18:32'!
+loadZeroExtendByteTwithAindex: index 
+	#dontOptimize.
+	self loadZeroExtendByte: self regT from: self regA atIndex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:18:42'!
+loadZeroExtendLongRwithRatA 
+
+	self load: self regR e from: self regR atIndexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:19:16'!
+loadZeroExtendLongRwithRindex: index 
+	#dontOptimize.
+	self load: self regR e from: self regR atIndex: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:19:25'!
+loadZeroExtendShortRwithRoffset: offset 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regR;
+		displacement: offset.
+	self assemble: 'movzx' with: self regR with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:19:39'!
+lock 
+
+	self assembleByte: 16rF0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:19:51'!
+loop: aBlock times: anInteger 
+	| loop |
+	loop := self newLabel.
+	self loadTwithImmediate: anInteger; @ loop.
+	aBlock value.
+	self dec: self regT; shortJumpIfNotZeroTo: loop
+! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:20:00'!
+loopTo: label 
+	self
+		assemble: 'dec' with: self regT;
+		jumpIfNotZeroTo: label! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:20:14'!
+loopTtimes: aBlock 
+	| loop end |
+	loop := self newLabel.
+	end := self newLabel.
+	self
+		compareTwithImmediate: 0;
+		@ loop;
+		shortJumpIfEqualTo: end.
+	aBlock value.
+	self
+		dec: self regT;
+		shortJumpTo: loop;
+		@ end! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:20:28'!
+moveTslots 
+	| rep mnemonic |
+	rep := 16rF3.
+	mnemonic := wordSize = 8 ifTrue: ['movsq'] ifFalse: ['movsd'].
+	self assembleByte: rep; assemble: mnemonic! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:20:46'!
+multiplyDoubleX0byX1 
+
+	self assemble: 'mulsd' with: XMM0 with: XMM1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:21:13'!
+multiplyRbyA 
+
+	self assert: (self regR r == RAX and: [self regA r == RDX]).
+	self assemble: 'imul' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:21:34'!
+multiplyRbyConstant: imm 
+
+	self assemble: 'imul' with: self regR with: self regR with: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:53:28'!
+oadEwithAddressOfRatA 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regR;
+		index: self regA;
+		scale: self regE sizeInBytes;
+		displacement: 0 - self regE sizeInBytes.
+	self assemble: 'lea' with: self regE with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 13:27:49'!
+ompareRwithIndirect: reg1 andExchange: reg2 
+
+	pointer reset; length: self addressLength; base: reg1.
+	self assemble: 'cmpxchg' with: pointer with: reg2! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:31'!
+opTrue 
+
+	self assemble: 'pop' with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:22:10'!
+orRwithA 
+
+	self assemble: 'or' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:22:18'!
+popA 
+
+	self assemble: 'pop' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:22:34'!
+popB 
+
+	self assemble: 'pop' with: self regB! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:22:46'!
+popE 
+
+	self assemble: 'pop' with: self regE! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:22:54'!
+popFP 
+
+	self assemble: 'pop' with: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:10'!
+popFalse 
+
+	self assemble: 'pop' with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:18'!
+popG 
+
+	self assemble: 'pop' with: self regG! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:27'!
+popM 
+
+	self assemble: 'pop' with: self regM! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:36'!
+popNil 
+
+	self assemble: 'pop' with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:45'!
+popR 
+
+	self assemble: 'pop' with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:23:55'!
+popS 
+
+	self assemble: 'pop' with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:05'!
+popSP 
+
+	self assemble: 'pop' with: self regSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:15'!
+popSPindirect 
+
+	pointer reset; length: self addressLength; base: self regSP.
+	self assemble: 'pop' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:22'!
+popT 
+
+	self assemble: 'pop' with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:40'!
+pushA 
+
+	self assemble: 'push' with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:24:49'!
+pushAOnFPUStack 
+
+	pointer reset; length: 64; base: self regA.
+	self assemble: 'fld' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:25:10'!
+pushAatToffset: offset 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regA;
+		index: self regT;
+		scale: self regSP sizeInBytes;
+		displacement: offset.
+	self assemble: 'push' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:25:39'!
+pushB 
+
+	self assemble: 'push' with: self regB! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:25:47'!
+pushE 
+
+	self assemble: 'push' with: self regE! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:00'!
+pushEindex: index 
+
+	self assemble: 'push' withReg: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:09'!
+pushFP 
+
+	self assemble: 'push' with: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:18'!
+pushFPindex: index 
+
+	self assemble: 'push' withReg: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:27'!
+pushFalse 
+
+	self assemble: 'push' with: self regFalse! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:40'!
+pushG 
+
+	self assemble: 'push' with: self regG! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:26:48'!
+pushImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'push' withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:00'!
+pushIndirectR 
+
+	pointer reset; length: self addressLength; base: self regR.
+	self assemble: 'push' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:09'!
+pushM 
+
+	self assemble: 'push' with: self regM! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:18'!
+pushNil 
+
+	self assemble: 'push' with: self regNil! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:26'!
+pushR 
+
+	self assemble: 'push' with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:34'!
+pushROnFPUStack 
+
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'fld' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:27:48'!
+pushRbyte: index 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regR;
+		displacement: index - 1.
+	self
+		assemble: 'push' with: pointer;
+		andTosWithImmediate: 16rFF;
+		convertTosToSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:00'!
+pushRwordAt: index 
+
+	pointer
+		halt;
+		reset;
+		length: self addressLength;
+		base: self regR;
+		displacement: index - 1.
+	self
+		assemble: 'push' with: pointer;
+		andTosWithImmediate: 16rFFFF;
+		convertTosToSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:08'!
+pushS 
+
+	self assemble: 'push' with: self regS! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:16'!
+pushSP 
+
+	self assemble: 'push' with: self regSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:25'!
+pushSbyte: index 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regS;
+		displacement: index - 1.
+	self
+		assemble: 'push' with: pointer;
+		andTosWithImmediate: 16rFF;
+		convertTosToSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:35'!
+pushSindex: index 
+
+	self assemble: 'push' withReg: self regS index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:43'!
+pushSmallInteger: integer 
+
+	self pushImmediate: (integer bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:28:52'!
+pushSwordAt: index 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regS;
+		displacement: index - 1.
+	self
+		assemble: 'push' with: pointer;
+		andTosWithImmediate: 16rFFFF;
+		convertTosToSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:29:01'!
+pushT 
+
+	self assemble: 'push' with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:29:15'!
+pushTindex: index 
+
+	self assemble: 'push' withReg: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:29:22'!
+pushTrue 
+
+	self assemble: 'push' with: self regTrue! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:29:32'!
+pushVindex: index 
+
+	self assemble: 'push' withReg: self regV index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:29:43'!
+readFPUStatusOnA 
+
+	pointer reset; length: 16; base: self regA.
+	self assemble: 'fstsw' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:37:25'!
+reserveStackSlots: amount 
+
+	self subtract: amount * self addressSize from: self regSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:38:18'!
+restoreCallerEnvironment 
+
+	self loadEwithFPindex: -2! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:38:31'!
+restoreCallerFrame 
+
+	self
+		move: self regFP to: self regSP;
+		pop: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:38:41'!
+restoreCallerM 
+
+	self loadMwithFPindex: -1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:38:50'!
+restoreCallerSelf 
+
+	self loadSwithFPindex: 0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:38:59'!
+restoreRSmallInteger 
+
+	self assemble: 'rcl' with: self regR with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:39:09'!
+restoreRsmallInteger 
+
+	self assemble: 'rcl' with: self regR with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:39:38'!
+returnFromCallback: argCount 
+
+	wordSize = 4 ifTrue: [self return: argCount] ifFalse: [self return]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:39:48'!
+saveCallerFrame 
+
+	self pushFP; loadFPwithSP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:39:56'!
+scaleFloatOnRWithA 
+
+	self pushAOnFPUStack; pushROnFPUStack; assemble: 'fscale'.
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'fstp' with: pointer; dropTopOfFPU! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:40:13'!
+shiftLeftRwithT 
+
+	self assert: self regT r == RCX.
+	self assemble: 'sal' with: self regR with: self regT b! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:40:26'!
+shiftLogicalRright: count 
+
+	self assert: count < 32.
+	self assemble: 'shr' with: self regR with: count! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:40:46'!
+shiftRightRwithT 
+
+	self assert: self regT r == RCX.
+	self assemble: 'sar' with: self regR with: self regT b! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:40:58'!
+shiftRleft: count 
+
+	self assert: count < 32.
+	self assemble: 'sal' with: self regR with: count! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:41:13'!
+shiftRright: count 
+
+	self assert: count < (wordSize * 8).
+	self assemble: 'sar' with: self regR with: count! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:41:24'!
+shiftTleft: count 
+
+	self assert: count < 32.
+	self assemble: 'sal' with: self regT with: count! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:41:39'!
+shiftTright: count 
+	
+	self assert: count < 32.
+	self assemble: 'sar' with: self regT with: count! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:41:52'!
+smallInteger: anInteger 
+
+	^(anInteger bitShift: 1) + 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:42:23'!
+sqrtDoubleX0 
+
+	self assemble: 'sqrtsd' with: XMM0 with: XMM0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:42:35'!
+storeAinRindex: index 
+
+	self store: self regA in: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:42:44'!
+storeAinSPatT 
+
+	self store: self regA in: self regSP indexAt: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:43:27'!
+storeAinThreadVariableAtIndexR 
+
+	pointer
+		reset;
+		length: self addressLength;
+		index: self regR;
+		scale: wordSize.
+	wordSize = 8
+		ifTrue: [pointer segment: GS; displacement: 16r1480]
+		ifFalse: [pointer segment: FS; displacement: 16rE10].
+	self assemble: 'mov' with: pointer with: self regA
+! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:43:38'!
+storeAinTindex: index 
+
+	self store: self regA in: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:44:18'!
+storeArgumentsInStack 
+
+	self
+		store: RCX in: RBP index: 3;
+		store: RDX in: RBP index: 4;
+		store: R8 in: RBP index: 5;
+		store: R9 in: RBP index: 6! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 14:44:31'!
+storeByteAinRindex: index 
+	#dontOptimize.
+	pointer
+		reset;
+		length: 8;
+		base: self regR;
+		displacement: index - 1.
+	self assemble: 'mov' with: pointer with: self regA b! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:47:03'!
+storeByteTinRatA 
+
+	pointer
+		reset;
+		length: 8;
+		base: self regR;
+		index: self regA;
+		displacement: -1.
+	self assemble: 'mov' with: pointer with: self regT b! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:47:22'!
+storeDoubleResultInRindirect 
+
+	pointer reset; length: 64; base: self regR.
+	wordSize = 8
+		ifTrue: [self assemble: 'movq' with: pointer with: XMM0]
+		ifFalse: [self assemble: 'fstp' with: pointer]! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:49:54'!
+storeEinAindex: index 
+
+	self store: self regE in: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:50:05'!
+storeEinRindex: index 
+
+	self store: self regE in: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:50:35'!
+storeLargeX0inA 
+
+	pointer reset; length: 64; base: self regA.
+	self assemble: 'movq' with: pointer with: XMM0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:50:56'!
+storeLargeX0inR 
+
+	pointer reset; length: 64; base: self regR.
+	self assemble: 'movq' with: pointer with: XMM0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:51:15'!
+storeLargeX0inT 
+
+	pointer reset; length: 64; base: self regT.
+	self assemble: 'movq' with: pointer with: XMM0! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:52:19'!
+storeLongTInRAtA 
+
+	self store: self regT e in: self regR indexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:52:27'!
+storeLongTinRatA 
+
+	self store: self regT e in: self regR indexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:52:36'!
+storeLongTinRatOffsetA 
+
+	pointer
+		reset;
+		length: 32;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: pointer with: self regT e! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:52:46'!
+storeMXCSRintoA 
+
+	pointer reset; length: 32; base: self regA.
+	self assemble: 'stmxcsr' with: pointer! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:52:56'!
+storeRinAindex: index 
+
+	self store: self regR in: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:53:06'!
+storeRinEindex: index 
+
+	self store: self regR in: self regE index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:53:16'!
+storeRinFPindex: index 
+
+	self store: self regR in: self regFP index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:53:36'!
+storeRinSbyte: index 
+
+	pointer
+		reset;
+		length: 8;
+		base: self regS;
+		displacement: index - 1.
+	self assemble: 'mov' with: pointer with: self regR b! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:53:47'!
+storeRinSwordAt: index 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regS;
+		displacement: index - 1.
+	self
+		convertRtoNativeInteger;
+		assemble: 'mov' with: pointer with: self regR w;
+		convertRtoSmallInteger! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:53:57'!
+storeRinTindex: index 
+
+	self store: self regR in: self regT index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:54:07'!
+storeShortAinRoffset: offset 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regR;
+		displacement: offset.
+	self assemble: 'mov' with: pointer with: self regA w! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:54:20'!
+storeShortTinRatOffsetA 
+
+	pointer
+		reset;
+		length: 16;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: pointer with: self regT w! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:54:29'!
+storeSinAindex: index 
+
+	self store: self regS in: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:54:38'!
+storeSinRindex: index 
+
+	self store: self regS in: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:54:57'!
+storeTIBwithAatIndexR 
+	| seg |
+	seg := wordSize = 8 ifTrue: [GS] ifFalse: [FS].
+	pointer
+		reset;
+		length: self addressLength;
+		index: self regR;
+		scale: wordSize;
+		segment: seg.
+	self assemble: 'mov' with: pointer with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:55:06'!
+storeTInRAtA 
+
+	self store: self regT in: self regR indexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:55:20'!
+storeTinAindex: index 
+
+	self store: self regT in: self regA index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:55:30'!
+storeTinRatA 
+
+	self store: self regT in: self regR indexAt: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:55:38'!
+storeTinRatOffsetA 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regR;
+		index: self regA.
+	self assemble: 'mov' with: pointer with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:55:48'!
+storeTinRindex: index 
+
+	self store: self regT in: self regR index: index! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:56:04'!
+subAfromR 
+
+	self assemble: 'sub' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:56:14'!
+subAfromT 
+
+	self assemble: 'sub' with: self regT with: self regA! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:56:38'!
+subDoubleX1fromX0 
+
+	self assemble: 'subsd' with: XMM0 with: XMM1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:56:47'!
+subFromRconstant: imm 
+
+	self assemble: 'sub' with: self regR withImm: imm! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:57:21'!
+subTfromR 
+
+	self assemble: 'sub' with: self regR with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:57:09'!
+subTslotsToSP 
+
+	self assemble: 'neg' with: self regT.
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regSP;
+		index: self regT;
+		scale: self regSP sizeInBytes.
+	self
+		assemble: 'lea' with: self regSP with: pointer;
+		assemble: 'neg' with: self regT! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:57:59'!
+testAintegerBit 
+
+	self assemble: 'test' with: self regA8 with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:57:42'!
+testIntegerBitOf: aRegister 
+
+	self assemble: 'test' with: aRegister byte with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:58:10'!
+testRintegerBit 
+
+	self assemble: 'test' with: self regR8 with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:58:19'!
+testRwithR 
+
+	self assemble: 'test' with: self regR with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:58:28'!
+testTIntegerBit 
+
+	self assemble: 'test' with: self regT byte with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:58:37'!
+testTintegerBit 
+
+	self assemble: 'test' with: self regT byte with: 1! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:59:17'!
+writeTslots 
+	| rep mnemonic |
+	rep := 16rF3.
+	mnemonic := wordSize = 8 ifTrue: ['stosq'] ifFalse: ['stosd'].
+	self assembleByte: rep; assemble: mnemonic! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:59:28'!
+xorAwithR 
+
+	self assemble: 'xor' with: self regA with: self regR! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:59:37'!
+xorFPwithFP 
+
+	self assemble: 'xor' with: self regFP with: self regFP! !
+
+!JITAssembler64 methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 15:59:45'!
+xorRwithA 
+
+	self assemble: 'xor' with: self regR with: self regA! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:14:03'!
+addRconstant: imm 
+
+	self assemble: 'add' with: self regR withImm: imm! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:14:57'!
+addSPtoT 
+
+	self assemble: 'add' with: self regT with: self regSP! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:15:11'!
+addSPwithImmediate: imm 
+	#imm8.
+	#imm32.
+	self assemble: 'add' with: self regSP withImm: imm! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:15:25'!
+addSslotsToSP 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regSP;
+		index: self regS;
+		scale: self regSP sizeInBytes.
+	self assemble: 'lea' with: self regSP with: pointer! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:15:39'!
+addToTconstant: imm 
+
+	self assemble: 'add' with: self regT withImm: imm! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:16:46'!
+addTslotsToSP 
+
+	pointer
+		reset;
+		length: self addressLength;
+		base: self regSP;
+		index: self regT;
+		scale: self regSP sizeInBytes.
+	self assemble: 'lea' with: self regSP with: pointer
+! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:17:03'!
+addTtoR 
+
+	self assemble: 'add' with: self regR with: self regT! !
+
+!JITAssembler64 methodsFor: 'initialization' stamp: 'KenD 3/8/2021 13:39:23'!
+initialize 
+
+	super initialize.
+	literals := OrderedCollection new! !
+
+!JITAssembler64 class methodsFor: 'class initialization' stamp: 'KenD 3/8/2021 13:39:12'!
+initialize 
+
+	super initialize.
+	ExternalFunctions := Dictionary new! !
+
 !Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:22'!
 parser: anAssemblerParser 
 
@@ -5256,6 +7575,195 @@ overridesAddressSize: anInteger
 db: byte 
 
 	^self new db: byte! !
+
+!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:00'!
+contents 
+
+	^contents contents! !
+
+!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:08'!
+from: aStream 
+
+	contents := #[] writeStream! !
+
+!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:40'!
+contents 
+
+	^contents! !
+
+!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:54'!
+from: aStream 
+
+	contents := aStream atEnd ifFalse: [ModRM new on: aStream next]! !
+
+!ISAOpcodeReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:38:12'!
+from: aStream 
+	| byte octets |
+	super from: aStream.
+	byte := aStream next.
+	contents nextPut: byte.
+	byte = 16rF ifTrue: [
+		octets := (#[16r66 16rF2 16rF3] includes: contents contents first)
+			ifTrue: [aStream next: 2]
+			ifFalse: [{aStream next}].
+		contents nextPutAll: octets]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:15'!
+printLegacyOn: aStream 
+
+	legacy contents
+		do: [:p | aStream nextPutAll: p asString]
+		separatedBy: [aStream space]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:02'!
+printRexOn: aStream 
+
+	rex isNil ifTrue: [^self].
+	aStream nextPutAll: REXPrefix rex asString.
+	(rex isOnBit: REXPrefix w value) ifTrue: [aStream nextPutAll: '.W'].
+	(rex isOnBit: REXPrefix r value) ifTrue: [aStream nextPutAll: '.R'].
+	(rex isOnBit: 1) ifTrue: [aStream nextPutAll: '.B'].
+	(rex isOnBit: 2) ifTrue: [aStream nextPutAll: '.X']! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:29'!
+printVex2On: aStream 
+
+	self printVexVvvvLpp: vex second on: aStream! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:42'!
+printVex3On: aStream 
+	| byte x b mmmmm w |
+	byte := vex second.
+	x := (byte bitAnd: 2r1000000) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: x; nextPut: $..
+	b := (byte bitAnd: 2r100000) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: b; nextPut: $..
+	mmmmm := byte bitAnd: 2r11111.
+	aStream
+		nextPutAll: (mmmmm bin: 5);
+		nextPut: $|.
+	byte := vex third.
+	w := byte >= 16r80 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: w; nextPut: $..
+	self printVexVvvvLpp: byte on: aStream! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:02'!
+printVexOn: aStream 
+	| byte r |
+	vex isNil ifTrue: [^self].
+	aStream nextPutAll: vex first hex; nextPut: $|.
+	byte := vex second.
+	r := byte // 16r80 > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: r; nextPut: $..
+	vex size = 2
+		ifTrue: [self printVex2On: aStream]
+		ifFalse: [self printVex3On: aStream]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:15'!
+printVexVvvvLpp: byte on: aStream 
+	| vvvv l pp |
+	vvvv := (byte bitShift: -3) bitAnd: 2r1111.
+	aStream
+		nextPutAll: (vvvv bin: 4);
+		nextPut: $..
+	l := (byte bitAnd: 2r100) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: l; nextPut: $..
+	pp := byte bitAnd: 2r11.
+	aStream nextPutAll: (pp bin: 2)! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:30'!
+from: aStream 
+
+	super from: aStream.
+	self
+		legacyFrom: aStream;
+		rexFrom: aStream;
+		vexFrom: aStream! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:44'!
+legacyFrom: aStream 
+	| prefix |
+	legacy := #() writeStream.
+	[
+		prefix := LegacyPrefix withValue: aStream peek.
+		prefix isNil]
+		whileFalse: [
+			legacy nextPut: prefix.
+			contents nextPut: aStream next]! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:33'!
+rexFrom: aStream 
+
+	(aStream peek bitAnd: 16rF0) = REXPrefix rex value ifTrue: [
+		rex := aStream next.
+		contents nextPut: rex]! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:45'!
+vexFrom: aStream 
+	| byte |
+	byte := aStream peek.
+	vex := byte = 16rC4 ifTrue: [aStream next: 3] ifFalse: [
+		byte = 16rC5 ifFalse: [^self].
+		aStream next: 2].
+	contents nextPutAll: vex! !
+
+!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:44'!
+contents 
+
+	^contents! !
+
+!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:52'!
+from: aStream 
+
+	contents := SIB new on: aStream next! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:43'!
+displacementFrom: aStream
+
+	self notYetImplemented ! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:57'!
+from: aStream 
+
+	self
+		prefixesFrom: aStream;
+		opcodeFrom: aStream;
+		modrmFrom: aStream;
+		sibFrom: aStream;
+		displacementFrom: aStream;
+		immediateFrom: aStream! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:40'!
+immediateFrom: aStream 
+
+	immediate := aStream upToEnd! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:53'!
+modrmFrom: aStream 
+
+	modrm := ISAModRMReader new from: aStream; contents! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:07'!
+opcodeFrom: aStream 
+
+	opcode := ISAOpcodeReader new from: aStream; asString! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:25'!
+prefixesFrom: aStream 
+
+	prefixes := ISAPrefixReader new from: aStream; asString! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:33:26'!
+sibFrom: aStream 
+
+	self hasSib ifFalse: [^self].
+	aStream atEnd ifTrue: [^self].
+	sib := ISASibReader new from: aStream; contents! !
+
+!ISAInstructionReader methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:31:24'!
+hasSib 
+
+	^modrm notNil and: [modrm mod = 0]! !
 
 !ISAOperand methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:37:48'!
 isDirectMemoryReference 
@@ -14579,6 +17087,7 @@ SExpressionTypes initialize!
 SendSiteFlags initialize!
 SpeciesFormatMasks initialize!
 Assembler64 initialize!
+JITAssembler64 initialize!
 InstructionEncoder initialize!
 InstructionSpec initialize!
 MethodEvaluator initialize!
