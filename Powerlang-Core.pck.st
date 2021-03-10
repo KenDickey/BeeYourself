@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 8 March 2021 at 3:59:58 pm'!
+'From Cuis 5.0 [latest update: #4530] on 10 March 2021 at 8:16:39 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 33!
+!provides: 'Powerlang-Core' 1 35!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -617,6 +617,26 @@ Object subclass: #ImageSegmentBuilder
 ImageSegmentBuilder class
 	instanceVariableNames: ''!
 
+!classDefinition: #KernelSegmentBuilder category: 'Powerlang-Core'!
+ImageSegmentBuilder subclass: #KernelSegmentBuilder
+	instanceVariableNames: 'smalltalk hash symbols'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'KernelSegmentBuilder class' category: 'Powerlang-Core'!
+KernelSegmentBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #LibrarySegmentBuilder category: 'Powerlang-Core'!
+ImageSegmentBuilder subclass: #LibrarySegmentBuilder
+	instanceVariableNames: 'kernelBuilder requiredSpecs imports spec'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LibrarySegmentBuilder class' category: 'Powerlang-Core'!
+LibrarySegmentBuilder class
+	instanceVariableNames: ''!
+
 !classDefinition: #ImageSegmentWriter category: 'Powerlang-Core'!
 Object subclass: #ImageSegmentWriter
 	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
@@ -655,6 +675,16 @@ Object subclass: #InstructionPrefix
 	category: 'Powerlang-Core'!
 !classDefinition: 'InstructionPrefix class' category: 'Powerlang-Core'!
 InstructionPrefix class
+	instanceVariableNames: ''!
+
+!classDefinition: #LegacyPrefix category: 'Powerlang-Core'!
+InstructionPrefix subclass: #LegacyPrefix
+	instanceVariableNames: 'group value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LegacyPrefix class' category: 'Powerlang-Core'!
+LegacyPrefix class
 	instanceVariableNames: ''!
 
 !classDefinition: #SegmentPrefix category: 'Powerlang-Core'!
@@ -795,6 +825,26 @@ MessageLinker subclass: #InvokeLinker
 	category: 'Powerlang-Core'!
 !classDefinition: 'InvokeLinker class' category: 'Powerlang-Core'!
 InvokeLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #LookupLinker category: 'Powerlang-Core'!
+MessageLinker subclass: #LookupLinker
+	instanceVariableNames: 'lookup lookupSuper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LookupLinker class' category: 'Powerlang-Core'!
+LookupLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #LazyLinker category: 'Powerlang-Core'!
+LookupLinker subclass: #LazyLinker
+	instanceVariableNames: 'sends'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LazyLinker class' category: 'Powerlang-Core'!
+LazyLinker class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodEvaluator category: 'Powerlang-Core'!
@@ -1065,6 +1115,196 @@ EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
 	category: 'Powerlang-Core'!
 !classDefinition: 'EnsureRSmallInteger class' category: 'Powerlang-Core'!
 EnsureRSmallInteger class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAOpcode category: 'Powerlang-Core'!
+Opcode subclass: #LoadAOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAOpcode class' category: 'Powerlang-Core'!
+LoadAOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAvisitingArgument category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAvisitingArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAvisitingArgument class' category: 'Powerlang-Core'!
+LoadAvisitingArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithFalse category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithFalse
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithFalse class' category: 'Powerlang-Core'!
+LoadAwithFalse class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithInstVar category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithInstVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithInstVar class' category: 'Powerlang-Core'!
+LoadAwithInstVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLiteralVar category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithLiteralVar class' category: 'Powerlang-Core'!
+LoadAwithLiteralVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithAssocVar category: 'Powerlang-Core'!
+LoadAwithLiteralVar subclass: #LoadAwithAssocVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithAssocVar class' category: 'Powerlang-Core'!
+LoadAwithAssocVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithClassVar category: 'Powerlang-Core'!
+LoadAwithAssocVar subclass: #LoadAwithClassVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithClassVar class' category: 'Powerlang-Core'!
+LoadAwithClassVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithGlobal category: 'Powerlang-Core'!
+LoadAwithAssocVar subclass: #LoadAwithGlobal
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithGlobal class' category: 'Powerlang-Core'!
+LoadAwithGlobal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithPoolVar category: 'Powerlang-Core'!
+LoadAwithAssocVar subclass: #LoadAwithPoolVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithPoolVar class' category: 'Powerlang-Core'!
+LoadAwithPoolVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithConstPoolVar category: 'Powerlang-Core'!
+LoadAwithLiteralVar subclass: #LoadAwithConstPoolVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithConstPoolVar class' category: 'Powerlang-Core'!
+LoadAwithConstPoolVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLiteral category: 'Powerlang-Core'!
+LoadAwithLiteralVar subclass: #LoadAwithLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithLiteral class' category: 'Powerlang-Core'!
+LoadAwithLiteral class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLocal category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithLocal
+	instanceVariableNames: 'index environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithLocal class' category: 'Powerlang-Core'!
+LoadAwithLocal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithArgument category: 'Powerlang-Core'!
+LoadAwithLocal subclass: #LoadAwithArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithArgument class' category: 'Powerlang-Core'!
+LoadAwithArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithTemporary category: 'Powerlang-Core'!
+LoadAwithLocal subclass: #LoadAwithTemporary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithTemporary class' category: 'Powerlang-Core'!
+LoadAwithTemporary class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithNil category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithNil
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithNil class' category: 'Powerlang-Core'!
+LoadAwithNil class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithSelf category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithSelf
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithSelf class' category: 'Powerlang-Core'!
+LoadAwithSelf class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithTrue category: 'Powerlang-Core'!
+LoadAOpcode subclass: #LoadAwithTrue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadAwithTrue class' category: 'Powerlang-Core'!
+LoadAwithTrue class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadExpressionOpcode category: 'Powerlang-Core'!
+Opcode subclass: #LoadExpressionOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadExpressionOpcode class' category: 'Powerlang-Core'!
+LoadExpressionOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadROpcode category: 'Powerlang-Core'!
+Opcode subclass: #LoadROpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadROpcode class' category: 'Powerlang-Core'!
+LoadROpcode class
 	instanceVariableNames: ''!
 
 !classDefinition: #OperandEncoding category: 'Powerlang-Core'!
@@ -8336,6 +8576,87 @@ visitTemporary: anSIdentifier
 
 	^temporaries at: anSIdentifier binding index! !
 
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:32'!
+moduleName 
+
+	^'Kernel'! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:53'!
+spec 
+
+	^image kernel! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:08'!
+undermethods 
+
+	^ (self => #ProtoObject) methods
+		select: [ :m | m category = 'header access' ]! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:19'!
+writer 
+
+	^ super writer space: smalltalk value memory edenSpace! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:02'!
+addGenesisObjects 
+
+	objects
+		add: image nil;
+		add: image false;
+		add: image true;
+		add: module.
+	globals valuesDo: [ :obj | objects add: obj ].
+	smalltalk ifNotNil: [ objects add: smalltalk value ]! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:33'!
+generateModule 
+	| wordsize lasthash |
+	super generateModule.
+	smalltalk := runtime globals associationAt: #Smalltalk.
+	wordsize := runtime globals associationAt: #WordSize.
+	lasthash := runtime globals associationAt: #LastHash.
+	runtime send: #add: to: module exports with: {wordsize}.
+	runtime send: #add: to: module exports with: {lasthash}! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:59'!
+methodSubset: aDictionary 
+	| all species m |
+	all := aDictionary
+		flatCollect: [ :assoc | 
+			species := self => assoc key.
+			assoc value
+				collect: [ :sel | 
+					m := species >> sel.
+					self assert: m notNil.
+					m ] ].
+	^ all asOrderedCollection! !
+
+!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:19'!
+spec 
+
+	^ spec! !
+
+!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:31'!
+spec: anRGEnvironment 
+
+	spec := anRGEnvironment! !
+
+!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:42'!
+addClasses
+
+	self notYetImplemented ! !
+
+!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:56'!
+importKernelObjects 
+
+	self addImport: image nil; addImport: image true; addImport: image false! !
+
+!LibrarySegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/9/2021 07:47:05'!
+initialize 
+
+	super initialize.
+	kernelBuilder := KernelSegmentBuilder new.! !
+
 !ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:34:29'!
 addClosure 
 	| remaining obj b |
@@ -9709,6 +10030,125 @@ peekFrom: aStream
 prefixes 
 
 	^Prefixes! !
+
+!LegacyPrefix methodsFor: 'codeGeneration' stamp: 'KenD 3/9/2021 07:41:20'!
+writeOn: instruction 
+
+	instruction writeLegacyPrefix: value! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:30:35'!
+addressSizeOverride 
+
+	^AddressSize_Override! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:38:44'!
+group 
+
+	^group! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:38:56'!
+group: anInteger 
+
+	group := anInteger! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:39:53'!
+overridesAddressSize 
+
+	^self = AddressSize_Override! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:40:28'!
+overridesOperandSize 
+
+	^self = OperandSize_Override! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:40:40'!
+value 
+
+	^value! !
+
+!LegacyPrefix methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:40:52'!
+value: anInteger 
+
+	value := anInteger! !
+
+!LegacyPrefix methodsFor: 'testing' stamp: 'KenD 3/9/2021 07:39:28'!
+isLegacy 
+
+	^true! !
+
+!LegacyPrefix methodsFor: 'testing' stamp: 'KenD 3/9/2021 07:39:39'!
+matches: aLegacyPrefix 
+
+	^self == aLegacyPrefix! !
+
+!LegacyPrefix class methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:38:01'!
+operandSizeOverride 
+
+	^OperandSize_Override! !
+
+!LegacyPrefix class methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:38:20'!
+withValue: byte 
+
+	^Prefixes
+		detect: [:prefix | prefix isLegacy and: [prefix value = byte]]
+		ifNone: nil! !
+
+!LegacyPrefix class methodsFor: 'class initialization' stamp: 'KenD 3/9/2021 07:34:38'!
+initializeGroup1 
+
+	#(#(0xF0 'LOCK') #(0xF2 'REPNE/REPNZ') #(0xF3 'REP/REPE/REPZ'))
+		do: [:pair | | names prefix |
+			names := $/ split: pair second.
+			prefix := self new
+				group: 1;
+				value: pair first;
+				name: names first.
+			names do: [:aka | Prefixes at: aka put: prefix]]! !
+
+!LegacyPrefix class methodsFor: 'class initialization' stamp: 'KenD 3/9/2021 07:36:06'!
+initializeGroup2 
+
+	#(#(0x2E 'CS') #(0x36 'SS') #(0x3E 'DS') #(0x26 'ES') #(0x64 FS) #(0x65 'GS'))
+		do: [:pair | | prefix |
+			prefix := self new
+				group: 2;
+				value: pair first;
+				name: pair second , ' segment override'.
+			self disableCode: [Prefixes at: prefix name put: prefix]].
+	#(#(0x2E 'not') #(0x3E '')) do: [:pair | | prefix |
+		prefix := self new
+			group: 2;
+			value: pair first;
+			name: 'Branch ' , pair second , ' taken'.
+		self disableCode: [Prefixes at: prefix name put: prefix]]! !
+
+!LegacyPrefix class methodsFor: 'class initialization' stamp: 'KenD 3/9/2021 07:36:36'!
+initializeGroup3 
+	| prefix |
+	prefix := self new
+		group: 3;
+		value: 16r66;
+		name: 'OperandSize_Override'.
+	Prefixes at: prefix name put: prefix! !
+
+!LegacyPrefix class methodsFor: 'class initialization' stamp: 'KenD 3/9/2021 07:36:54'!
+initializeGroup4 
+	| prefix |
+	prefix := self new
+		group: 4;
+		value: 16r67;
+		name: 'AddressSize_Override'.
+	Prefixes at: prefix name put: prefix! !
+
+!LegacyPrefix class methodsFor: 'class initialization' stamp: 'KenD 3/9/2021 07:37:09'!
+initializePrefixes 
+
+	self
+		initializeGroup1;
+		initializeGroup2;
+		initializeGroup3;
+		initializeGroup4.
+	super initializePrefixes! !
 
 !SegmentPrefix methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:21:26'!
 value
@@ -11288,6 +11728,62 @@ emitSend: aSymbol using: anAssembler
 		loadAwithLiteral: send;
 		callIndirectA;
 		discardArguments: aSymbol arity! !
+
+!LookupLinker methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:23:46'!
+initializeFrom: aNativizationEnvironment 
+
+	lookup := aNativizationEnvironment lookupStub.
+	lookupSuper := aNativizationEnvironment lookupSuperStub.! !
+
+!LookupLinker methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:24:04'!
+lookup: aByteArray 
+
+	lookup := aByteArray! !
+
+!LookupLinker methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:24:16'!
+lookupSuper: aByteArray 
+
+	lookupSuper := aByteArray! !
+
+!LookupLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/9/2021 07:22:11'!
+emitSend: aSymbol using: anAssembler 
+	| send |
+	send := SendSite new lookup: aSymbol using: lookup.
+	anAssembler
+		loadAwithLiteral: send;
+		callIndirectA;
+		discardArguments: aSymbol arity.
+	^send! !
+
+!LookupLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/9/2021 07:22:45'!
+emitSendSuper: aSymbol from: aClass using: anAssembler 
+	| send behavior |
+	send := SendSite new lookup: aSymbol using: lookupSuper; beSuperSend.
+	behavior := aClass superclass map instanceBehavior.
+	anAssembler
+		loadAwithLiteral: send;
+		loadTwithLiteral: behavior;
+		callIndirectA;
+		discardArguments: aSymbol arity.
+	^send! !
+
+!LazyLinker methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:26:20'!
+sends 
+
+	^sends
+! !
+
+!LazyLinker methodsFor: 'codeGeneration' stamp: 'KenD 3/9/2021 07:25:50'!
+emitSend: aSymbol using: anAssembler 
+	| send |
+	send := super emitSend: aSymbol using: anAssembler.
+	sends add: send! !
+
+!LazyLinker methodsFor: 'initialization' stamp: 'KenD 3/9/2021 07:25:37'!
+initialize 
+
+	super initialize.
+	sends := OrderedCollection new! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -13624,6 +14120,150 @@ nativizeUsing: anAssembler for: messageNativizer
 	anAssembler
 		testIntegerBitOf: anAssembler regR8;
 		jumpIfZeroTo: messageNativizer failLabel! !
+
+!LoadAvisitingArgument methodsFor: 'codeGeneration' stamp: 'KenD 3/9/2021 07:52:29'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	messageNativizer loadRvisitingArgument.
+	anAssembler loadAwithR! !
+
+!LoadAvisitingArgument class methodsFor: 'instance creation' stamp: 'KenD 3/9/2021 07:52:05'!
+decodeUsing: anAstcodeDecoder 
+	"@@FIXME:  anAstcodeDecoder IGNORED"
+	^ self new! !
+
+!LoadAwithFalse methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 07:59:22'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadAwithFalse! !
+
+!LoadAwithFalse class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 07:59:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
+!LoadAwithInstVar methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:57:04'!
+index: anInteger 
+
+	index := anInteger! !
+
+!LoadAwithInstVar methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 07:57:17'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadAwithSindex: index! !
+
+!LoadAwithInstVar class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 07:56:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new index: anAstcodeDecoder nextInteger! !
+
+!LoadAwithLiteralVar methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:48:24'!
+index 
+
+	^index! !
+
+!LoadAwithLiteralVar methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:48:35'!
+index: anInteger 
+
+	index := anInteger! !
+
+!LoadAwithLiteralVar class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 07:47:42'!
+decodeUsing: anAstcodeDecoder 
+	 
+	^ self new index: anAstcodeDecoder nextInteger! !
+
+!LoadAwithAssocVar methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:02:25'!
+nativizeUsing: anAssembler for: messageNativizer 
+	| assoc |
+	assoc := messageNativizer methodLiteralAt: index.
+	anAssembler
+		loadAwithLiteral: assoc;
+		loadAwithAindex: 2! !
+
+!LoadAwithConstPoolVar methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:01:24'!
+nativizeUsing: anAssembler for: messageNativizer 
+	| literal |
+	literal := messageNativizer methodLiteralAt: index.
+	anAssembler loadAwithLiteral: literal! !
+
+!LoadAwithLiteral methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:51:59'!
+value: anObject 
+
+	value := anObject! !
+
+!LoadAwithLiteral methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 07:51:21'!
+nativizeUsing: anAssembler for: messageNativizer 
+	| literal |
+	value
+		ifNil: [ literal := messageNativizer methodLiteralAt: index.
+			anAssembler loadAwithLiteral: literal ]
+		ifNotNil: [ anAssembler loadAwithSmallInteger: value ]! !
+
+!LoadAwithLiteral class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 07:50:45'!
+decodeUsing: anAstcodeDecoder 
+	| instance index  |
+	instance := super decodeUsing: anAstcodeDecoder.
+	index := instance index.
+	index = 0
+		ifTrue: [ instance value: anAstcodeDecoder next ].
+	^ instance! !
+
+!LoadAwithLocal methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:43:48'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!LoadAwithLocal methodsFor: 'accessing' stamp: 'KenD 3/10/2021 07:43:58'!
+index: anInteger 
+
+	index := anInteger! !
+
+!LoadAwithLocal class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 07:43:11'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new
+		index: anAstcodeDecoder nextInteger;
+		environment: anAstcodeDecoder nextInteger! !
+
+!LoadAwithArgument methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 07:45:40'!
+nativizeUsing: anAssembler for: aBinaryMessageNativizer 
+
+	aBinaryMessageNativizer loadAwithArgument: index in: environment! !
+
+!LoadAwithTemporary methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:12:03'!
+nativizeUsing: anAssembler for: aBinaryMessageNativizer 
+
+	aBinaryMessageNativizer loadAwithTemporary: index in: environment! !
+
+!LoadAwithNil methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:08:06'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadAwithNil! !
+
+!LoadAwithNil class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 08:07:49'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
+!LoadAwithSelf methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:10:23'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadAwithS! !
+
+!LoadAwithSelf class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 08:10:04'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!LoadAwithTrue methodsFor: 'codeGeneration' stamp: 'KenD 3/10/2021 08:13:36'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadAwithTrue! !
+
+!LoadAwithTrue class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 08:13:11'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
 
 !SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
 decodeUsing: anAstcodeDecoder 
