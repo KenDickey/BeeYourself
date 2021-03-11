@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 11 March 2021 at 11:44:09 am'!
+'From Cuis 5.0 [latest update: #4530] on 11 March 2021 at 1:22:46 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 36!
+!provides: 'Powerlang-Core' 1 37!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -497,6 +497,16 @@ Handle subclass: #ObjectHandle
 ObjectHandle class
 	instanceVariableNames: ''!
 
+!classDefinition: #LocalHandle category: 'Powerlang-Core'!
+ObjectHandle subclass: #LocalHandle
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LocalHandle class' category: 'Powerlang-Core'!
+LocalHandle class
+	instanceVariableNames: ''!
+
 !classDefinition: #ISAInstruction category: 'Powerlang-Core'!
 Object subclass: #ISAInstruction
 	instanceVariableNames: 'prefix mnemonic operands template'
@@ -767,19 +777,9 @@ StackEnvironment subclass: #InlinedArgEnvironment
 InlinedArgEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalHandle category: 'Powerlang-Core'!
-Object subclass: #LocalHandle
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'LocalHandle class' category: 'Powerlang-Core'!
-LocalHandle class
-	instanceVariableNames: ''!
-
 !classDefinition: #LookupNativizer category: 'Powerlang-Core'!
 Object subclass: #LookupNativizer
-	instanceVariableNames: ''
+	instanceVariableNames: 'bootstrapper methods'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
@@ -2011,6 +2011,11 @@ printOn: aStream
 
 	instruction isNil ifTrue: [^super printOn: aStream].
 	aStream nextPutAll: instruction! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
+methods 
+
+	^methods! !
 
 !MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
 printOn: aStream 
@@ -7856,6 +7861,61 @@ on: anObject within: aRuntime
 
 	^self new oid: anObject; runtime: aRuntime! !
 
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:27'!
+asLocalCollection 
+
+	^ oid! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:51'!
+asLocalInteger 
+
+	^ oid! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:01'!
+asLocalString 
+
+	^ oid asString! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:13'!
+getClass 
+	| handle |
+	handle := runtime handleOn: oid class.
+	^ handle mirror asSpeciesMirror! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:24'!
+indexOf: varname for: aMirror 
+
+	^ oid class indexOfSlot: varname asString! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:55'!
+nilObject 
+
+	^self handleOn: nil! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:08'!
+oid: objectId 
+
+	oid !!= nil ifTrue: [ self halt ].
+	objectId class = ByteString
+		ifTrue: [ self halt ].
+	oid := objectId! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:21'!
+size 
+
+	^ oid basicSize + oid class instSize! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:33'!
+slotAt: index 
+	| slot |
+	slot := oid instVarAt: index.
+	^ self handleOn: slot! !
+
+!LocalHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:08:43'!
+isLocal 
+
+	^true! !
+
 !ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:23:53'!
 updateTemplate: anISAInstruction 
 	| arity array |
@@ -11056,6 +11116,106 @@ environmentType
 isInlinedArgument 
 
 	^true! !
+
+!LookupNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:17:05'!
+nativizeMethods 
+	| environment | 
+	methods := self closureMethods collect: [:m | bootstrapper compile: m ].
+	environment := self newNativizationEnvironment.
+	methods do: [:m | environment nativize: m]! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:22'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:33'!
+closureMethods 
+
+	^ self selectorLookupMethods , self globalLookupMethods
+		, self otherLookupMethods , bootstrapper undermethods
+		, self sendSiteMethods! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:13:54'!
+findSymbol: aSymbol 
+
+	^bootstrapper spec at: aSymbol! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:56'!
+globalLookupMethods 
+	| result out global |
+	result := OrderedCollection new.
+	result
+		add: (self >> #ProtoObject) >> #_cachedLookup:;
+		add: (self >> #ProtoObject) >> #_cachedLookup:in:;
+		add: (self >> #Thread) metaclass >> #currentGlobalLookup;
+		add: (self >> #GlobalDispatchCache) metaclass >> #current.
+	out := #(initialize flushAll: #flush:forSpecies: #flush:for: #flush:for:startingAt:).
+	global := (self >> #GlobalDispatchCache) methods
+		reject: [ :m | out includes: m selector ].
+	^ result
+		addAll: global;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:30'!
+methodFor: selector 
+
+	^methods detect: [:m | m selector == selector]! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:19:53'!
+otherLookupMethods 
+
+	^ OrderedCollection new
+		add: self >> #ProtoObject >> #objectAtValid:put:;
+		add: self >> #ProtoObject >> #behavior;
+		add: self >> #CompiledMethod >> #prepareForExecution;
+		add: self >> #CompiledMethod >> #isNativized;
+		add: self >> #CompiledMethod >> #validNativeCodeAddress;
+		add: self >> #CompiledMethod >> #nativeCode;
+		add: self >> #CompiledMethod >> #selector;
+		add: self >> #NativeCode >> #code;
+		add: self >> #NativeCode >> #compiledCode;
+		add: self >> #Species >> #instanceBehavior;
+		add: self >> #Process >> #wantsToStepInto;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:06'!
+selectorLookupMethods 
+
+	^ OrderedCollection new
+		add: (self >> #ProtoObject) >> #_lookup:;
+		add: (self >> #ProtoObject) >> #_lookup:in:;
+		add: (self >> #ProtoObject) >> #_lookup:inDictionary:;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:17'!
+sendSiteMethods 
+	| sendsite |
+	sendsite := self >> #SendSite.
+	^ #(_dispatchOn: _dispatchOn:startingAt: _dispatchDebuggableOn: _dispatchDebuggableOn:startingAt: sentSelector when:use: beInvoke:using: bePolymorphic isStaticSend monomorphicMap:to: polymorphicMap:to: maxSize reset takeNextFreeMIC takeNextFreePIC)
+		collect: [ :s | sendsite >> s ]! !
+
+!LookupNativizer methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 13:19:21'!
+newNativizationEnvironment 
+	| environment ignored lookup invoke |
+	environment := NativizationEnvironment new
+		globals: bootstrapper nativizer globals;
+		optimizedMethods: bootstrapper nativizer optimizedMethods.
+	ignored := HaltingSend new
+		filter: #(< <= = > + - * // bitAnd: bitOr: bitXor:).
+	lookup := LookupLinker new initializeFrom: environment.
+	lookup
+		filter:
+			#(debuggableCopy acquireReferences nativize refreshBlocks doesNotUnderstandSelector: mustBeBoolean class allocateMoreCaches).
+	invoke := InvokeLinker new
+		invoker: environment invokeStub;
+		addMethods: methods.
+	^ environment
+		addLinker: invoke;
+		addLinker: ignored;
+		addLinker: lookup;
+		completeInitialization
+! !
 
 !MessageLinker methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:39:52'!
 filter: anObject 
