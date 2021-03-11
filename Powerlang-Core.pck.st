@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 10 March 2021 at 8:16:39 am'!
+'From Cuis 5.0 [latest update: #4530] on 11 March 2021 at 11:44:09 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 35!
+!provides: 'Powerlang-Core' 1 36!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -485,6 +485,16 @@ Object subclass: #Handle
 	category: 'Powerlang-Core'!
 !classDefinition: 'Handle class' category: 'Powerlang-Core'!
 Handle class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectHandle category: 'Powerlang-Core'!
+Handle subclass: #ObjectHandle
+	instanceVariableNames: 'oid'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ObjectHandle class' category: 'Powerlang-Core'!
+ObjectHandle class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAInstruction category: 'Powerlang-Core'!
@@ -1297,6 +1307,16 @@ Opcode subclass: #LoadExpressionOpcode
 LoadExpressionOpcode class
 	instanceVariableNames: ''!
 
+!classDefinition: #LoadRwithReceiver category: 'Powerlang-Core'!
+LoadExpressionOpcode subclass: #LoadRwithReceiver
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithReceiver class' category: 'Powerlang-Core'!
+LoadRwithReceiver class
+	instanceVariableNames: ''!
+
 !classDefinition: #LoadROpcode category: 'Powerlang-Core'!
 Opcode subclass: #LoadROpcode
 	instanceVariableNames: ''
@@ -1305,6 +1325,96 @@ Opcode subclass: #LoadROpcode
 	category: 'Powerlang-Core'!
 !classDefinition: 'LoadROpcode class' category: 'Powerlang-Core'!
 LoadROpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRvisitingReceiver category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRvisitingReceiver
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRvisitingReceiver class' category: 'Powerlang-Core'!
+LoadRvisitingReceiver class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithFalse category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithFalse
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithFalse class' category: 'Powerlang-Core'!
+LoadRwithFalse class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithInstVar category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithInstVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithInstVar class' category: 'Powerlang-Core'!
+LoadRwithInstVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithLocal category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithLocal
+	instanceVariableNames: 'index environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithLocal class' category: 'Powerlang-Core'!
+LoadRwithLocal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithArgument category: 'Powerlang-Core'!
+LoadRwithLocal subclass: #LoadRwithArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithArgument class' category: 'Powerlang-Core'!
+LoadRwithArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithTemporary category: 'Powerlang-Core'!
+LoadRwithLocal subclass: #LoadRwithTemporary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithTemporary class' category: 'Powerlang-Core'!
+LoadRwithTemporary class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithNil category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithNil
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithNil class' category: 'Powerlang-Core'!
+LoadRwithNil class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithSelf category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithSelf
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithSelf class' category: 'Powerlang-Core'!
+LoadRwithSelf class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithTrue category: 'Powerlang-Core'!
+LoadROpcode subclass: #LoadRwithTrue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'LoadRwithTrue class' category: 'Powerlang-Core'!
+LoadRwithTrue class
 	instanceVariableNames: ''!
 
 !classDefinition: #OperandEncoding category: 'Powerlang-Core'!
@@ -1781,6 +1891,31 @@ name
 printOn: aStream 
 
 	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
+
+!ObjectHandle methodsFor: 'printing' stamp: 'KenD 3/11/2021 11:41:40'!
+printOn: aStream 
+	| format size bytes |
+	format := runtime objectFormat.
+	format print: oid on: aStream.
+	self isBytes
+		ifFalse: [ ^ self ].
+	size := self size min: 128.
+	size < 30
+		ifTrue: [ aStream nextPutAll: ': ' ]
+		ifFalse: [ aStream cr ].
+	bytes := format bytesOf: oid count: size.
+	aStream print: bytes
+! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:04'!
+isBytes 
+
+	^runtime objectFormat isBytes: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:14'!
+isFixed 
+
+	^self isArrayed not! !
 
 !ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
 printOn: aStream 
@@ -7538,6 +7673,188 @@ handleOn: objectId
 objectHandleOn: objectId 
 
 	^ ObjectHandle on: objectId within: runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:05'!
+handleOn: anObject 
+
+	^self class on: anObject within: runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:17'!
+hash 
+
+	^oid hash! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:30'!
+indexOf: varname for: aMirror 
+	| type |
+	type := self structureOf: aMirror structureType.
+	^type indexOf: varname! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:40'!
+indexOf: varname inStructureOf: type 
+
+	^runtime indexOf: varname inStructureOf: type! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:12'!
+maneuverer 
+
+	^ DirectGate subjectOn: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:23'!
+mirage 
+
+	^MirageGate subjectOn: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:34'!
+mirror 
+
+	^ObjectMirror on: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:45'!
+nilObject 
+
+	^runtime nil! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:57'!
+oid
+
+	^oid! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:07'!
+oid: objectId 
+
+	self assert: objectId !!== nil.
+	oid := objectId! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:58'!
+runtime 
+
+	^runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:10'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:22'!
+size 
+
+	^runtime objectFormat sizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:33:58'!
+arrayedSize 
+
+	^ runtime objectFormat arrayedSizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:35'!
+asLocalBoolean 
+
+	runtime false oid = oid ifTrue: [ ^false ].
+	runtime true oid = oid ifTrue: [ ^true ].
+	self assert: false.! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:51'!
+asLocalBytes 
+
+	^runtime objectFormat bytesOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:02'!
+asLocalCollection 
+
+	^self isBytes ifTrue: [runtime bytesOf: oid] ifFalse: [self assert: false]! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:16'!
+asLocalInteger 
+
+	^runtime integerOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:25'!
+asLocalString 
+
+	^runtime stringOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:35'!
+asLocalSymbol 
+
+	^runtime symbolOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:22'!
+basicFlags 
+
+	^runtime objectFormat flagsOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:34'!
+getBehavior 
+	| behavior |
+	behavior := runtime objectFormat behaviorOf: oid.
+	^self handleOn: behavior! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:47'!
+getClass 
+
+	^runtime objectFormat classOf: self.! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:39:57'!
+largeSize 
+
+	^runtime objectFormat largeSizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:43:10'!
+structureOf: type 
+
+	^runtime structureOf: type! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:35:54'!
+at: index 
+	| slot |
+	slot := runtime arrayedSlotOf: oid at: index.
+	^ self handleOn: slot! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:36:42'!
+at: index put: anOid 
+
+	^ runtime arrayedSlotOf: oid at: index put: anOid! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:44'!
+slotAt: index 
+	| slot |
+	slot := runtime slotOf: oid at: index.
+	^self handleOn: slot! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:54'!
+slotAt: index put: anOid 
+
+	^runtime slotOf: oid at: index put: anOid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 08:55:45'!
+= anObject 
+
+	^ anObject class = self class and: [ oid = anObject oid ]! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:38:55'!
+isArrayed 
+
+	^runtime objectFormat isArrayed: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:24'!
+isInteger 
+
+	^runtime objectFormat isInteger: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:33'!
+isLarge 
+
+	^self isSmall not! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:42'!
+isSmall 
+
+	^runtime objectFormat isSmall: oid! !
+
+!ObjectHandle class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 08:54:22'!
+on: anObject within: aRuntime 
+
+	^self new oid: anObject; runtime: aRuntime! !
 
 !ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:23:53'!
 updateTemplate: anISAInstruction 
@@ -14261,6 +14578,80 @@ nativizeUsing: anAssembler
 	anAssembler loadAwithTrue! !
 
 !LoadAwithTrue class methodsFor: 'instance creation' stamp: 'KenD 3/10/2021 08:13:11'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
+!LoadRvisitingReceiver methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 07:53:22'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	messageNativizer loadRvisitingReceiver! !
+
+!LoadRvisitingReceiver class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 07:53:04'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!LoadRwithFalse class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 08:46:14'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
+!LoadRwithInstVar methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 08:47:32'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadRwithSindex: index! !
+
+!LoadRwithInstVar class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 08:47:19'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new index: anAstcodeDecoder nextInteger! !
+
+!LoadRwithLocal methodsFor: 'accessing' stamp: 'KenD 3/11/2021 07:57:29'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!LoadRwithLocal methodsFor: 'accessing' stamp: 'KenD 3/11/2021 07:57:39'!
+index: anInteger 
+
+	index := anInteger! !
+
+!LoadRwithLocal class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 07:56:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new
+		index: anAstcodeDecoder nextInteger;
+		environment: anAstcodeDecoder nextInteger! !
+
+!LoadRwithArgument methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 08:02:50'!
+nativizeUsing: anAssembler for: aBinaryMessageNativizer 
+
+	aBinaryMessageNativizer loadRwithArgument: index env: environment! !
+
+!LoadRwithTemporary methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 08:01:51'!
+nativizeUsing: anAssembler for: aBinaryMessageNativizer 
+
+	aBinaryMessageNativizer loadRwithTemporary: index env: environment! !
+
+!LoadRwithNil class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 07:58:24'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new
+! !
+
+!LoadRwithSelf methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 07:59:34'!
+nativizeUsing: anAssembler 
+
+	anAssembler loadRwithS! !
+
+!LoadRwithSelf class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 07:59:17'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new
+! !
+
+!LoadRwithTrue methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 08:50:31'!
 decodeUsing: anAstcodeDecoder 
 
 	^ self new! !
