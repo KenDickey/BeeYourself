@@ -13,4 +13,4 @@ Background:
 - https://github.com/powerlang
 - https://www.youtube.com/watch?v=ZWPMBSvYrs8 [Smalltalk VM Hackathon]
 
-
+![Bee Yourself](BeeGraphic.png)
