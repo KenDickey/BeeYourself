@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 14 March 2021 at 3:39:34 pm'!
+'From Cuis 5.0 [latest update: #4530] on 17 March 2021 at 3:58:34 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 40!
+!provides: 'Powerlang-Core' 1 41!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -1497,6 +1497,16 @@ Object subclass: #SBinding
 SBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
+SBinding subclass: #SSelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
+SSelfBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SExpression category: 'Powerlang-Core'!
 Object subclass: #SExpression
 	instanceVariableNames: ''
@@ -2378,6 +2388,11 @@ name
 name 
 
 	^self printString! !
+
+!SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SelfId'! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
 printOn: aStream 
@@ -15713,6 +15728,21 @@ isSuper
 isTemporary 
 
 	^false! !
+
+!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
+valueWithin: evaluator 
+
+	^evaluator receiver! !
+
+!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
+isSelf 
+
+	^true! !
+
+!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
 printOn: aStream indent: anInteger 
