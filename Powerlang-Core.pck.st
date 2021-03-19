@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 19 March 2021 at 4:43:38 pm'!
+'From Cuis 5.0 [latest update: #4530] on 19 March 2021 at 4:52:02 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 42!
+!provides: 'Powerlang-Core' 1 43!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -797,6 +797,16 @@ Object subclass: #LookupNativizer
 LookupNativizer class
 	instanceVariableNames: ''!
 
+!classDefinition: #MessageInliner category: 'Powerlang-Core'!
+Object subclass: #MessageInliner
+	instanceVariableNames: 'message'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MessageInliner class' category: 'Powerlang-Core'!
+MessageInliner class
+	instanceVariableNames: ''!
+
 !classDefinition: #MessageLinker category: 'Powerlang-Core'!
 Object subclass: #MessageLinker
 	instanceVariableNames: 'filter'
@@ -995,6 +1005,16 @@ SpeciesMirror subclass: #ClassMirror
 	category: 'Powerlang-Core'!
 !classDefinition: 'ClassMirror class' category: 'Powerlang-Core'!
 ClassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaclassMirror category: 'Powerlang-Core'!
+SpeciesMirror subclass: #MetaclassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core'!
+MetaclassMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #NumberParser2 category: 'Powerlang-Core'!
@@ -2320,6 +2340,14 @@ subclasses
 	| subclasses |
 	subclasses := self getInstVarNamed: #subclasses.
 	^subclasses reflectsNil ifTrue: [Array new] ifFalse: [subclasses]! !
+
+!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:51:47'!
+subclasses 
+	| instance |
+	instance := self instanceClass.
+	^instance reflectsNil
+		ifTrue: [#()]
+		ifFalse: [instance subclasses collect: [:class | class class]]! !
 
 !OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
 printOn: aStream 
@@ -11672,6 +11700,177 @@ newNativizationEnvironment
 		completeInitialization
 ! !
 
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:04'!
+inlineConditional 
+	| arguments |
+	arguments := message arguments.
+	arguments size >= 1 ifFalse: [^self].
+	arguments do: [:arg | arg isEvaluable ifFalse: [^self]].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:33'!
+inlineIfNilIfNotNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments first isEvaluable ifFalse: [^self].
+	arg := arguments second.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:52'!
+inlineIfNotNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 1 ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arg isBlockNode ifTrue: [arg beInlined]! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:07'!
+inlineIfNotNilIfNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments second isEvaluable ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:16'!
+inlineRepeat 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments isEmpty
+		ifFalse: [ ^ self ].
+	receiver isBlockNode
+		ifFalse: [ ^ self ].
+	message beInlined.
+	receiver beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:35'!
+inlineToByDo 
+	| arguments arg step |
+	arguments := message arguments.
+	arguments size = 3 ifFalse: [^self].
+	arg := arguments at: 3.
+	arg isBlockNode ifFalse: [^self].
+	arg arguments size = 1 ifFalse: [^self].
+	step := arguments at: 2.
+	(step isNumberNode and: [step value isSmallInteger]) ifFalse: [^self].
+	message beInlined.
+	arg beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:46'!
+inlineToDo 
+	| arguments last |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	last := arguments at: 2.
+	last isBlockNode ifFalse: [^self].
+	last arguments size = 1 ifFalse: [^self].
+	message beInlined.
+	last beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:49:15'!
+inlineWhile 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments size = 1
+		ifFalse: [ ^ self ].
+	arguments last isNullary
+		ifFalse: [ ^ self ].
+	self inlineConditional.
+	receiver isBlockNode
+		ifTrue: [ receiver beInlined ]! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:46:20'!
+inline: aMessageNode 
+	| s keywords |
+	message := aMessageNode.
+	message receiver isSuper
+		ifTrue: [ ^ self ].
+	(message isCascadeMessage and: [ message receiver isBlockNode ])
+		ifTrue: [ ^ self ].
+	s := message selector value.
+	s == #ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #or:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #and:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #timesRepeat:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifTrue:ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #andNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #orNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNil:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNotNil:
+		ifTrue: [ ^ self inlineIfNotNil ].
+	s == #ifNil:ifNotNil:
+		ifTrue: [ ^ self inlineIfNilIfNotNil ].
+	s == #ifNotNil:ifNil:
+		ifTrue: [ ^ self inlineIfNotNilIfNil ].
+	s == #whileTrue:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileFalse:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileTrue
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #whileFalse
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #repeat
+		ifTrue: [ ^ self inlineRepeat ].
+	s == #to:do:
+		ifTrue: [ ^ self inlineToDo ].
+	s == #to:by:do:
+		ifTrue: [ ^ self inlineToByDo ].
+	keywords := $: split: s.
+	keywords last = '' ifTrue: [ keywords := keywords allButLast ].
+	(keywords conform: [ :k | k = 'and' ])
+		ifTrue: [ ^ self inlineConditional ].
+	(keywords conform: [ :k | k = 'or' ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'and' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'or' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ self inlineConditional ]! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:49:02'!
+inlineUnitaryWhile 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable ifFalse: [^self].
+	arguments := message arguments.
+	arguments size = 0 ifFalse: [^self].
+	self inlineConditional.
+	receiver isBlockNode ifTrue: [
+		message beInlined.
+		receiver beInlined]! !
+
 !MessageLinker methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:39:52'!
 filter: anObject 
 
@@ -14048,6 +14247,32 @@ localName
 structureType 
 
 	^#Class! !
+
+!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:50:40'!
+classVariables 
+
+	^self instanceClass classVariables! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:50:55'!
+instanceClass 
+	| class |
+	class := self getInstVarNamed: #class.
+	^class asClassMirror! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:03'!
+localEquivalent 
+
+	^(handle runtime objectModel at: self instanceClass localName asSymbol) metaclass! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:14'!
+localName 
+
+	^self instanceClass localName , ' class'! !
+
+!MetaclassMirror methodsFor: 'private' stamp: 'KenD 3/19/2021 16:51:35'!
+structureType 
+
+	^#Metaclass! !
 
 !OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
 asOperand 
