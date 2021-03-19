@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 17 March 2021 at 3:58:34 pm'!
+'From Cuis 5.0 [latest update: #4530] on 19 March 2021 at 4:43:38 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 41!
+!provides: 'Powerlang-Core' 1 42!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -595,6 +595,16 @@ ISAOperand subclass: #ISAImmediate
 	category: 'Powerlang-Core'!
 !classDefinition: 'ISAImmediate class' category: 'Powerlang-Core'!
 ISAImmediate class
+	instanceVariableNames: ''!
+
+!classDefinition: #MemoryOperand category: 'Powerlang-Core'!
+ISAOperand subclass: #MemoryOperand
+	instanceVariableNames: 'base index scale displacement segment'
+	classVariableNames: ''
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'MemoryOperand class' category: 'Powerlang-Core'!
+MemoryOperand class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAOperandType category: 'Powerlang-Core'!
@@ -1915,6 +1925,12 @@ Copyright (c) 2020 Aucerna.
 
 NB: x86 specific!
 
+!MemoryOperand commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+NB: Intel specific!
+
 !ISAOperandType commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -2102,6 +2118,27 @@ printOn: aStream
 	v := value isNil ifTrue: ['???'] ifFalse: [value hex].
 	aStream nextPutAll: v! !
 
+!MemoryOperand methodsFor: 'printing' stamp: 'KenD 3/19/2021 16:39:24'!
+printOn: aStream 
+	| sign displ |
+	aStream nextPutAll: self lengthString; nextPutAll: ' ['.
+	segment notNil ifTrue: [
+		segment printOn: aStream.
+		aStream nextPut: $:].
+	base notNil ifTrue: [base printOn: aStream].
+	index notNil ifTrue: [
+		base notNil ifTrue: [aStream nextPutAll: ' + '].
+		index printOn: aStream.
+		scale isNil
+			ifFalse: [aStream nextPutAll: ' * '; nextPutAll: scale asString]].
+	displ := self displacementValue.
+	displ !!= 0 ifTrue: [
+		(base notNil or: [index notNil]) ifTrue: [
+			sign := displ > 0 ifTrue: [' + '] ifFalse: [' - '].
+			aStream nextPutAll: sign].
+		aStream nextPutAll: '0x'; nextPutAll: displ abs hex].
+	aStream nextPut: $]! !
+
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
 
@@ -2138,6 +2175,11 @@ printOn: aStream
 
 	instruction isNil ifTrue: [^super printOn: aStream].
 	aStream nextPutAll: instruction! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:27:12'!
+>> aSymbol 
+
+	^bootstrapper spec at: aSymbol! !
 
 !LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
 methods 
@@ -8709,6 +8751,277 @@ prefers: anOperandType to: otherOperandType
 	self class == operand class ifFalse: [^false].
 	value = operand value ifFalse: [^false].
 	^length = operand length! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:33:26'!
+base 
+
+	^base! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:33:34'!
+base: aRegister 
+
+	base := aRegister! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:33:43'!
+baseExtension 
+
+	^base notNil ifTrue: [base extensionBit] ifFalse: [0]! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:33:55'!
+displacement 
+
+	^displacement ifNil: 0! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:34:03'!
+displacement: anInteger 
+
+	displacement := anInteger ifNil: 0! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:36:27'!
+hash 
+
+	^length
+		hashWith: base
+		with: index
+		with: scale
+		with: displacement
+		with: segment! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:36:42'!
+index 
+
+	^index! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:36:59'!
+index: aRegister 
+
+	index := aRegister! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:37:06'!
+initialize 
+
+	super initialize.
+	displacement := 0.
+	scale := 1! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:37:58'!
+length: anInteger 
+
+	length := anInteger! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:38:30'!
+memoryLength 
+
+	^length! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:39:11'!
+pointerLength 
+
+	base notNil ifTrue: [^base length].
+	^self displacementLength! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:42:19'!
+scale 
+
+	^scale ifNil: [0]! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:42:28'!
+scale: anInteger 
+
+	scale := anInteger ifNil: [1]! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:42:09'!
+segment 
+
+	^segment! !
+
+!MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:42:38'!
+segment: aRegister 
+
+	segment := aRegister! !
+
+!MemoryOperand methodsFor: 'comparing' stamp: 'KenD 3/19/2021 16:33:12'!
+= operand 
+
+	self class == operand class ifFalse: [^false].
+	length = operand length ifFalse: [^false].
+	base = operand base ifFalse: [^false].
+	index = operand index ifFalse: [^false].
+	self scale = operand scale ifFalse: [^false].
+	displacement = operand displacement ifFalse: [^false].
+	^segment = operand segment! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:34:28'!
+displacementBytes 
+	| bytes displ n |
+	n := (base notNil and: [displacement between: -128 and: 127])
+		ifTrue: [1]
+		ifFalse: [4].
+	base == RIP ifTrue: [n := 4].
+	bytes := ByteArray new: n.
+	displ := displacement.
+	1 to: bytes size do: [:i | 
+		bytes at: i put: (displ bitAnd: 16rFF).
+		displ := displ bitShift: -8].
+	^bytes! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:34:37'!
+displacementLength 
+
+	displacement = 0 ifTrue: [^0].
+	^(base notNil and: [displacement between: -128 and: 127])
+		ifTrue: [1]
+		ifFalse: [4]! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:34:59'!
+displacementValue 
+	| value |
+	displacement isNumber ifTrue: [^displacement].
+	displacement size = 4 ifTrue: [^displacement longAtOffset: 0].
+	displacement size = 2 ifTrue: [^displacement shortAtOffset: 0].
+	value := displacement at: 1.
+	(value isOnBit: 16r80) ifTrue: [^value - (1 bitShift: displacement size * 8)].
+	^value! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:35:22'!
+encodeSib: aSIB 
+	| s i b |
+	s := scale ifNil: 1.
+	i := index isNil ifTrue: [RSP index] ifFalse: [index index \\ 8].
+	b := base isNil ifTrue: [RBP index] ifFalse: [base index \\ 8].
+	aSIB
+		scaleFactor: s;
+		index: i;
+		base: b! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:38:47'!
+mod 
+
+	base == RIP ifTrue: [^2r0].
+	base isNil ifTrue: [^0].
+	self hasDisplacement ifFalse: [^0].
+	(displacement between: -128 and: 127) ifTrue: [^2r1] ifFalse: [^2r10]! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:41:04'!
+rm 
+
+	self hasSib ifTrue: [^2r100].
+	^base ifNil: [2r101] ifNotNil: [base index]! !
+
+!MemoryOperand methodsFor: 'encoding' stamp: 'KenD 3/19/2021 16:42:59'!
+sib 
+	| factor s i b |
+	factor := scale ifNil: 1.
+	s := #[1 2 4 8] indexOf: factor.
+	i := index isNil ifTrue: [RSP index] ifFalse: [index index bitAnd: 8r7].
+	b := base isNil ifTrue: [RBP index] ifFalse: [base index bitAnd: 8r7].
+	^((s - 1 bitShift: 6) bitOr: (i bitShift: 3)) bitOr: b! !
+
+!MemoryOperand methodsFor: 'printing' stamp: 'KenD 3/19/2021 16:38:14'!
+lengthString 
+
+	length = 256 ifTrue: [^'ymmword ptr'].
+	length = 128 ifTrue: [^'xmmword ptr'].
+	(length isNil or: [length = 64]) ifTrue: [^'qword ptr'].
+	length = 32 ifTrue: [^'dword ptr'].
+	length = 16 ifTrue: [^'word ptr'].
+	length = 8 ifTrue: [^'byte ptr'].
+	self assert: false.
+	^''! !
+
+!MemoryOperand methodsFor: 'private' stamp: 'KenD 3/19/2021 16:40:48'!
+reset 
+
+	base := index := segment := length := nil.
+	displacement := 0.
+	scale := 1
+! !
+
+!MemoryOperand methodsFor: 'services' stamp: 'KenD 3/19/2021 16:43:24'!
+template 
+	| template bits d |
+	template := self copy.
+	displacement = 0 ifTrue: [^template].
+	bits := self displacementLength.
+	d := bits = 1 ifTrue: [16r3F] ifFalse: [16r3FFFFFFF].
+	^template displacement: d! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:35:41'!
+hasDisplacement 
+
+	^self hasExplicitDisplacement
+		or: [base isNil]
+		or: [self requiresSpecialCaseDisplacement]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:35:53'!
+hasExplicitDisplacement 
+
+	^displacement !!= 0! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:36:04'!
+hasOnlyDisplacement 
+
+	^index isNil and: [base isNil]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:36:15'!
+hasSib 
+
+	^index notNil or: [self requiresSpecialCaseSib]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:37:18'!
+isCompatibleWith: anOperandType 
+
+	^anOperandType isMemory
+		and: [length = anOperandType memoryLength
+			or: [anOperandType memoryLength isNil]]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:37:39'!
+isMemory 
+
+	^true! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:37:48'!
+isTemplate 
+
+	^displacement = 0! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:38:58'!
+needsExtraBit 
+
+	(base notNil and: [base needsExtraBit]) ifTrue: [^true].
+	^index notNil and: [index needsExtraBit]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:39:58'!
+requiresSpecialCaseDisplacement 
+
+	^base notNil and: [base == R13 or: [base r == RBP]]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:40:15'!
+requiresSpecialCaseSib 
+
+	base ifNil: [^true].
+	^base == R12 or: [base r == RSP]! !
+
+!MemoryOperand methodsFor: 'testing' stamp: 'KenD 3/19/2021 16:37:31'!
+sDirectMemoryReference 
+
+	^self hasOnlyDisplacement
+! !
+
+!MemoryOperand class methodsFor: 'instance creation' stamp: 'KenD 3/19/2021 16:30:48'!
+fromStream: aStream 
+	| memory |
+	memory := AssemblerParser new memory parse: aStream.
+	memory isPetitFailure
+		ifTrue: [self error: 'invalid operand: ' , memory message].
+	^memory! !
+
+!MemoryOperand class methodsFor: 'instance creation' stamp: 'KenD 3/19/2021 16:31:11'!
+fromString: aString 
+"
+	MemoryOperand fromString: 'qword ptr [rbx]'
+"
+	^self fromStream: aString readStream! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
