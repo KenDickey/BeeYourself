@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 19 March 2021 at 4:52:02 pm'!
+'From Cuis 5.0 [latest update: #4530] on 20 March 2021 at 3:05:47 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 43!
+!provides: 'Powerlang-Core' 1 45!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -165,6 +165,16 @@ PSharedPool subclass: #SpeciesFormatMasks
 	category: 'Powerlang-Core'!
 !classDefinition: 'SpeciesFormatMasks class' category: 'Powerlang-Core'!
 SpeciesFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #NativeCode category: 'Powerlang-Core'!
+Array variableSubclass: #NativeCode
+	instanceVariableNames: 'machineCode compiledCode'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'NativeCode class' category: 'Powerlang-Core'!
+NativeCode class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core'!
@@ -907,6 +917,16 @@ MethodLookup subclass: #EmulationLookup
 EmulationLookup class
 	instanceVariableNames: ''!
 
+!classDefinition: #MirrorLookup category: 'Powerlang-Core'!
+MethodLookup subclass: #MirrorLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MirrorLookup class' category: 'Powerlang-Core'!
+MirrorLookup class
+	instanceVariableNames: ''!
+
 !classDefinition: #Mirror category: 'Powerlang-Core'!
 Object subclass: #Mirror
 	instanceVariableNames: 'handle'
@@ -987,6 +1007,16 @@ ObjectMirror subclass: #DictionaryMirror
 DictionaryMirror class
 	instanceVariableNames: ''!
 
+!classDefinition: #MethodDictionaryMirror category: 'Powerlang-Core'!
+ObjectMirror subclass: #MethodDictionaryMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MethodDictionaryMirror class' category: 'Powerlang-Core'!
+MethodDictionaryMirror class
+	instanceVariableNames: ''!
+
 !classDefinition: #SpeciesMirror category: 'Powerlang-Core'!
 ObjectMirror subclass: #SpeciesMirror
 	instanceVariableNames: ''
@@ -1015,6 +1045,16 @@ SpeciesMirror subclass: #MetaclassMirror
 	category: 'Powerlang-Core'!
 !classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core'!
 MetaclassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #NilBinding category: 'Powerlang-Core'!
+Object subclass: #NilBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'NilBinding class' category: 'Powerlang-Core'!
+NilBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #NumberParser2 category: 'Powerlang-Core'!
@@ -1175,6 +1215,26 @@ Object subclass: #ObjectShape
 	category: 'Powerlang-Core'!
 !classDefinition: 'ObjectShape class' category: 'Powerlang-Core'!
 ObjectShape class
+	instanceVariableNames: ''!
+
+!classDefinition: #OctalStructure category: 'Powerlang-Core'!
+Object subclass: #OctalStructure
+	instanceVariableNames: 'byte'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'OctalStructure class' category: 'Powerlang-Core'!
+OctalStructure class
+	instanceVariableNames: ''!
+
+!classDefinition: #ModRM category: 'Powerlang-Core'!
+OctalStructure subclass: #ModRM
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'ModRM class' category: 'Powerlang-Core'!
+ModRM class
 	instanceVariableNames: ''!
 
 !classDefinition: #Opcode category: 'Powerlang-Core'!
@@ -1777,6 +1837,16 @@ ScriptScope subclass: #BlockScope
 BlockScope class
 	instanceVariableNames: ''!
 
+!classDefinition: #MethodScope category: 'Powerlang-Core'!
+ScriptScope subclass: #MethodScope
+	instanceVariableNames: 'species pseudo ivars cvars pools globals'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'MethodScope class' category: 'Powerlang-Core'!
+MethodScope class
+	instanceVariableNames: ''!
+
 !classDefinition: #SendSite category: 'Powerlang-Core'!
 Object subclass: #SendSite
 	instanceVariableNames: 'instructions selector cache tally format'
@@ -2006,6 +2076,10 @@ Copyright (c) 2020 Aucerna.
 I represent the shape of objects as used by mirrors. Mirrors
 access instance variables by name, asking the runtime the for
 the offsets of the instVars.!
+
+!OctalStructure commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
 
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
@@ -2454,6 +2528,19 @@ name
 
 	^name! !
 
+!OctalStructure methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:01:56'!
+printOn: aStream 
+	| hi mid lo |
+	hi := self hi printPaddedWith: $0 to: 2 base: 2.
+	mid := self mid printPaddedWith: $0 to: 3 base: 2.
+	lo := self lo printPaddedWith: $0 to: 3 base: 2.
+	aStream
+		nextPutAll: hi;
+		nextPut: $.;
+		nextPutAll: mid;
+		nextPut: $.;
+		nextPutAll: lo! !
+
 !SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
 name 
 
@@ -2749,6 +2836,25 @@ initialize
 	InstSize    := 16rFF000000.
 	IsPointers := 16r00000002 "ObjectHeaderMasks isArrayed"
 ! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:16'!
+code 
+
+	^machineCode! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:28'!
+code: bytes 
+
+	machineCode := bytes! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:55:04'!
+compiledCode: anObject 
+
+	compiledCode := anObject! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:52'!
+disassembledAmd64 
+	^machineCode disassembledAmd64! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
@@ -13626,6 +13732,11 @@ spec: anRGEnvironment
 
 	spec := anRGEnvironment! !
 
+!MirrorLookup methodsFor: 'meta accessing' stamp: 'KenD 3/20/2021 14:52:06'!
+lookup: aSymbol on: aSubject 
+
+	^aSubject _gate mirror lookup: aSymbol! !
+
 !Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:23'!
 handle 
 
@@ -14181,6 +14292,58 @@ contentsSize
 structureType 
 
 	^#Dictionary! !
+
+!MethodDictionaryMirror methodsFor: 'enumerating' stamp: 'KenD 3/20/2021 14:29:34'!
+do: aBlock 
+
+	1 to: self contentsSize by: 2 do: [:i | | current |
+		current := self at: i.
+		current reflectsNil ifFalse: [| method |
+			method := self at: i + 1.
+			aBlock value: current value: method asMethodMirror]]! !
+
+!MethodDictionaryMirror methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:28:33'!
+at: i 
+
+	^self contents at: i! !
+
+!MethodDictionaryMirror methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:29:03'!
+contents 
+
+	^self getInstVarNamed: #table! !
+
+!MethodDictionaryMirror methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:29:16'!
+contentsSize 
+
+	^self contents size
+! !
+
+!MethodDictionaryMirror methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:30:21'!
+structureType
+
+	^#MethodDictionary! !
+
+!MethodDictionaryMirror methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:30:33'!
+tally 
+
+	^self getInstVarNamed: #tally! !
+
+!MethodDictionaryMirror methodsFor: 'nativizing' stamp: 'KenD 3/20/2021 14:28:47'!
+compiledMethodFor: aSymbol 
+	| selector |
+	selector := aSymbol asString.
+	self do: [:sym :method | sym asLocalString = selector ifTrue: [^method]].
+	^nil! !
+
+!MethodDictionaryMirror methodsFor: 'printing' stamp: 'KenD 3/20/2021 14:29:57'!
+rintOn: aStream 
+
+	aStream nextPutAll: 'a MDMirror (' ; nextPutAll: handle printString ; nextPut: $)! !
+
+!MethodDictionaryMirror methodsFor: 'testing' stamp: 'KenD 3/20/2021 14:30:09'!
+reflectsMethodDictionary 
+
+	^true! !
 
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:01'!
 compiledMethodFor: selector 
@@ -15959,6 +16122,110 @@ indexOf: ivarName be: i
 new 
 
 	^self basicNew initialize! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:10'!
+hi 
+
+	^byte bitShift: -6! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:22'!
+hi: anInteger 
+	| bits |
+	self assert: anInteger < 4.
+	bits := anInteger bitShift: 6.
+	byte := (byte bitAnd: 2r111111) bitOr: bits! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:38'!
+lo 
+
+	^byte bitAnd: 7! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:48'!
+lo: anInteger 
+
+	self assert: anInteger < 8.
+	byte := (byte bitAnd: 2r11111000) bitOr: anInteger! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:59'!
+mid 
+
+	^(byte bitShift: -3) bitAnd: 7! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:09'!
+mid: anInteger 
+	| bits |
+	self assert: anInteger < 8.
+	bits := anInteger bitShift: 3.
+	byte := (byte bitAnd: 2r11000111) bitOr: bits! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:26'!
+on: anInteger 
+
+	byte := anInteger! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:02:13'!
+value 
+
+	^byte! !
+
+!OctalStructure class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 14:59:45'!
+new 
+
+	^super new initialize! !
+
+!ModRM methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:03:27'!
+initialize 
+
+	byte := 0! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:12'!
+beRR 
+
+	self mod: 2r11! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:41'!
+mod 
+
+	^self hi
+! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:51'!
+mod: anInteger 
+
+	self hi: anInteger! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:01'!
+opcode 
+
+	^self reg! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:09'!
+opcode: anInteger 
+
+	self reg: anInteger! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:19'!
+reg 
+
+	^self mid! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:29'!
+reg: aRegister 
+	| mid |
+	mid := aRegister isInteger
+		ifTrue: [aRegister]
+		ifFalse: [aRegister index \\ 8].
+	self mid: mid! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:39'!
+rm 
+
+	^self lo! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:51'!
+rm: anInteger 
+
+	self lo: anInteger! !
 
 !Opcode methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 14:04:47'!
 nativizeUsing: anAssembler for: messageNativizer
@@ -20400,18 +20667,6 @@ on: aScriptNode
 
 	^self new script: aScriptNode! !
 
-!BlockScope methodsFor: 'initialization' stamp: 'KenD 2/28/2021 12:47:45'!
-initialize 
-
-	super initialize.
-	captured := StaticBinder new.
-	environments := OrderedCollection new! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:27'!
-capturedArguments 
-
-	^captured select: [:b | b isArgument]! !
-
 !BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:41'!
 capturedEnvironmentIndexOf: aScriptNode 
 	| index |
@@ -20421,10 +20676,10 @@ capturedEnvironmentIndexOf: aScriptNode
 	self assert: index notNil.
 	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]! !
 
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:06'!
-capturesSelf 
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:44:16'!
+capturedEnvironments 
 
-	^captureSelf! !
+	^environments! !
 
 !BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:57'!
 environmentIndexOf: aScriptNode 
@@ -20479,84 +20734,12 @@ scriptDefining: aString
 	(self defines: aString) ifTrue: [^script].
 	^self parent scriptDefining: aString! !
 
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:41:40'!
-captureArgument: anArgumentBinding 
-	| name |
-	name := anArgumentBinding name.
-	^captured at: name ifAbsentPut: [| transferred copy |
-		transferred := self parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
-			ifTrue: [anArgumentBinding beInArray].
-		copy declaration: transferred declaration]! !
+!BlockScope methodsFor: 'initialization' stamp: 'KenD 2/28/2021 12:47:45'!
+initialize 
 
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:19'!
-captureEnvironment: aScriptNode 
-
-	script == aScriptNode ifTrue: [^self].
-	(environments identityIncludes: aScriptNode) ifTrue: [^self].
-	self realParent captureEnvironment: aScriptNode.
-	aScriptNode isMethod
-		ifTrue: [environments addFirst: aScriptNode]
-		ifFalse: [environments addLast: aScriptNode]! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:37'!
-captureLocal: aLocalBinding 
-
-	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
-	^aLocalBinding isTemporary
-		ifTrue: [self captureTemporary: aLocalBinding]
-		ifFalse: [self captureArgument: aLocalBinding]! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:42:52'!
-captureSelf 
-
-	captureSelf ifTrue: [^self].
-	captureSelf := true.
-	self parent captureSelf! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:43:07'!
-captureTemporary: aTemporaryBinding 
-	| name |
-	name := aTemporaryBinding name.
-	(self defines: name) ifTrue: [^aTemporaryBinding].
-	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
-		parent := self parent.
-		declaration := parent scriptDefining: name.
-		self realScope captureEnvironment: declaration realScript.
-		transferred := parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		copy isInArray ifTrue: [aTemporaryBinding beInArray].
-		copy declaration: transferred declaration]! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:44:16'!
-capturedEnvironments 
-
-	^environments! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:51:56'!
-resolve: aString 
-
-	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^self parent resolve: aString! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 2/28/2021 12:53:01'!
-resolveLocal: aString 
-
-	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^captured at: aString! !
-
-!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:44:37'!
-capturesHome 
-
-	^self home notNil! !
-
-!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:47:01'!
-hasMultipleBindingsFor: aString 
-	"
-	temporal compatibility
-	"
-	^self parent hasMultipleBindingsFor: aString! !
+	super initialize.
+	captured := StaticBinder new.
+	environments := OrderedCollection new! !
 
 !BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:48:57'!
 positionCapturedArgument: anArgumentBinding 
@@ -20607,6 +20790,90 @@ transferLocal: name
 	captured at: name put: copy.
 	^copy! !
 
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:41:40'!
+captureArgument: anArgumentBinding 
+	| name |
+	name := anArgumentBinding name.
+	^captured at: name ifAbsentPut: [| transferred copy |
+		transferred := self parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
+			ifTrue: [anArgumentBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:19'!
+captureEnvironment: aScriptNode 
+
+	script == aScriptNode ifTrue: [^self].
+	(environments identityIncludes: aScriptNode) ifTrue: [^self].
+	self realParent captureEnvironment: aScriptNode.
+	aScriptNode isMethod
+		ifTrue: [environments addFirst: aScriptNode]
+		ifFalse: [environments addLast: aScriptNode]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:37'!
+captureLocal: aLocalBinding 
+
+	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
+	^aLocalBinding isTemporary
+		ifTrue: [self captureTemporary: aLocalBinding]
+		ifFalse: [self captureArgument: aLocalBinding]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:52'!
+captureSelf 
+
+	captureSelf ifTrue: [^self].
+	captureSelf := true.
+	self parent captureSelf! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:07'!
+captureTemporary: aTemporaryBinding 
+	| name |
+	name := aTemporaryBinding name.
+	(self defines: name) ifTrue: [^aTemporaryBinding].
+	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
+		parent := self parent.
+		declaration := parent scriptDefining: name.
+		self realScope captureEnvironment: declaration realScript.
+		transferred := parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		copy isInArray ifTrue: [aTemporaryBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:27'!
+capturedArguments 
+
+	^captured select: [:b | b isArgument]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:51:56'!
+resolve: aString 
+
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self parent resolve: aString! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:53:01'!
+resolveLocal: aString 
+
+	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^captured at: aString! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:44:37'!
+capturesHome 
+
+	^self home notNil! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:45:06'!
+capturesSelf 
+
+	^captureSelf! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:47:01'!
+hasMultipleBindingsFor: aString 
+	"
+	temporal compatibility
+	"
+	^self parent hasMultipleBindingsFor: aString! !
+
 !BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:45:42'!
 copyLocal: binding 
 
@@ -20616,6 +20883,169 @@ copyLocal: binding
 realParent 
 
 	^script realParent scope! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:11'!
+addPool: aPoolDictionary 
+	| binder |
+	binder := DynamicBinder on: aPoolDictionary .
+	pools add: binder! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:22'!
+addPool: aDictionary of: type 
+	| dict |
+	dict := DynamicBinder on: aDictionary of: type.
+	pools add: dict! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:35'!
+addPoolBinders: aCollection 
+
+	pools addAll: aCollection
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:54'!
+captureEnvironment: aScriptNode 
+
+	self assert: aScriptNode == script! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:34:18'!
+captureLocal: aLocalBinding 
+
+	self assert: (self resolveLocal: aLocalBinding name) notNil.
+	^aLocalBinding! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:39:13'!
+captureSelf 
+
+	captureSelf := true! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:06'!
+resolve: aString 
+
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self resolveShared: aString! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:21'!
+resolveShared: aString 
+
+	(pseudo at: aString) ifNotNil: [:binding | ^binding].
+	(ivars at: aString) ifNotNil: [:binding | ^binding].
+	cvars do: [:binder | binder at: aString ifPresent: [:binding | ^binding]].
+	pools do: [:pool | pool at: aString ifPresent: [:binding | ^binding]].
+	^(globals at: aString) ifNil: [UnresolvedBinding new name: aString]! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:36'!
+scriptDefining: aString 
+
+	(self resolveLocal: aString) ifNotNil: [^script].
+	(self resolveShared: aString) ifNotNil: [^script].
+	self assert: false.
+	^nil! !
+
+!MethodScope methodsFor: 'testing' stamp: 'KenD 3/20/2021 14:41:14'!
+hasMultipleBindingsFor: aString 
+"
+	temporal compatibility
+"
+	| count |
+	count := 0.
+	cvars
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	pools
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	^count > 1! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:39:37'!
+classBinding 
+
+	^species! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:40:39'!
+environmentIndexOf: aScriptNode 
+
+	self assert: aScriptNode == script.
+	^nil! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:30'!
+namespace 
+
+	^globals! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:39'!
+namespace: aDictionary 
+
+	globals contents: aDictionary! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:53'!
+poolFor: aString 
+
+	cvars do: [:binder | binder at: aString ifPresent: [:b | ^binder contents]].
+	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
+	self error: 'not found'! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:46:58'!
+species: aSpecies 
+
+	species ifNotNil: [^self].
+	species := aSpecies.
+	self initializeInstVars; initializeClassVars; initializePoolVars.
+	species superclass isNil ifTrue: [^self].
+	pseudo at: 'super' put: SuperBinding new! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:47:12'!
+transferLocal: name 
+
+	^self resolveLocal: name! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:41:32'!
+initialize 
+
+	super initialize.
+	globals := DynamicBinder on: Dictionary new of: GlobalBinding.
+	ivars := StaticBinder new.
+	cvars := OrderedCollection new. 
+	pools := OrderedCollection new.
+	self initializePseudoVars! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:43:54'!
+initializeClassVars 
+"
+	fixme: bootstrapping should be properly abstracted
+	and not checked with isKindOf:
+"
+	| vars |
+	species instanceSide withAllSuperclasses
+		do: [ :class | 
+			| binder |
+			vars := class classPool.
+			binder := DynamicBinder on: vars of: ClassVarBinding.
+			cvars add: binder ]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:07'!
+initializeInstVars 
+
+	species allInstVarNames withIndexDo: [:name :i | | binding |
+		binding := InstVarBinding new name: name; index: i.
+		ivars at: name put: binding]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:19'!
+initializePoolVars 
+	| instance |
+	instance := species instanceSide.
+	(instance allSharedPoolsUsing: globals)
+		do:
+			[ :pool | self addPool: pool ] .
+	instance withAllSuperclasses
+		do: [ :class | class localPools do: [ :pool | self addPool: pool ] ]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:45:00'!
+initializePseudoVars 
+
+	pseudo := StaticBinder new.
+	pseudo
+		at: 'nil' put: NilBinding new;
+		at: 'true' put: TrueBinding new;
+		at: 'false' put: FalseBinding new;
+		at: 'self' put: SelfBinding new! !
 
 !SendSite methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:32:12'!
 instructions: aByteArray 
