@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 20 March 2021 at 3:05:47 pm'!
+'From Cuis 5.0 [latest update: #4530] on 20 March 2021 at 3:38:57 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 45!
+!provides: 'Powerlang-Core' 1 46!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -1047,6 +1047,26 @@ SpeciesMirror subclass: #MetaclassMirror
 MetaclassMirror class
 	instanceVariableNames: ''!
 
+!classDefinition: #NativeCodeReference category: 'Powerlang-Core'!
+Object subclass: #NativeCodeReference
+	instanceVariableNames: 'source sourceOffset target absolute'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'NativeCodeReference class' category: 'Powerlang-Core'!
+NativeCodeReference class
+	instanceVariableNames: ''!
+
+!classDefinition: #NativizationEnvironment category: 'Powerlang-Core'!
+Object subclass: #NativizationEnvironment
+	instanceVariableNames: 'optimizedMethods invokedMethods inlinedMethods messageLinker globals writeBarrier abi safepointCheck cachedNativizer busy'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'NativizationEnvironment class' category: 'Powerlang-Core'!
+NativizationEnvironment class
+	instanceVariableNames: ''!
+
 !classDefinition: #NilBinding category: 'Powerlang-Core'!
 Object subclass: #NilBinding
 	instanceVariableNames: ''
@@ -1575,6 +1595,16 @@ Object subclass: #OperandEncoding
 	category: 'Powerlang-Core'!
 !classDefinition: 'OperandEncoding class' category: 'Powerlang-Core'!
 OperandEncoding class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingNativizer category: 'Powerlang-Core'!
+Object subclass: #OptimizingNativizer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'OptimizingNativizer class' category: 'Powerlang-Core'!
+OptimizingNativizer class
 	instanceVariableNames: ''!
 
 !classDefinition: #SBinding category: 'Powerlang-Core'!
@@ -2422,6 +2452,11 @@ subclasses
 	^instance reflectsNil
 		ifTrue: [#()]
 		ifFalse: [instance subclasses collect: [:class | class class]]! !
+
+!NativeCodeReference methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:18:27'!
+printOn: aStream 
+
+	aStream nextPutAll: 'Ref to '; print: target! !
 
 !OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
 printOn: aStream 
@@ -14436,6 +14471,418 @@ localName
 structureType 
 
 	^#Metaclass! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:28'!
+beAbsolute 
+
+	absolute := true! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:38'!
+classBinding 
+
+	^source classBinding! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:49'!
+for: anObject 
+
+	self target: anObject! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:18:40'!
+source: sourceObject 
+
+	source := sourceObject! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:18:49'!
+sourceOffset 
+
+	^sourceOffset! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:19:00'!
+sourceOffset: aNumber 
+
+	sourceOffset := aNumber! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:19:11'!
+target 
+
+	^target! !
+
+!NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:19:19'!
+target: anObject 
+
+	target := anObject! !
+
+!NativeCodeReference methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:17:07'!
+initialize 
+
+	absolute := false! !
+
+!NativeCodeReference methodsFor: 'testing' stamp: 'KenD 3/20/2021 15:17:32'!
+isAbsolute 
+
+	^absolute! !
+
+!NativeCodeReference class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 15:16:01'!
+absoluteFor: anObject 
+
+	^(self new for: anObject) beAbsolute! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:24:33'!
+abi 
+
+	^ abi ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:24:41'!
+abi: anAbi 
+
+	abi := anAbi ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:25:08'!
+addLinker: aLinker 
+
+	messageLinker add: aLinker! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:26:01'!
+globalNamed: aSymbol 
+	| index |
+	index := self class indexOfGlobal: aSymbol.
+	^globals at: index! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:26:21'!
+globalNamed: aSymbol put: anObject 
+	| index |
+	index := self class indexOfGlobal: aSymbol.
+	globals at: index put: anObject! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:26:41'!
+globals 
+
+	^globals! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:26:50'!
+globals: anArray 
+
+	globals := anArray! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:27:43'!
+inlinedMethods 
+
+	^inlinedMethods! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:27:54'!
+inlinedMethods: aCollection 
+
+	inlinedMethods := aCollection! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:28:12'!
+invokeStub 
+	| index |
+	index := self class indexOfGlobal: #Invoke.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:28:24'!
+invokedMethods 
+
+	^invokedMethods! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:28:41'!
+invokedMethods: aCollection 
+
+	invokedMethods := aCollection asOrderedCollection ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:28:53'!
+lookup 
+	| index |
+	index := self class indexOfGlobal: #Lookup.
+	^globals at: index! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:04'!
+lookupDebuggableStub 
+	| index |
+	index := self class indexOfGlobal: #DebuggableLookup.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:15'!
+lookupStub 
+	| index |
+	index := self class indexOfGlobal: #Lookup.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:26'!
+lookupSuper 
+	| index |
+	index := self class indexOfGlobal: #LookupSuper.
+	^ globals at: index! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:36'!
+lookupSuperDebuggableStub 
+	| index |
+	index := self class indexOfGlobal: #DebuggableLookupSuper.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:47'!
+lookupSuperStub 
+	| index |
+	index := self class indexOfGlobal: #LookupSuper.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:29:59'!
+messageLinker
+
+	^ messageLinker! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:30:10'!
+messageLinker: aLinker 
+
+	messageLinker := aLinker ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:30:19'!
+methodNativizer 
+
+	^ cachedNativizer ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:35:34'!
+optimizedMethods 
+
+	^optimizedMethods
+! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:35:43'!
+optimizedMethods: aCollection 
+
+	optimizedMethods := aCollection! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:35:53'!
+optimizingNativizer 
+
+	^OptimizingNativizer new environment: self! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:36:52'!
+safepoint 
+	| index |
+	index := self class indexOfGlobal: #Safepoint.
+	^(globals at: index) code! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:37:02'!
+safepointCheck: anObject 
+
+	safepointCheck := anObject ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:37:14'!
+sexpressionOffsetsOf: code 
+	| method |
+	method := code method.
+	(self shouldOptimize: method) ifTrue: [ ^ #(  ) ].
+	^ self nativizerDuring: [ :nativizer | 
+		  method nativeCode ifNotNil: [ method := method copy ]. 
+		  nativizer compile: method.
+		  nativizer sexpressionOffsetsOf: code ]! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:38:20'!
+wordSize 
+
+	^ abi wordSize ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:38:27'!
+wordSizeShift 
+
+	^ abi wordSizeShift ! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:38:39'!
+writeBarrier
+
+	^writeBarrier! !
+
+!NativizationEnvironment methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:38:49'!
+writeBarrier: anSCompiledMethod 
+
+	writeBarrier := anSCompiledMethod.
+	invokedMethods add: writeBarrier ! !
+
+!NativizationEnvironment methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:25:31'!
+be32bits 
+
+	abi := X86ABI new ! !
+
+!NativizationEnvironment methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:25:44'!
+completeInitialization 
+
+	cachedNativizer := self newExpressionNativizer ! !
+
+!NativizationEnvironment methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:27:04'!
+initialize 
+
+	busy := false.
+	abi := ABI forCurrent.
+	optimizedMethods := OrderedCollection new.
+	invokedMethods := OrderedCollection new.
+	inlinedMethods := OrderedCollection new.
+	messageLinker := CompositeMessageLinker new
+		add: InlineMessageLinker new.
+	globals := Array new: self class globalNames size.! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:30:52'!
+monomorphicCache 
+	| asm lookup next |
+	asm := TemplateAssembler64 new.
+	asm wordSize: abi wordSize.
+	lookup := asm newLabel.
+	asm
+		loadTwithAindex: 3;
+		loadSwithGlobal: #SmallIntegerBehavior.
+	next := asm labeledNonIntegerBitTestOfR.
+	asm
+		loadLongSwithRindex: 0;
+		@ next;
+		compareSwithTindex: 1;
+		shortJumpIfNotEqualTo: lookup;
+		loadMwithTindex: 2;
+		jumpToMindex: 1;
+		@ lookup;
+		loadMwithGlobal: #Lookup;
+		jumpToMindex: 1;
+		applyFixups.
+	^ asm nativeCode code! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:32:27'!
+nativize: aCompiledMethod 
+
+	^ (self shouldOptimize: aCompiledMethod)
+		  ifTrue: [ self nativizeOptimizing: aCompiledMethod ]
+		  ifFalse: [ self nativizeWithoutOptimizing: aCompiledMethod ] ! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:32:46'!
+nativizeOptimizing: anSCompiledMethod 
+
+	^self optimizingNativizer
+		method: anSCompiledMethod;
+		nativize ! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:32:59'!
+nativizeWithoutOptimizing: aCompiledMethod 
+	| method |
+	method := self
+		nativizerDuring: [ :nativizer | nativizer nativize: aCompiledMethod ].
+	^ method ! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:34:33'!
+nativizerDuring: aBlock 
+
+	^ busy
+		  ifFalse: [ 
+			  busy := true.
+			  [ aBlock value: cachedNativizer ] ensure: [ busy := false ] ]
+		  ifTrue: [ 
+			  | old |
+			  old := cachedNativizer. 
+			  [  cachedNativizer := self newExpressionNativizer.
+			     aBlock value: cachedNativizer  
+			  ]  ensure: [ cachedNativizer := old ] 
+		  ]! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:34:51'!
+newExpressionNativizer 
+
+	^ SExpressionNativizer new environment: self! !
+
+!NativizationEnvironment methodsFor: 'services' stamp: 'KenD 3/20/2021 15:36:31'!
+polymorphicCache 
+	| asm smi case2 case3 case4 case5 case6 case7 lookup |
+	asm := TemplateAssembler64 new.
+	asm wordSize: abi wordSize.
+	smi := asm newLabel.
+	case2 := asm newLabel.
+	case3 := asm newLabel.
+	case4 := asm newLabel.
+	case5 := asm newLabel.
+	case6 := asm newLabel.
+	case7 := asm newLabel.
+	lookup := asm newLabel.
+	asm loadTwithAindex: 3.
+	smi := asm labeledNonIntegerBitTestOfR.
+	asm
+		loadLongSwithRindex: 0;
+		compareSwithTindex: 1;
+		shortJumpIfNotEqualTo: case2;
+		loadMwithTindex: 2;
+		jumpToMindex: 1;
+		@ case2;
+		compareSwithTindex: 3;
+		shortJumpIfNotEqualTo: case3;
+		loadMwithTindex: 4;
+		jumpToMindex: 1;
+		@ case3;
+		compareSwithTindex: 5;
+		shortJumpIfNotEqualTo: case4;
+		loadMwithTindex: 6;
+		jumpToMindex: 1;
+		@ case4;
+		compareSwithTindex: 7;
+		shortJumpIfNotEqualTo: case5;
+		loadMwithTindex: 8;
+		jumpToMindex: 1;
+		@ case5;
+		compareSwithTindex: 9;
+		shortJumpIfNotEqualTo: case6;
+		loadMwithTindex: 10;
+		jumpToMindex: 1;
+		@ case6;
+		compareSwithTindex: 11;
+		shortJumpIfNotEqualTo: case7;
+		loadMwithTindex: 12;
+		jumpToMindex: 1;
+		@ case7;
+		compareSwithTindex: 13;
+		shortJumpIfNotEqualTo: lookup;
+		loadMwithTindex: 14;
+		jumpToMindex: 1;
+		@ lookup;
+		loadMwithGlobal: #Lookup;
+		jumpToMindex: 1;
+		@ smi;
+		loadMwithTindex: 15;
+		jumpToMindex: 1;
+		applyFixups.
+	^ asm nativeCode code! !
+
+!NativizationEnvironment methodsFor: 'testing' stamp: 'KenD 3/20/2021 15:37:44'!
+shouldInline: aSymbol 
+
+	^ inlinedMethods anySatisfy: [ :m | m selector = aSymbol ]! !
+
+!NativizationEnvironment methodsFor: 'testing' stamp: 'KenD 3/20/2021 15:38:09'!
+shouldOptimize: method 
+	| selector classname |
+	selector := method selector.
+	classname := method classBinding name.
+	^ optimizedMethods anySatisfy: 
+		[:m | m selector = selector and: [ m classBinding name = classname ]  ]! !
+
+!NativizationEnvironment class methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:23:40'!
+globalNames 
+
+	^ #(Lookup LookupSuper
+		WriteBarrier Safepoint 
+		SmallIntegerBehavior Invoke 
+		DebuggableLookup DebuggableLookupSuper
+	     )! !
+
+!NativizationEnvironment class methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:23:56'!
+indexOfGlobal: aSymbol 
+
+	^self globalNames
+		indexOf: aSymbol
+		ifAbsent: [self error: 'global not found']! !
+
+!NativizationEnvironment class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 15:22:04'!
+forTesting 
+
+	^ self forTesting: VirtualSmalltalkImage kernelSpec! !
+
+!NativizationEnvironment class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 15:22:18'!
+forTesting: anRGEnvironment 
+
+	^ self new spec: anRGEnvironment! !
 
 !OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
 asOperand 
