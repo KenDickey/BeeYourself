@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4530] on 20 March 2021 at 3:38:57 pm'!
+'From Cuis 5.0 [latest update: #4532] on 28 March 2021 at 3:28:41 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 46!
+!provides: 'Powerlang-Core' 1 49!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -457,6 +457,16 @@ SmalltalkBridge subclass: #BootstrappedPstBridge
 BootstrappedPstBridge class
 	instanceVariableNames: ''!
 
+!classDefinition: #CuisBridge category: 'Powerlang-Core'!
+SmalltalkBridge subclass: #CuisBridge
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'CuisBridge class' category: 'Powerlang-Core'!
+CuisBridge class
+	instanceVariableNames: ''!
+
 !classDefinition: #Gate category: 'Powerlang-Core'!
 Object subclass: #Gate
 	instanceVariableNames: 'handle'
@@ -515,6 +525,16 @@ ObjectHandle subclass: #LocalHandle
 	category: 'Powerlang-Core'!
 !classDefinition: 'LocalHandle class' category: 'Powerlang-Core'!
 LocalHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #PstFrameHandle category: 'Powerlang-Core'!
+Handle subclass: #PstFrameHandle
+	instanceVariableNames: 'frame'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'PstFrameHandle class' category: 'Powerlang-Core'!
+PstFrameHandle class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAInstruction category: 'Powerlang-Core'!
@@ -615,6 +635,16 @@ ISAOperand subclass: #MemoryOperand
 	category: 'Powerlang-Core'!
 !classDefinition: 'MemoryOperand class' category: 'Powerlang-Core'!
 MemoryOperand class
+	instanceVariableNames: ''!
+
+!classDefinition: #Register category: 'Powerlang-Core'!
+ISAOperand subclass: #Register
+	instanceVariableNames: 'name index family flags'
+	classVariableNames: ''
+	poolDictionaries: 'OperandTypeFlags Registers'
+	category: 'Powerlang-Core'!
+!classDefinition: 'Register class' category: 'Powerlang-Core'!
+Register class
 	instanceVariableNames: ''!
 
 !classDefinition: #ISAOperandType category: 'Powerlang-Core'!
@@ -907,6 +937,16 @@ Object subclass: #MethodLookup
 MethodLookup class
 	instanceVariableNames: ''!
 
+!classDefinition: #CuisLookup category: 'Powerlang-Core'!
+MethodLookup subclass: #CuisLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'CuisLookup class' category: 'Powerlang-Core'!
+CuisLookup class
+	instanceVariableNames: ''!
+
 !classDefinition: #EmulationLookup category: 'Powerlang-Core'!
 MethodLookup subclass: #EmulationLookup
 	instanceVariableNames: 'spec globals cache'
@@ -1165,6 +1205,16 @@ ObjectFormat subclass: #BootstrapObjectFormat
 	category: 'Powerlang-Core'!
 !classDefinition: 'BootstrapObjectFormat class' category: 'Powerlang-Core'!
 BootstrapObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisObjectFormat category: 'Powerlang-Core'!
+ObjectFormat subclass: #CuisObjectFormat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'CuisObjectFormat class' category: 'Powerlang-Core'!
+CuisObjectFormat class
 	instanceVariableNames: ''!
 
 !classDefinition: #DmrObjectFormat category: 'Powerlang-Core'!
@@ -2051,6 +2101,11 @@ Copyright (c) 2020 Aucerna.
 
 NB: Intel specific!
 
+!Register commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !ISAOperandType commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -2184,6 +2239,11 @@ isFixed
 
 	^self isArrayed not! !
 
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
+
 !ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
 printOn: aStream 
 
@@ -2262,6 +2322,17 @@ printOn: aStream
 			aStream nextPutAll: sign].
 		aStream nextPutAll: '0x'; nextPutAll: displ abs hex].
 	aStream nextPut: $]! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:24:17'!
+name 
+
+	^name! !
+
+!Register methodsFor: 'printing' stamp: 'KenD 3/28/2021 15:25:31'!
+printOn: aStream 
+
+	name isNil ifTrue: [^super printOn: aStream].
+	aStream nextPutAll: name! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
@@ -7824,6 +7895,14 @@ updateGlobals
 	bootstrapper globals 
 		keysAndValuesDo: [:name :obj | objects at: name put: obj ]! !
 
+!CuisBridge methodsFor: 'initialization' stamp: 'KenD 3/21/2021 13:27:20'!
+findRootObjects 
+
+	nilObj     := LocalHandle on: nil     within: runtime.
+	trueObj  := LocalHandle on: true  within: runtime.
+	falseObj := LocalHandle on: false within: runtime
+! !
+
 !Gate methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:51:59'!
 isLocal 
 
@@ -8268,6 +8347,37 @@ slotAt: index
 isLocal 
 
 	^true! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
+currentIp 
+
+	^frame currentIp! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:27:59'!
+frame: aFrame 
+
+	frame := aFrame! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:28:35'!
+objectAtSlot: index 
+	| slot |
+	slot := frame slotAt: index.
+	^self objectHandleOn: slot! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:29:57'!
+slotAt: index 
+
+	^self objectAtSlot: index! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:30:10'!
+slotAtTop 
+
+	^frame slotAtTop! !
+
+!PstFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 3/27/2021 08:27:27'!
+on: frame within: runtime 
+
+	^self new frame: frame; runtime: runtime! !
 
 !ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:23:53'!
 updateTemplate: anISAInstruction 
@@ -9191,6 +9301,401 @@ fromString: aString
 	MemoryOperand fromString: 'qword ptr [rbx]'
 "
 	^self fromStream: aString readStream! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:12:07'!
+b 
+
+	^family at: 1! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:12:24'!
+byte 
+
+	^self b! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:12:38'!
+e 
+
+	^family at: 3! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:13:02'!
+extensionBit 
+
+	^self isExtended ifTrue: [1] ifFalse: [0]! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:13:14'!
+family: anArray 
+
+	family := anArray! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:15:57'!
+getB 
+
+	self == RAX ifTrue: [^AL].
+	self == RCX ifTrue: [^CL].
+	self == RDX ifTrue: [^DL].
+	self == RBX ifTrue: [^BL].
+	self == RSI ifTrue: [^SIL].
+	self == RDI ifTrue: [^DIL].
+	self == RBP ifTrue: [^BPL].
+	self == RSP ifTrue: [^SPL].
+	self == R8  ifTrue: [^R8B].
+	self == R9  ifTrue: [^R9B].
+	self == R10 ifTrue: [^R10B].
+	self == R11 ifTrue: [^R11B].
+	self == R12 ifTrue: [^R12B].
+	self == R13 ifTrue: [^R13B].
+	self == R14 ifTrue: [^R14B].
+	self == R15 ifTrue: [^R15B].
+	^nil! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:18:17'!
+getE
+
+	self == RAX ifTrue: [^EAX].
+	self == RCX ifTrue: [^ECX].
+	self == RDX ifTrue: [EDX].
+	self == RBX ifTrue: [EBX].
+	self == RSI ifTrue: [^ESI].
+	self == RDI ifTrue: [^EDI].
+	self == RBP ifTrue: [^EBP].
+	self == RSP ifTrue: [^ESP].
+	self == R8  ifTrue: [^R8D].
+	self == R9  ifTrue: [^R9D].
+	self == R10 ifTrue: [^R10D].
+	self == R11 ifTrue: [^R11D].
+	self == R12 ifTrue: [^R12D].
+	self == R13 ifTrue: [^R13D].
+	self == R14 ifTrue: [^R14D].
+	self == R15 ifTrue: [^R15D].
+	^nil! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:20:39'!
+getW
+
+	self == RAX ifTrue: [^AX].
+	self == RCX ifTrue: [^CX].
+	self == RDX ifTrue: [^DX].
+	self == RBX ifTrue: [^BX].
+	self == RSI ifTrue: [^SI].
+	self == RDI ifTrue: [^DI].
+	self == RBP ifTrue: [^BP].
+	self == RSP ifTrue: [^SP].
+	self == R8  ifTrue: [^R8W].
+	self == R9  ifTrue: [^R9W].
+	self == R10 ifTrue: [^R10W].
+	self == R11 ifTrue: [^R11W].
+	self == R12 ifTrue: [^R12W].
+	self == R13 ifTrue: [^R13W].
+	self == R14 ifTrue: [^R14W].
+	self == R15 ifTrue: [^R15W].
+	^nil! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:20:51'!
+index 
+
+	^index! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:20:59'!
+index: anInteger 
+
+	index := anInteger! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:24:28'!
+name: aString 
+	name := aString asLowercase! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:25:43'!
+r 
+	^family at: 4! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:25:52'!
+regExtension 
+
+	^self extensionBit! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:26:28'!
+registerGroup 
+
+	^flags bitAnd: RegisterGroupMask! !
+
+!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:27:09'!
+w 
+
+	^family at: 2! !
+
+!Register methodsFor: 'encoding' stamp: 'KenD 3/28/2021 15:26:59'!
+rm 
+
+	^index! !
+
+!Register methodsFor: 'initialization' stamp: 'KenD 3/28/2021 15:11:53'!
+addFlag: flagBit 
+
+	flags := flags bitOr: flagBit! !
+
+!Register methodsFor: 'initialization' stamp: 'KenD 3/28/2021 15:21:24'!
+initializeFamily 
+
+	(name first = $R and: [length = 64]) ifTrue: [
+		family := {self getB. self getW. self getE. self}.
+		family select: #notNil thenDo: [:reg | reg family: family]]! !
+
+!Register methodsFor: 'initialization' stamp: 'KenD 3/28/2021 15:21:36'!
+initializeFlags 
+
+	flags := 0.
+	self initializeRegisterGroupFlag! !
+
+!Register methodsFor: 'initialization' stamp: 'KenD 3/28/2021 15:22:07'!
+initializeRegisterGroupFlag 
+
+	(name includesString: 'MM') ifTrue: [^self addFlag: RegisterSIMD].
+	(#('ES' 'CS' 'SS' 'DS' 'FS' 'GS') includes: name)
+		ifTrue: [^self addFlag: RegisterSegment].
+	self addFlag: RegisterGP! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:22:31'!
+isCompatibleWith: anOperandType 
+
+	anOperandType isRegister ifFalse: [^false].
+	(anOperandType registerGroup = self registerGroup
+		and: [length = anOperandType length or: [anOperandType length isNil]])
+		ifTrue: [^true].
+	^anOperandType isSpecificRegister and: [name = anOperandType name]! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:22:47'!
+isExtended 
+
+	^index > 7! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:22:56'!
+isGeneral 
+
+	^self registerGroup = RegisterGP! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:23:22'!
+isLongModeOld8BitRegister 
+
+	self = SPL ifTrue: [^true].
+	self = BPL ifTrue: [^true].
+	self = SIL ifTrue: [^true].
+	self = DIL ifTrue: [^true].
+	^false! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:23:36'!
+isRegister 
+
+	^true! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:23:47'!
+isSIMD 
+
+	^self registerGroup = RegisterSIMD! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:23:57'!
+isSegment 
+
+	^self registerGroup = RegisterSegment! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:24:05'!
+isTemplate 
+
+	^true! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:24:53'!
+needsExtraBit 
+
+	^self isExtended! !
+
+!Register methodsFor: 'testing' stamp: 'KenD 3/28/2021 15:25:06'!
+prefers: anOperandType to: anotherOperandType 
+
+	^anOperandType name = name! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:08:34'!
+named: aString 
+"
+	Register named: 'rax'
+"
+	^Registers at: aString asLowercase ifAbsent: nil! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:09:17'!
+segment: index 
+
+	index = 0 ifTrue: [^CS].
+	index = 1 ifTrue: [^SS].
+	index = 2 ifTrue: [^DS].
+	index = 3 ifTrue: [^ES].
+	index = 4 ifTrue: [^FS].
+	index = 5 ifTrue: [^GS].
+	^nil! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:09:30'!
+withIndex: index length: length 
+
+	^Registers detect: [:r | 
+		r index = index
+			and: [r length = length]
+			and: [(r name beginsWith: 'mmx') not]
+			and: [r isSegment not]]! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:09:42'!
+withIndex: index length: length long: aBoolean 
+
+	^Registers detect: [:r | 
+		r index = index
+			and: [r length = length]
+			and: [(r name beginsWith: 'mmx') not]
+			and: [r isSegment not]
+			and: [r isLongModeOld8BitRegister ifTrue: [aBoolean] ifFalse: [true]]]! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:09:58'!
+xmm: i 
+
+	^self named: 'xmm' , i asString! !
+
+!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:10:07'!
+ymm: i 
+
+	^self named: 'ymm' , i asString! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:09'!
+addRegister: aRegister 
+
+	Registers at: aRegister name put: aRegister! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:23'!
+initialize 
+
+	self initializeRegisters; initializeFamilies! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:40'!
+initialize16BitRegisters 
+
+	#('ax' 'cx' 'dx' 'bx' 'sp' 'bp' 'si' 'di' 'r8w' 'r9w' 'r10w' 'r11w' 'r12w' 'r13w' 'r14w' 'r15w')
+		withIndexDo: [:r :i | | register |
+			register := self new
+				name: r;
+				index: i - 1;
+				length: 16;
+				initializeFlags.
+			self addRegister: register]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:53'!
+initialize32BitRegisters 
+
+	#('eax' 'ecx' 'edx' 'ebx' 'esp' 'ebp' 'esi' 'edi' 'r8d' 'r9d' 'r10d' 'r11d' 'r12d' 'r13d' 'r14d' 'r15d')
+		withIndexDo: [:r :i | | register |
+			register := self new
+				name: r;
+				index: i - 1;
+				length: 32;
+				initializeFlags.
+			self addRegister: register]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:04'!
+initialize64BitRegisters 
+
+	#('rax' 'rcx' 'rdx' 'rbx' 'rsp' 'rbp' 'rsi' 'rdi' 'r8' 'r9' 'r10' 'r11' 'r12' 'r13' 'r14' 'r15')
+		withIndexDo: [:r :i | | register |
+			register := self new
+				name: r;
+				index: i - 1;
+				length: 64;
+				initializeFlags.
+			self addRegister: register]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:14'!
+initialize8BitRegisters 
+
+	#('al' 'cl' 'dl' 'bl' 'ah' 'ch' 'dh' 'bh') withIndexDo: [:r :i | | register |
+		register := Register new
+			name: r;
+			index: i - 1;
+			length: 8;
+			initializeFlags.
+		self addRegister: register]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:25'!
+initialize8BitRexRegisters 
+
+	#('spl' 'bpl' 'sil' 'dil' 'r8b' 'r9b' 'r10b' 'r11b' 'r12b' 'r13b' 'r14b' 'r15b')
+		withIndexDo: [:r :i | | register |
+			register := self new
+				name: r;
+				index: i + 3;
+				length: 8;
+				initializeFlags.
+			self addRegister: register]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:34'!
+initializeFamilies 
+
+	Registers do: [:reg | reg initializeFamily]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:45'!
+initializeMMXRegisters 
+
+	0 to: 7 do: [:i | | mmx |
+		mmx := self new
+			name: 'mmx' , i asString;
+			index: i;
+			length: 64;
+			initializeFlags.
+		self addRegister: mmx]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:06:54'!
+initializeRIPRegister 
+	| register |
+	register := self new
+		name: 'rip';
+		index: 5;
+		length: 64;
+		initializeFlags.
+	self addRegister: register! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:07:07'!
+initializeRegisters 
+
+	self
+		initialize8BitRegisters;
+		initialize8BitRexRegisters;
+		initialize16BitRegisters;
+		initialize32BitRegisters;
+		initialize64BitRegisters;
+		initializeRIPRegister;
+		initializeMMXRegisters;
+		initializeSSERegisters;
+		initializeSegmentRegisters! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:07:22'!
+initializeSSERegisters 
+
+	0 to: 15 do: [:i | | xmm |
+		xmm := self new
+			name: 'xmm' , i asString;
+			index: i;
+			length: 128;
+			initializeFlags.
+		self addRegister: xmm].
+	0 to: 15 do: [:i | | ymm |
+		ymm := self new
+			name: 'ymm' , i asString;
+			index: i;
+			length: 256;
+			initializeFlags.
+		self addRegister: ymm]! !
+
+!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:07:44'!
+initializeSegmentRegisters 
+
+	#('es' 'cs' 'ss' 'ds' 'fs' 'gs') withIndexDo: [:r :i | | register |
+		register := self new
+			name: r;
+			index: i - 1;
+			length: 16;
+			initializeFlags.
+		self addRegister: register]! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
@@ -13714,6 +14219,11 @@ lookup: aSymbol on: aSubject
 
 	^self subclassResponsibility! !
 
+!CuisLookup methodsFor: 'meta accessing' stamp: 'KenD 3/21/2021 13:28:29'!
+lookup: aSymbol on: aSubject 
+
+	^ aSubject _gate handle oid class lookupSelector: aSymbol! !
+
 !EmulationLookup methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:34:32'!
 initialize 
 
@@ -15826,6 +16336,66 @@ isBytes: oid
 isInteger: oid 
 
 	^oid isImmediate! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:08'!
+behaviorOf: oid 
+
+	^self assert: false! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:21'!
+bytesOf: oid count: size 
+
+	^oid copyFrom: 1 to: size! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:31'!
+classOf: anObjectHandle 
+
+	^anObjectHandle oid class! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:42'!
+integerOf: oid 
+
+	self assert: oid isInteger.
+	^ oid! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:31:32'!
+labelFor: oid 
+	| label |
+	label := storage ifNotNil: [storage nameOf: oid].
+	^label ifNil: [ 'unknown' ]! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:17'!
+sizeOf: oid 
+
+	^oid basicSize + oid class instSize! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:33'!
+slotOf: oid at: index 
+
+	^ oid instVarAt: index! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:43'!
+stringOf: oid count: size 
+
+	^(oid copyFrom: 1 to: size) asString! !
+
+!CuisObjectFormat methodsFor: 'printing' stamp: 'KenD 3/21/2021 13:32:04'!
+print: oid on: aStream 
+
+	aStream
+		nextPutAll: '@local {';
+		print: oid;
+		nextPut: $}! !
+
+!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:08'!
+isBytes: anObject 
+
+	^anObject class isBytes! !
+
+!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:18'!
+isInteger: oid 
+
+	^oid isInteger! !
 
 !DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:33:26'!
 behaviorOf: oid 
@@ -22071,6 +22641,7 @@ SendSiteFlags initialize!
 SpeciesFormatMasks initialize!
 Assembler64 initialize!
 JITAssembler64 initialize!
+Register initialize!
 InstructionEncoder initialize!
 InstructionSpec initialize!
 MethodEvaluator initialize!
