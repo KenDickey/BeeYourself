@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4561] on 8 April 2021 at 8:56:07 am'!
+'From Cuis 5.0 [latest update: #4561] on 8 April 2021 at 2:41:08 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 53!
+!provides: 'Powerlang-Core' 1 55!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -227,6 +227,26 @@ Error subclass: #SCompilationError
 SCompilationError class
 	instanceVariableNames: ''!
 
+!classDefinition: #SUndeclaredIdentifierError category: 'Powerlang-Core'!
+SCompilationError subclass: #SUndeclaredIdentifierError
+	instanceVariableNames: 'identifier assigned'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: 'Powerlang-Core'!
+SUndeclaredIdentifierError class
+	instanceVariableNames: ''!
+
+!classDefinition: #StorageReadError category: 'Powerlang-Core'!
+Error subclass: #StorageReadError
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
+StorageReadError class
+	instanceVariableNames: ''!
+
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core'!
 PPCompositeParser subclass: #AssemblerGrammar
 	instanceVariableNames: ''
@@ -447,6 +467,16 @@ LiteralBinding subclass: #FalseBinding
 FalseBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #TrueBinding category: 'Powerlang-Core'!
+LiteralBinding subclass: #TrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'TrueBinding class' category: 'Powerlang-Core'!
+TrueBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #LocalBinding category: 'Powerlang-Core'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
@@ -467,6 +497,16 @@ LocalBinding subclass: #ArgumentBinding
 ArgumentBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #TemporaryBinding category: 'Powerlang-Core'!
+LocalBinding subclass: #TemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'TemporaryBinding class' category: 'Powerlang-Core'!
+TemporaryBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SelfBinding category: 'Powerlang-Core'!
 Binding subclass: #SelfBinding
 	instanceVariableNames: ''
@@ -475,6 +515,26 @@ Binding subclass: #SelfBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'SelfBinding class' category: 'Powerlang-Core'!
 SelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SuperBinding category: 'Powerlang-Core'!
+SelfBinding subclass: #SuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SuperBinding class' category: 'Powerlang-Core'!
+SuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #UnresolvedBinding category: 'Powerlang-Core'!
+Binding subclass: #UnresolvedBinding
+	instanceVariableNames: ''
+	classVariableNames: 'Default'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'UnresolvedBinding class' category: 'Powerlang-Core'!
+UnresolvedBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #Bridge category: 'Powerlang-Core'!
@@ -1757,6 +1817,16 @@ SBinding subclass: #SAssociationBinding
 SAssociationBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #SGlobalBinding category: 'Powerlang-Core'!
+SAssociationBinding subclass: #SGlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core'!
+SGlobalBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SPoolVarBinding category: 'Powerlang-Core'!
 SAssociationBinding subclass: #SPoolVarBinding
 	instanceVariableNames: ''
@@ -1785,6 +1855,26 @@ SBinding subclass: #SLiteralBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
 SLiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFalseBinding category: 'Powerlang-Core'!
+SLiteralBinding subclass: #SFalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core'!
+SFalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STrueBinding category: 'Powerlang-Core'!
+SLiteralBinding subclass: #STrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
+STrueBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #SLocalBinding category: 'Powerlang-Core'!
@@ -2247,14 +2337,64 @@ Storage subclass: #ByteArrayAdapter
 ByteArrayAdapter class
 	instanceVariableNames: ''!
 
-!classDefinition: #StorageReadError category: 'Powerlang-Core'!
-Object subclass: #StorageReadError
+!classDefinition: #TonelRepository category: 'Powerlang-Core'!
+Object subclass: #TonelRepository
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
-StorageReadError class
+!classDefinition: 'TonelRepository class' category: 'Powerlang-Core'!
+TonelRepository class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSmalltalkImage category: 'Powerlang-Core'!
+Object subclass: #VirtualSmalltalkImage
+	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core'!
+!classDefinition: 'VirtualSmalltalkImage class' category: 'Powerlang-Core'!
+VirtualSmalltalkImage class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSpecies category: 'Powerlang-Core'!
+Object subclass: #VirtualSpecies
+	instanceVariableNames: 'spec superclass map'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'VirtualSpecies class' category: 'Powerlang-Core'!
+VirtualSpecies class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualClass category: 'Powerlang-Core'!
+VirtualSpecies subclass: #VirtualClass
+	instanceVariableNames: 'cvars'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'VirtualClass class' category: 'Powerlang-Core'!
+VirtualClass class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualMetaclass category: 'Powerlang-Core'!
+VirtualSpecies subclass: #VirtualMetaclass
+	instanceVariableNames: 'class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'VirtualMetaclass class' category: 'Powerlang-Core'!
+VirtualMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #Subject category: 'Powerlang-Core'!
+ProtoObject subclass: #Subject
+	instanceVariableNames: 'gate'
+	classVariableNames: 'Counts'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'Subject class' category: 'Powerlang-Core'!
+Subject class
 	instanceVariableNames: ''!
 
 
@@ -2263,6 +2403,9 @@ WARNING: x86 specific!
 
 !SFFIDescriptor commentStamp: '<historical>' prior: 0!
 #type : #bytes!
+
+!StorageReadError commentStamp: '<historical>' prior: 0!
+?? Subclass Error ??!
 
 !AssemblerGrammar commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -2436,9 +2579,6 @@ I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed 
 !Storage commentStamp: '<historical>' prior: 0!
 ?? Subclass Error ??!
 
-!StorageReadError commentStamp: '<historical>' prior: 0!
-?? Subclass Error ??!
-
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
 format 
 
@@ -2476,6 +2616,11 @@ name
 
 	^'false'! !
 
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
+name 
+
+	^'true'! !
+
 !LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
 environment 
 
@@ -2485,6 +2630,11 @@ environment
 name 
 
 	^'self'! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:32:36'!
+name 
+
+	^'super'! !
 
 !MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
 printOn: aStream 
@@ -2934,6 +3084,16 @@ name
 
 	^self printString! !
 
+!SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FalseId'! !
+
+!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
+printOn: aStream 
+
+	aStream nextPutAll: 'TrueId'! !
+
 !SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
 environment 
 
@@ -3026,6 +3186,60 @@ name
 compile: anRGMethod 
 
 	^builder compile: anRGMethod! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
+name 
+
+	^spec name! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:11'!
+superclass 
+
+	^superclass! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:20'!
+superclass: aVirtualClass 
+
+	superclass := aVirtualClass! !
+
+!VirtualSpecies methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:41:37'!
+printOn: aStream 
+
+	aStream nextPut: $<; print: spec; nextPut: $>! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:12'!
+allInstVarNames 
+
+	^ spec allInstVarNames! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:54'!
+classPool 
+
+	^cvars ! !
+
+!VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
+withAllSuperclasses 
+
+	^ superclass ifNil:
+	 [ OrderedCollection with: self ]
+		ifNotNil:  [ superclass withAllSuperclasses
+				addFirst: self;
+				yourself ]! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:18'!
+classPool 
+
+	^ class classPool! !
+
+!VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
+allInstVarNames 
+
+	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
+
+!Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:41'!
+printOn: aStream 
+
+	aStream nextPutAll: '{'; print: gate; nextPutAll: '}'! !
 
 !AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 14:51:53'!
 initialize 
@@ -3655,6 +3869,27 @@ isUndeclaredAccess
 isUndeclaredAssignment 
 
 	^ false! !
+
+!SUndeclaredIdentifierError methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:30:04'!
+assignment: aBoolean 
+
+	assigned := aBoolean! !
+
+!SUndeclaredIdentifierError methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:30:12'!
+identifier 
+
+	^ identifier! !
+
+!SUndeclaredIdentifierError methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:30:37'!
+stretch: aStretch 
+
+	super stretch: aStretch.
+	identifier := self source! !
+
+!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:30:25'!
+isUndeclaredAccess 
+
+	^assigned not! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
@@ -8343,6 +8578,16 @@ encodeUsing: anAstcodeEmitter
 
 	anAstcodeEmitter encodeFalse! !
 
+!TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeTrue! !
+
+!TrueBinding methodsFor: 'evalutaing' stamp: 'KenD 4/8/2021 12:37:35'!
+value 
+
+	^true! !
+
 !LocalBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:55:22'!
 beInArray 
 
@@ -8444,6 +8689,32 @@ emitLoadAusing: anAstcodeEncoder
 
 	anAstcodeEncoder encodeLoadAwithArg: index env: environment! !
 
+!TemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:34:23'!
+description 
+
+	^'temporary ' , name! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:35'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithTemp: index env: environment! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:53'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeTemporary: index env: environment! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:35:10'!
+initialize 
+
+	super initialize.
+	environment := StackEnvironment new! !
+
+!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:35:25'!
+isTemporary 
+
+	^true! !
+
 !SelfBinding methodsFor: 'actions' stamp: 'KenD 2/27/2021 13:23:18'!
 beReferencedFrom: aScriptNode 
 
@@ -8468,6 +8739,32 @@ canBeAssigned
 isSelf 
 
 	^true! !
+
+!SuperBinding methodsFor: 'emitCode' stamp: 'KenD 4/8/2021 12:32:04'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeSuper! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:14'!
+isSelf 
+
+	^false! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:25'!
+isSuper 
+
+	^true
+! !
+
+!UnresolvedBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:39:05'!
+isUnresolved 
+
+	^true! !
+
+!UnresolvedBinding class methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:38:42'!
+default 
+
+	^Default ifNil: [Default := self new name: '<unresolved>']! !
 
 !Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
 initialize 
@@ -18376,6 +18673,11 @@ isAssociation
 
 	^true! !
 
+!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeGlobalBinding! !
+
 !SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
 value 
 
@@ -18415,6 +18717,26 @@ isLiteral
 decodeUsing: anAstcodeDecoder 
 
 	^self new! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
+value 
+	
+	^false! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
+valueWithin: evaluator 
+
+	^evaluator falseLiteral! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
+value 
+
+	^true! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
+valueWithin: evaluator 
+
+	^evaluator trueLiteral! !
 
 !SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
 environment: anInteger 
@@ -24406,6 +24728,645 @@ on: aByteArray
 
 	^self new bytes: aByteArray! !
 
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:25:36'!
+=> aSymbol 
+
+	^ kernel at: aSymbol! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:27:52'!
+classFor: anRGBehavior 
+
+	^classes at: anRGBehavior! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:02'!
+classNamed: aString 
+
+	^self classFor: self => aString! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:15'!
+classes 
+
+	^ classes! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:48'!
+false 
+
+	^ falseObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:41'!
+kernel 
+
+	^kernel! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:49'!
+kernel: anRGEnvironment 
+
+	kernel := anRGEnvironment ! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:57'!
+map: anObject to: anObjectMap 
+
+	identityMap at: anObject put: anObjectMap! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:34:06'!
+metaclassFor: anRGBehavior 
+
+	^ metaclasses at: anRGBehavior! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:19'!
+nil 
+
+	^ nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:32'!
+speciesFor: anRGBehavior 
+
+	^classes at: anRGBehavior ifAbsent: [ metaclasses at: anRGBehavior]! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:44'!
+surrogateFor: anObject 
+
+	^ identityMap at: anObject ifAbsent: nil! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:09'!
+transferBlock: anSCompiledBlock 
+	| transferred method format |
+	identityMap at: anSCompiledBlock
+		ifPresent: [ :b | ^ b ].
+	transferred := self newSlots: #CompiledBlock.
+	identityMap at: anSCompiledBlock put: transferred.
+	method := identityMap at: anSCompiledBlock method.
+	format := self newInteger: anSCompiledBlock format.
+	transferred
+		method: method;
+		format: format;
+		nativeCode: nilObj.
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:27'!
+transferLiteral: anObject 
+	| class transferred slot |
+	class := anObject class.
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	(class inheritsFrom: Integer)
+		ifTrue: [ ^ self newInteger: anObject ].
+	(class inheritsFrom: Symbol)
+		ifTrue: [ ^ self newSymbol: anObject ].
+	(class inheritsFrom: String)
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	transferred := self newSlots: anObject class name sized: anObject size.
+	anObject
+		withIndexDo: [ :elem :i | 
+			slot := self transferLiteralDeep: elem.
+			transferred at: i put: slot ].
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:55'!
+transferLiteralDeep: anObject 
+	| class transferred slot size ivar |
+	class := anObject class.
+	anObject isInteger
+		ifTrue: [ ^ self newInteger: anObject ].
+	anObject == nil
+		ifTrue: [ ^ nilObj ].
+	anObject == false
+		ifTrue: [ ^ falseObj ].
+	anObject == true
+		ifTrue: [ ^ trueObj ].
+	identityMap at: anObject ifPresent: [ :existing | ^ existing ].
+	(class inheritsFrom: Symbol)
+		ifTrue: [ ^ self newSymbol: anObject ].
+	(class inheritsFrom: String)
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	(class inheritsFrom: Float)
+		ifTrue: [ ^ self newFloatFrom: anObject ].
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	class == SCompiledBlock
+		ifTrue: [ ^ self transferBlock: anObject ].
+	size := class isVariable
+		ifTrue: [ anObject size ]
+		ifFalse: [ 0 ].
+	transferred := self newSlots: class name sized: size.
+	1 to: class instSize do: [ :i | 
+		ivar := anObject instVarAt: i.
+		slot := self transferLiteralDeep: ivar.
+		transferred slotAt: i put: slot ].
+	size > 0
+		ifTrue: [ anObject
+				withIndexDo: [ :elem :i | 
+					slot := self transferLiteralDeep: elem.
+					transferred at: i put: slot ] ].
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:05'!
+true 
+
+	^ trueObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:14'!
+wordSize 
+
+	^ wordSize! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:31'!
+wordSize: anInteger 
+
+	wordSize := anInteger.
+	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
+	minSMI := maxSMI negated - 1! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:29:40'!
+fixBehaviors 
+
+	self
+		initializeBehavior: nilObj;
+		initializeBehavior: trueObj;
+		initializeBehavior: falseObj.
+	classes
+		do: [ :c | 
+			| m |
+			m := c behavior slotNamed: 'class'.
+			self
+				initializeBehavior: c instanceBehavior;
+				initializeBehavior: c behavior;
+				initializeBehavior: m ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:30:43'!
+genesis 
+"
+	Create the world (should take less than 6 days). This is named 'genesis' to remind us those who had
+	done this (and much more) before us. Namely SELF people. I (JV) would like to use this opportunity and point you to
+	
+	https://github.com/russellallen/self/blob/2bcf2c4cab23f52bf68ac4f617020e748699a548/vm/src/any/memory/universe.cpp#L79
+"
+
+	nilObj := self basicNewSlots: #UndefinedObject.
+	trueObj := self basicNewSlots: #True.
+	falseObj := self basicNewSlots: #False.
+	kernel allClasses do: [ :def | self createSpecies: def ].
+	self fixBehaviors. 
+	kernel allClasses do: [ :def | self buildSpecies: def ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:32:56'!
+initializeClass: definition superclass: superclass superbehavior: superbehavior 
+	| class name flag ivars poolnames pools subclasses format |
+	class := classes at: definition.
+	class instanceBehavior next: superbehavior.
+	subclasses := definition subclasses
+		collect: [ :def | classes at: def ].
+	subclasses := self newArray: subclasses.
+	name := self newString: definition name.
+	flag := self formatOfClass: definition.
+	format := self newInteger: flag.
+	ivars := self newStringArray: definition instVarNames.
+	poolnames := definition sharedPools collect: #name.
+	pools := self newStringArray: poolnames.
+	class
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		organization: nilObj;
+		name: name;
+		subclasses: subclasses;
+		sharedPools: pools.
+	definition metaclass allInstVarNames
+		do: [ :ivar | class slotNamed: ivar put: nilObj ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:33:25'!
+initializeMetaclass: definition superclass: superclass 
+	| meta ivars flags format superbehavior |
+	meta := metaclasses at: definition.
+	superbehavior := superclass instanceBehavior.
+	meta instanceBehavior next: superbehavior.
+	ivars := self newStringArray: definition instVarNames.
+	flags := self formatOfClass: definition. 
+	format := self newInteger: flags.
+	meta
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		organization: nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:30:02'!
+formatOfClass: definition 
+	| variable pointers |
+	variable := definition isVariable ifTrue: [ 16r2000 ] ifFalse: [ 0 ].
+	pointers := definition isBytes ifTrue: [ 0 ] ifFalse: [16r4000 ].
+	^variable | pointers | definition allInstVarNames size! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:20'!
+initialize 
+
+	classes := OrderedDictionary new.
+	metaclasses := OrderedDictionary new.
+		identityMap := IdentityDictionary new! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:37'!
+initializeBehavior: anObjectMap 
+	| class |
+	class := classes at: anObjectMap spec.
+	anObjectMap behavior: class instanceBehavior.! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:25'!
+newArray: anArray 
+	| assoc |
+	assoc := self newSlots: 'Array' sized: anArray size.
+	anArray withIndexDo: [ :obj :i | assoc at: i put: obj ].
+	^ assoc! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:36'!
+newAssociation: anAssociation 
+	| assoc key value |
+	assoc := self newSlots: 'Association'.
+	key := self transferLiteralDeep: anAssociation key.
+	value := self transferLiteralDeep: anAssociation value.
+	^ assoc
+		key: key;
+		value: value; yourself! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:24:59'!
+newKernelSpec 
+	| current repo spec |
+	current := 'specs/current' asFileReference contents trim.
+	repo := TonelRepository new
+		directory: ('specs/' , current) asFileReference.
+	spec := repo asRingEnvironmentWith: #(Kernel).
+	^ spec clean! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:06'!
+basicNewBytes: classname contents: aByteObject 
+
+	^ self basicNewBytesOf: self => classname contents: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:18'!
+basicNewBytesOf: anRGBehavior  contents: aByteObject 
+
+	^ ByteObjectMap new: anRGBehavior valued: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:32'!
+basicNewSlots: classname 
+
+	^ self basicNewSlots: classname sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:43'!
+basicNewSlots: classname in: spec 
+
+	^ self basicNewSlots: classname in: spec sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:55'!
+basicNewSlots: classname in: spec sized: size 
+	| species |
+	species := spec at: classname.
+	^self basicNewSlotsOf: species sized: size! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:09'!
+basicNewSlots: classname sized: size 
+
+	^ self basicNewSlots: classname in: kernel sized: size! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:20'!
+basicNewSlotsOf: anRGBehavior sized: size 
+
+	^ SlotObjectMap new: anRGBehavior size: size withAll: nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:32'!
+buildSpecies: spec 
+	| sspec sclass sbehavior metasuper  |
+	sspec := spec superclass.
+	sspec
+		ifNil: [ sclass := nilObj.
+			sbehavior := nilObj.
+			metasuper := classes at: self => #Class ]
+		ifNotNil: [ sclass := classes at: sspec.
+			sbehavior := sclass instanceBehavior.
+			metasuper := metaclasses at: sspec metaclass ].
+	self
+		initializeClass: spec superclass: sclass superbehavior: sbehavior;
+		initializeMetaclass: spec metaclass superclass: metasuper! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:28:34'!
+createSpecies: definition 
+	| class meta ibehavior cbehavior |
+	class := self basicNewSlots: #Class.
+	class initializeAs: definition metaclass sized: 0.
+	meta := self basicNewSlots: #Metaclass.
+	ibehavior := self basicNewSlots: #Behavior.
+	cbehavior := self basicNewSlots: #Behavior.
+	ibehavior class: class.
+	cbehavior class: meta.
+	meta
+		class: class;
+		instanceBehavior: cbehavior.
+	class
+		instanceBehavior: ibehavior;
+		behavior: cbehavior.
+	classes at: definition put: class.
+	metaclasses at: definition metaclass put: meta! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:06'!
+newBytes: classname contents: aByteObject 
+	| obj |
+	obj := self basicNewBytes: classname contents: aByteObject.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:15'!
+newBytesFrom: aByteObject 
+
+	^self newBytes: aByteObject class name contents: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:26'!
+newBytesOf: anRGBehavior contents: aByteObject 
+	| obj |
+	obj := self basicNewBytesOf: anRGBehavior contents: aByteObject.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:38'!
+newBytesOf: anRGBehavior sized: anInteger 
+	| contents |
+	contents := ByteArray new: anInteger.
+	^ self newBytesOf: anRGBehavior contents: contents! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:49'!
+newFloatFrom: aFloat 
+
+	^ self newBytes: 'Float' contents: aFloat pointerDouble! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:01'!
+newInteger: anInteger 
+
+	anInteger > maxSMI
+		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
+	anInteger < minSMI
+		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
+	^self newSmallInteger: anInteger! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:15'!
+newLargeNegativeInteger: anInteger 
+	| size bytes byte |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := ByteArray new: size withAll: 16rFF.
+	1 to: anInteger bytesCount do: [ :i | 
+		byte := anInteger byteAt: i.
+		byte > 0
+			ifTrue: [ byte := 256 - byte ].
+		bytes at: i put: byte ].
+	^ self newBytes: #LargeNegativeInteger contents: bytes! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:30'!
+newLargePositiveInteger: anInteger 
+	| size bytes |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := anInteger asByteArrayOfSize: size.
+	^ self newBytes: #LargePositiveInteger contents: bytes reversed! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:40'!
+newSlots: classname 
+
+	^self newSlots: classname sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:05'!
+newSlots: classname sized: size 
+"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+"
+	| obj |
+	obj := self basicNewSlots: classname sized: size.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:24'!
+newSlotsOf: anRGBehavior sized: size 
+"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+"
+	| obj |
+	obj := self basicNewSlotsOf: anRGBehavior sized: size.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:35'!
+newSmallInteger: anInteger 
+	self assert: (anInteger between: minSMI and: maxSMI).
+	^ SmallintObjectMap
+		new: self => #SmallInteger
+		valued: anInteger! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:48'!
+newString: aString 
+	| bytes |
+	bytes := aString copyWith: Character null.
+	^self newBytes: 'String' contents: bytes! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:00'!
+newStringArray: strings 
+	| array bytes |
+	array := self newSlots: 'Array' sized: strings size.
+	strings
+		withIndexDo: [ :s :i |
+			bytes := self newString: s.
+			array at: i put: bytes ].
+	^ array! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:09'!
+newSymbol: aSymbol 
+	| new bytes |
+	identityMap at: aSymbol ifPresent: [ :s | ^ s ].
+	bytes := aSymbol copyWith: Character null.
+	new := self newBytes: 'Symbol' contents: bytes.
+	^ identityMap at: aSymbol put: new! !
+
+!VirtualSmalltalkImage methodsFor: 'testing' stamp: 'KenD 4/8/2021 14:32:08'!
+includes: anObject 
+
+	^identityMap includesKey: anObject! !
+
+!VirtualSmalltalkImage class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 14:23:30'!
+newKernelSpec 
+	| current repo spec |
+	current := 'specs/current' asFileReference contents trim.
+	repo := TonelRepository new
+		directory: ('specs/' , current) asFileReference.
+	spec := repo asRingEnvironmentWith: #(Kernel).
+	^ spec clean! !
+
+!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:33'!
+fromSpec 
+
+	^ self new kernel: self kernelSpec! !
+
+!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:48'!
+kernelSpec 
+
+	^ KernelSpec ifNil: [ KernelSpec := self newKernelSpec ]! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
+allSharedPoolsUsing: globals 
+	| pools class |
+	pools := Set new.
+	class := self.
+	[ class isNil ]
+		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
+			class := class superclass ].
+	^ pools! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:52'!
+map 
+
+	^map! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:04'!
+map: anObjectMap 
+	
+	map := anObjectMap ! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:53'!
+spec 
+
+	^spec! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:02'!
+spec: anRGBehavior 
+
+	spec := anRGBehavior! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:46'!
+instanceSide 
+
+	^ self! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
+localPools 
+	| pools dict name pool |
+	pools := cvars associations
+		select: [ :assoc | assoc value spec name = #PoolDictionary ].
+	dict := Dictionary new.
+	pools
+		do: [ :assoc | 
+			name := assoc key asString.
+			pool := assoc value.
+			dict at: name put: (VirtualDictionary fromPool: pool) ].
+	^ dict! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:45:33'!
+sharedPoolsUsing: globals 
+	| pools dicts |
+	pools := OrderedCollection new.
+	spec sharedPoolsDo: [ :p | pools add: p ].
+	dicts := pools
+		collect: [ :p | (globals at: p name) association value ].
+	^ dicts
+		select: [ :d | d spec name = #PoolDictionary ]
+		thenCollect: [ :d | VirtualDictionary fromPool: d ]! !
+
+!VirtualClass methodsFor: 'service' stamp: 'KenD 4/8/2021 12:44:33'!
+createClassAssociationsWith: aVirtualSmalltalkImage 
+	|  assocs |
+	assocs := spec classVariables
+		collect: [ :cvar | aVirtualSmalltalkImage newAssociation: cvar name -> nil ].
+	cvars := VirtualDictionary withAll: assocs! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:09'!
+class: aVirtualClass 
+
+	class := aVirtualClass! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:40'!
+createClassAssociationsWith: aVirtualSmalltalkImage 
+
+	self notYetImplemented ! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:50'!
+instanceSide 
+
+	^class! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
+localPools 
+
+	^ class localPools! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:09'!
+sharedPoolsUsing: globals 
+
+	^class sharedPoolsUsing: globals! !
+
+!Subject methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:24:29'!
+_gate 
+
+	^gate! !
+
+!Subject methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:24:39'!
+_gate: aMirageGate 
+
+	gate := aMirageGate! !
+
+!Subject methodsFor: 'inspector extensions' stamp: 'KenD 4/8/2021 12:26:12'!
+gtDisplayString 
+
+	^self printString! !
+
+!Subject methodsFor: 'system' stamp: 'KenD 4/8/2021 12:25:52'!
+doesNotUnderstand: aMessage 
+	| send |
+	send := MessageSend message: aMessage to: self.
+			^ gate dispatch: send! !
+
+!Subject methodsFor: 'system' stamp: 'KenD 4/8/2021 12:27:04'!
+perform: aSymbol withArguments: anArray 
+	| message |
+	message := Message
+		selector: #perform:withArguments:
+		arguments: (Array with: aSymbol with: anArray).
+	^ self doesNotUnderstand: message! !
+
+!Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
+printString 
+
+	^String streamContents: [ :s | self printOn: s ]! !
+
+!Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:28:04'!
+printString2 
+	| message |
+	message := MessageSend
+		receiver: self
+		selector: #printString
+		arguments: #().
+	^ self doesNotUnderstand: message! !
+
+!Subject methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:26:35'!
+isKindOf: aClass 
+	"Answer whether the class, aClass, is a superclass or class of the receiver.
+	The current implemementation allows for a Trait to be used as argument"
+
+	^ self class == aClass or: [ self class inheritsFrom: aClass ]! !
+
+!Subject methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:26:45'!
+isSelfEvaluating 
+
+	^false! !
+
+!Subject methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:28:24'!
+shouldBePrintedAsLiteral 
+
+	^false! !
+
+!Subject class methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:24:08'!
+initialize 
+
+	Counts := IdentityDictionary new! !
+
 !Integer methodsFor: '*powerlang-core' stamp: 'KenD 3/8/2021 07:55:07'!
 thru: anInteger 
 
@@ -24433,3 +25394,4 @@ InstructionEncoder initialize!
 InstructionSpec initialize!
 MethodEvaluator initialize!
 SmalltalkInterpreter initialize!
+Subject initialize!
