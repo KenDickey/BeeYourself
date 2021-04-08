@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4561] on 7 April 2021 at 2:23:54 pm'!
+'From Cuis 5.0 [latest update: #4561] on 8 April 2021 at 8:03:22 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 50!
+!provides: 'Powerlang-Core' 1 51!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -205,6 +205,16 @@ Array variableSubclass: #SCompiledMethod
 	category: 'Powerlang-Core'!
 !classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core'!
 SCompiledMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFFIDescriptor category: 'Powerlang-Core'!
+ByteArray variableByteSubclass: #SFFIDescriptor
+	instanceVariableNames: ''
+	classVariableNames: 'FFICallingConventions FFITypes'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core'!
+SFFIDescriptor class
 	instanceVariableNames: ''!
 
 !classDefinition: #SCompilationError category: 'Powerlang-Core'!
@@ -1707,6 +1717,56 @@ Object subclass: #SBinding
 SBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #SAssociationBinding category: 'Powerlang-Core'!
+SBinding subclass: #SAssociationBinding
+	instanceVariableNames: 'index association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core'!
+SAssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPoolVarBinding category: 'Powerlang-Core'!
+SAssociationBinding subclass: #SPoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core'!
+SPoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core'!
+SPoolVarBinding subclass: #SConstantPoolBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core'!
+SConstantPoolBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
+SBinding subclass: #SLiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
+SLiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
+SBinding subclass: #SLocalBinding
+	instanceVariableNames: 'position environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
+SLocalBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSelfBinding category: 'Powerlang-Core'!
 SBinding subclass: #SSelfBinding
 	instanceVariableNames: ''
@@ -1747,6 +1807,16 @@ Object subclass: #SCompiledBlockBuilder
 SCompiledBlockBuilder class
 	instanceVariableNames: ''!
 
+!classDefinition: #SCompiler category: 'Powerlang-Core'!
+Object subclass: #SCompiler
+	instanceVariableNames: 'errorHandler result class pools namespace'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SCompiler class' category: 'Powerlang-Core'!
+SCompiler class
+	instanceVariableNames: ''!
+
 !classDefinition: #SExpression category: 'Powerlang-Core'!
 Object subclass: #SExpression
 	instanceVariableNames: ''
@@ -1777,6 +1847,16 @@ SExpression subclass: #SLiteralVar
 SLiteralVar class
 	instanceVariableNames: ''!
 
+!classDefinition: #SLiteral category: 'Powerlang-Core'!
+SLiteralVar subclass: #SLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
+SLiteral class
+	instanceVariableNames: ''!
+
 !classDefinition: #SExpressionInterpreter category: 'Powerlang-Core'!
 Object subclass: #SExpressionInterpreter
 	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
@@ -1795,16 +1875,6 @@ Object subclass: #SExpressionNativizer
 	category: 'Powerlang-Core'!
 !classDefinition: 'SExpressionNativizer class' category: 'Powerlang-Core'!
 SExpressionNativizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #SFFIDescriptor category: 'Powerlang-Core'!
-Object subclass: #SFFIDescriptor
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core'!
-SFFIDescriptor class
 	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
@@ -2080,6 +2150,9 @@ StorageReadError class
 
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
 WARNING: x86 specific!
+
+!SFFIDescriptor commentStamp: '<historical>' prior: 0!
+#type : #bytes!
 
 !AssemblerGrammar commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -2746,6 +2819,11 @@ name
 
 	^self printString! !
 
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
+environment 
+
+	^environment! !
+
 !SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
 printOn: aStream 
 
@@ -2755,6 +2833,12 @@ printOn: aStream
 format 
 
 	^ format! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:33:02'!
+compile: aString 
+
+	result := self smalltalkCompiler compileMethod: aString.
+	^result method! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
 printOn: aStream 
@@ -3305,6 +3389,75 @@ isFrameless
 new: anInteger 
 
 	^ (self basicNew: anInteger) initialize! !
+
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 4/8/2021 07:51:25'!
+arguments: aCollection 
+
+	self replaceFrom: 3 to: 3 + aCollection size -1 with: aCollection! !
+
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 4/8/2021 07:51:44'!
+callingConvention: anInteger 
+
+	self at: 1 put: anInteger! !
+
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 4/8/2021 07:51:54'!
+return: anInteger 
+
+	self at: 2 put: anInteger! !
+
+!SFFIDescriptor class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 07:50:38'!
+ret: aString args: aCollection cc: ccName 
+	| args return cc result |
+	args := aCollection
+		collect: [ :argname | 
+			FFITypes
+				at: argname asString
+				ifAbsent: [ self error: 'undefined argument type ' , argname ] ].
+	return := FFITypes
+		at: aString
+		ifAbsent: [ self error: 'undefined result type ' , aString ].
+	cc := FFICallingConventions
+		at: ccName
+		ifAbsent: [ self error: 'unsupported calling convention ' , ccName ].
+	result := self new: args size + 2.
+	^ result
+		callingConvention: cc;
+		return: return;
+		arguments: args! !
+
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 07:49:27'!
+initialize 
+
+	self initializeFFITypes; initializeCallingConventions! !
+
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 07:49:39'!
+initializeCallingConventions 
+
+	FFICallingConventions := Dictionary new.
+	FFICallingConventions
+		at: 'cdecl' put: 20;
+		at: 'com' put: 21;
+		at: 'callback' put: 22! !
+
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 07:49:54'!
+initializeFFITypes 
+
+	FFITypes := Dictionary new.
+	FFITypes
+		at: 'char' put: 1;
+		at: 'uchar' put: 2;
+		at: 'short' put: 3;
+		at: 'ushort' put: 4;
+		at: 'long' put: 5;
+		at: 'ulong' put: 6;
+		at: 'large' put: 7;
+		at: 'ularge' put: 8;
+		at: 'intptr' put: 9;
+		at: 'uintptr' put: 10;
+		at: 'pointer' put: 11;
+		at: 'struct' put: 12;
+		at: 'float' put: 13;
+		at: 'double' put: 14! !
 
 !SCompilationError methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:42:59'!
 beFatal 
@@ -17963,6 +18116,102 @@ isTemporary
 
 	^false! !
 
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
+association 
+
+	^association! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:33'!
+association: anAssociation 
+
+	association := anAssociation! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:51'!
+index 
+	
+	^ index! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:39:02'!
+index: anInteger 
+
+	 index := anInteger ! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:38:04'!
+assign: value within: evaluator 
+
+	^ evaluator associationValueAt: index put: value! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:39:38'!
+valueWithin: evaluator 
+
+	^evaluator associationValueAt: index! !
+
+!SAssociationBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:39:24'!
+isAssociation 
+
+	^true! !
+
+!SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
+value 
+
+	^association value! !
+
+!SPoolVarBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:42:01'!
+isPoolVar 
+
+	^true! !
+
+!SPoolVarBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:41:20'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodePoolVar! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:13'!
+value 
+
+	^association! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:23'!
+valueWithin: evaluator 
+
+	^ evaluator constPoolValueAt: index! !
+
+!SConstantPoolBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:43:43'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeConstantPoolVar! !
+
+!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
+isLiteral 
+
+	^true! !
+
+!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
+index 
+
+	^position! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
+index: anInteger 
+
+	^position := anInteger! !
+
+!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
+isInStack 
+
+	self assert: false.
+	^ environment = 0! !
+
 !SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
 valueWithin: evaluator 
 
@@ -18153,6 +18402,132 @@ scope: aScope
 
 	scope := aScope! !
 
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:35'!
+addPool: aPoolDictionary 
+	| dict |
+	dict := DynamicBinder on: aPoolDictionary.
+	pools add: dict! !
+
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:52'!
+addPool: aDictionary of: type 
+	| dict |
+	dict := DynamicBinder on: aDictionary of: type.
+	pools add: dict! !
+
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:32:34'!
+classBinding: aSpecies 
+	| instance |
+	class := aSpecies.
+	instance := aSpecies instanceSide.
+	(instance respondsTo: #configureCompiler)
+		ifTrue: [instance configureCompiler: self]! !
+
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:03'!
+namespace: aDictionary 
+
+	namespace := aDictionary! !
+
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:51'!
+peekForIdentifier: aStream 
+	| char next |
+	char := aStream peek.
+	(self canBeInIdentifier: char) ifTrue: [
+		aStream skip: 1.
+		^true].
+	char = $. ifFalse: [^false].
+	aStream prev isLetter ifFalse: [
+		aStream skip: 1.
+		^false].
+	next := aStream skip: 2; peek.
+	next isNil ifTrue: [
+		aStream skip: -1.
+		^false].
+	^next isLetter ifFalse: [aStream skip: -1]; yourself! !
+
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:35:04'!
+protect: aBlock 
+
+	^aBlock value! !
+
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:32'!
+forClass: aClass 
+	| c |
+	c := aClass ifNil: [UndefinedObject].
+	self classBinding: c! !
+
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:45'!
+initialize: aDictionary 
+
+	namespace := aDictionary.
+	class := aDictionary at: #UndefinedObject ifAbsent: nil.
+	pools := OrderedCollection new! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:17'!
+newScope 
+
+	^MethodScope new
+		namespace: namespace;
+		species: class;
+		addPoolBinders: pools! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:35'!
+parse: aString 
+
+	result := self smalltalkCompiler parseMethod: aString.
+	^result ast! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:15'!
+smalltalkCompiler 
+
+	^ SSmalltalkCompiler new frontend: self! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:33'!
+smalltalkParser 
+
+	^ self smalltalkCompiler parser! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:43'!
+smalltalkScanner 
+
+	^ self smalltalkCompiler scanner! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:11'!
+anBeInIdentifier: aCharacter 
+
+	^aCharacter isLetter or: [aCharacter isDigit] or: [aCharacter = $_]! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:21'!
+canStartIdentifier: aCharacter 
+
+	^aCharacter isLetter or: [aCharacter = $_]! !
+
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:29:55'!
+forClass: aClass 
+
+	^self new forClass: aClass! !
+
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:19'!
+namespace: aDictionary 
+
+	^self basicNew initialize: aDictionary! !
+
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:36'!
+new 
+
+	^self namespace: Smalltalk globals! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:29:33'!
+compile: aString in: aClass 
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler compile: aString! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:30:52'!
+parse: aString in: aClass 
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler parse: aString! !
+
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
 printOn: aStream indent: anInteger 
 
@@ -18291,6 +18666,40 @@ index
 index: anInteger 
 
 	index := anInteger! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
+value 
+
+	^value! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{LiteralId. ';
+		print: value;
+		nextPutAll: '}'! !
+
+!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
+isLiteral 
+
+	^true! !
+
+!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
+acceptVisitor: visitor 
+
+	^ visitor visitLiteral: self! !
+
+!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeLiteral! !
 
 !SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
 isitReturn: anSReturn 
@@ -23228,6 +23637,7 @@ on: aByteArray
 thru: anInteger 
 
 	^Stretch from: self thru: anInteger! !
+SFFIDescriptor initialize!
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 CharacterConstants initialize!
