@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4561] on 8 April 2021 at 8:21:54 am'!
+'From Cuis 5.0 [latest update: #4561] on 8 April 2021 at 8:56:07 am'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 52!
+!provides: 'Powerlang-Core' 1 53!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -727,6 +727,16 @@ IdentifierBinder subclass: #DynamicBinder
 DynamicBinder class
 	instanceVariableNames: ''!
 
+!classDefinition: #StaticBinder category: 'Powerlang-Core'!
+IdentifierBinder subclass: #StaticBinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StaticBinder class' category: 'Powerlang-Core'!
+StaticBinder class
+	instanceVariableNames: ''!
+
 !classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core'!
 Object subclass: #ImageSegmentBuilder
 	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
@@ -1135,6 +1145,16 @@ SpeciesMirror subclass: #MetaclassMirror
 	category: 'Powerlang-Core'!
 !classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core'!
 MetaclassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackFrameMirror category: 'Powerlang-Core'!
+Mirror subclass: #StackFrameMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'FrameOffsets'
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackFrameMirror class' category: 'Powerlang-Core'!
+StackFrameMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #NativeCodeReference category: 'Powerlang-Core'!
@@ -1687,6 +1707,16 @@ LoadROpcode subclass: #LoadRwithTrue
 LoadRwithTrue class
 	instanceVariableNames: ''!
 
+!classDefinition: #StackOpcode category: 'Powerlang-Core'!
+Opcode subclass: #StackOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackOpcode class' category: 'Powerlang-Core'!
+StackOpcode class
+	instanceVariableNames: ''!
+
 !classDefinition: #OperandEncoding category: 'Powerlang-Core'!
 Object subclass: #OperandEncoding
 	instanceVariableNames: ''
@@ -1767,6 +1797,16 @@ SBinding subclass: #SLocalBinding
 SLocalBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
+SLocalBinding subclass: #STemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
+STemporaryBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #SSelfBinding category: 'Powerlang-Core'!
 SBinding subclass: #SSelfBinding
 	instanceVariableNames: ''
@@ -1775,6 +1815,16 @@ SBinding subclass: #SSelfBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
 SSelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
+SSelfBinding subclass: #SSuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
+SSuperBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #SCompilationResult category: 'Powerlang-Core'!
@@ -1865,6 +1915,16 @@ SExpression subclass: #SMessage
 	category: 'Powerlang-Core'!
 !classDefinition: 'SMessage class' category: 'Powerlang-Core'!
 SMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScript category: 'Powerlang-Core'!
+SExpression subclass: #SScript
+	instanceVariableNames: 'statements compiledCode'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SScript class' category: 'Powerlang-Core'!
+SScript class
 	instanceVariableNames: ''!
 
 !classDefinition: #SExpressionInterpreter category: 'Powerlang-Core'!
@@ -2017,6 +2077,26 @@ SParseNode subclass: #SLiteralNode
 SLiteralNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SStringNode category: 'Powerlang-Core'!
+SLiteralNode subclass: #SStringNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SStringNode class' category: 'Powerlang-Core'!
+SStringNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessageNode category: 'Powerlang-Core'!
+SParseNode subclass: #SMessageNode
+	instanceVariableNames: 'selector receiver arguments inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SMessageNode class' category: 'Powerlang-Core'!
+SMessageNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SScriptNode category: 'Powerlang-Core'!
 SParseNode subclass: #SScriptNode
 	instanceVariableNames: 'statements arguments temporaries children scope'
@@ -2125,6 +2205,16 @@ SmalltalkBootstrapper subclass: #DMRBootstrapper
 	category: 'Powerlang-Core'!
 !classDefinition: 'DMRBootstrapper class' category: 'Powerlang-Core'!
 DMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackFrameCursor category: 'Powerlang-Core'!
+Object subclass: #StackFrameCursor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackFrameCursor class' category: 'Powerlang-Core'!
+StackFrameCursor class
 	instanceVariableNames: ''!
 
 !classDefinition: #Storage category: 'Powerlang-Core'!
@@ -2711,6 +2801,11 @@ subclasses
 		ifTrue: [#()]
 		ifFalse: [instance subclasses collect: [:class | class class]]! !
 
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:48:23'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SFMirror(' , String cr , handle printString , ')'! !
+
 !NativeCodeReference methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:18:27'!
 printOn: aStream 
 
@@ -2844,10 +2939,24 @@ environment
 
 	^environment! !
 
+!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'STemporary ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
+
 !SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
 printOn: aStream 
 
 	aStream nextPutAll: 'SelfId'! !
+
+!SSuperBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:44:28'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SuperId'! !
 
 !SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
 format 
@@ -10378,6 +10487,66 @@ on: aDictionary of: type
 
 	^self new on: aDictionary type: type! !
 
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:50:58'!
+at: aString 
+
+	^contents at: aString ifAbsent: nil! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:12'!
+at: aString ifAbsentPut: aBlock 
+
+	^contents at: aString ifAbsentPut: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:23'!
+at: aString put: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:36'!
+define: aString as: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:09'!
+select: aBlock 
+
+	^contents select: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:17'!
+values 
+
+	^contents values! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:52:21'!
+do: aBlock 
+
+	contents do: aBlock! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:53:31'!
+withIndexDo: aBlock 
+
+	contents withIndexDo: aBlock! !
+
+!StaticBinder methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:52:38'!
+initialize 
+
+	super initialize.
+	contents := OrderedDictionary new! !
+
+!StaticBinder methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:52:56'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPut: $<.
+	contents keys
+		do: [:name | name printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $>! !
+
+!StaticBinder methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:51:57'!
+defines: identifier 
+
+	^contents includesKey: identifier! !
+
 !ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:13:30'!
 classSpecs 
 
@@ -15567,6 +15736,37 @@ structureType
 
 	^#Metaclass! !
 
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:19'!
+argumentAt: index 
+
+	^(handle slotAt: LastArgumentIndex - index + 1) mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:50'!
+currentIp 
+
+	^handle currentIp! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:59'!
+method 
+	| mirror |
+	mirror := (handle slotAt: MethodIndex) mirror asMethodMirror.
+	^mirror isValid ifTrue: mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:36'!
+receiver 
+
+	^(handle slotAt: ReceiverIndex) mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:45'!
+returnAddress 
+
+	^handle slotAt: ReturnAddressIndex! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:54'!
+slotAtTop 
+
+	^handle slotAtTop! !
+
 !NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:28'!
 beAbsolute 
 
@@ -18071,6 +18271,11 @@ decodeUsing: anAstcodeDecoder
 
 	^ self new! !
 
+!StackOpcode class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:50:03'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
 !SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
 decodeUsing: anAstcodeDecoder 
 
@@ -18232,6 +18437,31 @@ isInStack
 	self assert: false.
 	^ environment = 0! !
 
+!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
+assign: value within: evaluator 
+
+	evaluator temporaryAt: position in: environment put: value! !
+
+!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
+valueWithin: evaluator 
+
+	^evaluator temporaryAt: position in: environment! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
+isInCurrentEnvironment 
+
+	^environment = 1! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
+isTemporary 
+
+	^true! !
+
+!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeTemporary! !
+
 !SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
 valueWithin: evaluator 
 
@@ -18246,6 +18476,16 @@ isSelf
 decodeUsing: anAstcodeDecoder 
 
 	^self new! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
+isSelf 
+
+	^false! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
+isSuper 
+
+	^true! !
 
 !SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:43'!
 ast 
@@ -18802,6 +19042,48 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeMessage! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
+argumentCount 
+
+	^compiledCode argumentCount! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:56'!
+compiledCode 
+
+	^compiledCode! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:05'!
+compiledCode: anObject 
+
+	compiledCode := anObject! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:45'!
+statements 
+
+	^statements! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:54'!
+statements: aCollection 
+
+	statements := aCollection! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:33:09'!
+tempCount 
+
+	^compiledCode tempCount! !
+
+!SScript methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:32:22'!
+initialize 
+
+	statements := #()! !
+
+!SScript methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:32:34'!
+printOn: aStream indent: anInteger 
+
+	statements
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '.'; cr]! !
 
 !SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
 isitReturn: anSReturn 
@@ -22682,6 +22964,124 @@ beSymbol
 acceptVisitor: visitor 
 	
 	^visitor visitLiteral: self! !
+
+!SStringNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:34:49'!
+acceptVisitor: visitor 
+
+	^visitor visitString: self! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:18'!
+arguments 
+
+	^arguments! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:33'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:26'!
+receiver 
+
+	^receiver! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:35'!
+receiver: node 
+
+	receiver := node! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:44'!
+selector 
+
+	^selector! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:52'!
+selector: node 
+
+	selector := node! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:30:01'!
+symbol 
+
+	^selector symbol! !
+
+!SMessageNode methodsFor: 'emitting - inlined' stamp: 'KenD 4/8/2021 08:26:19'!
+beInlined 
+
+	inlined := true! !
+
+!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:29:12'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean].
+	selector nodesDo: aBlock includingDeclarations: aBoolean
+! !
+
+!SMessageNode methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:27:34'!
+initialize 
+
+	super initialize.
+	inlined := false! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:41'!
+hasAssign 
+
+	receiver hasAssign ifTrue: [^true].
+	^arguments anySatisfy: [:arg | arg hasAssign]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:54'!
+hasVolatileArguments 
+
+	^arguments anySatisfy: [:arg | 
+		arg isIdentifier
+			ifTrue: [arg binding canBeAssigned]
+			ifFalse: [arg isBlockNode not andNot: [arg isLiteral]]]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:14'!
+hasVolatileReceiver 
+
+	^ compiler hasBlocks
+		  or: [ receiver isMethodTemporary not ]
+		  or: [ arguments anySatisfy: [ :arg | arg hasAssign ] ]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:45'!
+isCascadeMessage 
+
+	^false! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:53'!
+isInlined 
+
+	^inlined! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:02'!
+isMessageNode 
+
+	^true! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:17'!
+needsStrictEvaluationOrder 
+
+	arguments size = 0 ifTrue: [^false].
+	receiver isBlockNode ifTrue: [^false].
+	receiver isLiteral ifTrue: [^false].
+	receiver isSelf ifTrue: [^false].
+	receiver isSuper ifTrue: [^false].
+	receiver isMethodArgument ifTrue: [^false].
+	self hasVolatileReceiver ifFalse: [^false].
+	(receiver isImmediate
+		and: [arguments conform: [:arg | arg isImmediate or: [arg isBlockNode]]])
+		ifTrue: [^false].
+	receiver hasAssign ifTrue: [^true].
+	receiver isMessageNode ifTrue: [ ^true ]. 
+	^self hasVolatileArguments! !
+
+!SMessageNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:25:07'!
+acceptVisitor: visitor 
+
+	^visitor visitMessage: self! !
 
 !SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
 useSelf 
