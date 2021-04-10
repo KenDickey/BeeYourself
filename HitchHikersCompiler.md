@@ -762,13 +762,13 @@ Code generation methods accept just one argument: codeStream, an instance of Cod
 
 labelHere message sent to a CodeStream answers a label marking the current location in the code. The label can later be used to generate a branch jumping back to the current location.
 
-newLabel answers a "future label" representing a yet undefined location for forward references. A forward label can be used like an already defined label can. It makes forward branches possible. When the location the label represents is reached, a message define: is sent to the code stream with the label as the argument:
+newLabel answers a "future label" representing a yet undefined location for forward references. A forward label can be used like an already defined label can. It makes forward branches possible. When the location the label represents is reached, a message ````define: ```` is sent to the code stream with the label as the argument:
 ````Smalltalk
     aCodeStream define: aLabel
 ````
 The code stream defines the label to represent the current location in the code and backpatches the already emitted instructions which used the just defined label. In other words, CodeLabels play the role of an assembler's symbol table. This is a much easier to use mechanism than explicit code size calculation of Squeak.
 
-Here is the implementation of emitValue: method of IfNilNode.
+Here is the implementation of ````emitValue: ```` method of IfNilNode.
 ````Smalltalk
   emitValue: codeStream
     | exit |
