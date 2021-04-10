@@ -620,11 +620,11 @@ Next we write the emitter.  (It is easier to write a sizer afterwards, when we k
 ````
 The first line is simple.  If we choose not to include assertions, we bail out immediately and end up generating no code at all. The condition IncludeAsserts == false makes any object an acceptable a truth value--most importantly nil, the value of an uninitialized variable. This saves the trouble of changing the class initializer.
 
-If we decide to inline the code, we start by emitting the code to compute the condition. We need the condition (the receiver) to produce code for-value. Sending emitForValue:on: to the condition (a block) would be wrong, though--the result would be equivalent to writing
+If we decide to inline the code, we start by emitting the code to compute the condition. We need the condition (the receiver) to produce code for-value. Sending ````emitForValue:on: ```` to the condition (a block) would be wrong, though--the result would be equivalent to writing
 ````Smalltalk
     [...] ifFalse: [...]
 ````
-Instead, we should "unwrap" the block and generate the code for its content. To do that, we send emitForEvaluatedValue:on: to the BlockNode (because "messages" like ifTrue: need to unwrap blocks as well, BlockNode conveniently provides this method).
+Instead, we should "unwrap" the block and generate the code for its content. To do that, we send ````emitForEvaluatedValue:on: ```` to the BlockNode (because "messages" like ifTrue: need to unwrap blocks as well, BlockNode conveniently provides this method).
 
 Next we want to generate code to signal AssertionFailedSignal, preceded by a branch that will take us around that signaling code when the value on top of the stack (the value of the condition) is true. To generate a branch, we need to know the size of the signaling code. We take a mental node to calculate and store that size in the sizes Array in the sizing method, and generate the branch using the supposedly calculated size. The branch kicks in if the value on top of the stack is true (first argument) and jumps "sizes first" bytes ahead, presumably just far enough to get past the exception signaling code.
 
