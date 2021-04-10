@@ -783,7 +783,7 @@ Here is the implementation of ````emitValue: ```` method of IfNilNode.
     alternativeNode emitValue: codeStream.
     codeStream define: exit
 ````
-It is a straightforward implementation of the code generation sketch given above. It uses the exit label to define a forward branch around the alternative code. We do not provide a separate emitEffect:. The default emitEffect: uses emitValue: to emit for-value code and then adds a pop to it. This is good enough.
+It is a straightforward implementation of the code generation sketch given above. It uses the exit label to define a forward branch around the alternative code. We do not provide a separate ````emitEffect:````. The default ````emitEffect:```` uses ````emitValue:```` to emit for-value code and then adds a pop to it. This is good enough.
 
 As a side note, you can find three instructions in VisualWorks with dup in the name: dupFirst, dupNext and dupLast. In terms of "plain" stack operations, however, dupFirst works as "dup", dupNext works as "pop; dup", dupLast, quite surprisingly, works simply as "pop". They are used to encode Smalltalk cascades.  A cascade
 ````Smalltalk
