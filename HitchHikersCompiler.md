@@ -335,7 +335,7 @@ Parsing begins in the parseMethod method. Since, according to the grammar, metho
 
 In short, the parser predicts what to expect further in the input based on the current token and the tokens seen so far. There are limitations to this parsing scheme, but it is easy to understand and implement by hand.
 
-In VisualWorks, methods involved in recursive descent are under expression types-* protocols, and the entry point is the method:context: method. The method responsible for parsing things such as arrays, symbols and strings is constant. To make our modification, we will need to change this method to recognize the #() construct. The method is essentially a long case statement. Closer to the end we can see a number of tests for various things that can begin with a hash mark. (It is interesting to note that in VW 3.x, there is a test for #leftBrace--a qualified name literal, part of namespace support introduced in VW 5i which apparently has been in the works since before 3.x).
+In VisualWorks, methods involved in recursive descent are under expression types-* protocols, and the entry point is the ````method:context:```` method. The method responsible for parsing things such as arrays, symbols and strings is constant. To make our modification, we will need to change this method to recognize the #() construct. The method is essentially a long case statement. Closer to the end we can see a number of tests for various things that can begin with a hash mark. (It is interesting to note that in VW 3.x, there is a test for #leftBrace--a qualified name literal, part of namespace support introduced in VW 5i which apparently has been in the works since before 3.x).
 
 For our purposes, we add a case to recognize a second hash mark, shown in bold below. We can make this change immediately, without breaking the compiler. Even though compileTimeEval method is not yet in the system, the ````compileTimeEval```` message is only sent if we actually parse a #() construct.
 ````Smalltalk
@@ -703,7 +703,7 @@ This is what MacroPrinters are about. They provide a hook to nicely format contr
 ````
 The rest of the implementation are technical issues: class-side accessors in MessageNode to query and change the value of IncludeAsserts flag and find and recompile all methods in the system with #inlinedAssertionMarker. Nothing special there--see the complete implementation.
 
-(Really) Inlined ifNil: (VisualWorks)
+## (Really) Inlined ifNil: (VisualWorks)
 
 We just got our feet wet doing simple code generation. That generating, however, could have been done--and has been done in the VisualWorks version of Assert--at the macroexpander level. All we did was replacing something that looked like
 ````Smalltalk
