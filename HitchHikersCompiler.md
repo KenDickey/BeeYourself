@@ -254,12 +254,12 @@ it creates an instance of String with the proper content and stores the instance
 Any object could be stored in a literal frame, but Smalltalk syntax includes notation only for literal Numbers, Characters, Strings, Symbols ans Arrays. Compile-time evaluation is a mechanism to allow literals of other types. The expression to create a literal object is used in a method in place of the literal, wrapped in #(). The expression is evaluated when the method is compiled--hence the name of the feature--and the result is used as a literal object in place of the #() construct. For example, these two lines would be equivalent:
 ````Smalltalk
     'abc' size
-    (String with: $a with: $b with: $c) size
+    #(String with: $a with: $b with: $c) size
 ````
 Compile-time evaluation can be used to include literal dictionaries in a method:
 ````Smalltalk
     errorStringFor: anInteger
-        ^(Dictionary new
+        ^#(Dictionary new
             at: 1 put: 'File not found';
             at: 2 put: 'Not enough memory';
             yourself)
