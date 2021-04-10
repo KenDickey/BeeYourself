@@ -430,8 +430,9 @@ As a finishing touch, we need to take error handling into account. Evaluating th
                 (Compiler new compile: methodTree in: targetClass class)]
             on: Error
             do: [:ex | self notify: 'evaluation error: ', ex errorString at: exprStart]
-(Almost) Inlined ifNil: (VisualWorks)
 ````
+## (Almost) Inlined ifNil: (VisualWorks)
+
 We just used the compile:in: method of a Compiler to produce a CompiledMethod from a parse tree. Now we will look in detail at what happens at that stage. In VisualWorks, the first thing that happens is macroexpansion.
 
 Macros are not standard part of Smalltalk but VisualWorks does include an internal macro facility of sorts. It is used to replace some of the message sends with other nodes. Typically, the replacement nodes are special nodes like ConditionalNode or LoopNode which generate code in specialized way. For example, a MessageNode representing a send of to:do: message is replaced with another node (ArithmeticLoopNode). The replacement node generates an optimized inlined code for the looping construct to avoid the overhead of creating a block object and sending a message to it at each iteration. This kind of expansion introduces nodes into the parse tree that could not have been introduced otherwise. Another style of using the same facility would be replacing a message send with a group of other nodes, those that could have been written by hand. This is what macros are used for in some other languages.
