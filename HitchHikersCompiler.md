@@ -25,7 +25,7 @@ The expression is passed as either a string or a stream--so the compiler's view 
 
 The first phase, scanning or lexical analysis, eliminates such unnecessary information and lumps individual characters together into larger pieces: lexemes or tokens. After scanning, the example is seen as "a word foo followed by a colon-equal operator, followed by a word self, followed by a word bar".
 
-The compiler now sees a stream of tokens but still no structure behind it. The process of finding the structure is called parsing.   Its result is a tree representing the breakdown of the source into syntactic elements. After parsing the example, the compiler would know that the input is "an assignment with a reference to variable foo on the left hand side and the result of the message bar sent to self on the right hand side".
+The compiler now sees a stream of tokens but still no structure behind it. The process of finding the structure is called parsing.   Its result is a tree representing the breakdown of the source into syntactic elements. After parsing the example, the compiler would know that the input is "an assignment with a reference to variable foo on the left hand side and the result of the message ````bar```` sent to self on the right hand side".
 
 The parse tree is the meaning of the original program. This final phase, code generation, rewrites the meaning as target machine code. We are getting a little ahead of ourselves (we will discuss the bytecode understood by the interpreter a little later), but here is an idea of what our example could translate to:
 
@@ -58,7 +58,7 @@ As an exercise, use this method to scan various code fragments. They do not have
 
 The parser is implemented as class Parser in both VisualWorks and Squeak. It is a hand-coded recursive descent parser (we will see what it means in one of the examples), easy to understand and modify. It uses Scanner to read tokens of the program being compiled, one by one as they are needed. An unusual implementation feature is that Parser is a subclass of Scanner! Whatever the reason for this design decision was, it apparently originates in Smalltalk-80 since VisualWorks and Squeak share it.
 
-The entry point to the parser, at least one shared by VisualWorks and Squeak, is the message parse:class:noPattern:context:notifying:ifFail: understood by instances of Parser. The result of this message, provided no errors were encountered during compilation, is a parse tree. The following example works in both VisualWorks and Squeak
+The entry point to the parser, at least one shared by VisualWorks and Squeak, is the message ````parse:class:noPattern:context:notifying:ifFail:```` understood by instances of Parser. The result of this message, provided no errors were encountered during compilation, is a parse tree. The following example works in both VisualWorks and Squeak
 ````Smalltalk
     Parser new
         parse: (ReadStream on: '(Point new x: 10; y: 16r20) r')
@@ -125,7 +125,7 @@ A program may combine these instructions to perform assignments. foo := self cou
     push self
     pop temp 0
 ````
-To encode message sends, a message selector is stored in the method's literal frame. A message send instruction
+To encode message sends, a message selector is stored in the method's literal frame. A message ````send```` instruction
 ````Smalltlak
     send N
 ````
@@ -233,7 +233,7 @@ The class to change is SimpleMessageNode, the Abstract superclass of MessageNode
 ````
 In this particular case, if we did change the receiver:selector:arguments: method first, we could still change the method back to its original definition, since the original method contained no message sends. We could then define ensurePrivacy and change the receiver:selector:arguments: again. Recovery like that is an exception rather than a rule, though.
 
-The modification is complete and you can try it out.  You may notice one glitch related to error reporting. What is a MessageNode supposed to do if it decides to reject a message send? We use self error: ... which opens a debugger. This is not how compilation errors are usually reported. Most often, the error message is pasted right into the code view.
+The modification is complete and you can try it out.  You may notice one glitch related to error reporting. What is a MessageNode supposed to do if it decides to reject a message send? We use ````self error: ...```` which opens a debugger. This is not how compilation errors are usually reported. Most often, the error message is pasted right into the code view.
 
 This is done by sending messages to a notifier object (remember that notifying: argument passed to the Parser?). In VisualWorks, this object is usually an instance of one of the subclasses of CompilerErrorHandler. The requestor is held on to by a Parser and is available through the Parser's messages under the error handling protocol. The problem is, in VisualWorks a MessageNode does not know the parser when the node is being initialized. This is different from Squeak, where one of the arguments of a MessageNode initialization method is an Encoder object. The Encoder knows how to properly report errors using the original notifier.
 
@@ -337,7 +337,7 @@ In short, the parser predicts what to expect further in the input based on the c
 
 In VisualWorks, methods involved in recursive descent are under expression types-* protocols, and the entry point is the method:context: method. The method responsible for parsing things such as arrays, symbols and strings is constant. To make our modification, we will need to change this method to recognize the #() construct. The method is essentially a long case statement. Closer to the end we can see a number of tests for various things that can begin with a hash mark. (It is interesting to note that in VW 3.x, there is a test for #leftBrace--a qualified name literal, part of namespace support introduced in VW 5i which apparently has been in the works since before 3.x).
 
-For our purposes, we add a case to recognize a second hash mark, shown in bold below. We can make this change immediately, without breaking the compiler. Even though compileTimeEval method is not yet in the system, the compileTimeEval message is only sent if we actually parse a #() construct.
+For our purposes, we add a case to recognize a second hash mark, shown in bold below. We can make this change immediately, without breaking the compiler. Even though compileTimeEval method is not yet in the system, the ````compileTimeEval```` message is only sent if we actually parse a #() construct.
 ````Smalltalk
   Parser>>constant
     ...
@@ -435,7 +435,7 @@ As a finishing touch, we need to take error handling into account. Evaluating th
 
 We just used the compile:in: method of a Compiler to produce a CompiledMethod from a parse tree. Now we will look in detail at what happens at that stage. In VisualWorks, the first thing that happens is macroexpansion.
 
-Macros are not standard part of Smalltalk but VisualWorks does include an internal macro facility of sorts. It is used to replace some of the message sends with other nodes. Typically, the replacement nodes are special nodes like ConditionalNode or LoopNode which generate code in specialized way. For example, a MessageNode representing a send of to:do: message is replaced with another node (ArithmeticLoopNode). The replacement node generates an optimized inlined code for the looping construct to avoid the overhead of creating a block object and sending a message to it at each iteration. This kind of expansion introduces nodes into the parse tree that could not have been introduced otherwise. Another style of using the same facility would be replacing a message send with a group of other nodes, those that could have been written by hand. This is what macros are used for in some other languages.
+Macros are not standard part of Smalltalk but VisualWorks does include an internal macro facility of sorts. It is used to replace some of the message sends with other nodes. Typically, the replacement nodes are special nodes like ConditionalNode or LoopNode which generate code in specialized way. For example, a MessageNode representing a send of ````to:do:```` message is replaced with another node (ArithmeticLoopNode). The replacement node generates an optimized inlined code for the looping construct to avoid the overhead of creating a block object and sending a message to it at each iteration. This kind of expansion introduces nodes into the parse tree that could not have been introduced otherwise. Another style of using the same facility would be replacing a message send with a group of other nodes, those that could have been written by hand. This is what macros are used for in some other languages.
 
 A good example of that application is implementing ifNil:. The obvious implementation are two methods in Object and UndefinedObject:
 ````Smalltalk
@@ -518,11 +518,11 @@ Look at the decompiled code of that method. It should look like:
         nil == t1 ifTrue: [^3 + 4].
         ^t1
 ````
-Change the method so that the receiver of ifNil: is an expression with side effects (a message send). The decompiled code will then be similar to the original source.
+Change the method so that the receiver of ````ifNil:```` is an expression with side effects (a message send). The decompiled code will then be similar to the original source.
 
 ## Assertions (Squeak)
 
-Now let us implement a fancy assertion mechanism. Assertions are trivial to implement as a message assert sent to a block, with the assert method defined either as a real test or as a no-op . We will implement a fancier version, to satisfy the following requirements.
+Now let us implement a fancy assertion mechanism. Assertions are trivial to implement as a message ````assert```` sent to a block, with the assert method defined either as a real test or as a no-op . We will implement a fancier version, to satisfy the following requirements.
 
 The use of assertions should impose zero overhead. When the assertion preference is off, compiled methods should contain no traces of assertion code.
 
@@ -532,7 +532,7 @@ When the assertion setting is changed, all methods containing assertions are aut
 
 Assertion failure signals an AssertionFailedError exception.
 
-A few years ago I implemented a framework similar to the one I just described in VisualWorks 2.0. It used a less reasonable syntax (self assert: [...]), and has to be updated to work with VisualWorks 3.0 and later. It substitutes a special kind of program node, AssertionNode, in place of the original assert: message send. AssertionNode takes care of generating (or not generating) the inlined assertion code.
+A few years ago I implemented a framework similar to the one I just described in VisualWorks 2.0. It used a less reasonable syntax (self assert: [...]), and has to be updated to work with VisualWorks 3.0 and later. It substitutes a special kind of program node, AssertionNode, in place of the original ````assert:```` message send. AssertionNode takes care of generating (or not generating) the inlined assertion code.
 
 We will implement a similar facility in Squeak. Squeak handles special selectors in a way different from VisualWorks, which makes the exercise more interesting.  Instead of the already familiar parse tree transformation we will get a chance to actually play with code generation.
 
@@ -544,9 +544,9 @@ As far as code generation goes, MessageNode is responsible for everything. Unlik
 
 There are three steps of code generation in Squeak: transformation, sizing, and emitting.
 
-At the transformation step--entered through the transform: method--a MessageNode determines if the message send actually needs special treatment and prepares for it. For example, if the message is ifTrue: but the argument is a variable rather than a literal block, the node should generate a regular message send. In such cases, transformation method should return false.  If that happens, special is reset to zero and for the rest of code generation everything works as it would for a regular message send.
+At the transformation step--entered through the transform: method--a MessageNode determines if the message send actually needs special treatment and prepares for it. For example, if the message is ````ifTrue:```` but the argument is a variable rather than a literal block, the node should generate a regular message send. In such cases, transformation method should return false.  If that happens, special is reset to zero and for the rest of code generation everything works as it would for a regular message send.
 
-Suppose a message send does need special treatment.  A transformation method answers true to indicate that.  Before returning, though, it usually prepares and remembers any helper objects to assist it in code generation. For example, transformToDo: message creates AssignmentNodes to generate code that initializes and increments the loop variable. A MessageNode follows an ad-hoc approach to preserve these objects.   Most transformation methods collect all helper objects into an array and stuff that array into the arguments instance variable (replacing or adding to the actual message send arguments). Sizing and emitting methods expect to find them there.
+Suppose a message send does need special treatment.  A transformation method answers true to indicate that.  Before returning, though, it usually prepares and remembers any helper objects to assist it in code generation. For example, ````transformToDo:```` message creates AssignmentNodes to generate code that initializes and increments the loop variable. A MessageNode follows an ad-hoc approach to preserve these objects.   Most transformation methods collect all helper objects into an array and stuff that array into the arguments instance variable (replacing or adding to the actual message send arguments). Sizing and emitting methods expect to find them there.
 
 Sizing is a preparatory step for code generation. At that point, a node determines the size of the bytecode it will generate and any of the control branches. This information is needed to correctly generate forward branches.
 
@@ -566,7 +566,7 @@ There are two sizing methods in ProgramNodes: sizeForEffect: and sizeForValue:. 
 
 In case of a special selector, MacroSizers dispatch table is used to invoke a method to calculate the size.   There is just one sizing method for each special selector, with last argument indicating whether the code is to be for-effect or for-value.
 
-Finally, when it is time to generate code, a message ````emitForEffect:on: ```` or ````emitForValue:on: ````  is sent to a node. The difference is same as above. For example, a plain vanilla message send self foo: 1 would compile for value as
+Finally, when it is time to generate code, a message ````emitForEffect:on:```` or ````emitForValue:on:````  is sent to a node. The difference is same as above. For example, a plain vanilla message send ````self foo:```` 1 would compile for value as
 ````
   pushSelf
   push 1
@@ -608,7 +608,7 @@ The transformation is possible only if the receiver is a literal block. Otherwis
             from: encoder).
     ^true
 ````
-We manufacture and store a MessageNode corresponding to a message send AssertionFailedError signal. We will later use it to generate code. In the already mentioned ad-hoc style, we stuff it in the arguments variable as the only element of the array.  (It would probably be no harm to store the node itself, but it goes too much against the variable name which suggests a collection).
+We manufacture and store a MessageNode corresponding to a message send ````AssertionFailedError signal````. We will later use it to generate code. In the already mentioned ad-hoc style, we stuff it in the arguments variable as the only element of the array.  (It would probably be no harm to store the node itself, but it goes too much against the variable name which suggests a collection).
 
 Next we write the emitter.  (It is easier to write a sizer afterwards, when we know sizes of what parts of the code emitter needs to generate branches).
 ````Smalltalk
@@ -646,7 +646,7 @@ All that is needed is for the node to complain if the forValue argument is true.
 
 At the transformation stage, we do not know yet if the code is to be for-effect or for-value. The best (and the only) place for the test is then the sizing method.
 
-The sizing method is responsible for one more thing. Remember cross-referencing. If we simply emit code like we did above, methods that use assert will not be detected as senders of assert because regardless of whether assertions are inlined or omitted, the assert message is never sent.
+The sizing method is responsible for one more thing. Remember cross-referencing. If we simply emit code like we did above, methods that use assert will not be detected as senders of assert because regardless of whether assertions are inlined or omitted, the ````assert```` message is never sent.
 
 This is very easy to fix: senders are detected by the Symbols they have in their literal frames. If we artificially insert a Symbol #assert in the literal frame of a method, the method will be found as a sender of assert even though it does not really send that message.
 
@@ -666,7 +666,7 @@ Here, finally, is the sizing method:
         + (self sizeBranchOn: true dist: sizes first)
         + sizes first
 ````
-The encoder is responsible for keeping track of literals, so we use it to add literals to the method. litIndex: message answers the index of the object in the literal frame. We are not interested in it because we put the symbols there only as markers. There is nothing unexpected about the size calculation itself. The method returns the grand total size of code we generate, including the condition, the signaler, and the branch instruction between them (we send a special message to compute the size of the branch because the size of a branch can depend on branch condition and the distance to the target).
+The encoder is responsible for keeping track of literals, so we use it to add literals to the method. ````litIndex:```` message answers the index of the object in the literal frame. We are not interested in it because we put the symbols there only as markers. There is nothing unexpected about the size calculation itself. The method returns the grand total size of code we generate, including the condition, the signaler, and the branch instruction between them (we send a special message to compute the size of the branch because the size of a branch can depend on branch condition and the distance to the target).
 
 We are almost done. If we now change MessageNode class>>initialize method to put #assert at the end of MacroSelectors, and selectors of methods we've just listed at the end of their respective dispatch tables, the special handling for assert should kick in. Of course, we also need to provide the AssertionFailedError class.
 
@@ -691,7 +691,7 @@ Search for senders of assert--the method will be there. Victory? Almost. Try wri
 
 The Decompiler scans bytecodes of a CompiledMethod looking for specific patterns and reconstructs a parse tree that could have been used to produce that bytecode. It is not necessarily identical to the one that was actually used, but it has same meaning. The parse tree is then asked to print itself, producing readable decompiled Smalltalk source code.
 
-This is what MacroPrinters are about. They provide a hook to nicely format control structures. Interestingly, we don't really need one for inlined assertions themselves. When assertions are inlined, the decompiled parse tree does not have a node for an assert message send at all.  It is when assert is a real message send, the decompiled tree contains a MessageNode for it.  A MacroPrinter for assert is called and our half-baked version breaks because we have not provided one. So let's do it.  The printer in our case should simply print the message send without any special formatting.  The receiver has already been printed by the time the printer is called.
+This is what MacroPrinters are about. They provide a hook to nicely format control structures. Interestingly, we don't really need one for inlined assertions themselves. When assertions are inlined, the decompiled parse tree does not have a node for an ````assert```` message send at all.  It is when ````assert```` is a real message send, the decompiled tree contains a MessageNode for it.  A MacroPrinter for assert is called and our half-baked version breaks because we have not provided one. So let's do it.  The printer in our case should simply print the message send without any special formatting.  The receiver has already been printed by the time the printer is called.
 ````Smalltalk
   printAssertOn: aStream indent: level
 
@@ -760,9 +760,9 @@ Code generation in VisualWorks is similar to one in Squeak--the code is generate
 
 Code generation methods accept just one argument: codeStream, an instance of CodeStream.  A code stream is a "smart" code generator. It holds a bytecode stream and knows the encoding of various VM instructions. It keeps track of the method stack usage (so there is no need for a separate stack object as there is in Squeak).  It also keeps track of locations within the code to help generate branches. It uses a special object called CodeLabel to keep track of logical locations in code. Targets of branch instructions are specified through labels rather than using explicit offsets. Labels are created by the CodeStream.
 
-labelHere message sent to a CodeStream answers a label marking the current location in the code. The label can later be used to generate a branch jumping back to the current location.
+````labelHere```` message sent to a CodeStream answers a label marking the current location in the code. The label can later be used to generate a branch jumping back to the current location.
 
-newLabel answers a "future label" representing a yet undefined location for forward references. A forward label can be used like an already defined label can. It makes forward branches possible. When the location the label represents is reached, a message ````define: ```` is sent to the code stream with the label as the argument:
+````newLabel```` answers a "future label" representing a yet undefined location for forward references. A forward label can be used like an already defined label can. It makes forward branches possible. When the location the label represents is reached, a message ````define:```` is sent to the code stream with the label as the argument:
 ````Smalltalk
     aCodeStream define: aLabel
 ````
