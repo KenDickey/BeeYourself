@@ -539,7 +539,7 @@ First, let us have a look how MessageNode works in Squeak.  Instead of the famil
 
 The Squeak approach is similar but different. MacroSelectors is an array which holds selectors of messages that may require special handling. During initialization, a MessageNode looks up its selector in that array. If it finds the selector, it remembers its index as a value of instance variable special. Otherwise, the value of special is set to zero to indicate that no special handling is required.
 
-As far as code generation goes, MessageNode is responsible for everything. Unlike one in VisualWorks, it does not build expansion nodes to delegate special code generation to them.  Code generation is controlled by the value of special instance variable. If it is zero, a regular message send is produced. If it is not, the value of special is used as an index into one of the four other Macro* arrays to find the selector of a method responsible for a particular code generation step. For example, #ifFalse: is a special selector. It is found at index 2 in MacroSelectors. The method of MessageNode responsible for preparing the node for code generation is transformIfFalse:, found at index 2 in MacroTransformers. The method responsible for producing bytecode is emitIf:on:value:, found at index 2 in MacroEmitters.
+As far as code generation goes, MessageNode is responsible for everything. Unlike one in VisualWorks, it does not build expansion nodes to delegate special code generation to them.  Code generation is controlled by the value of special instance variable. If it is zero, a regular message send is produced. If it is not, the value of special is used as an index into one of the four other Macro* arrays to find the selector of a method responsible for a particular code generation step. For example, #ifFalse: is a special selector. It is found at index 2 in MacroSelectors. The method of MessageNode responsible for preparing the node for code generation is transformIfFalse:, found at index 2 in MacroTransformers. The method responsible for producing bytecode is ````Smalltalk emitIf:on:value: ````, found at index 2 in MacroEmitters.
 
 There are three steps of code generation in Squeak: transformation, sizing, and emitting.
 
@@ -565,7 +565,7 @@ There are two sizing methods in ProgramNodes: sizeForEffect: and sizeForValue:. 
 
 In case of a special selector, MacroSizers dispatch table is used to invoke a method to calculate the size.   There is just one sizing method for each special selector, with last argument indicating whether the code is to be for-effect or for-value.
 
-Finally, when it is time to generate code, a message emitForEffect:on: or emitForValue:on: is sent to a node. The difference is same as above. For example, a plain vanilla message send self foo: 1 would compile for value as
+Finally, when it is time to generate code, a message ````Smalltalk emitForEffect:on: ```` or ````Smalltalk emitForValue:on: ````  is sent to a node. The difference is same as above. For example, a plain vanilla message send self foo: 1 would compile for value as
 ````
   pushSelf
   push 1
