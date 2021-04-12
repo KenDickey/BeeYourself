@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4561] on 12 April 2021 at 10:49:34 am'!
+'From Cuis 5.0 [latest update: #4561] on 12 April 2021 at 4:24:03 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 60!
+!provides: 'Powerlang-Core' 1 63!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -17,6 +17,7 @@ SystemOrganization addCategory: 'Powerlang-Core-Nativization'!
 SystemOrganization addCategory: 'Powerlang-Core-Metaphysics'!
 SystemOrganization addCategory: 'Powerlang-Core-Building'!
 SystemOrganization addCategory: 'Powerlang-Core-Assembler-Tools'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 
 
 !classDefinition: #CharacterConstants category: 'Powerlang-Core'!
@@ -199,14 +200,34 @@ SharedPool subclass: #SCompiledBlockFlags
 SCompiledBlockFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethod category: 'Powerlang-Core'!
+!classDefinition: #SCompiledMethod category: 'Powerlang-Core-SCompiler'!
 Array variableSubclass: #SCompiledMethod
 	instanceVariableNames: 'format nativeCode astcodes class selector source'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
-	category: 'Powerlang-Core'!
-!classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core'!
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core-SCompiler'!
 SCompiledMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCallbackMethod category: 'Powerlang-Core-SCompiler'!
+SCompiledMethod variableSubclass: #SCallbackMethod
+	instanceVariableNames: 'receiver descriptor'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledMethodFlags'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCallbackMethod class' category: 'Powerlang-Core-SCompiler'!
+SCallbackMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCalloutMethod category: 'Powerlang-Core-SCompiler'!
+SCompiledMethod variableSubclass: #SCalloutMethod
+	instanceVariableNames: 'descriptor symbol address'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCalloutMethod class' category: 'Powerlang-Core-SCompiler'!
+SCalloutMethod class
 	instanceVariableNames: ''!
 
 !classDefinition: #NativeCode category: 'Powerlang-Core-Nativization'!
@@ -359,126 +380,6 @@ Object subclass: #OptimizingNativizer
 OptimizingNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBinding category: 'Powerlang-Core'!
-Object subclass: #SBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SBinding class' category: 'Powerlang-Core'!
-SBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssociationBinding category: 'Powerlang-Core'!
-SBinding subclass: #SAssociationBinding
-	instanceVariableNames: 'index association'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core'!
-SAssociationBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SGlobalBinding category: 'Powerlang-Core'!
-SAssociationBinding subclass: #SGlobalBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core'!
-SGlobalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SPoolVarBinding category: 'Powerlang-Core'!
-SAssociationBinding subclass: #SPoolVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core'!
-SPoolVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core'!
-SPoolVarBinding subclass: #SConstantPoolBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core'!
-SConstantPoolBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLiteralBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
-SLiteralBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SFalseBinding category: 'Powerlang-Core'!
-SLiteralBinding subclass: #SFalseBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core'!
-SFalseBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STrueBinding category: 'Powerlang-Core'!
-SLiteralBinding subclass: #STrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
-STrueBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLocalBinding
-	instanceVariableNames: 'position environment'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
-SLocalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
-SLocalBinding subclass: #STemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
-STemporaryBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
-SBinding subclass: #SSelfBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
-SSelfBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
-SSelfBinding subclass: #SSuperBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
-SSuperBinding class
-	instanceVariableNames: ''!
-
 !classDefinition: #SCompilationResult category: 'Powerlang-Core'!
 Object subclass: #SCompilationResult
 	instanceVariableNames: 'compiler error ast method'
@@ -517,66 +418,6 @@ Object subclass: #SCompiler
 	category: 'Powerlang-Core'!
 !classDefinition: 'SCompiler class' category: 'Powerlang-Core'!
 SCompiler class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpression category: 'Powerlang-Core'!
-Object subclass: #SExpression
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SExpression class' category: 'Powerlang-Core'!
-SExpression class
-	instanceVariableNames: ''!
-
-!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
-SExpression subclass: #SIdenitifier
-	instanceVariableNames: 'binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
-SIdenitifier class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
-SExpression subclass: #SLiteralVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
-SLiteralVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteral category: 'Powerlang-Core'!
-SLiteralVar subclass: #SLiteral
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
-SLiteral class
-	instanceVariableNames: ''!
-
-!classDefinition: #SMessage category: 'Powerlang-Core'!
-SExpression subclass: #SMessage
-	instanceVariableNames: 'selector receiver arguments opcodes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SMessage class' category: 'Powerlang-Core'!
-SMessage class
-	instanceVariableNames: ''!
-
-!classDefinition: #SScript category: 'Powerlang-Core'!
-SExpression subclass: #SScript
-	instanceVariableNames: 'statements compiledCode'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SScript class' category: 'Powerlang-Core'!
-SScript class
 	instanceVariableNames: ''!
 
 !classDefinition: #SExpressionInterpreter category: 'Powerlang-Core'!
@@ -689,13 +530,43 @@ SToken subclass: #SEndToken
 SEndToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseNode category: 'Powerlang-Core'!
-SToken subclass: #SParseNode
+!classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
+SToken subclass: #SSymbolicToken
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSymbolicToken class' category: 'Powerlang-Core'!
+SSymbolicToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SDelimiterToken category: 'Powerlang-Core'!
+SSymbolicToken subclass: #SDelimiterToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SParseNode class' category: 'Powerlang-Core'!
+!classDefinition: 'SDelimiterToken class' category: 'Powerlang-Core'!
+SDelimiterToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SStringToken category: 'Powerlang-Core'!
+SSymbolicToken subclass: #SStringToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SStringToken class' category: 'Powerlang-Core'!
+SStringToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SParseNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SParseNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SParseNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode class
 	instanceVariableNames: ''!
 
@@ -739,26 +610,6 @@ SLiteralNode subclass: #SStringNode
 SStringNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessageNode category: 'Powerlang-Core'!
-SParseNode subclass: #SMessageNode
-	instanceVariableNames: 'selector receiver arguments inlined'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SMessageNode class' category: 'Powerlang-Core'!
-SMessageNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SScriptNode category: 'Powerlang-Core'!
-SParseNode subclass: #SScriptNode
-	instanceVariableNames: 'statements arguments temporaries children scope'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SScriptNode class' category: 'Powerlang-Core'!
-SScriptNode class
-	instanceVariableNames: ''!
-
 !classDefinition: #SSelectorNode category: 'Powerlang-Core'!
 SParseNode subclass: #SSelectorNode
 	instanceVariableNames: 'symbol keywords'
@@ -769,34 +620,74 @@ SParseNode subclass: #SSelectorNode
 SSelectorNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
-SToken subclass: #SSymbolicToken
-	instanceVariableNames: 'value'
-	classVariableNames: ''
+!classDefinition: #SAssignmentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SAssignmentNode
+	instanceVariableNames: 'assignees expression operators'
+	classVariableNames: 'Token'
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSymbolicToken class' category: 'Powerlang-Core'!
-SSymbolicToken class
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SAssignmentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SAssignmentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SDelimiterToken category: 'Powerlang-Core'!
-SSymbolicToken subclass: #SDelimiterToken
-	instanceVariableNames: ''
+!classDefinition: #SBraceNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SBraceNode
+	instanceVariableNames: 'elements message'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SDelimiterToken class' category: 'Powerlang-Core'!
-SDelimiterToken class
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBraceNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SBraceNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringToken category: 'Powerlang-Core'!
-SSymbolicToken subclass: #SStringToken
-	instanceVariableNames: ''
+!classDefinition: #SCascadeNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SCascadeNode
+	instanceVariableNames: 'receiver messages optimized'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SStringToken class' category: 'Powerlang-Core'!
-SStringToken class
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SCascadeNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SMessageNode
+	instanceVariableNames: 'selector receiver arguments inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SMessageNode subclass: #SCascadeMessageNode
+	instanceVariableNames: 'cascade'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SCascadeMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScriptNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SScriptNode
+	instanceVariableNames: 'statements arguments temporaries children scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SScriptNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SScriptNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBlockNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SScriptNode subclass: #SBlockNode
+	instanceVariableNames: 'inlined index parent'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBlockNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SBlockNode class
 	instanceVariableNames: ''!
 
 !classDefinition: #ScriptScope category: 'Powerlang-Core'!
@@ -1589,6 +1480,256 @@ Object subclass: #BinaryMessageOptimizer
 BinaryMessageOptimizer class
 	instanceVariableNames: ''!
 
+!classDefinition: #SBinding category: 'Powerlang-Core-SExpressions'!
+Object subclass: #SBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBinding class' category: 'Powerlang-Core-SExpressions'!
+SBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
+SBinding subclass: #SLiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
+SLiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFalseBinding category: 'Powerlang-Core'!
+SLiteralBinding subclass: #SFalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core'!
+SFalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STrueBinding category: 'Powerlang-Core'!
+SLiteralBinding subclass: #STrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
+STrueBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
+SBinding subclass: #SLocalBinding
+	instanceVariableNames: 'position environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
+SLocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
+SLocalBinding subclass: #STemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
+STemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SArgumentBinding category: 'Powerlang-Core-SExpressions'!
+SLocalBinding subclass: #SArgumentBinding
+	instanceVariableNames: 'inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SArgumentBinding class' category: 'Powerlang-Core-SExpressions'!
+SArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
+SBinding subclass: #SSelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
+SSelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
+SSelfBinding subclass: #SSuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
+SSuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssociationBinding category: 'Powerlang-Core-SExpressions'!
+SBinding subclass: #SAssociationBinding
+	instanceVariableNames: 'index association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core-SExpressions'!
+SAssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPoolVarBinding category: 'Powerlang-Core'!
+SAssociationBinding subclass: #SPoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core'!
+SPoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core'!
+SPoolVarBinding subclass: #SConstantPoolBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core'!
+SConstantPoolBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClassVarBinding category: 'Powerlang-Core-SExpressions'!
+SAssociationBinding subclass: #SClassVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassVarBinding class' category: 'Powerlang-Core-SExpressions'!
+SClassVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SGlobalBinding category: 'Powerlang-Core-SExpressions'!
+SAssociationBinding subclass: #SGlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core-SExpressions'!
+SGlobalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClassBinding category: 'Powerlang-Core-SExpressions'!
+SGlobalBinding subclass: #SClassBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassBinding class' category: 'Powerlang-Core-SExpressions'!
+SClassBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpression category: 'Powerlang-Core-SExpressions'!
+Object subclass: #SExpression
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpression class' category: 'Powerlang-Core-SExpressions'!
+SExpression class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
+SExpression subclass: #SIdenitifier
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
+SIdenitifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
+SExpression subclass: #SLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
+SLiteralVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteral category: 'Powerlang-Core'!
+SLiteralVar subclass: #SLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
+SLiteral class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessage category: 'Powerlang-Core'!
+SExpression subclass: #SMessage
+	instanceVariableNames: 'selector receiver arguments opcodes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SMessage class' category: 'Powerlang-Core'!
+SMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssignment category: 'Powerlang-Core-SExpressions'!
+SExpression subclass: #SAssignment
+	instanceVariableNames: 'assignees expression'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssignment class' category: 'Powerlang-Core-SExpressions'!
+SAssignment class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascade category: 'Powerlang-Core-SExpressions'!
+SExpression subclass: #SCascade
+	instanceVariableNames: 'receiver messages'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascade class' category: 'Powerlang-Core-SExpressions'!
+SCascade class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeMessage category: 'Powerlang-Core-SExpressions'!
+SExpression subclass: #SCascadeMessage
+	instanceVariableNames: 'selector arguments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascadeMessage class' category: 'Powerlang-Core-SExpressions'!
+SCascadeMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScript category: 'Powerlang-Core-SExpressions'!
+SExpression subclass: #SScript
+	instanceVariableNames: 'statements compiledCode'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SScript class' category: 'Powerlang-Core-SExpressions'!
+SScript class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBlock category: 'Powerlang-Core-SExpressions'!
+SScript subclass: #SBlock
+	instanceVariableNames: 'index capturedVariables inlinedArgs'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBlock class' category: 'Powerlang-Core-SExpressions'!
+SBlock class
+	instanceVariableNames: ''!
+
 !classDefinition: #BinaryMessageNativizer category: 'Powerlang-Core-Nativization'!
 Object subclass: #BinaryMessageNativizer
 	instanceVariableNames: 'message assembler nativizer done failed'
@@ -2269,6 +2410,16 @@ Object subclass: #ObjectShape
 ObjectShape class
 	instanceVariableNames: ''!
 
+!classDefinition: #Runtime category: 'Powerlang-Core-Metaphysics'!
+Object subclass: #Runtime
+	instanceVariableNames: 'lookup storage objectFormat bridge sources shapeMap objectModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Runtime class' category: 'Powerlang-Core-Metaphysics'!
+Runtime class
+	instanceVariableNames: ''!
+
 !classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core-Building'!
 Object subclass: #ImageSegmentBuilder
 	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
@@ -2463,6 +2614,9 @@ Subject class
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
 WARNING: x86 specific!
 
+!SCalloutMethod commentStamp: '<historical>' prior: 0!
+#type : #variable,!
+
 !SFFIDescriptor commentStamp: '<historical>' prior: 0!
 #type : #bytes!
 
@@ -2502,10 +2656,6 @@ Copyright (c) 2020 Aucerna.
 !OJumpConditional commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
-
-!SExpression commentStamp: '<historical>' prior: 0!
-I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
-!
 
 !Storage commentStamp: '<historical>' prior: 0!
 ?? Subclass Error ??!
@@ -2589,6 +2739,10 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
 Nota Bene: x86 specific!
+
+!SExpression commentStamp: '<historical>' prior: 0!
+I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
+!
 
 !Bridge commentStamp: '<historical>' prior: 0!
 I am the one in charge of 'discovering' well known objects in
@@ -2684,45 +2838,6 @@ printOn: aStream
 		nextPutAll: self basicPrintString
 "	next printForwardOn: aStream cr"! !
 
-!SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
-name 
-
-	^self printString! !
-
-!SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FalseId'! !
-
-!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
-printOn: aStream 
-
-	aStream nextPutAll: 'TrueId'! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
-environment 
-
-	^environment! !
-
-!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: 'STemporary ';
-		print: position;
-		nextPutAll: ' @ env ';
-		print: environment! !
-
-!SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SelfId'! !
-
-!SSuperBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:44:28'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SuperId'! !
-
 !SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
 format 
 
@@ -2733,21 +2848,6 @@ compile: aString
 
 	result := self smalltalkCompiler compileMethod: aString.
 	^result method! !
-
-!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
-printOn: aStream 
-
-	self printOn: aStream indent: 0! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:16'!
-isVariable 
-
-	^true! !
-
-!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:17:50'!
-binding 
-
-	^binding! !
 
 !SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 2/27/2021 16:04:01'!
 printOn: aStream 
@@ -3111,6 +3211,69 @@ printOn: aStream
 		nextPutAll:
 			'a CMMirror ('
 			; nextPutAll: signature; nextPut: $)! !
+
+!SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
+name 
+
+	^self printString! !
+
+!SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FalseId'! !
+
+!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
+printOn: aStream 
+
+	aStream nextPutAll: 'TrueId'! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
+environment 
+
+	^environment! !
+
+!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'STemporary ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
+
+!SArgumentBinding methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:15:56'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'SArgument ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
+
+!SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SelfId'! !
+
+!SSuperBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:44:28'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SuperId'! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:16'!
+isVariable 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:17:50'!
+binding 
+
+	^binding! !
 
 !MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
 printOn: aStream 
@@ -3790,6 +3953,40 @@ isFrameless
 new: anInteger 
 
 	^ (self basicNew: anInteger) initialize! !
+
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:49:45'!
+descriptor 
+
+	^descriptor! !
+
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:49:54'!
+descriptor: anFFIDescriptor 
+
+	descriptor := anFFIDescriptor ! !
+
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:50:22'!
+pragma: anSPragmaNode 
+
+	descriptor := anSPragmaNode info! !
+
+!SCallbackMethod methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:50:12'!
+isCallback 
+
+	^true! !
+
+!SCallbackMethod class methodsFor: 'nativization' stamp: 'KenD 4/12/2021 14:49:26'!
+behaviorNativeCodeSlot 
+	"callback methods have a special machine code. Its bytes are of
+	class ByteArray, but the behavior of this ByteArray is special:
+	it has an extra slot that allows to find the native code object
+	corresponding to this callback"
+	^4! !
+
+!SCalloutMethod methodsFor: 'constants' stamp: 'KenD 4/12/2021 14:52:41'!
+pragma: anSPragmaNode 
+
+	descriptor := anSPragmaNode info.
+	symbol := anSPragmaNode name! !
 
 !NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:16'!
 code 
@@ -5146,242 +5343,6 @@ variable: operation target: explicitTarget implicitTarget: implicitTarget
 		target: explicitTarget;
 		implicitTarget: implicitTarget! !
 
-!SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
-decodeUsing: anAstcodeDecoder 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:18:28'!
-assign: value within: evaluator 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:20:38'!
-valueWithin: evaluator 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:48'!
-isArgument 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:56'!
-isAssociation 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:03'!
-isClassBinding 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:09'!
-isClassVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:18'!
-isInstVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:26'!
-isLiteral 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:34'!
-isPoolVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:40'!
-isSelf 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:48'!
-isSuper 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:56'!
-isTemporary 
-
-	^false! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
-association 
-
-	^association! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:33'!
-association: anAssociation 
-
-	association := anAssociation! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:51'!
-index 
-	
-	^ index! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:39:02'!
-index: anInteger 
-
-	 index := anInteger ! !
-
-!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:38:04'!
-assign: value within: evaluator 
-
-	^ evaluator associationValueAt: index put: value! !
-
-!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:39:38'!
-valueWithin: evaluator 
-
-	^evaluator associationValueAt: index! !
-
-!SAssociationBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:39:24'!
-isAssociation 
-
-	^true! !
-
-!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
-decodeUsing: anAstcodeDecoder 
-
-	^ anAstcodeDecoder decodeGlobalBinding! !
-
-!SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
-value 
-
-	^association value! !
-
-!SPoolVarBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:42:01'!
-isPoolVar 
-
-	^true! !
-
-!SPoolVarBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:41:20'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodePoolVar! !
-
-!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:13'!
-value 
-
-	^association! !
-
-!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:23'!
-valueWithin: evaluator 
-
-	^ evaluator constPoolValueAt: index! !
-
-!SConstantPoolBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:43:43'!
-decodeUsing: anAstcodeDecoder 
-
-	^ anAstcodeDecoder decodeConstantPoolVar! !
-
-!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
-isLiteral 
-
-	^true! !
-
-!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
-value 
-	
-	^false! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
-valueWithin: evaluator 
-
-	^evaluator falseLiteral! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
-value 
-
-	^true! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
-valueWithin: evaluator 
-
-	^evaluator trueLiteral! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
-environment: anInteger 
-
-	environment := anInteger! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
-index 
-
-	^position! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
-index: anInteger 
-
-	^position := anInteger! !
-
-!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
-isInStack 
-
-	self assert: false.
-	^ environment = 0! !
-
-!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
-assign: value within: evaluator 
-
-	evaluator temporaryAt: position in: environment put: value! !
-
-!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
-valueWithin: evaluator 
-
-	^evaluator temporaryAt: position in: environment! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
-isInCurrentEnvironment 
-
-	^environment = 1! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
-isTemporary 
-
-	^true! !
-
-!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeTemporary! !
-
-!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
-valueWithin: evaluator 
-
-	^evaluator receiver! !
-
-!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
-isSelf 
-
-	^true! !
-
-!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
-isSelf 
-
-	^false! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
-isSuper 
-
-	^true! !
-
 !SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:43'!
 ast 
 
@@ -5682,303 +5643,6 @@ parse: aString in: aClass
 	| compiler |
 	compiler := self forClass: aClass.
 	^compiler parse: aString! !
-
-!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
-printOn: aStream indent: anInteger 
-
-	super printOn: aStream! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:04:54'!
-isAssignment 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:01'!
-isCascade 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:10'!
-isCascadeMessage 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:16'!
-isIdentifier 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:23'!
-isInstVar 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:32'!
-isLiteral 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:39'!
-isMessage 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:48'!
-isMethod 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:55'!
-isReturn 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:06:02'!
-isSuper 
-
-	^false! !
-
-!SExpression methodsFor: 'visiting' stamp: 'KenD 2/22/2021 13:04:25'!
-acceptVisitor: visitor 
-
-	^self subclassResponsibility! !
-
-!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
-acceptVisitor: visitor 
-
-	^visitor visitIdentifier: self! !
-
-!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{IdentifierId. ';
-		print: binding;
-		nextPutAll: '}'! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
-isArgument 
-
-	^binding isArgument! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
-isAssociation 
-
-	^binding isAssociation! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
-isIdentifier 
-
-	^true! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
-isInstVar 
-
-	^binding isInstVar! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
-isLiteral 
-
-	^binding isLiteral! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
-isSelf 
-	
-	^binding isSelf! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
-isSelfOrSuper 
-
-	^binding isSelf or: [binding isSuper]! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
-isSuper 
-
-	^binding isSuper! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
-isTemporary 
-
-	^binding isTemporary! !
-
-!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
-binding: aBinding 
-
-	binding := aBinding! !
-
-!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeIdentifier! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
-index 
-
-	^index! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
-index: anInteger 
-
-	index := anInteger! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
-value 
-
-	^value! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
-value: anObject 
-
-	value := anObject! !
-
-!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{LiteralId. ';
-		print: value;
-		nextPutAll: '}'! !
-
-!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
-isLiteral 
-
-	^true! !
-
-!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
-acceptVisitor: visitor 
-
-	^ visitor visitLiteral: self! !
-
-!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeLiteral! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
-arguments 
-
-	^arguments! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
-opcodes 
-
-	^opcodes! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
-opcodes: aCollection 
-
-	opcodes := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
-receiver 
-
-	^receiver! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
-receiver: anSExpression 
-
-	receiver := anSExpression! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
-selector 
-
-	^selector! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
-selector: aSelector 
-
-	selector := aSelector! !
-
-!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
-initialize 
-
-	super initialize.
-	arguments := #()! !
-
-!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
-	receiver printOn: aStream indent: anInteger + 1.
-	aStream nextPutAll: '.'; cr.
-	arguments
-		do: [:statement | statement printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '. '; cr].
-	aStream nextPutAll: '}'! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
-isInlined 
-
-	^opcodes = #inlined! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
-isMessage 
-
-	^true! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
-isOptimized 
-
-	^opcodes notNil! !
-
-!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
-acceptVisitor: visitor 
-
-	^visitor visitMessage: self! !
-
-!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeMessage! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
-argumentCount 
-
-	^compiledCode argumentCount! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:56'!
-compiledCode 
-
-	^compiledCode! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:05'!
-compiledCode: anObject 
-
-	compiledCode := anObject! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:45'!
-statements 
-
-	^statements! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:54'!
-statements: aCollection 
-
-	statements := aCollection! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:33:09'!
-tempCount 
-
-	^compiledCode tempCount! !
-
-!SScript methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:32:22'!
-initialize 
-
-	statements := #()! !
-
-!SScript methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:32:34'!
-printOn: aStream indent: anInteger 
-
-	statements
-		do: [:statement | statement printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '.'; cr]! !
 
 !SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
 isitReturn: anSReturn 
@@ -9568,6 +9232,94 @@ prevPosition
 isEnd
 	^true! !
 
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
+value 
+
+	^value! !
+
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:25'!
+value: anObject 
+
+	value := anObject! !
+
+!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:12:43'!
+is: anObject 
+
+	^value == anObject! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:07'!
+endsExpression 
+
+	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:17'!
+isAssignment 
+
+	^self is: #':='! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:30'!
+isDelimiter 
+
+	^true! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:07:46'!
+beCharacter 
+
+	value := value isCharacter ifTrue: [value] ifFalse: [value first]! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:08:46'!
+value: aString 
+
+	super value: aString asSymbol! !
+
+!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:07:09'!
+asSelectorNode 
+
+	^compiler selectorNode symbol: value asString; stretch: stretch! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:39'!
+hasSymbol 
+
+	^value isSymbol! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:52'!
+isBinary 
+
+	^value isSymbol! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:04'!
+isDelimitedIdentifier 
+
+	^value first = ${! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:18'!
+isKeyword 
+
+	^value last = $:! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:32'!
+isNameToken 
+
+	^(self isKeyword or: [self isBinary]) not! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:43'!
+isStringToken 
+
+	^true! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:03'!
+asIdentifierNode 
+
+	^compiler identifierNode
+		name: value;
+		stretch: stretch;
+		comments: comments! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:21'!
+asSelectorNode 
+
+	^compiler selectorNode symbol: value; stretch: stretch! !
+
 !SParseNode methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:52:09'!
 moveCommentsFrom: aParseNode 
 
@@ -9865,6 +9617,226 @@ acceptVisitor: visitor
 
 	^visitor visitString: self! !
 
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:10'!
+hasSymbol 
+
+	^symbol isSymbol! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:26'!
+isBinary 
+
+	^symbol isBinary! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:43'!
+isSelector
+
+	^true! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:15:26'!
+value 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:24'!
+addKeyword: aSelectorNode 
+
+	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
+	keywords add: aSelectorNode! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:52'!
+end 
+
+	stretch end ifNotNil: [:e | ^e].
+	^keywords notNil ifTrue: [keywords last end]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:23'!
+keywords 
+
+	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:17'!
+positions 
+
+	^self keywords collect: [:node | node position]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:36'!
+symbol 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:47'!
+symbol: aString 
+
+	symbol := aString asSymbol! !
+
+!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 2/24/2021 13:12:01'!
+acceptVisitor: visitor 
+
+	^visitor visitSelector: self! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:19'!
+assignees 
+
+	^assignees! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:29'!
+expression 
+
+	^expression! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:31:51'!
+operators 
+
+	^operators! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:43'!
+assign: anIdentifierNode operator: aDelimiterToken 
+
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:55'!
+assign: anIdentifierNode with: aParseNode operator: aDelimiterToken 
+
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken.
+	expression := aParseNode! !
+
+!SAssignmentNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:31:37'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	assignees do: [:v | v nodesDo: aBlock includingDeclarations: aBoolean].
+	expression nodesDo: aBlock includingDeclarations: aBoolean! !
+
+!SAssignmentNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:31:02'!
+initialize 
+
+	super initialize.
+	assignees := OrderedCollection new: 1.
+	operators := OrderedCollection new: 1! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:30:44'!
+hasAssign 
+
+	^true! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:31:14'!
+isAssign 
+
+	^true! !
+
+!SAssignmentNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:29:16'!
+acceptVisitor: visitor 
+
+	^visitor visitAssignment: self! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:44:59'!
+asMessageNode 
+
+	message notNil ifTrue: [^message].
+	^message := self expanded! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:11'!
+elements 
+
+	^elements! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:20'!
+elements: aCollection 
+
+	elements := aCollection asArray! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:46:23'!
+expanded 
+	| receiver n new argument array messages i you yourself cascade |
+	receiver := compiler identifierNode name: 'Array'.
+	n := elements size.
+	new := compiler selectorNode symbol: #new:.
+	argument := compiler numericLiteralNode value: n.
+	array := compiler messageNode.
+	array receiver: receiver.
+	array selector: new.
+	array arguments: (Array with: argument).
+	i := 0.
+	messages := elements collect: [:elem | | msg sel idx args |
+		i := i + 1.
+		msg := compiler cascadeMessageNode 
+					position: elem position; 
+					end: elem end.
+		sel := compiler selectorNode symbol: #at:put:.
+		idx := compiler numericLiteralNode value: i.
+		args := Array with: idx with: elem.
+		msg selector: sel; arguments: args].
+	you := compiler selectorNode symbol: #yourself.
+	yourself := compiler cascadeMessageNode.
+	yourself selector: you.
+	yourself arguments: #().
+	messages := messages copyWith: yourself.
+	cascade := compiler cascadeNode receiver: array.
+	messages do: [:msg | msg cascade: cascade].
+	^cascade messages: messages! !
+
+!SBraceNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:46:54'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	elements do: [:n | n nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SBraceNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:46:37'!
+isBraceNode 
+
+	^true! !
+
+!SBraceNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:44:18'!
+acceptVisitor: visitor 
+
+	^visitor visitBraceNode: self! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:12'!
+messages 
+
+	^messages! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:21'!
+messages: aCollection 
+
+	messages := aCollection! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:44'!
+receiver 
+
+	^receiver! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:52'!
+receiver: rcvr 
+
+	receiver := rcvr! !
+
+!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:20:33'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	messages do: [:msg | msg nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:37'!
+hasAssign 
+
+	receiver hasAssign ifTrue: [^true].
+	messages detect: [:msg | msg hasAssign] ifNone: [^false].
+	^true! !
+
+!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:47'!
+isCascade 
+
+	^true! !
+
+!SCascadeNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:19:20'!
+acceptVisitor: visitor 
+
+	^visitor visitCascade: self! !
+
 !SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:18'!
 arguments 
 
@@ -9978,6 +9950,38 @@ acceptVisitor: visitor
 
 	^visitor visitMessage: self! !
 
+!SCascadeMessageNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:16:12'!
+cascade: aCascadeNode 
+
+	cascade := aCascadeNode.
+	receiver := cascade receiver! !
+
+!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:17:16'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	aBlock evaluateWith: self.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SCascadeMessageNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 16:16:40'!
+from: aMessageNode 
+
+	arguments := aMessageNode arguments.
+	receiver := aMessageNode receiver.
+	selector := aMessageNode selector.
+	inlined := aMessageNode isInlined.
+	stretch := aMessageNode stretch.
+	comments := aMessageNode comments! !
+
+!SCascadeMessageNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:16:54'!
+isCascadeMessage 
+
+	^true! !
+
+!SCascadeMessageNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:15:57'!
+acceptVisitor: visitor 
+
+	^visitor visitCascadeMessage: self! !
+
 !SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
 useSelf 
 
@@ -10080,150 +10084,103 @@ hasAssign
 	statements do: [:s | s hasAssign ifTrue: [^true]].
 	^false! !
 
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:10'!
-hasSymbol 
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:40:01'!
+environmentIndexOf: aParseNode 
 
-	^symbol isSymbol! !
+	^scope environmentIndexOf: aParseNode! !
 
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:26'!
-isBinary 
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:41:46'!
+parent 
 
-	^symbol isBinary! !
+	^parent! !
 
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:43'!
-isSelector
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:00'!
+parent: aScriptNode 
+
+	parent := aScriptNode addChild: self! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:11'!
+realParent 
+
+	^parent realScript! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:21'!
+realScript 
+
+	^inlined ifTrue: [parent realScript] ifFalse: [self]! !
+
+!SBlockNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:40:54'!
+initialize 
+
+	super initialize.
+	inlined := false.
+	scope := BlockScope on: self! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:28'!
+index 
+
+	^index! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:37'!
+index: aNumber 
+
+	index := aNumber! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:04'!
+isBlockNode 
 
 	^true! !
 
-!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:15:26'!
-value 
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:19'!
+isEvaluable 
 
-	^symbol! !
+	^self isNullary! !
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:24'!
-addKeyword: aSelectorNode 
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:27'!
+isInlined 
 
-	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
-	keywords add: aSelectorNode! !
+	^inlined! !
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:52'!
-end 
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:36'!
+isNullary 
 
-	stretch end ifNotNil: [:e | ^e].
-	^keywords notNil ifTrue: [keywords last end]! !
+	^arguments isEmpty! !
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:23'!
-keywords 
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:42:37'!
+usesHome 
 
-	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]! !
+	^inlined
+		ifTrue: [children anySatisfy: [:block | block usesHome]]
+		ifFalse: [scope capturesHome]! !
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:17'!
-positions 
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:38:05'!
+beInlined 
 
-	^self keywords collect: [:node | node position]! !
+	inlined := true.
+	arguments do: [:arg | arg binding beInlined]! !
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:36'!
-symbol 
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:23'!
+buildBlock 
+	| block |
+	self isInlined ifTrue: [ ^ nil ].
+	block := SCompiledBlock new.
+	^ block
+		  id: index;
+		  argumentCount: arguments size;
+		  tempCount: scope stackSize;
+		  environmentCount: scope environmentSize;
+		  capturesSelf: scope capturesSelf;
+			capturesHome: scope capturesHome! !
 
-	^symbol! !
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:36'!
+captureHome 
 
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:47'!
-symbol: aString 
+	scope captureEnvironment: self ast! !
 
-	symbol := aString asSymbol! !
-
-!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 2/24/2021 13:12:01'!
+!SBlockNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:36:57'!
 acceptVisitor: visitor 
 
-	^visitor visitSelector: self! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
-value 
-
-	^value! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:25'!
-value: anObject 
-
-	value := anObject! !
-
-!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:12:43'!
-is: anObject 
-
-	^value == anObject! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:07'!
-endsExpression 
-
-	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:17'!
-isAssignment 
-
-	^self is: #':='! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:30'!
-isDelimiter 
-
-	^true! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:07:46'!
-beCharacter 
-
-	value := value isCharacter ifTrue: [value] ifFalse: [value first]! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:08:46'!
-value: aString 
-
-	super value: aString asSymbol! !
-
-!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:07:09'!
-asSelectorNode 
-
-	^compiler selectorNode symbol: value asString; stretch: stretch! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:39'!
-hasSymbol 
-
-	^value isSymbol! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:52'!
-isBinary 
-
-	^value isSymbol! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:04'!
-isDelimitedIdentifier 
-
-	^value first = ${! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:18'!
-isKeyword 
-
-	^value last = $:! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:32'!
-isNameToken 
-
-	^(self isKeyword or: [self isBinary]) not! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:43'!
-isStringToken 
-
-	^true! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:03'!
-asIdentifierNode 
-
-	^compiler identifierNode
-		name: value;
-		stretch: stretch;
-		comments: comments! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:21'!
-asSelectorNode 
-
-	^compiler selectorNode symbol: value; stretch: stretch! !
+	^visitor visitBlock: self! !
 
 !ScriptScope methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:03:15'!
 script: aScriptNode 
@@ -20576,6 +20533,717 @@ on: aMessageNode using: anAstcodeEmitter
 
 	^self new emitter: anAstcodeEmitter; message: aMessageNode ! !
 
+!SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
+decodeUsing: anAstcodeDecoder 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:18:28'!
+assign: value within: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:20:38'!
+valueWithin: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:48'!
+isArgument 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:56'!
+isAssociation 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:03'!
+isClassBinding 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:09'!
+isClassVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:18'!
+isInstVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:26'!
+isLiteral 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:34'!
+isPoolVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:40'!
+isSelf 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:48'!
+isSuper 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:56'!
+isTemporary 
+
+	^false! !
+
+!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
+isLiteral 
+
+	^true! !
+
+!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
+value 
+	
+	^false! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
+valueWithin: evaluator 
+
+	^evaluator falseLiteral! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
+value 
+
+	^true! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
+valueWithin: evaluator 
+
+	^evaluator trueLiteral! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
+index 
+
+	^position! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
+index: anInteger 
+
+	^position := anInteger! !
+
+!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
+isInStack 
+
+	self assert: false.
+	^ environment = 0! !
+
+!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
+assign: value within: evaluator 
+
+	evaluator temporaryAt: position in: environment put: value! !
+
+!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
+valueWithin: evaluator 
+
+	^evaluator temporaryAt: position in: environment! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
+isInCurrentEnvironment 
+
+	^environment = 1! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
+isTemporary 
+
+	^true! !
+
+!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeTemporary! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
+assign: value within: evaluator 
+
+	self halt! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:16:08'!
+valueWithin: evaluator 
+
+	^evaluator argumentAt: position in: environment! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:20'!
+isArgument 
+
+	^true! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:30'!
+isInlined 
+
+	^ environment = -1! !
+
+!SArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:14:42'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeArgument! !
+
+!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
+valueWithin: evaluator 
+
+	^evaluator receiver! !
+
+!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
+isSelf 
+
+	^true! !
+
+!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
+isSelf 
+
+	^false! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
+isSuper 
+
+	^true! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
+association 
+
+	^association! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:33'!
+association: anAssociation 
+
+	association := anAssociation! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:51'!
+index 
+	
+	^ index! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:39:02'!
+index: anInteger 
+
+	 index := anInteger ! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:38:04'!
+assign: value within: evaluator 
+
+	^ evaluator associationValueAt: index put: value! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:39:38'!
+valueWithin: evaluator 
+
+	^evaluator associationValueAt: index! !
+
+!SAssociationBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:39:24'!
+isAssociation 
+
+	^true! !
+
+!SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
+value 
+
+	^association value! !
+
+!SPoolVarBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:42:01'!
+isPoolVar 
+
+	^true! !
+
+!SPoolVarBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:41:20'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodePoolVar! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:13'!
+value 
+
+	^association! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:23'!
+valueWithin: evaluator 
+
+	^ evaluator constPoolValueAt: index! !
+
+!SConstantPoolBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:43:43'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeConstantPoolVar! !
+
+!SClassVarBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:23:42'!
+isClassVar 
+
+	^true! !
+
+!SClassVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:23:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassVar! !
+
+!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeGlobalBinding! !
+
+!SClassBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:22:40'!
+isClassBinding 
+
+	^true! !
+
+!SClassBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:22:24'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassBinding! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
+printOn: aStream indent: anInteger 
+
+	super printOn: aStream! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:04:54'!
+isAssignment 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:01'!
+isCascade 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:10'!
+isCascadeMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:16'!
+isIdentifier 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:23'!
+isInstVar 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:32'!
+isLiteral 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:39'!
+isMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:48'!
+isMethod 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:55'!
+isReturn 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:06:02'!
+isSuper 
+
+	^false! !
+
+!SExpression methodsFor: 'visiting' stamp: 'KenD 2/22/2021 13:04:25'!
+acceptVisitor: visitor 
+
+	^self subclassResponsibility! !
+
+!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self! !
+
+!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{IdentifierId. ';
+		print: binding;
+		nextPutAll: '}'! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
+isArgument 
+
+	^binding isArgument! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
+isAssociation 
+
+	^binding isAssociation! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
+isIdentifier 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
+isInstVar 
+
+	^binding isInstVar! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
+isLiteral 
+
+	^binding isLiteral! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
+isSelf 
+	
+	^binding isSelf! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
+isSelfOrSuper 
+
+	^binding isSelf or: [binding isSuper]! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
+isSuper 
+
+	^binding isSuper! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
+isTemporary 
+
+	^binding isTemporary! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeIdentifier! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
+index 
+
+	^index! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
+index: anInteger 
+
+	index := anInteger! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
+value 
+
+	^value! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{LiteralId. ';
+		print: value;
+		nextPutAll: '}'! !
+
+!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
+isLiteral 
+
+	^true! !
+
+!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
+acceptVisitor: visitor 
+
+	^ visitor visitLiteral: self! !
+
+!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeLiteral! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
+arguments 
+
+	^arguments! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
+opcodes 
+
+	^opcodes! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
+opcodes: aCollection 
+
+	opcodes := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
+receiver 
+
+	^receiver! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
+receiver: anSExpression 
+
+	receiver := anSExpression! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
+selector 
+
+	^selector! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
+selector: aSelector 
+
+	selector := aSelector! !
+
+!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
+initialize 
+
+	super initialize.
+	arguments := #()! !
+
+!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
+	receiver printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '.'; cr.
+	arguments
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '. '; cr].
+	aStream nextPutAll: '}'! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
+isInlined 
+
+	^opcodes = #inlined! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
+isMessage 
+
+	^true! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
+isOptimized 
+
+	^opcodes notNil! !
+
+!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
+acceptVisitor: visitor 
+
+	^visitor visitMessage: self! !
+
+!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeMessage! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:50'!
+assign: anSIdentifier 
+
+	assignees add: anSIdentifier! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:58'!
+assignees 
+
+	^assignees! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:07'!
+expression 
+
+	^expression! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:15'!
+expression: anSExpression 
+
+	expression := anSExpression! !
+
+!SAssignment methodsFor: 'initialization' stamp: 'KenD 4/12/2021 13:20:35'!
+initialize 
+
+	assignees := OrderedCollection new! !
+
+!SAssignment methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:21:14'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{AssignmentId.'.
+	assignees
+		do: [:identifier | 
+			aStream cr.
+			identifier printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '.'].
+	aStream nextPutAll: '.'; cr.
+	expression printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '}'! !
+
+!SAssignment methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:20:51'!
+isAssignment 
+
+	^true! !
+
+!SAssignment methodsFor: 'visiting' stamp: 'KenD 4/12/2021 13:19:22'!
+acceptVisitor: visitor 
+
+	^visitor visitAssignment: self! !
+
+!SAssignment class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:19:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeAssignment! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:28'!
+messages 
+	
+	^messages! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:39'!
+messages: aCollection 
+
+	messages := aCollection! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:48'!
+receiver 
+
+	^receiver! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:58'!
+receiver: anSExpression 
+
+	receiver := anSExpression! !
+
+!SCascade methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:55:07'!
+isCascade 
+
+	^true! !
+
+!SCascade methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:54:55'!
+acceptVisitor: visitor 
+
+	^visitor visitCascade: self! !
+
+!SCascade class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:54:27'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeCascade! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:45'!
+arguments 
+
+	^arguments! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:54'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:22'!
+selector 
+
+	^selector! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:31'!
+selector: aSymbol 
+
+	selector := aSymbol! !
+
+!SCascadeMessage methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:14:13'!
+isCascadeMessage 
+
+	^true! !
+
+!SCascadeMessage methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:13:25'!
+acceptVisitor: visitor 
+
+	^ visitor visitCascadeMessage: self! !
+
+!SCascadeMessage class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:12:58'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeCascadeMessage! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
+argumentCount 
+
+	^compiledCode argumentCount! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:56'!
+compiledCode 
+
+	^compiledCode! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:05'!
+compiledCode: anObject 
+
+	compiledCode := anObject! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:45'!
+statements 
+
+	^statements! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:54'!
+statements: aCollection 
+
+	statements := aCollection! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:33:09'!
+tempCount 
+
+	^compiledCode tempCount! !
+
+!SScript methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:32:22'!
+initialize 
+
+	statements := #()! !
+
+!SScript methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:32:34'!
+printOn: aStream indent: anInteger 
+
+	statements
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '.'; cr]! !
+
+!SBlock methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:34:39'!
+acceptVisitor: visitor 
+
+	^visitor visitBlock: self! !
+
+!SBlock class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:34:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeBlock! !
+
 !BinaryMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:33:37'!
 inlineBitAnd 
 
@@ -24291,6 +24959,266 @@ indexOf: ivarName be: i
 	fields at: ivarName put: i! !
 
 !ObjectShape class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:21:32'!
+new 
+
+	^self basicNew initialize! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:47'!
+bridge 
+
+	^bridge! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:57'!
+bridge: aBridge 
+
+	bridge := aBridge.
+	bridge runtime: self! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:17'!
+false 
+
+	^ bridge false! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:27'!
+globalNamed: name 
+
+	^bridge globalNamed: name! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:35:06'!
+loadBridge 
+
+	bridge findRootObjects! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:01'!
+nil 
+
+	^bridge nil! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:09'!
+objectFormat 
+
+	^objectFormat! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:17'!
+objectFormat: anObjectFormat 
+
+	objectFormat := anObjectFormat.
+	anObjectFormat runtime: self! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:25'!
+objectModel 
+
+	^objectModel! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:43'!
+objectModel: aModuleSpec 
+
+	^objectModel := aModuleSpec! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:15'!
+storage 
+
+	^storage! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:23'!
+storage: anObject 
+
+	storage := anObject! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:33'!
+stringOf: oid 
+
+	^objectFormat stringOf: oid! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:40:05'!
+true 
+
+	^ bridge true! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:33:46'!
+initialize 
+
+	shapeMap := ShapeMap new.
+	self useMirrorLookup! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:21'!
+loadShapesFrom: anRGEnvironment 
+
+	objectModel := anRGEnvironment.
+	anRGEnvironment allClasses do: [ :class | shapeMap load: class ]! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:38'!
+loadShapesFromImage 
+	| classes |
+	objectModel := Smalltalk.
+	classes := #(ClassDescription Class Metaclass) 
+				collect: [ :name | Smalltalk at: name ].
+	classes do: [ :class | shapeMap load: class ]! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:58'!
+useCuisLookup 
+
+	lookup := CuisLookup new! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:22'!
+useEmulationLookup: anRGEnvironment 
+	
+	lookup := EmulationLookup new spec: anRGEnvironment! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:32'!
+useMirrorLookup 
+
+	lookup := MirrorLookup new! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:32:53'!
+handleOn: oid 
+
+	^ ObjectHandle on: oid within: self! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:33:01'!
+handleOnGlobal: aString 
+	| oid |
+	oid := self globalNamed: aString.
+	^self handleOn: oid! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:35:54'!
+lookup 
+
+	^ lookup! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:03'!
+lookup: aSymbol on: aSubject 
+
+	^lookup lookup: aSymbol on: aSubject! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:13'!
+lookupSuper: aSymbol on: aSubject from: classname 
+
+	^ lookup lookupSuper: aSymbol on: aSubject from: classname! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:20'!
+integerHandle: anInteger 
+	| oid |
+	oid := objectFormat newInteger: anInteger.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:30'!
+integerOf: oid 
+
+	^objectFormat integerOf: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:36:28'!
+new: oid 
+	| instance |
+	instance := storage new: oid.
+	^ self handleOn: instance! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:12'!
+new: oid sized: anInteger 
+	| instance |
+	instance := storage new: oid sized: anInteger.
+	^ self handleOn: instance! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:28'!
+newClosure: anObjectHandle 
+	| oid |
+	oid := storage newClosure: anObjectHandle.
+	"should put a thing that lives in remote runtime, not a PCompiledBlock"
+	oid block: anObjectHandle.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:44'!
+newClosureHandle: aPCompiledBlock 
+	| oid |
+	oid := storage newClosure: aPCompiledBlock.
+	"should put a thing that lives in remote runtime, not a PCompiledBlock"
+	oid block: aPCompiledBlock.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:33:26'!
+indexOf: varname inStructureOf: type 
+
+	^shapeMap indexOf: varname at: type! !
+
+!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:39:44'!
+structureOf: type 
+
+	^shapeMap at: type! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:13'!
+arrayedSlotOf: object at: index 
+
+	^ objectFormat arrayedSlotOf: object at: index! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:23'!
+arrayedSlotOf: object at: index put: value 
+
+	^ storage arrayedSlotOf: object at: index put: value! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:32:08'!
+bytesOf: oid 
+
+	^objectFormat bytesOf: oid! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:38:55'!
+slotOf: object at: index 
+
+	^objectFormat slotOf: object at: index! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:03'!
+slotOf: object at: index put: value 
+
+	^ storage slotOf: object at: index put: value! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:54'!
+symbolOf: oid 
+
+	^objectFormat symbolOf: oid! !
+
+!Runtime methodsFor: 'testing' stamp: 'KenD 4/12/2021 12:34:50'!
+isLocal 
+
+	^objectModel == Smalltalk.! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:26:17'!
+forBootstrappingCuisSt: aSmalltalkBootstrapper spec: anRGEnvironment 
+
+	^ self new
+		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
+		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
+		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
+		useEmulationLookup: anRGEnvironment! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:29:12'!
+forEmulatingCuisSt: aSmalltalkBootstrapper 
+
+	^ self new
+		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
+		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
+		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
+		loadBridge! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:02'!
+forLocalCuis
+	^ self new
+		bridge: CuisBridge new;
+		objectFormat: CuisObjectFormat new;
+		useCuisLookup;
+		loadBridge;
+		loadShapesFromImage! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:32'!
+forSimulating: aModuleSpec memory: aByteArray 
+	| adapter |
+	adapter := ByteArrayAdapter on: aByteArray.
+	^ self new
+		bridge: CuisStBridge new;
+		objectFormat: (DmrObjectFormat on: adapter);
+		storage: adapter;
+		loadShapesFrom: aModuleSpec;
+		loadBridge! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:46'!
 new 
 
 	^self basicNew initialize! !
