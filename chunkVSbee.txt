@@ -1,0 +1,61 @@
+"====================Bee Format===================="
+Class {
+	#name : #Assembler64,
+	#superclass : #Object,
+	#instVars : [
+		'instruction',
+		'operands1',
+		'operands2',
+		'operands3',
+		'pointer',
+		'immediate',
+		'encoder',
+		'wordSize',
+		'memory',
+		'labels'
+	],
+	#classVars : [
+		'IndexedLabels'
+	],
+	#pools : [
+		'Registers'
+	],
+	#category : #'Powerlang-Core'
+}
+
+{ #category : #initialization }
+Assembler64 class >> initialize [
+	self initializeIndexedLabels	
+]
+
+{ #category : #labels }
+Assembler64 >> addLabel: aString [
+	self addLabel: aString to: self currentAddress
+]
+
+"====================Chunk Format===================="
+!classDefinition: #Assembler64 category: 'Powerlang-Core'!
+Object subclass: #Assembler64
+	instanceVariableNames: 'instruction operands1
+			       operands2 operands3
+			       pointer immediate
+			       encoder wordSize
+			       memory labels'
+	classVariableNames: 'IndexedLabels'
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Core'!
+
+!classDefinition: 'Assembler64 class' category: 'Powerlang-Core'!
+Assembler64 class
+	instanceVariableNames: ''!
+
+
+!Assembler64 class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 15:45:38'!
+initialize 
+	self initializeIndexedLabels! !
+
+
+!Assembler64 methodsFor: 'labels' stamp: 'KenD 2/24/2021 15:47:16'!
+addLabel: aString 
+
+	self addLabel: aString to: self currentAddress! !
