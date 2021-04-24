@@ -1,2652 +1,2702 @@
-'From Cuis 5.0 [latest update: #4561] on 13 April 2021 at 9:19:53 am'!
+'From Cuis 5.0 [latest update: #4561] on 24 April 2021 at 1:09:04 pm'!
 'Description Powerlang Core code to manage Cuis hosted Bee runtime code'!
-!provides: 'Powerlang-Core' 1 65!
+!provides: 'Powerlang-Core' 1 67!
 !requires: 'BeeCompatibility' 1 0 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
-SystemOrganization addCategory: 'Powerlang-Core'!
-SystemOrganization addCategory: 'Powerlang-Core-Emulation'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Intel'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Bindings'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-JIT'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Parser'!
-SystemOrganization addCategory: 'Powerlang-Core-Mirrors'!
-SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
-SystemOrganization addCategory: 'Powerlang-Core-Nativization'!
-SystemOrganization addCategory: 'Powerlang-Core-Metaphysics'!
-SystemOrganization addCategory: 'Powerlang-Core-Building'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Tools'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SystemOrganization addCategory: #'Powerlang-Core'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Parser'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Tools'!
+SystemOrganization addCategory: #'Powerlang-Core-Building'!
+SystemOrganization addCategory: #'Powerlang-Core-Emulation'!
+SystemOrganization addCategory: #'Powerlang-Core-Metaphysics'!
+SystemOrganization addCategory: #'Powerlang-Core-Mirrors'!
+SystemOrganization addCategory: #'Powerlang-Core-Nativization'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
 
 
-!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
+!classDefinition: #CharacterConstants category: #'Powerlang-Core'!
 PSharedPool subclass: #CharacterConstants
 	instanceVariableNames: ''
 	classVariableNames: 'Cr Lf Space Tab'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
+!classDefinition: 'CharacterConstants class' category: #'Powerlang-Core'!
 CharacterConstants class
 	instanceVariableNames: ''!
 
-!classDefinition: #SpeciesFormatMasks category: 'Powerlang-Core'!
+!classDefinition: #SpeciesFormatMasks category: #'Powerlang-Core'!
 PSharedPool subclass: #SpeciesFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: 'InstSize IsPointers'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SpeciesFormatMasks class' category: 'Powerlang-Core'!
+!classDefinition: 'SpeciesFormatMasks class' category: #'Powerlang-Core'!
 SpeciesFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #OperandTypeFlags category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandTypeFlags category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #OperandTypeFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandTypeFlags class' category: #'Powerlang-Core-Assembler-Intel'!
 OperandTypeFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #Prefixes category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Prefixes category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Prefixes
 	instanceVariableNames: ''
 	classVariableNames: 'AddressSize_Override LOCK OperandSize_Override REP REPE REPNE REPNZ REPZ REX REX_R REX_W'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Prefixes class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Prefixes class' category: #'Powerlang-Core-Assembler-Intel'!
 Prefixes class
 	instanceVariableNames: ''!
 
-!classDefinition: #Registers category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Registers category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Registers
 	instanceVariableNames: ''
 	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Registers class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Registers class' category: #'Powerlang-Core-Assembler-Intel'!
 Registers class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethodFlags category: 'Powerlang-Core-SCompiler'!
-PSharedPool subclass: #SCompiledMethodFlags
-	instanceVariableNames: ''
-	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethodFlags class' category: 'Powerlang-Core-SCompiler'!
-SCompiledMethodFlags class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompiledBlockFormatMasks category: 'Powerlang-Core-Mirrors'!
-PSharedPool subclass: #CompiledBlockFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockFormatMasks class' category: 'Powerlang-Core-Mirrors'!
-CompiledBlockFormatMasks class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompiledMethodFormatMasks category: 'Powerlang-Core-Mirrors'!
-PSharedPool subclass: #CompiledMethodFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: 'ArgCount BlockCount TempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodFormatMasks class' category: 'Powerlang-Core-Mirrors'!
-CompiledMethodFormatMasks class
-	instanceVariableNames: ''!
-
-!classDefinition: #FrameOffsets category: 'Powerlang-Core-Mirrors'!
-PSharedPool subclass: #FrameOffsets
-	instanceVariableNames: ''
-	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'FrameOffsets class' category: 'Powerlang-Core-Mirrors'!
-FrameOffsets class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstBindingTypes category: 'Powerlang-Core-SExpressions'!
-PSharedPool subclass: #AstBindingTypes
-	instanceVariableNames: ''
-	classVariableNames: 'ArgumentId ClassVarId ConstantPoolId EnsureAisSmallIntegerId EnsureRisSmallIntegerId FalseId GlobalClassId GlobalValueId InstVarId LoadAvisitingArgumentId LoadAwithArgumentId LoadAwithClassVarId LoadAwithConstPoolId LoadAwithFalseId LoadAwithGlobalId LoadAwithInstVarId LoadAwithLiteralId LoadAwithNilId LoadAwithPoolVarId LoadAwithSelfId LoadAwithTemporaryId LoadAwithTrueId LoadRvisitingReceiverId LoadRwithArgumentId LoadRwithClassVarId LoadRwithConstPoolId LoadRwithFalseId LoadRwithGlobalId LoadRwithInstVarId LoadRwithLiteralId LoadRwithNilId LoadRwithPoolVarId LoadRwithSelfId LoadRwithTemporaryId LoadRwithTrueId NilId PoolVarId PopRid PushRid SelfId SuperId TemporaryId TrueId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core-SExpressions'!
-AstBindingTypes class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstNodeTypes category: 'Powerlang-Core-SExpressions'!
-PSharedPool subclass: #AstNodeTypes
-	instanceVariableNames: ''
-	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core-SExpressions'!
-AstNodeTypes class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClosureElementTypes category: 'Powerlang-Core-SExpressions'!
-PSharedPool subclass: #ClosureElementTypes
-	instanceVariableNames: ''
-	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'ClosureElementTypes class' category: 'Powerlang-Core-SExpressions'!
-ClosureElementTypes class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpressionTypes category: 'Powerlang-Core-SExpressions'!
-PSharedPool subclass: #SExpressionTypes
-	instanceVariableNames: ''
-	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core-SExpressions'!
-SExpressionTypes class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core-Nativization'!
-PSharedPool subclass: #InlineMessageLinkerFlags
-	instanceVariableNames: ''
-	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core-Nativization'!
-InlineMessageLinkerFlags class
-	instanceVariableNames: ''!
-
-!classDefinition: #SendSiteFlags category: 'Powerlang-Core-Nativization'!
-PSharedPool subclass: #SendSiteFlags
-	instanceVariableNames: ''
-	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core-Nativization'!
-SendSiteFlags class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderMasks category: #'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderMasks
 	instanceVariableNames: ''
 	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderMasks class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderMasks class' category: #'Powerlang-Core-Metaphysics'!
 ObjectHeaderMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderOffsets category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderOffsets category: #'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderOffsets
 	instanceVariableNames: ''
 	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderOffsets class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderOffsets class' category: #'Powerlang-Core-Metaphysics'!
 ObjectHeaderOffsets class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlockFlags category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #CompiledBlockFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #CompiledBlockFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+CompiledBlockFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #CompiledMethodFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #CompiledMethodFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: 'ArgCount BlockCount TempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+CompiledMethodFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #FrameOffsets category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #FrameOffsets
+	instanceVariableNames: ''
+	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'FrameOffsets class' category: #'Powerlang-Core-Mirrors'!
+FrameOffsets class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinkerFlags category: #'Powerlang-Core-Nativization'!
+PSharedPool subclass: #InlineMessageLinkerFlags
+	instanceVariableNames: ''
+	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinkerFlags class' category: #'Powerlang-Core-Nativization'!
+InlineMessageLinkerFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #SendSiteFlags category: #'Powerlang-Core-Nativization'!
+PSharedPool subclass: #SendSiteFlags
+	instanceVariableNames: ''
+	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSiteFlags class' category: #'Powerlang-Core-Nativization'!
+SendSiteFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiledMethodFlags category: #'Powerlang-Core-SCompiler'!
+PSharedPool subclass: #SCompiledMethodFlags
+	instanceVariableNames: ''
+	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethodFlags class' category: #'Powerlang-Core-SCompiler'!
+SCompiledMethodFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstBindingTypes
+	instanceVariableNames: ''
+	classVariableNames: 'ArgumentId ClassVarId ConstantPoolId EnsureAisSmallIntegerId EnsureRisSmallIntegerId FalseId GlobalClassId GlobalValueId InstVarId LoadAvisitingArgumentId LoadAwithArgumentId LoadAwithClassVarId LoadAwithConstPoolId LoadAwithFalseId LoadAwithGlobalId LoadAwithInstVarId LoadAwithLiteralId LoadAwithNilId LoadAwithPoolVarId LoadAwithSelfId LoadAwithTemporaryId LoadAwithTrueId LoadRvisitingReceiverId LoadRwithArgumentId LoadRwithClassVarId LoadRwithConstPoolId LoadRwithFalseId LoadRwithGlobalId LoadRwithInstVarId LoadRwithLiteralId LoadRwithNilId LoadRwithPoolVarId LoadRwithSelfId LoadRwithTemporaryId LoadRwithTrueId NilId PoolVarId PopRid PushRid SelfId SuperId TemporaryId TrueId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
+AstBindingTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstNodeTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
+AstNodeTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #ClosureElementTypes
+	instanceVariableNames: ''
+	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
+ClosureElementTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #SExpressionTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpressionTypes class' category: #'Powerlang-Core-SExpressions'!
+SExpressionTypes class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiledBlockFlags category: #'Powerlang-Core-SCompiler'!
 SharedPool subclass: #SCompiledBlockFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount CapturesHome CapturesSelf EnvCount Id TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockFlags class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockFlags class' category: #'Powerlang-Core-SCompiler'!
 SCompiledBlockFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethod category: 'Powerlang-Core-SCompiler'!
-Array variableSubclass: #SCompiledMethod
-	instanceVariableNames: 'format nativeCode astcodes class selector source'
-	classVariableNames: ''
-	poolDictionaries: 'SCompiledMethodFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core-SCompiler'!
-SCompiledMethod class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCallbackMethod category: 'Powerlang-Core-SCompiler'!
-SCompiledMethod variableSubclass: #SCallbackMethod
-	instanceVariableNames: 'receiver descriptor'
-	classVariableNames: ''
-	poolDictionaries: 'SCompiledMethodFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCallbackMethod class' category: 'Powerlang-Core-SCompiler'!
-SCallbackMethod class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCalloutMethod category: 'Powerlang-Core-SCompiler'!
-SCompiledMethod variableSubclass: #SCalloutMethod
-	instanceVariableNames: 'descriptor symbol address'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCalloutMethod class' category: 'Powerlang-Core-SCompiler'!
-SCalloutMethod class
-	instanceVariableNames: ''!
-
-!classDefinition: #SClosure category: 'Powerlang-Core-SExpressions'!
-Array variableSubclass: #SClosure
-	instanceVariableNames: 'block home'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClosure class' category: 'Powerlang-Core-SExpressions'!
-SClosure class
-	instanceVariableNames: ''!
-
-!classDefinition: #NativeCode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #NativeCode category: #'Powerlang-Core-Nativization'!
 Array variableSubclass: #NativeCode
 	instanceVariableNames: 'machineCode compiledCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativeCode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'NativeCode class' category: #'Powerlang-Core-Nativization'!
 NativeCode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFFIDescriptor category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethod category: #'Powerlang-Core-SCompiler'!
+Array variableSubclass: #SCompiledMethod
+	instanceVariableNames: 'format nativeCode astcodes class selector source'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledMethodFlags'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethod class' category: #'Powerlang-Core-SCompiler'!
+SCompiledMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCallbackMethod category: #'Powerlang-Core-SCompiler'!
+SCompiledMethod variableSubclass: #SCallbackMethod
+	instanceVariableNames: 'receiver descriptor'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledMethodFlags'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCallbackMethod class' category: #'Powerlang-Core-SCompiler'!
+SCallbackMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCalloutMethod category: #'Powerlang-Core-SCompiler'!
+SCompiledMethod variableSubclass: #SCalloutMethod
+	instanceVariableNames: 'descriptor symbol address'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCalloutMethod class' category: #'Powerlang-Core-SCompiler'!
+SCalloutMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClosure category: #'Powerlang-Core-SExpressions'!
+Array variableSubclass: #SClosure
+	instanceVariableNames: 'block home'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClosure class' category: #'Powerlang-Core-SExpressions'!
+SClosure class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFFIDescriptor category: #'Powerlang-Core-SCompiler'!
 ByteArray variableByteSubclass: #SFFIDescriptor
 	instanceVariableNames: ''
 	classVariableNames: 'FFICallingConventions FFITypes'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SFFIDescriptor class' category: #'Powerlang-Core-SCompiler'!
 SFFIDescriptor class
 	instanceVariableNames: ''!
 
-!classDefinition: #StorageReadError category: 'Powerlang-Core'!
+!classDefinition: #StorageReadError category: #'Powerlang-Core'!
 Error subclass: #StorageReadError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
+!classDefinition: 'StorageReadError class' category: #'Powerlang-Core'!
 StorageReadError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationError category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationError category: #'Powerlang-Core-SCompiler'!
 Error subclass: #SCompilationError
 	instanceVariableNames: 'compiler resumable retryable stretch'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationError class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationError class' category: #'Powerlang-Core-SCompiler'!
 SCompilationError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SUndeclaredIdentifierError category: 'Powerlang-Core'!
+!classDefinition: #SUndeclaredIdentifierError category: #'Powerlang-Core'!
 SCompilationError subclass: #SUndeclaredIdentifierError
 	instanceVariableNames: 'identifier assigned'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SUndeclaredIdentifierError class' category: 'Powerlang-Core'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-Core'!
 SUndeclaredIdentifierError class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerGrammar category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #SInvalidPragmaError category: #'Powerlang-Core-SCompiler'!
+SCompilationError subclass: #SInvalidPragmaError
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SInvalidPragmaError class' category: #'Powerlang-Core-SCompiler'!
+SInvalidPragmaError class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssemblerGrammar category: #'Powerlang-Core-Assembler-Parser'!
 PPCompositeParser subclass: #AssemblerGrammar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerGrammar class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerGrammar class' category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerParser category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #AssemblerParser category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar subclass: #AssemblerParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerParser class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerParser class' category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #NumberParser2 category: 'Powerlang-Core'!
+!classDefinition: #NumberParser2 category: #'Powerlang-Core'!
 Object subclass: #NumberParser2
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'NumberParser2 class' category: 'Powerlang-Core'!
+!classDefinition: 'NumberParser2 class' category: #'Powerlang-Core'!
 NumberParser2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBeginInstruction category: 'Powerlang-Core'!
+!classDefinition: #OBeginInstruction category: #'Powerlang-Core'!
 Object subclass: #OBeginInstruction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OBeginInstruction class' category: 'Powerlang-Core'!
+!classDefinition: 'OBeginInstruction class' category: #'Powerlang-Core'!
 OBeginInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OOperand category: 'Powerlang-Core'!
+!classDefinition: #OOperand category: #'Powerlang-Core'!
 Object subclass: #OOperand
 	instanceVariableNames: 'instruction name nextUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OOperand class' category: 'Powerlang-Core'!
+!classDefinition: 'OOperand class' category: #'Powerlang-Core'!
 OOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #OValue category: 'Powerlang-Core'!
+!classDefinition: #OValue category: #'Powerlang-Core'!
 Object subclass: #OValue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OValue class' category: 'Powerlang-Core'!
+!classDefinition: 'OValue class' category: #'Powerlang-Core'!
 OValue class
 	instanceVariableNames: ''!
 
-!classDefinition: #OInstruction category: 'Powerlang-Core'!
+!classDefinition: #OInstruction category: #'Powerlang-Core'!
 OValue subclass: #OInstruction
 	instanceVariableNames: 'prev next firstUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OInstruction class' category: 'Powerlang-Core'!
+!classDefinition: 'OInstruction class' category: #'Powerlang-Core'!
 OInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJump category: 'Powerlang-Core'!
+!classDefinition: #OJump category: #'Powerlang-Core'!
 OInstruction subclass: #OJump
 	instanceVariableNames: 'target'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OJump class' category: 'Powerlang-Core'!
+!classDefinition: 'OJump class' category: #'Powerlang-Core'!
 OJump class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpConditional category: 'Powerlang-Core'!
+!classDefinition: #OJumpConditional category: #'Powerlang-Core'!
 OInstruction subclass: #OJumpConditional
 	instanceVariableNames: 'variable target implicitTarget'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OJumpConditional class' category: 'Powerlang-Core'!
+!classDefinition: 'OJumpConditional class' category: #'Powerlang-Core'!
 OJumpConditional class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingNativizer category: 'Powerlang-Core'!
+!classDefinition: #OptimizingNativizer category: #'Powerlang-Core'!
 Object subclass: #OptimizingNativizer
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OptimizingNativizer class' category: 'Powerlang-Core'!
+!classDefinition: 'OptimizingNativizer class' category: #'Powerlang-Core'!
 OptimizingNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
+!classDefinition: #SParseTreeVisitor category: #'Powerlang-Core'!
 Object subclass: #SParseTreeVisitor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SParseTreeVisitor class' category: 'Powerlang-Core'!
+!classDefinition: 'SParseTreeVisitor class' category: #'Powerlang-Core'!
 SParseTreeVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSemanticVisitor category: 'Powerlang-Core'!
+!classDefinition: #SSemanticVisitor category: #'Powerlang-Core'!
 SParseTreeVisitor subclass: #SSemanticVisitor
 	instanceVariableNames: 'inliner'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSemanticVisitor class' category: 'Powerlang-Core'!
+!classDefinition: 'SSemanticVisitor class' category: #'Powerlang-Core'!
 SSemanticVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstcodeEncoder category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #AstcodeEncoder category: #'Powerlang-Core-SExpressions'!
 SParseTreeVisitor subclass: #AstcodeEncoder
 	instanceVariableNames: 'method stream script'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeEncoder class' category: #'Powerlang-Core-SExpressions'!
 AstcodeEncoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkCompiler category: 'Powerlang-Core'!
+!classDefinition: #SSmalltalkCompiler category: #'Powerlang-Core'!
 Object subclass: #SSmalltalkCompiler
 	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkCompiler class' category: 'Powerlang-Core'!
+!classDefinition: 'SSmalltalkCompiler class' category: #'Powerlang-Core'!
 SSmalltalkCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkParser category: 'Powerlang-Core'!
+!classDefinition: #SSmalltalkParser category: #'Powerlang-Core'!
 Object subclass: #SSmalltalkParser
 	instanceVariableNames: 'compiler scanner token next'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkParser class' category: 'Powerlang-Core'!
+!classDefinition: 'SSmalltalkParser class' category: #'Powerlang-Core'!
 SSmalltalkParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkScanner category: 'Powerlang-Core'!
+!classDefinition: #SSmalltalkScanner category: #'Powerlang-Core'!
 Object subclass: #SSmalltalkScanner
 	instanceVariableNames: 'compiler stream'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkScanner class' category: 'Powerlang-Core'!
+!classDefinition: 'SSmalltalkScanner class' category: #'Powerlang-Core'!
 SSmalltalkScanner class
 	instanceVariableNames: ''!
 
-!classDefinition: #SToken category: 'Powerlang-Core'!
+!classDefinition: #SToken category: #'Powerlang-Core'!
 Object subclass: #SToken
 	instanceVariableNames: 'compiler stretch comments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SToken class' category: 'Powerlang-Core'!
+!classDefinition: 'SToken class' category: #'Powerlang-Core'!
 SToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
+!classDefinition: #SSymbolicToken category: #'Powerlang-Core'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSymbolicToken class' category: 'Powerlang-Core'!
+!classDefinition: 'SSymbolicToken class' category: #'Powerlang-Core'!
 SSymbolicToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringToken category: 'Powerlang-Core'!
+!classDefinition: #SStringToken category: #'Powerlang-Core'!
 SSymbolicToken subclass: #SStringToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SStringToken class' category: 'Powerlang-Core'!
+!classDefinition: 'SStringToken class' category: #'Powerlang-Core'!
 SStringToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SDelimiterToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SDelimiterToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SSymbolicToken subclass: #SDelimiterToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SDelimiterToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SDelimiterToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SDelimiterToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SEndToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SEndToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SToken subclass: #SEndToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SEndToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SEndToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SEndToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SParseNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SToken subclass: #SParseNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SParseNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SParseNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralNode category: 'Powerlang-Core'!
+!classDefinition: #SLiteralNode category: #'Powerlang-Core'!
 SParseNode subclass: #SLiteralNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralNode class' category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralNode class' category: #'Powerlang-Core'!
 SLiteralNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringNode category: 'Powerlang-Core'!
+!classDefinition: #SStringNode category: #'Powerlang-Core'!
 SLiteralNode subclass: #SStringNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SStringNode class' category: 'Powerlang-Core'!
+!classDefinition: 'SStringNode class' category: #'Powerlang-Core'!
 SStringNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSelectorNode category: 'Powerlang-Core'!
+!classDefinition: #SSelectorNode category: #'Powerlang-Core'!
 SParseNode subclass: #SSelectorNode
 	instanceVariableNames: 'symbol keywords'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSelectorNode class' category: 'Powerlang-Core'!
+!classDefinition: 'SSelectorNode class' category: #'Powerlang-Core'!
 SSelectorNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SAssignmentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SAssignmentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SAssignmentNode
 	instanceVariableNames: 'assignees expression operators'
 	classVariableNames: 'Token'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SAssignmentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SAssignmentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SAssignmentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBraceNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SBraceNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SBraceNode
 	instanceVariableNames: 'elements message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBraceNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBraceNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SBraceNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCascadeNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SCascadeNode
 	instanceVariableNames: 'receiver messages optimized'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCascadeNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCommentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCommentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SCommentNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCommentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCommentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCommentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdentifierNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SIdentifierNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SIdentifierNode
 	instanceVariableNames: 'name binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SIdentifierNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SIdentifierNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SIdentifierNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SMessageNode
 	instanceVariableNames: 'selector receiver arguments inlined'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCascadeMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SMessageNode subclass: #SCascadeMessageNode
 	instanceVariableNames: 'cascade'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCascadeMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SScriptNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SScriptNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SScriptNode
 	instanceVariableNames: 'statements arguments temporaries children scope'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SScriptNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SScriptNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SScriptNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBlockNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SBlockNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SScriptNode subclass: #SBlockNode
 	instanceVariableNames: 'inlined index parent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBlockNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBlockNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SBlockNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkBootstrapper category: 'Powerlang-Core'!
+!classDefinition: #SmalltalkBootstrapper category: #'Powerlang-Core'!
 Object subclass: #SmalltalkBootstrapper
 	instanceVariableNames: 'builder'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SmalltalkBootstrapper class' category: 'Powerlang-Core'!
+!classDefinition: 'SmalltalkBootstrapper class' category: #'Powerlang-Core'!
 SmalltalkBootstrapper class
 	instanceVariableNames: ''!
 
-!classDefinition: #DMRBootstrapper category: 'Powerlang-Core-Building'!
+!classDefinition: #DMRBootstrapper category: #'Powerlang-Core-Building'!
 SmalltalkBootstrapper subclass: #DMRBootstrapper
 	instanceVariableNames: 'nativizer image'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'DMRBootstrapper class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'DMRBootstrapper class' category: #'Powerlang-Core-Building'!
 DMRBootstrapper class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackFrameCursor category: 'Powerlang-Core'!
+!classDefinition: #StackFrameCursor category: #'Powerlang-Core'!
 Object subclass: #StackFrameCursor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameCursor class' category: 'Powerlang-Core'!
+!classDefinition: 'StackFrameCursor class' category: #'Powerlang-Core'!
 StackFrameCursor class
 	instanceVariableNames: ''!
 
-!classDefinition: #Storage category: 'Powerlang-Core'!
+!classDefinition: #Storage category: #'Powerlang-Core'!
 Object subclass: #Storage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'Storage class' category: 'Powerlang-Core'!
+!classDefinition: 'Storage class' category: #'Powerlang-Core'!
 Storage class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrapStorage category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrapStorage category: #'Powerlang-Core-Metaphysics'!
 Storage subclass: #BootstrapStorage
 	instanceVariableNames: 'bootstrapper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapStorage class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapStorage class' category: #'Powerlang-Core-Metaphysics'!
 BootstrapStorage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteArrayAdapter category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ByteArrayAdapter category: #'Powerlang-Core-Metaphysics'!
 Storage subclass: #ByteArrayAdapter
 	instanceVariableNames: 'bytes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ByteArrayAdapter class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ByteArrayAdapter class' category: #'Powerlang-Core-Metaphysics'!
 ByteArrayAdapter class
 	instanceVariableNames: ''!
 
-!classDefinition: #TonelRepository category: 'Powerlang-Core'!
+!classDefinition: #TonelRepository category: #'Powerlang-Core'!
 Object subclass: #TonelRepository
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'TonelRepository class' category: 'Powerlang-Core'!
+!classDefinition: 'TonelRepository class' category: #'Powerlang-Core'!
 TonelRepository class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSpecies category: 'Powerlang-Core'!
+!classDefinition: #VirtualSpecies category: #'Powerlang-Core'!
 Object subclass: #VirtualSpecies
 	instanceVariableNames: 'spec superclass map'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualSpecies class' category: 'Powerlang-Core'!
+!classDefinition: 'VirtualSpecies class' category: #'Powerlang-Core'!
 VirtualSpecies class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualClass category: 'Powerlang-Core'!
+!classDefinition: #VirtualClass category: #'Powerlang-Core'!
 VirtualSpecies subclass: #VirtualClass
 	instanceVariableNames: 'cvars'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualClass class' category: 'Powerlang-Core'!
+!classDefinition: 'VirtualClass class' category: #'Powerlang-Core'!
 VirtualClass class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualMetaclass category: 'Powerlang-Core'!
+!classDefinition: #VirtualMetaclass category: #'Powerlang-Core'!
 VirtualSpecies subclass: #VirtualMetaclass
 	instanceVariableNames: 'class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualMetaclass class' category: 'Powerlang-Core'!
+!classDefinition: 'VirtualMetaclass class' category: #'Powerlang-Core'!
 VirtualMetaclass class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodEvaluator category: 'Powerlang-Core-Emulation'!
-Object subclass: #MethodEvaluator
-	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
-	classVariableNames: 'Undermessages'
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'MethodEvaluator class' category: 'Powerlang-Core-Emulation'!
-MethodEvaluator class
-	instanceVariableNames: ''!
-
-!classDefinition: #VirtualSmalltalkImage category: 'Powerlang-Core-Emulation'!
-Object subclass: #VirtualSmalltalkImage
-	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
-	classVariableNames: 'KernelSpec'
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkImage class' category: 'Powerlang-Core-Emulation'!
-VirtualSmalltalkImage class
-	instanceVariableNames: ''!
-
-!classDefinition: #VirtualSmalltalkRuntime category: 'Powerlang-Core-Emulation'!
-Object subclass: #VirtualSmalltalkRuntime
-	instanceVariableNames: 'image frames methodCache symbolCache smallintBehavior lastHash overrides globals virtualSpecies'
-	classVariableNames: 'Undermessages'
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkRuntime class' category: 'Powerlang-Core-Emulation'!
-VirtualSmalltalkRuntime class
-	instanceVariableNames: ''!
-
-!classDefinition: #ABI category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ABI category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ABI class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X64ABI category: 'Powerlang-Core'!
+!classDefinition: #X64ABI category: #'Powerlang-Core'!
 ABI subclass: #X64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'X64ABI class' category: 'Powerlang-Core'!
+!classDefinition: 'X64ABI class' category: #'Powerlang-Core'!
 X64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #SysVX64ABI category: 'Powerlang-Core'!
+!classDefinition: #SysVX64ABI category: #'Powerlang-Core'!
 X64ABI subclass: #SysVX64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SysVX64ABI class' category: 'Powerlang-Core'!
+!classDefinition: 'SysVX64ABI class' category: #'Powerlang-Core'!
 SysVX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X86ABI category: 'Powerlang-Core'!
+!classDefinition: #X86ABI category: #'Powerlang-Core'!
 ABI subclass: #X86ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'X86ABI class' category: 'Powerlang-Core'!
+!classDefinition: 'X86ABI class' category: #'Powerlang-Core'!
 X86ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstruction category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAInstruction category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAInstruction
 	instanceVariableNames: 'prefix mnemonic operands template'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAInstruction class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAInstruction class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperand category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperand category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperand class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperand class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAImmediate category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAImmediate category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #ISAImmediate
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAImmediate class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAImmediate class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAImmediate class
 	instanceVariableNames: ''!
 
-!classDefinition: #MemoryOperand category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #MemoryOperand category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #MemoryOperand
 	instanceVariableNames: 'base index scale displacement segment'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'MemoryOperand class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'MemoryOperand class' category: #'Powerlang-Core-Assembler-Intel'!
 MemoryOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #Register category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Register category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #Register
 	instanceVariableNames: 'name index family flags'
 	classVariableNames: ''
 	poolDictionaries: 'OperandTypeFlags Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Register class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Register class' category: #'Powerlang-Core-Assembler-Intel'!
 Register class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperandType category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperandType category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperandType
 	instanceVariableNames: 'type length memoryLength flags'
 	classVariableNames: 'Types'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperandType class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperandType class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperandType class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionEncoder category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionEncoder category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionEncoder
 	instanceVariableNames: 'instruction spec stream prefixes rex vex opcode modrm sib displacement immediate immediate2 wordSize'
 	classVariableNames: 'Cache'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionEncoder class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionEncoder class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionEncoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionPrefix category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: 'Prefixes'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #LegacyPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #LegacyPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #LegacyPrefix
 	instanceVariableNames: 'group value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'LegacyPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'LegacyPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 LegacyPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #SegmentPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #REXPrefix category: #'Powerlang-Core-Assembler-Intel'!
+InstructionPrefix subclass: #REXPrefix
+	instanceVariableNames: 'group value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'REXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+REXPrefix class
+	instanceVariableNames: ''!
+
+!classDefinition: #SegmentPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #SegmentPrefix
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'SegmentPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'SegmentPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 SegmentPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionSpec category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionSpec category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionSpec
 	instanceVariableNames: 'opcode primary extension instruction opEncoding properties implicitRead implicitWrite implicitUndef useful protected mode compat features atnt preferred description prefixes mnemonic operands'
 	classVariableNames: 'Specs'
 	poolDictionaries: 'CharacterConstants'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionSpec class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionSpec class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionSpec class
 	instanceVariableNames: ''!
 
-!classDefinition: #OperandEncoding category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandEncoding category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #OperandEncoding
 	instanceVariableNames: 'name selectors descriptions immediate modrm'
 	classVariableNames: 'Encodings'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandEncoding class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandEncoding class' category: #'Powerlang-Core-Assembler-Intel'!
 OperandEncoding class
 	instanceVariableNames: ''!
 
-!classDefinition: #Binding category: 'Powerlang-Core-SCompiler-Bindings'!
-Object subclass: #Binding
-	instanceVariableNames: 'name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'Binding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding class
-	instanceVariableNames: ''!
-
-!classDefinition: #UnresolvedBinding category: 'Powerlang-Core'!
-Binding subclass: #UnresolvedBinding
-	instanceVariableNames: ''
-	classVariableNames: 'Default'
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'UnresolvedBinding class' category: 'Powerlang-Core'!
-UnresolvedBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssociationBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #AssociationBinding
-	instanceVariableNames: 'association'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'AssociationBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClassVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding subclass: #ClassVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-ClassVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #GlobalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding subclass: #GlobalBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'GlobalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-GlobalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClassBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-GlobalBinding subclass: #ClassBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-ClassBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #PoolVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding subclass: #PoolVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'PoolVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-PoolVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #ConstantPoolBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-PoolVarBinding subclass: #ConstantPoolBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ConstantPoolBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-ConstantPoolBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #InstVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #InstVarBinding
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'InstVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-InstVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #LiteralBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #LiteralBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LiteralBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #TrueBinding category: 'Powerlang-Core'!
-LiteralBinding subclass: #TrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'TrueBinding class' category: 'Powerlang-Core'!
-TrueBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #FalseBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding subclass: #FalseBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'FalseBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-FalseBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #LocalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #LocalBinding
-	instanceVariableNames: 'index environment declaration'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LocalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-LocalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #TemporaryBinding category: 'Powerlang-Core'!
-LocalBinding subclass: #TemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'TemporaryBinding class' category: 'Powerlang-Core'!
-TemporaryBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArgumentBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-LocalBinding subclass: #ArgumentBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ArgumentBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-ArgumentBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SelfBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #SelfBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'SelfBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-SelfBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SuperBinding category: 'Powerlang-Core'!
-SelfBinding subclass: #SuperBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SuperBinding class' category: 'Powerlang-Core'!
-SuperBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #NilBinding category: 'Powerlang-Core-SCompiler-Bindings'!
-Object subclass: #NilBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'NilBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
-NilBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #IdentifierBinder category: 'Powerlang-Core-SCompiler'!
-Object subclass: #IdentifierBinder
-	instanceVariableNames: 'contents'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'IdentifierBinder class' category: 'Powerlang-Core-SCompiler'!
-IdentifierBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #StaticBinder category: 'Powerlang-Core'!
-IdentifierBinder subclass: #StaticBinder
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StaticBinder class' category: 'Powerlang-Core'!
-StaticBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #DynamicBinder category: 'Powerlang-Core-SCompiler'!
-IdentifierBinder subclass: #DynamicBinder
-	instanceVariableNames: 'type'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'DynamicBinder class' category: 'Powerlang-Core-SCompiler'!
-DynamicBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #LocalEnvironment category: 'Powerlang-Core-SCompiler'!
-Object subclass: #LocalEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'LocalEnvironment class' category: 'Powerlang-Core-SCompiler'!
-LocalEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackEnvironment category: 'Powerlang-Core'!
-LocalEnvironment subclass: #StackEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackEnvironment class' category: 'Powerlang-Core'!
-StackEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArgumentEnvironment category: 'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #ArgumentEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArgumentEnvironment class' category: 'Powerlang-Core-SCompiler'!
-ArgumentEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlinedArgEnvironment category: 'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #InlinedArgEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'InlinedArgEnvironment class' category: 'Powerlang-Core-SCompiler'!
-InlinedArgEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArrayEnvironment category: 'Powerlang-Core-SCompiler'!
-LocalEnvironment subclass: #ArrayEnvironment
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core-SCompiler'!
-ArrayEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageInliner category: 'Powerlang-Core-SCompiler'!
-Object subclass: #MessageInliner
-	instanceVariableNames: 'message'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MessageInliner class' category: 'Powerlang-Core-SCompiler'!
-MessageInliner class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompilationResult category: 'Powerlang-Core-SCompiler'!
-Object subclass: #SCompilationResult
-	instanceVariableNames: 'compiler error ast method'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationResult class' category: 'Powerlang-Core-SCompiler'!
-SCompilationResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompiledBlock category: 'Powerlang-Core-SCompiler'!
-Object subclass: #SCompiledBlock
-	instanceVariableNames: 'format nativeCode method'
-	classVariableNames: ''
-	poolDictionaries: 'SCompiledBlockFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlock class' category: 'Powerlang-Core-SCompiler'!
-SCompiledBlock class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompiledBlockBuilder category: 'Powerlang-Core-SCompiler'!
-Object subclass: #SCompiledBlockBuilder
-	instanceVariableNames: 'scope node'
-	classVariableNames: ''
-	poolDictionaries: 'SCompiledBlockFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockBuilder class' category: 'Powerlang-Core-SCompiler'!
-SCompiledBlockBuilder class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompiler category: 'Powerlang-Core-SCompiler'!
-Object subclass: #SCompiler
-	instanceVariableNames: 'errorHandler result class pools namespace'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiler class' category: 'Powerlang-Core-SCompiler'!
-SCompiler class
-	instanceVariableNames: ''!
-
-!classDefinition: #ScriptScope category: 'Powerlang-Core-SCompiler'!
-Object subclass: #ScriptScope
-	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ScriptScope class' category: 'Powerlang-Core-SCompiler'!
-ScriptScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #BlockScope category: 'Powerlang-Core-SCompiler'!
-ScriptScope subclass: #BlockScope
-	instanceVariableNames: 'environments captured'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'BlockScope class' category: 'Powerlang-Core-SCompiler'!
-BlockScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #MethodScope category: 'Powerlang-Core-SCompiler'!
-ScriptScope subclass: #MethodScope
-	instanceVariableNames: 'species pseudo ivars cvars pools globals'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MethodScope class' category: 'Powerlang-Core-SCompiler'!
-MethodScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #Assembler64 category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #Assembler64 category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #Assembler64
 	instanceVariableNames: 'instruction operands1 operands2 operands3 pointer immediate encoder wordSize memory labels'
 	classVariableNames: 'IndexedLabels'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'Assembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'Assembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 Assembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #JITAssembler64 category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #JITAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
 Assembler64 subclass: #JITAssembler64
 	instanceVariableNames: 'literals'
 	classVariableNames: 'ExternalFunctions'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'JITAssembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'JITAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativeCodeReference category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #NameOfSubclass category: #'Powerlang-Core-Assembler-JIT'!
+Object subclass: #NameOfSubclass
+	instanceVariableNames: 'stream address fixups'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NameOfSubclass class' category: #'Powerlang-Core-Assembler-JIT'!
+NameOfSubclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #NativeCodeReference category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #NativeCodeReference
 	instanceVariableNames: 'source sourceOffset target absolute'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'NativeCodeReference class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NativeCodeReference class' category: #'Powerlang-Core-Assembler-JIT'!
 NativeCodeReference class
 	instanceVariableNames: ''!
 
-!classDefinition: #Assembly category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #RelocatableBuffer category: #'Powerlang-Core-Assembler-JIT'!
+Object subclass: #RelocatableBuffer
+	instanceVariableNames: 'stream address fixups'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocatableBuffer class' category: #'Powerlang-Core-Assembler-JIT'!
+RelocatableBuffer class
+	instanceVariableNames: ''!
+
+!classDefinition: #RelocationFixup category: #'Powerlang-Core-Assembler-JIT'!
+Object subclass: #RelocationFixup
+	instanceVariableNames: 'source target relative size'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocationFixup class' category: #'Powerlang-Core-Assembler-JIT'!
+RelocationFixup class
+	instanceVariableNames: ''!
+
+!classDefinition: #Assembly category: #'Powerlang-Core-Assembler-Parser'!
 Object subclass: #Assembly
 	instanceVariableNames: 'labels instructions source parser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'Assembly class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'Assembly class' category: #'Powerlang-Core-Assembler-Parser'!
 Assembly class
 	instanceVariableNames: ''!
 
-!classDefinition: #Mirror category: 'Powerlang-Core-Mirrors'!
-Object subclass: #Mirror
-	instanceVariableNames: 'handle'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'Mirror class' category: 'Powerlang-Core-Mirrors'!
-Mirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackFrameMirror category: 'Powerlang-Core'!
-Mirror subclass: #StackFrameMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'FrameOffsets'
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameMirror class' category: 'Powerlang-Core'!
-StackFrameMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectMirror category: 'Powerlang-Core-Mirrors'!
-Mirror subclass: #ObjectMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ObjectMirror class' category: 'Powerlang-Core-Mirrors'!
-ObjectMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #SpeciesMirror category: 'Powerlang-Core'!
-ObjectMirror subclass: #SpeciesMirror
-	instanceVariableNames: ''
-	classVariableNames: 'Flags'
-	poolDictionaries: 'SpeciesFormatMasks'
-	category: 'Powerlang-Core'!
-!classDefinition: 'SpeciesMirror class' category: 'Powerlang-Core'!
-SpeciesMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClassMirror category: 'Powerlang-Core-Mirrors'!
-SpeciesMirror subclass: #ClassMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClassMirror class' category: 'Powerlang-Core-Mirrors'!
-ClassMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #MetaclassMirror category: 'Powerlang-Core-Mirrors'!
-SpeciesMirror subclass: #MetaclassMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core-Mirrors'!
-MetaclassMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssociationMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #AssociationMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'AssociationMirror class' category: 'Powerlang-Core-Mirrors'!
-AssociationMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #BehaviorMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #BehaviorMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'BehaviorMirror class' category: 'Powerlang-Core-Mirrors'!
-BehaviorMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClosureMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #ClosureMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClosureMirror class' category: 'Powerlang-Core-Mirrors'!
-ClosureMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompiledBlockMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #CompiledBlockMirror
-	instanceVariableNames: ''
-	classVariableNames: 'Flags'
-	poolDictionaries: 'CompiledBlockFormatMasks'
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockMirror class' category: 'Powerlang-Core-Mirrors'!
-CompiledBlockMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompiledMethodMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #CompiledMethodMirror
-	instanceVariableNames: ''
-	classVariableNames: 'Flags'
-	poolDictionaries: 'CompiledMethodFormatMasks'
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodMirror class' category: 'Powerlang-Core-Mirrors'!
-CompiledMethodMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #DictionaryMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #DictionaryMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'DictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
-DictionaryMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #MethodDictionaryMirror category: 'Powerlang-Core-Mirrors'!
-ObjectMirror subclass: #MethodDictionaryMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MethodDictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
-MethodDictionaryMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstcodeDecoder category: 'Powerlang-Core-SExpressions'!
-Object subclass: #AstcodeDecoder
-	instanceVariableNames: 'method stream nodeTypes bindingTypes'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes'
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeDecoder class' category: 'Powerlang-Core-SExpressions'!
-AstcodeDecoder class
-	instanceVariableNames: ''!
-
-!classDefinition: #BinaryMessageOptimizer category: 'Powerlang-Core-SExpressions'!
-Object subclass: #BinaryMessageOptimizer
-	instanceVariableNames: 'emitter message selector receiver argument'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes'
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'BinaryMessageOptimizer class' category: 'Powerlang-Core-SExpressions'!
-BinaryMessageOptimizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #SBinding category: 'Powerlang-Core-SExpressions'!
-Object subclass: #SBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBinding class' category: 'Powerlang-Core-SExpressions'!
-SBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLiteralBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
-SLiteralBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STrueBinding category: 'Powerlang-Core'!
-SLiteralBinding subclass: #STrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
-STrueBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SFalseBinding category: 'Powerlang-Core-SExpressions'!
-SLiteralBinding subclass: #SFalseBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core-SExpressions'!
-SFalseBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLocalBinding
-	instanceVariableNames: 'position environment'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
-SLocalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
-SLocalBinding subclass: #STemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
-STemporaryBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SArgumentBinding category: 'Powerlang-Core-SExpressions'!
-SLocalBinding subclass: #SArgumentBinding
-	instanceVariableNames: 'inlined'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SArgumentBinding class' category: 'Powerlang-Core-SExpressions'!
-SArgumentBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
-SBinding subclass: #SSelfBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
-SSelfBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
-SSelfBinding subclass: #SSuperBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
-SSuperBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssociationBinding category: 'Powerlang-Core-SExpressions'!
-SBinding subclass: #SAssociationBinding
-	instanceVariableNames: 'index association'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core-SExpressions'!
-SAssociationBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SPoolVarBinding category: 'Powerlang-Core'!
-SAssociationBinding subclass: #SPoolVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core'!
-SPoolVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core-SExpressions'!
-SPoolVarBinding subclass: #SConstantPoolBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core-SExpressions'!
-SConstantPoolBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SClassVarBinding category: 'Powerlang-Core-SExpressions'!
-SAssociationBinding subclass: #SClassVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassVarBinding class' category: 'Powerlang-Core-SExpressions'!
-SClassVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SGlobalBinding category: 'Powerlang-Core-SExpressions'!
-SAssociationBinding subclass: #SGlobalBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core-SExpressions'!
-SGlobalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SClassBinding category: 'Powerlang-Core-SExpressions'!
-SGlobalBinding subclass: #SClassBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassBinding class' category: 'Powerlang-Core-SExpressions'!
-SClassBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SInstVarBinding category: 'Powerlang-Core-SExpressions'!
-SBinding subclass: #SInstVarBinding
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SInstVarBinding class' category: 'Powerlang-Core-SExpressions'!
-SInstVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpression category: 'Powerlang-Core-SExpressions'!
-Object subclass: #SExpression
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpression class' category: 'Powerlang-Core-SExpressions'!
-SExpression class
-	instanceVariableNames: ''!
-
-!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
-SExpression subclass: #SIdenitifier
-	instanceVariableNames: 'binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
-SIdenitifier class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
-SExpression subclass: #SLiteralVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
-SLiteralVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteral category: 'Powerlang-Core'!
-SLiteralVar subclass: #SLiteral
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
-SLiteral class
-	instanceVariableNames: ''!
-
-!classDefinition: #SMessage category: 'Powerlang-Core'!
-SExpression subclass: #SMessage
-	instanceVariableNames: 'selector receiver arguments opcodes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SMessage class' category: 'Powerlang-Core'!
-SMessage class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssignment category: 'Powerlang-Core-SExpressions'!
-SExpression subclass: #SAssignment
-	instanceVariableNames: 'assignees expression'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssignment class' category: 'Powerlang-Core-SExpressions'!
-SAssignment class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascade category: 'Powerlang-Core-SExpressions'!
-SExpression subclass: #SCascade
-	instanceVariableNames: 'receiver messages'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascade class' category: 'Powerlang-Core-SExpressions'!
-SCascade class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascadeMessage category: 'Powerlang-Core-SExpressions'!
-SExpression subclass: #SCascadeMessage
-	instanceVariableNames: 'selector arguments'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascadeMessage class' category: 'Powerlang-Core-SExpressions'!
-SCascadeMessage class
-	instanceVariableNames: ''!
-
-!classDefinition: #SIdentifier category: 'Powerlang-Core-SExpressions'!
-SExpression subclass: #SIdentifier
-	instanceVariableNames: 'binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SIdentifier class' category: 'Powerlang-Core-SExpressions'!
-SIdentifier class
-	instanceVariableNames: ''!
-
-!classDefinition: #SScript category: 'Powerlang-Core-SExpressions'!
-SExpression subclass: #SScript
-	instanceVariableNames: 'statements compiledCode'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SScript class' category: 'Powerlang-Core-SExpressions'!
-SScript class
-	instanceVariableNames: ''!
-
-!classDefinition: #SBlock category: 'Powerlang-Core-SExpressions'!
-SScript subclass: #SBlock
-	instanceVariableNames: 'index capturedVariables inlinedArgs'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBlock class' category: 'Powerlang-Core-SExpressions'!
-SBlock class
-	instanceVariableNames: ''!
-
-!classDefinition: #BinaryMessageNativizer category: 'Powerlang-Core-Nativization'!
-Object subclass: #BinaryMessageNativizer
-	instanceVariableNames: 'message assembler nativizer done failed'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'BinaryMessageNativizer class' category: 'Powerlang-Core-Nativization'!
-BinaryMessageNativizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlinedMessageNativizer category: 'Powerlang-Core-Nativization'!
-Object subclass: #InlinedMessageNativizer
-	instanceVariableNames: 'message assembler nativizer start end'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlinedMessageNativizer class' category: 'Powerlang-Core-Nativization'!
-InlinedMessageNativizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageLinker category: 'Powerlang-Core-Nativization'!
-Object subclass: #MessageLinker
-	instanceVariableNames: 'filter'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'MessageLinker class' category: 'Powerlang-Core-Nativization'!
-MessageLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompositeMessageLinker category: 'Powerlang-Core-Nativization'!
-MessageLinker subclass: #CompositeMessageLinker
-	instanceVariableNames: 'candidates'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'CompositeMessageLinker class' category: 'Powerlang-Core-Nativization'!
-CompositeMessageLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #HaltingSend category: 'Powerlang-Core-Nativization'!
-MessageLinker subclass: #HaltingSend
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'HaltingSend class' category: 'Powerlang-Core-Nativization'!
-HaltingSend class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlineMessageLinker category: 'Powerlang-Core-Nativization'!
-MessageLinker subclass: #InlineMessageLinker
-	instanceVariableNames: 'assembler map'
-	classVariableNames: ''
-	poolDictionaries: 'InlineMessageLinkerFlags Registers'
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinker class' category: 'Powerlang-Core-Nativization'!
-InlineMessageLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #InvokeLinker category: 'Powerlang-Core-Nativization'!
-MessageLinker subclass: #InvokeLinker
-	instanceVariableNames: 'invoker sends'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InvokeLinker class' category: 'Powerlang-Core-Nativization'!
-InvokeLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #LookupLinker category: 'Powerlang-Core-Nativization'!
-MessageLinker subclass: #LookupLinker
-	instanceVariableNames: 'lookup lookupSuper'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LookupLinker class' category: 'Powerlang-Core-Nativization'!
-LookupLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #LazyLinker category: 'Powerlang-Core-Nativization'!
-LookupLinker subclass: #LazyLinker
-	instanceVariableNames: 'sends'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LazyLinker class' category: 'Powerlang-Core-Nativization'!
-LazyLinker class
-	instanceVariableNames: ''!
-
-!classDefinition: #NativizationEnvironment category: 'Powerlang-Core-Nativization'!
-Object subclass: #NativizationEnvironment
-	instanceVariableNames: 'optimizedMethods invokedMethods inlinedMethods messageLinker globals writeBarrier abi safepointCheck cachedNativizer busy'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativizationEnvironment class' category: 'Powerlang-Core-Nativization'!
-NativizationEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #Opcode category: 'Powerlang-Core-Nativization'!
-Object subclass: #Opcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'Opcode class' category: 'Powerlang-Core-Nativization'!
-Opcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackOpcode category: 'Powerlang-Core'!
-Opcode subclass: #StackOpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackOpcode class' category: 'Powerlang-Core'!
-StackOpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #PopRopcode category: 'Powerlang-Core-Nativization'!
-StackOpcode subclass: #PopRopcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PopRopcode class' category: 'Powerlang-Core-Nativization'!
-PopRopcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #PushRopcode category: 'Powerlang-Core-Nativization'!
-StackOpcode subclass: #PushRopcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PushRopcode class' category: 'Powerlang-Core-Nativization'!
-PushRopcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #EnsureSmallIntegerOpcode category: 'Powerlang-Core-Nativization'!
-Opcode subclass: #EnsureSmallIntegerOpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureSmallIntegerOpcode class' category: 'Powerlang-Core-Nativization'!
-EnsureSmallIntegerOpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #EnsureASmallInteger category: 'Powerlang-Core-Nativization'!
-EnsureSmallIntegerOpcode subclass: #EnsureASmallInteger
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureASmallInteger class' category: 'Powerlang-Core-Nativization'!
-EnsureASmallInteger class
-	instanceVariableNames: ''!
-
-!classDefinition: #EnsureRSmallInteger category: 'Powerlang-Core-Nativization'!
-EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureRSmallInteger class' category: 'Powerlang-Core-Nativization'!
-EnsureRSmallInteger class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAOpcode category: 'Powerlang-Core-Nativization'!
-Opcode subclass: #LoadAOpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAOpcode class' category: 'Powerlang-Core-Nativization'!
-LoadAOpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAvisitingArgument category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAvisitingArgument
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAvisitingArgument class' category: 'Powerlang-Core-Nativization'!
-LoadAvisitingArgument class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithFalse category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithFalse
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithFalse class' category: 'Powerlang-Core-Nativization'!
-LoadAwithFalse class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithInstVar category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithInstVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithInstVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithInstVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithLiteralVar category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithLiteralVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteralVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithLiteralVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithAssocVar category: 'Powerlang-Core-Nativization'!
-LoadAwithLiteralVar subclass: #LoadAwithAssocVar
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithAssocVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithAssocVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithClassVar category: 'Powerlang-Core-Nativization'!
-LoadAwithAssocVar subclass: #LoadAwithClassVar
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithClassVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithClassVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithGlobal category: 'Powerlang-Core-Nativization'!
-LoadAwithAssocVar subclass: #LoadAwithGlobal
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithGlobal class' category: 'Powerlang-Core-Nativization'!
-LoadAwithGlobal class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithPoolVar category: 'Powerlang-Core-Nativization'!
-LoadAwithAssocVar subclass: #LoadAwithPoolVar
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithPoolVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithPoolVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithConstPoolVar category: 'Powerlang-Core-Nativization'!
-LoadAwithLiteralVar subclass: #LoadAwithConstPoolVar
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithConstPoolVar class' category: 'Powerlang-Core-Nativization'!
-LoadAwithConstPoolVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithLiteral category: 'Powerlang-Core-Nativization'!
-LoadAwithLiteralVar subclass: #LoadAwithLiteral
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteral class' category: 'Powerlang-Core-Nativization'!
-LoadAwithLiteral class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithLocal category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithLocal
-	instanceVariableNames: 'index environment'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLocal class' category: 'Powerlang-Core-Nativization'!
-LoadAwithLocal class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithArgument category: 'Powerlang-Core-Nativization'!
-LoadAwithLocal subclass: #LoadAwithArgument
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithArgument class' category: 'Powerlang-Core-Nativization'!
-LoadAwithArgument class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithTemporary category: 'Powerlang-Core-Nativization'!
-LoadAwithLocal subclass: #LoadAwithTemporary
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTemporary class' category: 'Powerlang-Core-Nativization'!
-LoadAwithTemporary class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithNil category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithNil
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithNil class' category: 'Powerlang-Core-Nativization'!
-LoadAwithNil class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithSelf category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithSelf
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithSelf class' category: 'Powerlang-Core-Nativization'!
-LoadAwithSelf class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadAwithTrue category: 'Powerlang-Core-Nativization'!
-LoadAOpcode subclass: #LoadAwithTrue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTrue class' category: 'Powerlang-Core-Nativization'!
-LoadAwithTrue class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadExpressionOpcode category: 'Powerlang-Core-Nativization'!
-Opcode subclass: #LoadExpressionOpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadExpressionOpcode class' category: 'Powerlang-Core-Nativization'!
-LoadExpressionOpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithReceiver category: 'Powerlang-Core-Nativization'!
-LoadExpressionOpcode subclass: #LoadRwithReceiver
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithReceiver class' category: 'Powerlang-Core-Nativization'!
-LoadRwithReceiver class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadROpcode category: 'Powerlang-Core-Nativization'!
-Opcode subclass: #LoadROpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadROpcode class' category: 'Powerlang-Core-Nativization'!
-LoadROpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRvisitingReceiver category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRvisitingReceiver
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRvisitingReceiver class' category: 'Powerlang-Core-Nativization'!
-LoadRvisitingReceiver class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithFalse category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithFalse
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithFalse class' category: 'Powerlang-Core-Nativization'!
-LoadRwithFalse class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithInstVar category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithInstVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithInstVar class' category: 'Powerlang-Core-Nativization'!
-LoadRwithInstVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithLocal category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithLocal
-	instanceVariableNames: 'index environment'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithLocal class' category: 'Powerlang-Core-Nativization'!
-LoadRwithLocal class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithArgument category: 'Powerlang-Core-Nativization'!
-LoadRwithLocal subclass: #LoadRwithArgument
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithArgument class' category: 'Powerlang-Core-Nativization'!
-LoadRwithArgument class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithTemporary category: 'Powerlang-Core-Nativization'!
-LoadRwithLocal subclass: #LoadRwithTemporary
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTemporary class' category: 'Powerlang-Core-Nativization'!
-LoadRwithTemporary class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithNil category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithNil
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithNil class' category: 'Powerlang-Core-Nativization'!
-LoadRwithNil class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithSelf category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithSelf
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithSelf class' category: 'Powerlang-Core-Nativization'!
-LoadRwithSelf class
-	instanceVariableNames: ''!
-
-!classDefinition: #LoadRwithTrue category: 'Powerlang-Core-Nativization'!
-LoadROpcode subclass: #LoadRwithTrue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTrue class' category: 'Powerlang-Core-Nativization'!
-LoadRwithTrue class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpressionNativizer category: 'Powerlang-Core-Nativization'!
-Object subclass: #SExpressionNativizer
-	instanceVariableNames: 'environment assembler method remainingBlocks safepointCheck mainCode stackCount fallbacks activeScript'
-	classVariableNames: ''
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SExpressionNativizer class' category: 'Powerlang-Core-Nativization'!
-SExpressionNativizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #SendSite category: 'Powerlang-Core-Nativization'!
-Object subclass: #SendSite
-	instanceVariableNames: 'instructions selector cache tally format'
-	classVariableNames: ''
-	poolDictionaries: 'SendSiteFlags'
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSite class' category: 'Powerlang-Core-Nativization'!
-SendSite class
-	instanceVariableNames: ''!
-
-!classDefinition: #Bridge category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #Bridge
-	instanceVariableNames: 'cache objects runtime'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Bridge class' category: 'Powerlang-Core-Metaphysics'!
-Bridge class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkBridge category: 'Powerlang-Core-Metaphysics'!
-Bridge subclass: #SmalltalkBridge
-	instanceVariableNames: 'nilObj trueObj falseObj'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SmalltalkBridge class' category: 'Powerlang-Core-Metaphysics'!
-SmalltalkBridge class
-	instanceVariableNames: 'falseObj'!
-
-!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core-Metaphysics'!
-SmalltalkBridge subclass: #BootstrappedPstBridge
-	instanceVariableNames: 'bootstrapper'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core-Metaphysics'!
-BootstrappedPstBridge class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisBridge category: 'Powerlang-Core-Metaphysics'!
-SmalltalkBridge subclass: #CuisBridge
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisBridge class' category: 'Powerlang-Core-Metaphysics'!
-CuisBridge class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisStBridge category: 'Powerlang-Core-Metaphysics'!
-SmalltalkBridge subclass: #CuisStBridge
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStBridge class' category: 'Powerlang-Core-Metaphysics'!
-CuisStBridge class
-	instanceVariableNames: ''!
-
-!classDefinition: #Gate category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #Gate
-	instanceVariableNames: 'handle'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Gate class' category: 'Powerlang-Core-Metaphysics'!
-Gate class
-	instanceVariableNames: ''!
-
-!classDefinition: #DirectGate category: 'Powerlang-Core-Metaphysics'!
-Gate subclass: #DirectGate
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DirectGate class' category: 'Powerlang-Core-Metaphysics'!
-DirectGate class
-	instanceVariableNames: ''!
-
-!classDefinition: #MirageGate category: 'Powerlang-Core-Metaphysics'!
-Gate subclass: #MirageGate
-	instanceVariableNames: 'class'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirageGate class' category: 'Powerlang-Core-Metaphysics'!
-MirageGate class
-	instanceVariableNames: ''!
-
-!classDefinition: #Handle category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #Handle
-	instanceVariableNames: 'runtime'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Handle class' category: 'Powerlang-Core-Metaphysics'!
-Handle class
-	instanceVariableNames: ''!
-
-!classDefinition: #PstFrameHandle category: 'Powerlang-Core'!
-Handle subclass: #PstFrameHandle
-	instanceVariableNames: 'frame'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'PstFrameHandle class' category: 'Powerlang-Core'!
-PstFrameHandle class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisStFrameHandle category: 'Powerlang-Core-Metaphysics'!
-Handle subclass: #CuisStFrameHandle
-	instanceVariableNames: 'frame'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStFrameHandle class' category: 'Powerlang-Core-Metaphysics'!
-CuisStFrameHandle class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectHandle category: 'Powerlang-Core-Metaphysics'!
-Handle subclass: #ObjectHandle
-	instanceVariableNames: 'oid'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHandle class' category: 'Powerlang-Core-Metaphysics'!
-ObjectHandle class
-	instanceVariableNames: ''!
-
-!classDefinition: #LocalHandle category: 'Powerlang-Core-Metaphysics'!
-ObjectHandle subclass: #LocalHandle
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'LocalHandle class' category: 'Powerlang-Core-Metaphysics'!
-LocalHandle class
-	instanceVariableNames: ''!
-
-!classDefinition: #MethodLookup category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #MethodLookup
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MethodLookup class' category: 'Powerlang-Core-Metaphysics'!
-MethodLookup class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisLookup category: 'Powerlang-Core-Metaphysics'!
-MethodLookup subclass: #CuisLookup
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisLookup class' category: 'Powerlang-Core-Metaphysics'!
-CuisLookup class
-	instanceVariableNames: ''!
-
-!classDefinition: #EmulationLookup category: 'Powerlang-Core-Metaphysics'!
-MethodLookup subclass: #EmulationLookup
-	instanceVariableNames: 'spec globals cache'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'EmulationLookup class' category: 'Powerlang-Core-Metaphysics'!
-EmulationLookup class
-	instanceVariableNames: ''!
-
-!classDefinition: #MirrorLookup category: 'Powerlang-Core-Metaphysics'!
-MethodLookup subclass: #MirrorLookup
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirrorLookup class' category: 'Powerlang-Core-Metaphysics'!
-MirrorLookup class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectFormat category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #ObjectFormat
-	instanceVariableNames: 'runtime storage'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
-ObjectFormat class
-	instanceVariableNames: ''!
-
-!classDefinition: #BootstrapObjectFormat category: 'Powerlang-Core-Metaphysics'!
-ObjectFormat subclass: #BootstrapObjectFormat
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
-BootstrapObjectFormat class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisObjectFormat category: 'Powerlang-Core-Metaphysics'!
-ObjectFormat subclass: #CuisObjectFormat
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
-CuisObjectFormat class
-	instanceVariableNames: ''!
-
-!classDefinition: #DmrObjectFormat category: 'Powerlang-Core-Metaphysics'!
-ObjectFormat subclass: #DmrObjectFormat
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DmrObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
-DmrObjectFormat class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectShape category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #ObjectShape
-	instanceVariableNames: 'name fields'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectShape class' category: 'Powerlang-Core-Metaphysics'!
-ObjectShape class
-	instanceVariableNames: ''!
-
-!classDefinition: #Runtime category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #Runtime
-	instanceVariableNames: 'lookup storage objectFormat bridge sources shapeMap objectModel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Runtime class' category: 'Powerlang-Core-Metaphysics'!
-Runtime class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpressionInterpreter category: 'Powerlang-Core-Metaphysics'!
-Object subclass: #SExpressionInterpreter
-	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
-	classVariableNames: ''
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SExpressionInterpreter class' category: 'Powerlang-Core-Metaphysics'!
-SExpressionInterpreter class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkInterpreter category: 'Powerlang-Core'!
-SExpressionInterpreter subclass: #SmalltalkInterpreter
-	instanceVariableNames: 'localRuntime'
-	classVariableNames: 'Underprimitives'
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmalltalkInterpreter class' category: 'Powerlang-Core'!
-SmalltalkInterpreter class
-	instanceVariableNames: ''!
-
-!classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core-Building'!
-Object subclass: #ImageSegmentBuilder
-	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentBuilder class' category: 'Powerlang-Core-Building'!
-ImageSegmentBuilder class
-	instanceVariableNames: ''!
-
-!classDefinition: #KernelSegmentBuilder category: 'Powerlang-Core-Building'!
-ImageSegmentBuilder subclass: #KernelSegmentBuilder
-	instanceVariableNames: 'smalltalk hash symbols'
-	classVariableNames: 'KernelSpec'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'KernelSegmentBuilder class' category: 'Powerlang-Core-Building'!
-KernelSegmentBuilder class
-	instanceVariableNames: ''!
-
-!classDefinition: #LibrarySegmentBuilder category: 'Powerlang-Core-Building'!
-ImageSegmentBuilder subclass: #LibrarySegmentBuilder
-	instanceVariableNames: 'kernelBuilder requiredSpecs imports spec'
-	classVariableNames: 'KernelSpec'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LibrarySegmentBuilder class' category: 'Powerlang-Core-Building'!
-LibrarySegmentBuilder class
-	instanceVariableNames: ''!
-
-!classDefinition: #ImageSegmentWriter category: 'Powerlang-Core-Building'!
-Object subclass: #ImageSegmentWriter
-	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentWriter class' category: 'Powerlang-Core-Building'!
-ImageSegmentWriter class
-	instanceVariableNames: ''!
-
-!classDefinition: #LookupNativizer category: 'Powerlang-Core-Building'!
-Object subclass: #LookupNativizer
-	instanceVariableNames: 'bootstrapper methods'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LookupNativizer class' category: 'Powerlang-Core-Building'!
-LookupNativizer class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectMap category: 'Powerlang-Core-Building'!
-Object subclass: #ObjectMap
-	instanceVariableNames: 'behavior spec'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ObjectMap class' category: 'Powerlang-Core-Building'!
-ObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #SlotObjectMap category: 'Powerlang-Core'!
-ObjectMap subclass: #SlotObjectMap
-	instanceVariableNames: 'slots hash'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core'!
-SlotObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
-ObjectMap subclass: #SmallintObjectMap
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
-SmallintObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #ShapeMap category: 'Powerlang-Core-Metaphysics'!
-ObjectMap subclass: #ShapeMap
-	instanceVariableNames: 'shapes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ShapeMap class' category: 'Powerlang-Core-Metaphysics'!
-ShapeMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #ByteObjectMap category: 'Powerlang-Core-Building'!
-ObjectMap subclass: #ByteObjectMap
-	instanceVariableNames: 'bytes hash'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ByteObjectMap class' category: 'Powerlang-Core-Building'!
-ByteObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #ISAInstructionPartReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionPartReader category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionPartReader
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionPartReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionPartReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAModRMReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAModRMReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAModRMReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAModRMReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAModRMReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAModRMReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOpcodeReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAOpcodeReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAOpcodeReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAOpcodeReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAOpcodeReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAOpcodeReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAPrefixReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAPrefixReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAPrefixReader
 	instanceVariableNames: 'legacy rex vex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAPrefixReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAPrefixReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAPrefixReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISASibReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISASibReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISASibReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISASibReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISASibReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISASibReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstructionReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionReader category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionReader
 	instanceVariableNames: 'prefixes opcode modrm sib displacement immediate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #OctalStructure category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #OctalStructure category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #OctalStructure
 	instanceVariableNames: 'byte'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'OctalStructure class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'OctalStructure class' category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ModRM category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ModRM category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #ModRM
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ModRM class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ModRM class' category: #'Powerlang-Core-Assembler-Tools'!
 ModRM class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIB category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #SIB category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #SIB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'SIB class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'SIB class' category: #'Powerlang-Core-Assembler-Tools'!
 SIB class
 	instanceVariableNames: ''!
 
-!classDefinition: #Subject category: 'Powerlang-Core'!
+!classDefinition: #ImageSegmentBuilder category: #'Powerlang-Core-Building'!
+Object subclass: #ImageSegmentBuilder
+	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentBuilder class' category: #'Powerlang-Core-Building'!
+ImageSegmentBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #KernelSegmentBuilder category: #'Powerlang-Core-Building'!
+ImageSegmentBuilder subclass: #KernelSegmentBuilder
+	instanceVariableNames: 'smalltalk hash symbols'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'KernelSegmentBuilder class' category: #'Powerlang-Core-Building'!
+KernelSegmentBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #LibrarySegmentBuilder category: #'Powerlang-Core-Building'!
+ImageSegmentBuilder subclass: #LibrarySegmentBuilder
+	instanceVariableNames: 'kernelBuilder requiredSpecs imports spec'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'LibrarySegmentBuilder class' category: #'Powerlang-Core-Building'!
+LibrarySegmentBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #ImageSegmentWriter category: #'Powerlang-Core-Building'!
+Object subclass: #ImageSegmentWriter
+	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentWriter class' category: #'Powerlang-Core-Building'!
+ImageSegmentWriter class
+	instanceVariableNames: ''!
+
+!classDefinition: #LookupNativizer category: #'Powerlang-Core-Building'!
+Object subclass: #LookupNativizer
+	instanceVariableNames: 'bootstrapper methods'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'LookupNativizer class' category: #'Powerlang-Core-Building'!
+LookupNativizer class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMap category: #'Powerlang-Core-Building'!
+Object subclass: #ObjectMap
+	instanceVariableNames: 'behavior spec'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'ObjectMap class' category: #'Powerlang-Core-Building'!
+ObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SlotObjectMap category: #'Powerlang-Core'!
+ObjectMap subclass: #SlotObjectMap
+	instanceVariableNames: 'slots hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SlotObjectMap class' category: #'Powerlang-Core'!
+SlotObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmallintObjectMap category: #'Powerlang-Core'!
+ObjectMap subclass: #SmallintObjectMap
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SmallintObjectMap class' category: #'Powerlang-Core'!
+SmallintObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ByteObjectMap category: #'Powerlang-Core-Building'!
+ObjectMap subclass: #ByteObjectMap
+	instanceVariableNames: 'bytes hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'ByteObjectMap class' category: #'Powerlang-Core-Building'!
+ByteObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ShapeMap category: #'Powerlang-Core-Metaphysics'!
+ObjectMap subclass: #ShapeMap
+	instanceVariableNames: 'shapes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ShapeMap class' category: #'Powerlang-Core-Metaphysics'!
+ShapeMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodEvaluator category: #'Powerlang-Core-Emulation'!
+Object subclass: #MethodEvaluator
+	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
+	classVariableNames: 'Undermessages'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'MethodEvaluator class' category: #'Powerlang-Core-Emulation'!
+MethodEvaluator class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSmalltalkImage category: #'Powerlang-Core-Emulation'!
+Object subclass: #VirtualSmalltalkImage
+	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
+	classVariableNames: 'KernelSpec'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkImage class' category: #'Powerlang-Core-Emulation'!
+VirtualSmalltalkImage class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSmalltalkRuntime category: #'Powerlang-Core-Emulation'!
+Object subclass: #VirtualSmalltalkRuntime
+	instanceVariableNames: 'image frames methodCache symbolCache smallintBehavior lastHash overrides globals virtualSpecies'
+	classVariableNames: 'Undermessages'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkRuntime class' category: #'Powerlang-Core-Emulation'!
+VirtualSmalltalkRuntime class
+	instanceVariableNames: ''!
+
+!classDefinition: #Bridge category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #Bridge
+	instanceVariableNames: 'cache objects runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Bridge class' category: #'Powerlang-Core-Metaphysics'!
+Bridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkBridge category: #'Powerlang-Core-Metaphysics'!
+Bridge subclass: #SmalltalkBridge
+	instanceVariableNames: 'nilObj trueObj falseObj'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkBridge class' category: #'Powerlang-Core-Metaphysics'!
+SmalltalkBridge class
+	instanceVariableNames: 'falseObj'!
+
+!classDefinition: #BootstrappedPstBridge category: #'Powerlang-Core-Metaphysics'!
+SmalltalkBridge subclass: #BootstrappedPstBridge
+	instanceVariableNames: 'bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrappedPstBridge class' category: #'Powerlang-Core-Metaphysics'!
+BootstrappedPstBridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisBridge category: #'Powerlang-Core-Metaphysics'!
+SmalltalkBridge subclass: #CuisBridge
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisBridge class' category: #'Powerlang-Core-Metaphysics'!
+CuisBridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisStBridge category: #'Powerlang-Core-Metaphysics'!
+SmalltalkBridge subclass: #CuisStBridge
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStBridge class' category: #'Powerlang-Core-Metaphysics'!
+CuisStBridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #Gate category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #Gate
+	instanceVariableNames: 'handle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Gate class' category: #'Powerlang-Core-Metaphysics'!
+Gate class
+	instanceVariableNames: ''!
+
+!classDefinition: #DirectGate category: #'Powerlang-Core-Metaphysics'!
+Gate subclass: #DirectGate
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DirectGate class' category: #'Powerlang-Core-Metaphysics'!
+DirectGate class
+	instanceVariableNames: ''!
+
+!classDefinition: #MirageGate category: #'Powerlang-Core-Metaphysics'!
+Gate subclass: #MirageGate
+	instanceVariableNames: 'class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirageGate class' category: #'Powerlang-Core-Metaphysics'!
+MirageGate class
+	instanceVariableNames: ''!
+
+!classDefinition: #Handle category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #Handle
+	instanceVariableNames: 'runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Handle class' category: #'Powerlang-Core-Metaphysics'!
+Handle class
+	instanceVariableNames: ''!
+
+!classDefinition: #PstFrameHandle category: #'Powerlang-Core'!
+Handle subclass: #PstFrameHandle
+	instanceVariableNames: 'frame'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'PstFrameHandle class' category: #'Powerlang-Core'!
+PstFrameHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisStFrameHandle category: #'Powerlang-Core-Metaphysics'!
+Handle subclass: #CuisStFrameHandle
+	instanceVariableNames: 'frame'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStFrameHandle class' category: #'Powerlang-Core-Metaphysics'!
+CuisStFrameHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectHandle category: #'Powerlang-Core-Metaphysics'!
+Handle subclass: #ObjectHandle
+	instanceVariableNames: 'oid'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHandle class' category: #'Powerlang-Core-Metaphysics'!
+ObjectHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalHandle category: #'Powerlang-Core-Metaphysics'!
+ObjectHandle subclass: #LocalHandle
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'LocalHandle class' category: #'Powerlang-Core-Metaphysics'!
+LocalHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodLookup category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #MethodLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MethodLookup class' category: #'Powerlang-Core-Metaphysics'!
+MethodLookup class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisLookup category: #'Powerlang-Core-Metaphysics'!
+MethodLookup subclass: #CuisLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisLookup class' category: #'Powerlang-Core-Metaphysics'!
+CuisLookup class
+	instanceVariableNames: ''!
+
+!classDefinition: #EmulationLookup category: #'Powerlang-Core-Metaphysics'!
+MethodLookup subclass: #EmulationLookup
+	instanceVariableNames: 'spec globals cache'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'EmulationLookup class' category: #'Powerlang-Core-Metaphysics'!
+EmulationLookup class
+	instanceVariableNames: ''!
+
+!classDefinition: #MirrorLookup category: #'Powerlang-Core-Metaphysics'!
+MethodLookup subclass: #MirrorLookup
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirrorLookup class' category: #'Powerlang-Core-Metaphysics'!
+MirrorLookup class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectFormat category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #ObjectFormat
+	instanceVariableNames: 'runtime storage'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+ObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #BootstrapObjectFormat category: #'Powerlang-Core-Metaphysics'!
+ObjectFormat subclass: #BootstrapObjectFormat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+BootstrapObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #CuisObjectFormat category: #'Powerlang-Core-Metaphysics'!
+ObjectFormat subclass: #CuisObjectFormat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+CuisObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #DmrObjectFormat category: #'Powerlang-Core-Metaphysics'!
+ObjectFormat subclass: #DmrObjectFormat
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DmrObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+DmrObjectFormat class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectShape category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #ObjectShape
+	instanceVariableNames: 'name fields'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectShape class' category: #'Powerlang-Core-Metaphysics'!
+ObjectShape class
+	instanceVariableNames: ''!
+
+!classDefinition: #Runtime category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #Runtime
+	instanceVariableNames: 'lookup storage objectFormat bridge sources shapeMap objectModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Runtime class' category: #'Powerlang-Core-Metaphysics'!
+Runtime class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionInterpreter category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #SExpressionInterpreter
+	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SExpressionInterpreter class' category: #'Powerlang-Core-Metaphysics'!
+SExpressionInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkInterpreter category: #'Powerlang-Core'!
+SExpressionInterpreter subclass: #SmalltalkInterpreter
+	instanceVariableNames: 'localRuntime'
+	classVariableNames: 'Underprimitives'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SmalltalkInterpreter class' category: #'Powerlang-Core'!
+SmalltalkInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #Mirror category: #'Powerlang-Core-Mirrors'!
+Object subclass: #Mirror
+	instanceVariableNames: 'handle'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'Mirror class' category: #'Powerlang-Core-Mirrors'!
+Mirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackFrameMirror category: #'Powerlang-Core'!
+Mirror subclass: #StackFrameMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'FrameOffsets'
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackFrameMirror class' category: #'Powerlang-Core'!
+StackFrameMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMirror category: #'Powerlang-Core-Mirrors'!
+Mirror subclass: #ObjectMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ObjectMirror class' category: #'Powerlang-Core-Mirrors'!
+ObjectMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #SpeciesMirror category: #'Powerlang-Core'!
+ObjectMirror subclass: #SpeciesMirror
+	instanceVariableNames: ''
+	classVariableNames: 'Flags'
+	poolDictionaries: 'SpeciesFormatMasks'
+	category: 'Powerlang-Core'!
+!classDefinition: 'SpeciesMirror class' category: #'Powerlang-Core'!
+SpeciesMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassMirror category: #'Powerlang-Core-Mirrors'!
+SpeciesMirror subclass: #ClassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClassMirror class' category: #'Powerlang-Core-Mirrors'!
+ClassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaclassMirror category: #'Powerlang-Core-Mirrors'!
+SpeciesMirror subclass: #MetaclassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'MetaclassMirror class' category: #'Powerlang-Core-Mirrors'!
+MetaclassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssociationMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #AssociationMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'AssociationMirror class' category: #'Powerlang-Core-Mirrors'!
+AssociationMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #BehaviorMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #BehaviorMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'BehaviorMirror class' category: #'Powerlang-Core-Mirrors'!
+BehaviorMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClosureMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #ClosureMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClosureMirror class' category: #'Powerlang-Core-Mirrors'!
+ClosureMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #CompiledBlockMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #CompiledBlockMirror
+	instanceVariableNames: ''
+	classVariableNames: 'Flags'
+	poolDictionaries: 'CompiledBlockFormatMasks'
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockMirror class' category: #'Powerlang-Core-Mirrors'!
+CompiledBlockMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #CompiledMethodMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #CompiledMethodMirror
+	instanceVariableNames: ''
+	classVariableNames: 'Flags'
+	poolDictionaries: 'CompiledMethodFormatMasks'
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodMirror class' category: #'Powerlang-Core-Mirrors'!
+CompiledMethodMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #DictionaryMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #DictionaryMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'DictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
+DictionaryMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodDictionaryMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #MethodDictionaryMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'MethodDictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
+MethodDictionaryMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #BinaryMessageNativizer category: #'Powerlang-Core-Nativization'!
+Object subclass: #BinaryMessageNativizer
+	instanceVariableNames: 'message assembler nativizer done failed'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'BinaryMessageNativizer class' category: #'Powerlang-Core-Nativization'!
+BinaryMessageNativizer class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlinedMessageNativizer category: #'Powerlang-Core-Nativization'!
+Object subclass: #InlinedMessageNativizer
+	instanceVariableNames: 'message assembler nativizer start end'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlinedMessageNativizer class' category: #'Powerlang-Core-Nativization'!
+InlinedMessageNativizer class
+	instanceVariableNames: ''!
+
+!classDefinition: #MessageLinker category: #'Powerlang-Core-Nativization'!
+Object subclass: #MessageLinker
+	instanceVariableNames: 'filter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'MessageLinker class' category: #'Powerlang-Core-Nativization'!
+MessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #CompositeMessageLinker category: #'Powerlang-Core-Nativization'!
+MessageLinker subclass: #CompositeMessageLinker
+	instanceVariableNames: 'candidates'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'CompositeMessageLinker class' category: #'Powerlang-Core-Nativization'!
+CompositeMessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #HaltingSend category: #'Powerlang-Core-Nativization'!
+MessageLinker subclass: #HaltingSend
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'HaltingSend class' category: #'Powerlang-Core-Nativization'!
+HaltingSend class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinker category: #'Powerlang-Core-Nativization'!
+MessageLinker subclass: #InlineMessageLinker
+	instanceVariableNames: 'assembler map'
+	classVariableNames: ''
+	poolDictionaries: 'InlineMessageLinkerFlags Registers'
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinker class' category: #'Powerlang-Core-Nativization'!
+InlineMessageLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #InvokeLinker category: #'Powerlang-Core-Nativization'!
+MessageLinker subclass: #InvokeLinker
+	instanceVariableNames: 'invoker sends'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InvokeLinker class' category: #'Powerlang-Core-Nativization'!
+InvokeLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #LookupLinker category: #'Powerlang-Core-Nativization'!
+MessageLinker subclass: #LookupLinker
+	instanceVariableNames: 'lookup lookupSuper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LookupLinker class' category: #'Powerlang-Core-Nativization'!
+LookupLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #LazyLinker category: #'Powerlang-Core-Nativization'!
+LookupLinker subclass: #LazyLinker
+	instanceVariableNames: 'sends'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LazyLinker class' category: #'Powerlang-Core-Nativization'!
+LazyLinker class
+	instanceVariableNames: ''!
+
+!classDefinition: #NativizationEnvironment category: #'Powerlang-Core-Nativization'!
+Object subclass: #NativizationEnvironment
+	instanceVariableNames: 'optimizedMethods invokedMethods inlinedMethods messageLinker globals writeBarrier abi safepointCheck cachedNativizer busy'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'NativizationEnvironment class' category: #'Powerlang-Core-Nativization'!
+NativizationEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #Opcode category: #'Powerlang-Core-Nativization'!
+Object subclass: #Opcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'Opcode class' category: #'Powerlang-Core-Nativization'!
+Opcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackOpcode category: #'Powerlang-Core'!
+Opcode subclass: #StackOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackOpcode class' category: #'Powerlang-Core'!
+StackOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #PopRopcode category: #'Powerlang-Core-Nativization'!
+StackOpcode subclass: #PopRopcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PopRopcode class' category: #'Powerlang-Core-Nativization'!
+PopRopcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #PushRopcode category: #'Powerlang-Core-Nativization'!
+StackOpcode subclass: #PushRopcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PushRopcode class' category: #'Powerlang-Core-Nativization'!
+PushRopcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureSmallIntegerOpcode category: #'Powerlang-Core-Nativization'!
+Opcode subclass: #EnsureSmallIntegerOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureSmallIntegerOpcode class' category: #'Powerlang-Core-Nativization'!
+EnsureSmallIntegerOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureASmallInteger category: #'Powerlang-Core-Nativization'!
+EnsureSmallIntegerOpcode subclass: #EnsureASmallInteger
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureASmallInteger class' category: #'Powerlang-Core-Nativization'!
+EnsureASmallInteger class
+	instanceVariableNames: ''!
+
+!classDefinition: #EnsureRSmallInteger category: #'Powerlang-Core-Nativization'!
+EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureRSmallInteger class' category: #'Powerlang-Core-Nativization'!
+EnsureRSmallInteger class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAOpcode category: #'Powerlang-Core-Nativization'!
+Opcode subclass: #LoadAOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAOpcode class' category: #'Powerlang-Core-Nativization'!
+LoadAOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAvisitingArgument category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAvisitingArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAvisitingArgument class' category: #'Powerlang-Core-Nativization'!
+LoadAvisitingArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithFalse category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithFalse
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithFalse class' category: #'Powerlang-Core-Nativization'!
+LoadAwithFalse class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithInstVar category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithInstVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithInstVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithInstVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLiteralVar category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteralVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithLiteralVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithAssocVar category: #'Powerlang-Core-Nativization'!
+LoadAwithLiteralVar subclass: #LoadAwithAssocVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithAssocVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithAssocVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithClassVar category: #'Powerlang-Core-Nativization'!
+LoadAwithAssocVar subclass: #LoadAwithClassVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithClassVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithClassVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithGlobal category: #'Powerlang-Core-Nativization'!
+LoadAwithAssocVar subclass: #LoadAwithGlobal
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithGlobal class' category: #'Powerlang-Core-Nativization'!
+LoadAwithGlobal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithPoolVar category: #'Powerlang-Core-Nativization'!
+LoadAwithAssocVar subclass: #LoadAwithPoolVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithPoolVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithPoolVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithConstPoolVar category: #'Powerlang-Core-Nativization'!
+LoadAwithLiteralVar subclass: #LoadAwithConstPoolVar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithConstPoolVar class' category: #'Powerlang-Core-Nativization'!
+LoadAwithConstPoolVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLiteral category: #'Powerlang-Core-Nativization'!
+LoadAwithLiteralVar subclass: #LoadAwithLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteral class' category: #'Powerlang-Core-Nativization'!
+LoadAwithLiteral class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithLocal category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithLocal
+	instanceVariableNames: 'index environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLocal class' category: #'Powerlang-Core-Nativization'!
+LoadAwithLocal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithArgument category: #'Powerlang-Core-Nativization'!
+LoadAwithLocal subclass: #LoadAwithArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithArgument class' category: #'Powerlang-Core-Nativization'!
+LoadAwithArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithTemporary category: #'Powerlang-Core-Nativization'!
+LoadAwithLocal subclass: #LoadAwithTemporary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTemporary class' category: #'Powerlang-Core-Nativization'!
+LoadAwithTemporary class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithNil category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithNil
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithNil class' category: #'Powerlang-Core-Nativization'!
+LoadAwithNil class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithSelf category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithSelf
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithSelf class' category: #'Powerlang-Core-Nativization'!
+LoadAwithSelf class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadAwithTrue category: #'Powerlang-Core-Nativization'!
+LoadAOpcode subclass: #LoadAwithTrue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTrue class' category: #'Powerlang-Core-Nativization'!
+LoadAwithTrue class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadExpressionOpcode category: #'Powerlang-Core-Nativization'!
+Opcode subclass: #LoadExpressionOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadExpressionOpcode class' category: #'Powerlang-Core-Nativization'!
+LoadExpressionOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithReceiver category: #'Powerlang-Core-Nativization'!
+LoadExpressionOpcode subclass: #LoadRwithReceiver
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithReceiver class' category: #'Powerlang-Core-Nativization'!
+LoadRwithReceiver class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadROpcode category: #'Powerlang-Core-Nativization'!
+Opcode subclass: #LoadROpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadROpcode class' category: #'Powerlang-Core-Nativization'!
+LoadROpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRvisitingReceiver category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRvisitingReceiver
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRvisitingReceiver class' category: #'Powerlang-Core-Nativization'!
+LoadRvisitingReceiver class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithFalse category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithFalse
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithFalse class' category: #'Powerlang-Core-Nativization'!
+LoadRwithFalse class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithInstVar category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithInstVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithInstVar class' category: #'Powerlang-Core-Nativization'!
+LoadRwithInstVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithLocal category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithLocal
+	instanceVariableNames: 'index environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithLocal class' category: #'Powerlang-Core-Nativization'!
+LoadRwithLocal class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithArgument category: #'Powerlang-Core-Nativization'!
+LoadRwithLocal subclass: #LoadRwithArgument
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithArgument class' category: #'Powerlang-Core-Nativization'!
+LoadRwithArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithTemporary category: #'Powerlang-Core-Nativization'!
+LoadRwithLocal subclass: #LoadRwithTemporary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTemporary class' category: #'Powerlang-Core-Nativization'!
+LoadRwithTemporary class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithNil category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithNil
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithNil class' category: #'Powerlang-Core-Nativization'!
+LoadRwithNil class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithSelf category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithSelf
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithSelf class' category: #'Powerlang-Core-Nativization'!
+LoadRwithSelf class
+	instanceVariableNames: ''!
+
+!classDefinition: #LoadRwithTrue category: #'Powerlang-Core-Nativization'!
+LoadROpcode subclass: #LoadRwithTrue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTrue class' category: #'Powerlang-Core-Nativization'!
+LoadRwithTrue class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionNativizer category: #'Powerlang-Core-Nativization'!
+Object subclass: #SExpressionNativizer
+	instanceVariableNames: 'environment assembler method remainingBlocks safepointCheck mainCode stackCount fallbacks activeScript'
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SExpressionNativizer class' category: #'Powerlang-Core-Nativization'!
+SExpressionNativizer class
+	instanceVariableNames: ''!
+
+!classDefinition: #SendSite category: #'Powerlang-Core-Nativization'!
+Object subclass: #SendSite
+	instanceVariableNames: 'instructions selector cache tally format'
+	classVariableNames: ''
+	poolDictionaries: 'SendSiteFlags'
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSite class' category: #'Powerlang-Core-Nativization'!
+SendSite class
+	instanceVariableNames: ''!
+
+!classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
+Object subclass: #IdentifierBinder
+	instanceVariableNames: 'contents'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'IdentifierBinder class' category: #'Powerlang-Core-SCompiler'!
+IdentifierBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #StaticBinder category: #'Powerlang-Core'!
+IdentifierBinder subclass: #StaticBinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StaticBinder class' category: #'Powerlang-Core'!
+StaticBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #DynamicBinder category: #'Powerlang-Core-SCompiler'!
+IdentifierBinder subclass: #DynamicBinder
+	instanceVariableNames: 'type'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'DynamicBinder class' category: #'Powerlang-Core-SCompiler'!
+DynamicBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalEnvironment category: #'Powerlang-Core-SCompiler'!
+Object subclass: #LocalEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'LocalEnvironment class' category: #'Powerlang-Core-SCompiler'!
+LocalEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackEnvironment category: #'Powerlang-Core'!
+LocalEnvironment subclass: #StackEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'StackEnvironment class' category: #'Powerlang-Core'!
+StackEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentEnvironment category: #'Powerlang-Core-SCompiler'!
+StackEnvironment subclass: #ArgumentEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArgumentEnvironment class' category: #'Powerlang-Core-SCompiler'!
+ArgumentEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlinedArgEnvironment category: #'Powerlang-Core-SCompiler'!
+StackEnvironment subclass: #InlinedArgEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'InlinedArgEnvironment class' category: #'Powerlang-Core-SCompiler'!
+InlinedArgEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArrayEnvironment category: #'Powerlang-Core-SCompiler'!
+LocalEnvironment subclass: #ArrayEnvironment
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArrayEnvironment class' category: #'Powerlang-Core-SCompiler'!
+ArrayEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #MessageInliner category: #'Powerlang-Core-SCompiler'!
+Object subclass: #MessageInliner
+	instanceVariableNames: 'message'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'MessageInliner class' category: #'Powerlang-Core-SCompiler'!
+MessageInliner class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompilationResult category: #'Powerlang-Core-SCompiler'!
+Object subclass: #SCompilationResult
+	instanceVariableNames: 'compiler error ast method'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationResult class' category: #'Powerlang-Core-SCompiler'!
+SCompilationResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiledBlock category: #'Powerlang-Core-SCompiler'!
+Object subclass: #SCompiledBlock
+	instanceVariableNames: 'format nativeCode method'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledBlockFlags'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlock class' category: #'Powerlang-Core-SCompiler'!
+SCompiledBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiledBlockBuilder category: #'Powerlang-Core-SCompiler'!
+Object subclass: #SCompiledBlockBuilder
+	instanceVariableNames: 'scope node'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledBlockFlags'
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockBuilder class' category: #'Powerlang-Core-SCompiler'!
+SCompiledBlockBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiler category: #'Powerlang-Core-SCompiler'!
+Object subclass: #SCompiler
+	instanceVariableNames: 'errorHandler result class pools namespace'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiler class' category: #'Powerlang-Core-SCompiler'!
+SCompiler class
+	instanceVariableNames: ''!
+
+!classDefinition: #ScriptScope category: #'Powerlang-Core-SCompiler'!
+Object subclass: #ScriptScope
+	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ScriptScope class' category: #'Powerlang-Core-SCompiler'!
+ScriptScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #BlockScope category: #'Powerlang-Core-SCompiler'!
+ScriptScope subclass: #BlockScope
+	instanceVariableNames: 'environments captured'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'BlockScope class' category: #'Powerlang-Core-SCompiler'!
+BlockScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodScope category: #'Powerlang-Core-SCompiler'!
+ScriptScope subclass: #MethodScope
+	instanceVariableNames: 'species pseudo ivars cvars pools globals'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'MethodScope class' category: #'Powerlang-Core-SCompiler'!
+MethodScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #Binding category: #'Powerlang-Core-SCompiler-Bindings'!
+Object subclass: #Binding
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'Binding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding class
+	instanceVariableNames: ''!
+
+!classDefinition: #UnresolvedBinding category: #'Powerlang-Core'!
+Binding subclass: #UnresolvedBinding
+	instanceVariableNames: ''
+	classVariableNames: 'Default'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'UnresolvedBinding class' category: #'Powerlang-Core'!
+UnresolvedBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #AssociationBinding
+	instanceVariableNames: 'association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'AssociationBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding subclass: #ClassVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+ClassVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #GlobalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding subclass: #GlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'GlobalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+GlobalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+GlobalBinding subclass: #ClassBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+ClassBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #PoolVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding subclass: #PoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'PoolVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+PoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ConstantPoolBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+PoolVarBinding subclass: #ConstantPoolBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ConstantPoolBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+ConstantPoolBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #InstVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #InstVarBinding
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'InstVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+InstVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LiteralBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #LiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LiteralBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+LiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TrueBinding category: #'Powerlang-Core'!
+LiteralBinding subclass: #TrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'TrueBinding class' category: #'Powerlang-Core'!
+TrueBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #FalseBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+LiteralBinding subclass: #FalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'FalseBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+FalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #LocalBinding
+	instanceVariableNames: 'index environment declaration'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LocalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+LocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TemporaryBinding category: #'Powerlang-Core'!
+LocalBinding subclass: #TemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core'!
+TemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+LocalBinding subclass: #ArgumentBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+ArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SelfBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #SelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+SelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SuperBinding category: #'Powerlang-Core'!
+SelfBinding subclass: #SuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SuperBinding class' category: #'Powerlang-Core'!
+SuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #NilBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Object subclass: #NilBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'NilBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+NilBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeDecoder category: #'Powerlang-Core-SExpressions'!
+Object subclass: #AstcodeDecoder
+	instanceVariableNames: 'method stream nodeTypes bindingTypes'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeDecoder class' category: #'Powerlang-Core-SExpressions'!
+AstcodeDecoder class
+	instanceVariableNames: ''!
+
+!classDefinition: #BinaryMessageOptimizer category: #'Powerlang-Core-SExpressions'!
+Object subclass: #BinaryMessageOptimizer
+	instanceVariableNames: 'emitter message selector receiver argument'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'BinaryMessageOptimizer class' category: #'Powerlang-Core-SExpressions'!
+BinaryMessageOptimizer class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBinding category: #'Powerlang-Core-SExpressions'!
+Object subclass: #SBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBinding class' category: #'Powerlang-Core-SExpressions'!
+SBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralBinding category: #'Powerlang-Core'!
+SBinding subclass: #SLiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralBinding class' category: #'Powerlang-Core'!
+SLiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STrueBinding category: #'Powerlang-Core'!
+SLiteralBinding subclass: #STrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STrueBinding class' category: #'Powerlang-Core'!
+STrueBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFalseBinding category: #'Powerlang-Core-SExpressions'!
+SLiteralBinding subclass: #SFalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SFalseBinding class' category: #'Powerlang-Core-SExpressions'!
+SFalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLocalBinding category: #'Powerlang-Core'!
+SBinding subclass: #SLocalBinding
+	instanceVariableNames: 'position environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLocalBinding class' category: #'Powerlang-Core'!
+SLocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STemporaryBinding category: #'Powerlang-Core'!
+SLocalBinding subclass: #STemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'STemporaryBinding class' category: #'Powerlang-Core'!
+STemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SArgumentBinding category: #'Powerlang-Core-SExpressions'!
+SLocalBinding subclass: #SArgumentBinding
+	instanceVariableNames: 'inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SArgumentBinding class' category: #'Powerlang-Core-SExpressions'!
+SArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSelfBinding category: #'Powerlang-Core'!
+SBinding subclass: #SSelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSelfBinding class' category: #'Powerlang-Core'!
+SSelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSuperBinding category: #'Powerlang-Core'!
+SSelfBinding subclass: #SSuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SSuperBinding class' category: #'Powerlang-Core'!
+SSuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssociationBinding category: #'Powerlang-Core-SExpressions'!
+SBinding subclass: #SAssociationBinding
+	instanceVariableNames: 'index association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssociationBinding class' category: #'Powerlang-Core-SExpressions'!
+SAssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPoolVarBinding category: #'Powerlang-Core'!
+SAssociationBinding subclass: #SPoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SPoolVarBinding class' category: #'Powerlang-Core'!
+SPoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SConstantPoolBinding category: #'Powerlang-Core-SExpressions'!
+SPoolVarBinding subclass: #SConstantPoolBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SConstantPoolBinding class' category: #'Powerlang-Core-SExpressions'!
+SConstantPoolBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClassVarBinding category: #'Powerlang-Core-SExpressions'!
+SAssociationBinding subclass: #SClassVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassVarBinding class' category: #'Powerlang-Core-SExpressions'!
+SClassVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SGlobalBinding category: #'Powerlang-Core-SExpressions'!
+SAssociationBinding subclass: #SGlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SGlobalBinding class' category: #'Powerlang-Core-SExpressions'!
+SGlobalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClassBinding category: #'Powerlang-Core-SExpressions'!
+SGlobalBinding subclass: #SClassBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassBinding class' category: #'Powerlang-Core-SExpressions'!
+SClassBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SInstVarBinding category: #'Powerlang-Core-SExpressions'!
+SBinding subclass: #SInstVarBinding
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SInstVarBinding class' category: #'Powerlang-Core-SExpressions'!
+SInstVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpression category: #'Powerlang-Core-SExpressions'!
+Object subclass: #SExpression
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpression class' category: #'Powerlang-Core-SExpressions'!
+SExpression class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdenitifier category: #'Powerlang-Core'!
+SExpression subclass: #SIdenitifier
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SIdenitifier class' category: #'Powerlang-Core'!
+SIdenitifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralVar category: #'Powerlang-Core'!
+SExpression subclass: #SLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteralVar class' category: #'Powerlang-Core'!
+SLiteralVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteral category: #'Powerlang-Core'!
+SLiteralVar subclass: #SLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SLiteral class' category: #'Powerlang-Core'!
+SLiteral class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessage category: #'Powerlang-Core'!
+SExpression subclass: #SMessage
+	instanceVariableNames: 'selector receiver arguments opcodes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'SMessage class' category: #'Powerlang-Core'!
+SMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssignment category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SAssignment
+	instanceVariableNames: 'assignees expression'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssignment class' category: #'Powerlang-Core-SExpressions'!
+SAssignment class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascade category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SCascade
+	instanceVariableNames: 'receiver messages'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascade class' category: #'Powerlang-Core-SExpressions'!
+SCascade class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeMessage category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SCascadeMessage
+	instanceVariableNames: 'selector arguments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascadeMessage class' category: #'Powerlang-Core-SExpressions'!
+SCascadeMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdentifier category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SIdentifier
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SIdentifier class' category: #'Powerlang-Core-SExpressions'!
+SIdentifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScript category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SScript
+	instanceVariableNames: 'statements compiledCode'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SScript class' category: #'Powerlang-Core-SExpressions'!
+SScript class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBlock category: #'Powerlang-Core-SExpressions'!
+SScript subclass: #SBlock
+	instanceVariableNames: 'index capturedVariables inlinedArgs'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBlock class' category: #'Powerlang-Core-SExpressions'!
+SBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
 	classVariableNames: 'Counts'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'Subject class' category: 'Powerlang-Core'!
+!classDefinition: 'Subject class' category: #'Powerlang-Core'!
 Subject class
 	instanceVariableNames: ''!
 
@@ -2783,32 +2833,6 @@ Copyright (c) 2020 Aucerna.
 
 Nota Bene: x86 specific!
 
-!SExpression commentStamp: '<historical>' prior: 0!
-I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
-!
-
-!Bridge commentStamp: '<historical>' prior: 0!
-I am the one in charge of 'discovering' well known objects in
-the remote image, giving my clients handles to them. For example,
-the Smalltalk bridge allows to get a handle to the remote Smalltalk
-object. Subclasses of SmalltalkBridge implement this functionality,
-as it is runtime specific.!
-
-!Gate commentStamp: '<historical>' prior: 0!
-I am a proxy to a remote object given by my `handle`. My main goal is
-to abstract semantics with which messages sent to me will be executed.
-My subclasses implement those different semantics: 
- - DirectGate executes locally, doing lookup within the remote behavior
-   of object.
- - MirageGate executes locally, doing lookup within a local specification
-   of the behavior of the remote object.
-!
-
-!ShapeMap commentStamp: '<historical>' prior: 0!
-I represent the shape of objects as used by mirrors. Mirrors
-access instance variables by name, asking the runtime for
-the offsets of the instVars.!
-
 !ISAInstructionPartReader commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
@@ -2843,6 +2867,32 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
 Nota Bene: Intel/x86 specific!
+
+!ShapeMap commentStamp: '<historical>' prior: 0!
+I represent the shape of objects as used by mirrors. Mirrors
+access instance variables by name, asking the runtime for
+the offsets of the instVars.!
+
+!Bridge commentStamp: '<historical>' prior: 0!
+I am the one in charge of 'discovering' well known objects in
+the remote image, giving my clients handles to them. For example,
+the Smalltalk bridge allows to get a handle to the remote Smalltalk
+object. Subclasses of SmalltalkBridge implement this functionality,
+as it is runtime specific.!
+
+!Gate commentStamp: '<historical>' prior: 0!
+I am a proxy to a remote object given by my `handle`. My main goal is
+to abstract semantics with which messages sent to me will be executed.
+My subclasses implement those different semantics: 
+ - DirectGate executes locally, doing lookup within the remote behavior
+   of object.
+ - MirageGate executes locally, doing lookup within a local specification
+   of the behavior of the remote object.
+!
+
+!SExpression commentStamp: '<historical>' prior: 0!
+I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
+!
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
 format 
@@ -2956,26 +3006,6 @@ allInstVarNames
 
 	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
 
-!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
-printOn: aStream 
-
- 	self backtrace
-		do: [ :frame | 
-			frame do: [ :elem | elem printOn: aStream ]
-				   separatedBy: [ aStream nextPutAll: '. ' ].
-			aStream cr ]
-! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:57:32'!
-compile: anRGMethod 
-	| compiler spec class |
-	compiler := SCompiler namespace: globals.
-	spec := anRGMethod parent.
-	class := self virtualSpeciesFor: spec.
-	^ compiler
-		forClass: class;
-		compile: anRGMethod sourceCode! !
-
 !ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
 printOn: aStream 
 
@@ -3045,59 +3075,6 @@ printOn: aStream
 	instruction isNil ifTrue: [^super printOn: aStream].
 	aStream nextPutAll: instruction! !
 
-!Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
-printOn: aStream 
-
-	aStream nextPutAll: name; nextPutAll: ' ('.
-	super printOn: aStream.
-	aStream nextPutAll: ')'! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
-name 
-
-	^name! !
-
-!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
-name 
-
-	^'true'! !
-
-!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
-name 
-
-	^'false'! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
-environment 
-
-	^environment index! !
-
-!SelfBinding methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:25:02'!
-name 
-
-	^'self'! !
-
-!SuperBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:32:36'!
-name 
-
-	^'super'! !
-
-!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
-printOn: aStream 
-
-	self printOn: aStream indent: 0! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
-format 
-
-	^ format! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:33:02'!
-compile: aString 
-
-	result := self smalltalkCompiler compileMethod: aString.
-	^result method! !
-
 !Assembler64 methodsFor: 'printing' stamp: 'KenD 2/24/2021 16:13:13'!
 printOn: aStream 
 
@@ -3108,6 +3085,259 @@ printOn: aStream
 printOn: aStream 
 
 	aStream nextPutAll: 'Ref to '; print: target! !
+
+!RelocationFixup methodsFor: 'printing' stamp: 'KenD 4/24/2021 12:46:29'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: self class name;
+		nextPut: $:;
+		space;
+		nextPutAll: target printString! !
+
+!ISAOpcodeReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:38:44'!
+printOn: aStream 
+
+	contents contents
+		do: [:byte | aStream nextPutAll: byte hex]
+		separatedBy: [aStream nextPut: $.]
+! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:47'!
+printOn: aStream 
+
+	self printLegacyOn: aStream.
+	legacy size > 0 ifTrue: [aStream space].
+	rex notNil ifTrue: [
+		self printRexOn: aStream.
+		aStream space].
+	vex notNil ifTrue: [self printVexOn: aStream]! !
+
+!ISAInstructionReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:33:03'!
+printOn: aStream 
+
+	aStream nextPutAll: prefixes.
+	prefixes size > 0 ifTrue: [aStream nextPutAll: '| '].
+	aStream nextPutAll: opcode.
+	aStream nextPutAll: ' | '.
+	modrm notNil ifTrue: [modrm printOn: aStream].
+	sib notNil ifTrue: [
+		aStream nextPutAll: ' | '.
+		sib printOn: aStream].
+	displacement notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		displacement do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]].
+	immediate notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		immediate do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]]
+! !
+
+!OctalStructure methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:01:56'!
+printOn: aStream 
+	| hi mid lo |
+	hi := self hi printPaddedWith: $0 to: 2 base: 2.
+	mid := self mid printPaddedWith: $0 to: 3 base: 2.
+	lo := self lo printPaddedWith: $0 to: 3 base: 2.
+	aStream
+		nextPutAll: hi;
+		nextPut: $.;
+		nextPutAll: mid;
+		nextPut: $.;
+		nextPutAll: lo! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
+methods 
+
+	^methods! !
+
+!ImageSegmentBuilder methodsFor: 'compiling' stamp: 'KenD 3/4/2021 08:16:47'!
+compile: anRGMethod 
+
+	^runtime compile: anRGMethod! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:27:12'!
+>> aSymbol 
+
+	^bootstrapper spec at: aSymbol! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
+methods 
+
+	^methods! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
+isBytes 
+
+	^ false! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:00'!
+isPointers 
+
+	^ false! !
+
+!SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: spec name withArticle;
+		nextPutAll: '>>'! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:50:51'!
+isPointers 
+
+	^true! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:22'!
+allInstVarNames 
+
+	| c |
+	^ spec properties
+		at: #allInstVarNames
+		ifAbsentPut: [ spec isMeta
+				ifTrue: [ c := spec environment at: #Class.
+					c allInstVarNames , spec allInstVarNames ]
+				ifFalse: [ spec allInstVarNames ] ]! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:50:36'!
+instSize 
+
+	| c |
+	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
+		ifTrue: [ c := spec environment at: #Class.
+			
+			c instSize + spec instSize ]
+		ifFalse: [ spec instSize ]]! !
+
+!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:58:39'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: value printString;
+		nextPutAll: '>>'! !
+
+!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
+printOn: aStream 
+
+	spec ifNil: [ ^ super printOn: aStream ].
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: self contentsString;
+		nextPutAll: '>>'! !
+
+!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
+isBytes 
+
+	^true! !
+
+!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
+printOn: aStream 
+
+ 	self backtrace
+		do: [ :frame | 
+			frame do: [ :elem | elem printOn: aStream ]
+				   separatedBy: [ aStream nextPutAll: '. ' ].
+			aStream cr ]
+! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:57:32'!
+compile: anRGMethod 
+	| compiler spec class |
+	compiler := SCompiler namespace: globals.
+	spec := anRGMethod parent.
+	class := self virtualSpeciesFor: spec.
+	^ compiler
+		forClass: class;
+		compile: anRGMethod sourceCode! !
+
+!MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
+printOn: aStream 
+
+	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
+
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
+
+!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 4/12/2021 10:45:19'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
+
+!ObjectHandle methodsFor: 'printing' stamp: 'KenD 3/11/2021 11:41:40'!
+printOn: aStream 
+	| format size bytes |
+	format := runtime objectFormat.
+	format print: oid on: aStream.
+	self isBytes
+		ifFalse: [ ^ self ].
+	size := self size min: 128.
+	size < 30
+		ifTrue: [ aStream nextPutAll: ': ' ]
+		ifFalse: [ aStream cr ].
+	bytes := format bytesOf: oid count: size.
+	aStream print: bytes
+! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:04'!
+isBytes 
+
+	^runtime objectFormat isBytes: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:14'!
+isFixed 
+
+	^self isArrayed not! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
+compile: anRGMethod 
+	| compiler method |
+	compiler := SCompiler namespace: globals.
+	method := compiler
+		forClass: anRGMethod parent;
+		compile: anRGMethod sourceCode.
+	^ method! !
+
+!ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
+printOn: aStream 
+
+	aStream nextPutAll: 'Shape of '; nextPutAll: name! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:24:03'!
+name 
+
+	^name! !
+
+!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 2/27/2021 16:04:01'!
+printOn: aStream 
+	aStream
+		nextPutAll: self class name withArticle;
+		cr;
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		cr.
+	aStream
+		nextPutAll: 'rcvr -> ';
+		print: receiver _gate handle;
+		cr.
+	arguments
+		withIndexDo: [ :a :i | 
+			aStream
+				nextPutAll: 'arg ';
+				print: i;
+				nextPutAll: ' -> ';
+				print: a _gate;
+				cr ].
+	aStream nextPutAll: method source! !
 
 !StackFrameMirror methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:48:23'!
 printOn: aStream 
@@ -3238,6 +3468,59 @@ printOn: aStream
 			'a CMMirror ('
 			; nextPutAll: signature; nextPut: $)! !
 
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
+format 
+
+	^ format! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:33:02'!
+compile: aString 
+
+	result := self smalltalkCompiler compileMethod: aString.
+	^result method! !
+
+!Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
+printOn: aStream 
+
+	aStream nextPutAll: name; nextPutAll: ' ('.
+	super printOn: aStream.
+	aStream nextPutAll: ')'! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
+name 
+
+	^name! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
+name 
+
+	^'true'! !
+
+!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
+name 
+
+	^'false'! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
+environment 
+
+	^environment index! !
+
+!SelfBinding methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:25:02'!
+name 
+
+	^'self'! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:32:36'!
+name 
+
+	^'super'! !
+
 !SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
 name 
 
@@ -3315,230 +3598,6 @@ binding
 isVariable 
 
 	^true! !
-
-!MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
-printOn: aStream 
-
-	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
-
-!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
-
-!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 4/12/2021 10:45:19'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
-
-!ObjectHandle methodsFor: 'printing' stamp: 'KenD 3/11/2021 11:41:40'!
-printOn: aStream 
-	| format size bytes |
-	format := runtime objectFormat.
-	format print: oid on: aStream.
-	self isBytes
-		ifFalse: [ ^ self ].
-	size := self size min: 128.
-	size < 30
-		ifTrue: [ aStream nextPutAll: ': ' ]
-		ifFalse: [ aStream cr ].
-	bytes := format bytesOf: oid count: size.
-	aStream print: bytes
-! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:04'!
-isBytes 
-
-	^runtime objectFormat isBytes: oid! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:14'!
-isFixed 
-
-	^self isArrayed not! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
-compile: anRGMethod 
-	| compiler method |
-	compiler := SCompiler namespace: globals.
-	method := compiler
-		forClass: anRGMethod parent;
-		compile: anRGMethod sourceCode.
-	^ method! !
-
-!ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
-printOn: aStream 
-
-	aStream nextPutAll: 'Shape of '; nextPutAll: name! !
-
-!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:24:03'!
-name 
-
-	^name! !
-
-!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 2/27/2021 16:04:01'!
-printOn: aStream 
-	aStream
-		nextPutAll: self class name withArticle;
-		cr;
-		print: method classBinding;
-		nextPutAll: '>>';
-		print: method selector;
-		cr.
-	aStream
-		nextPutAll: 'rcvr -> ';
-		print: receiver _gate handle;
-		cr.
-	arguments
-		withIndexDo: [ :a :i | 
-			aStream
-				nextPutAll: 'arg ';
-				print: i;
-				nextPutAll: ' -> ';
-				print: a _gate;
-				cr ].
-	aStream nextPutAll: method source! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
-methods 
-
-	^methods! !
-
-!ImageSegmentBuilder methodsFor: 'compiling' stamp: 'KenD 3/4/2021 08:16:47'!
-compile: anRGMethod 
-
-	^runtime compile: anRGMethod! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:27:12'!
->> aSymbol 
-
-	^bootstrapper spec at: aSymbol! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
-methods 
-
-	^methods! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
-isBytes 
-
-	^ false! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:00'!
-isPointers 
-
-	^ false! !
-
-!SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: spec name withArticle;
-		nextPutAll: '>>'! !
-
-!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:50:51'!
-isPointers 
-
-	^true! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:22'!
-allInstVarNames 
-
-	| c |
-	^ spec properties
-		at: #allInstVarNames
-		ifAbsentPut: [ spec isMeta
-				ifTrue: [ c := spec environment at: #Class.
-					c allInstVarNames , spec allInstVarNames ]
-				ifFalse: [ spec allInstVarNames ] ]! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:50:36'!
-instSize 
-
-	| c |
-	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
-		ifTrue: [ c := spec environment at: #Class.
-			
-			c instSize + spec instSize ]
-		ifFalse: [ spec instSize ]]! !
-
-!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:58:39'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: value printString;
-		nextPutAll: '>>'! !
-
-!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
-printOn: aStream 
-
-	spec ifNil: [ ^ super printOn: aStream ].
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: self contentsString;
-		nextPutAll: '>>'! !
-
-!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
-isBytes 
-
-	^true! !
-
-!ISAOpcodeReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:38:44'!
-printOn: aStream 
-
-	contents contents
-		do: [:byte | aStream nextPutAll: byte hex]
-		separatedBy: [aStream nextPut: $.]
-! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:47'!
-printOn: aStream 
-
-	self printLegacyOn: aStream.
-	legacy size > 0 ifTrue: [aStream space].
-	rex notNil ifTrue: [
-		self printRexOn: aStream.
-		aStream space].
-	vex notNil ifTrue: [self printVexOn: aStream]! !
-
-!ISAInstructionReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:33:03'!
-printOn: aStream 
-
-	aStream nextPutAll: prefixes.
-	prefixes size > 0 ifTrue: [aStream nextPutAll: '| '].
-	aStream nextPutAll: opcode.
-	aStream nextPutAll: ' | '.
-	modrm notNil ifTrue: [modrm printOn: aStream].
-	sib notNil ifTrue: [
-		aStream nextPutAll: ' | '.
-		sib printOn: aStream].
-	displacement notNil ifTrue: [
-		aStream nextPutAll: ' |'.
-		displacement do: [:byte | | hex |
-			hex := byte hex.
-			hex size = 1 ifTrue: [hex := '0' , hex].
-			aStream space; nextPutAll: hex]].
-	immediate notNil ifTrue: [
-		aStream nextPutAll: ' |'.
-		immediate do: [:byte | | hex |
-			hex := byte hex.
-			hex size = 1 ifTrue: [hex := '0' , hex].
-			aStream space; nextPutAll: hex]]
-! !
-
-!OctalStructure methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:01:56'!
-printOn: aStream 
-	| hi mid lo |
-	hi := self hi printPaddedWith: $0 to: 2 base: 2.
-	mid := self mid printPaddedWith: $0 to: 3 base: 2.
-	lo := self lo printPaddedWith: $0 to: 3 base: 2.
-	aStream
-		nextPutAll: hi;
-		nextPut: $.;
-		nextPutAll: mid;
-		nextPut: $.;
-		nextPutAll: lo! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:41'!
 printOn: aStream 
@@ -3631,6 +3690,66 @@ initialize
 	"Nothing to be done here, the initialization is done 
 	  in Register class >> initializeRegisters."
 ! !
+
+!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:22:14'!
+initialize 
+	"Bit Flags"
+	IsBytes      := 16r01.
+	IsArrayed := 16r02.
+	IsNamed   := 16r04.
+	IsSmall     := 16r80! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
+behaviorOffset
+
+	^BehaviorOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
+flagsOffset
+
+	^FlagsOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
+hashOffset
+
+	^HashOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
+largeSizeOffset
+
+	^LargeSizeOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
+sizeOffset
+
+	^SizeOffset! !
+
+!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:17:52'!
+initialize 
+	"Offsets in Bytes"
+	BehaviorOffset := -4.
+	FlagsOffset := -5.
+	SizeOffset := -6.
+	HashOffset := -8.
+	LargeSizeOffset := -16! !
+
+!InlineMessageLinkerFlags class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 08:33:16'!
+initialize 
+
+	_Flags := -5.
+	_SmallSize := -6.
+	_Hash := -8.
+	_Reserved := -2.
+	_ExtendedSize := -3.! !
+
+!SendSiteFlags class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 13:29:35'!
+initialize 
+	"Bitflags"
+	IsStaticSend    := 16r01.
+	IsSuperSend    := 16r02.
+	IsPolymorphic := 16r04.
+	HasBeenReset := 16r08
+		! !
 
 !SCompiledMethodFlags class methodsFor: 'class initialization' stamp: 'KenD 4/7/2021 14:11:20'!
 initialize 
@@ -3725,66 +3844,6 @@ initialize
 	AssignmentId := 8.
 	ReturnId := 9! !
 
-!InlineMessageLinkerFlags class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 08:33:16'!
-initialize 
-
-	_Flags := -5.
-	_SmallSize := -6.
-	_Hash := -8.
-	_Reserved := -2.
-	_ExtendedSize := -3.! !
-
-!SendSiteFlags class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 13:29:35'!
-initialize 
-	"Bitflags"
-	IsStaticSend    := 16r01.
-	IsSuperSend    := 16r02.
-	IsPolymorphic := 16r04.
-	HasBeenReset := 16r08
-		! !
-
-!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:22:14'!
-initialize 
-	"Bit Flags"
-	IsBytes      := 16r01.
-	IsArrayed := 16r02.
-	IsNamed   := 16r04.
-	IsSmall     := 16r80! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
-behaviorOffset
-
-	^BehaviorOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
-flagsOffset
-
-	^FlagsOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
-hashOffset
-
-	^HashOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
-largeSizeOffset
-
-	^LargeSizeOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
-sizeOffset
-
-	^SizeOffset! !
-
-!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 09:17:52'!
-initialize 
-	"Offsets in Bytes"
-	BehaviorOffset := -4.
-	FlagsOffset := -5.
-	SizeOffset := -6.
-	HashOffset := -8.
-	LargeSizeOffset := -16! !
-
 !SCompiledBlockFlags class methodsFor: 'class initialization' stamp: 'KenD 4/7/2021 13:53:22'!
 initialize 
 
@@ -3794,6 +3853,25 @@ initialize
 	CapturesSelf := 1 bitShift: 23 - 1.
 	CapturesHome := 1 bitShift: 24 - 1.
 	EnvCount := 25 thru: 31! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:16'!
+code 
+
+	^machineCode! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:28'!
+code: bytes 
+
+	machineCode := bytes! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:55:04'!
+compiledCode: anObject 
+
+	compiledCode := anObject! !
+
+!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:52'!
+disassembledAmd64 
+	^machineCode disassembledAmd64! !
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:14:18'!
 argumentCount 
@@ -4117,25 +4195,6 @@ whileTrue: aBlockSubject
 isSelfEvaluating 
 
 	^false! !
-
-!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:16'!
-code 
-
-	^machineCode! !
-
-!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:28'!
-code: bytes 
-
-	machineCode := bytes! !
-
-!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:55:04'!
-compiledCode: anObject 
-
-	compiledCode := anObject! !
-
-!NativeCode methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:54:52'!
-disassembledAmd64 
-	^machineCode disassembledAmd64! !
 
 !SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 4/8/2021 07:51:25'!
 arguments: aCollection 
@@ -9179,1542 +9238,6 @@ sharedPoolsUsing: globals
 
 	^class sharedPoolsUsing: globals! !
 
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
-argumentAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^arguments at: index ].
-	env := self environmentFor: anInteger.
-	^env at: index.! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:05'!
-arguments 
-
-	^arguments! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:16'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:24'!
-associationValueAt: anInteger 
-
-	^ (method at: anInteger) value! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:34'!
-associationValueAt: anInteger put: value 
-	| association |
-	association := (method at: anInteger).
-	^association value: value! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:01'!
-beBlock 
-	
-	isBlock := true! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:11'!
-blockAstcodesOf: anSCompiledBlock 
-
-	^blockAstcodes at: anSCompiledBlock! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:23'!
-blockOf: anObjectMap 
-
-	^closures at: anObjectMap! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:36'!
-booleanFor: aBoolean 
-
-	^ aBoolean
-		ifTrue: [ system true ]
-		ifFalse: [ system false ]! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:11:10'!
-captureClosure: anSBlock with: block 
-	| closure s i type env arg |
-	closure := system newClosure: block environmentCount.
-	closures at: closure put: block.
-	s := anSBlock capturedVariables readStream.
-	i := 1.
-	[ s atEnd ]
-		whileFalse: [ type := s next.
-			type = Self
-				ifTrue: [ closure at: i put: receiver ].
-			type = Environment
-				ifTrue: [ closure at: i put: environment ].
-			type = EnvironmentValue
-				ifTrue: [ env := environment at: s next.
-					closure at: i put: env ].
-			type = LocalArgument
-				ifTrue: [ arg := arguments at: s next.
-					closure at: i put: arg ].
-			i := i + 1 ].
-	^ closure! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:08'!
-closures 
-
-	^closures! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:20'!
-constPoolValueAt: anInteger 
-
-	^ method at: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:13:59'!
-environment: anObjectMap 
-
-	environment := anObjectMap! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:14:24'!
-environmentFor: anInteger 
-"
-	-1: inlined argument.
-	 0: current env.
- 	>0: index of env in current env. 
-"
-	anInteger = 0
-		ifTrue: [ ^ environment ].
-	anInteger = -1
-		ifTrue: [ ^ temporaries ].
-	^ environment at: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:22:34'!
-falseLiteral 
-
-	^ system false! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:06'!
-instanceVarAt: anInteger 
-
-	^ receiver slotAt: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:17'!
-instanceVarAt: index put: aValue 
-
-	^ receiver slotAt: index put: aValue! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:28'!
-integerFor: anInteger 
-
-	^ system newInteger: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:11'!
-literal: anObject 
-
-	^anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:22'!
-method 
-
-	^method! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:36'!
-method: anSCompiledMethod 
-
-	method := anSCompiledMethod.
-	temporaries := Array new: anSCompiledMethod tempCount! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:48'!
-nilLiteral 
-
-	^ system nil! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:57'!
-parent 
-
-	^parent! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:05'!
-parent: anInterpreter 
-
-	parent := anInterpreter! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:29'!
-primitive: primitive 
-	| result |
-	result := self evaluatePrimitive: primitive.
-	returning ifTrue: [ ^self ].
-	system popFrame.
-	self returning: result! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:26:59'!
-receiver 
-
-	^receiver! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:10'!
-receiver: anObject 
-
-	receiver := anObject.
-	returnValue := anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:24'!
-returning: anObject 
-
-	returning := true.
-	returnValue := anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:15'!
-system: anEmulator 
-
-	system := anEmulator! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:27'!
-temporaryAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^ temporaries at: index ].
-	env := self environmentFor: anInteger.
-	^ env at: index! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:40'!
-temporaryAt: index in: anInteger put: aValue 
-	| env |
-	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
-	env := self environmentFor: anInteger.
-	^ env at: index put: aValue
-! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:55'!
-trueLiteral 
-
-	^system true! !
-
-!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:13:04'!
-dispatchUndermessage: message 
-	| selector recv args result |
-	selector := message selector.
-	recv := message receiver.
-	args := message arguments.
-	selector == #_isSmallInteger
-		ifTrue: [ ^ self booleanFor: recv isImmediate ].
-	selector == #_isLarge
-		ifTrue: [ ^ self booleanFor: recv isSmall not ].
-	selector == #_smallSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ recv size ]
-						ifFalse: [ self error ]) ].
-	selector == #_largeSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ self error ]
-						ifFalse: [ recv size ]) ].
-	selector == #_basicFlags
-		ifTrue: [ ^ self integerFor: recv headerFlags ].
-	selector == #_basicAt:
-		ifTrue: [ ^ recv slots at: args first value ].
-	selector == #_byteAt:
-		ifTrue: [ result := recv bytes at: args first value.
-			^ self integerFor: result ].
-	selector == #_basicHash
-		ifTrue: [ ^ self integerFor: recv headerHash ].
-	selector == #_basicHash:
-		ifTrue: [ recv headerHash: args first value.
-			^ recv ].
-	selector == #_smallIntegerByteAt:
-		ifTrue: [ result := recv value byteAt: args first value.
-			^ self integerFor: result ].
-	selector == #_bitShiftLeft:
-		ifTrue: [ result := recv value bitShift: args first value.
-			(result isKindOf: LargeInteger)
-				ifTrue: [ self halt ].
-			^ self integerFor: result ].
-	selector == #_uShortAtOffset:
-		ifTrue: [ ^ result := self
-				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
-	selector == #_uShortAtOffset:put:
-		ifTrue: [ result := args second.
-			recv bytes unsignedShortAt: args first value + 1 put: result value.
-			^ result ].
-	self assert: false! !
-
-!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:27:51'!
-staticSend: selector to: recv with: args 
-	| result |
-	selector == #_isSmallInteger
-		ifTrue: [ ^ self booleanFor: recv isImmediate ].
-	selector == #_isLarge
-		ifTrue: [ ^ self booleanFor: recv isSmall not ].
-	selector == #_smallSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ recv size ]
-						ifFalse: [ self error ]) ].
-	selector == #_largeSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ self error ]
-						ifFalse: [ recv size ]) ].
-	selector == #_basicFlags
-		ifTrue: [ ^ self integerFor: recv headerFlags ].
-	selector == #_basicAt:
-		ifTrue: [ ^ recv slots at: args first value ].
-	selector == #_byteAt:
-		ifTrue: [ result := recv bytes at: args first value.
-			^ self integerFor: result ].
-	selector == #_basicHash
-		ifTrue: [ ^ self integerFor: recv headerHash ].
-	selector == #_basicHash:
-		ifTrue: [ recv headerHash: args first value.
-			^ recv ].
-	selector == #_smallIntegerByteAt:
-		ifTrue: [ result := recv value byteAt: args first value.
-			^ self integerFor: result ].
-	selector == #_bitShiftLeft:
-		ifTrue: [ result := recv value bitShift: args first value.
-			(result isKindOf: LargeInteger)
-				ifTrue: [ self halt ].
-			^ self integerFor: result ].
-	selector == #_uShortAtOffset:
-		ifTrue: [ ^ result := self
-				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
-	selector == #_uShortAtOffset:put:
-		ifTrue: [ result := args second.
-			recv bytes unsignedShortAt: args first value + 1 put: result value.
-			^ result ].
-	self assert: false! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:09:45'!
-backtrace 
-	| bt next |
-	bt := OrderedCollection new.
-	next := self.
-	[ next notNil ]
-		whileTrue: [ bt
-				add:
-					{next method signature.
-					next receiver} , next arguments.
-			next := next parent ].
-	^ bt! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:14:55'!
-evaluate 
-
-	system pushFrame: self.
-	^ self visitMethod: method sexpressions! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:18'!
-evaluateBlock: sblock args: anArray 
-	" as this block is inlined, we didn't capture parent environment.
-	Thus, we don't know if environment is a closure or a method home.
-	We unwind to that environment and clean up later if it was a closure. "
-
-	anArray
-		with: sblock inlinedArgs
-		do: [ :arg :i | temporaries at: i put: arg ].
-	^ self visitScript: sblock! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:36'!
-evaluateBlock: sblock args: anArray closure: closure 
-	" inlined blocks can only return to their real parent environment.
-	Here we complete the non-local return process for them, unwinding
-	to the real home environment "
-
-	temporaries := Array new: sblock tempCount.
-	environment := closure.
-	arguments := anArray.
-	^ self visitScript: sblock! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:51'!
-evaluateClosure: aPClosure 
-
-	^self evaluateClosure: aPClosure withArgs: {}! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:45'!
-evaluateClosure: aPClosure with: anObject 
-
-	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:58'!
-evaluateClosure: aPClosure with: anObject with: anotherObject 
-
-	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:17:12'!
-evaluateClosure: closure withArgs: anArray 
-	| frame block sblock evaluator result |
-	frame := system builderOf: closure.
-	block := frame blockOf: closure.
-	sblock := frame blockAstcodesOf: block.
-	evaluator := frame copy beBlock.
-	system pushFrame: evaluator.
-	result := sblock isInlined
-		ifTrue: [ evaluator evaluateBlock: sblock args: anArray ]
-		ifFalse: [ evaluator evaluateBlock: sblock args: anArray closure: closure ].
-	returning ifFalse: [ system popFrame ].
-	^result! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:19:55'!
-evaluatePrimitive: primitive 
-	| index size argument value |
-	primitive = #Behavior
-		ifTrue: [ ^ receiver isImmediate
-				ifTrue: [ system smallintBehavior ]
-				ifFalse: [ receiver behavior ] ].
-	primitive = #UnderSize
-		ifTrue: [ ^ self integerFor: receiver size ].
-	primitive = #Size
-		ifTrue: [ ^ self integerFor: receiver arrayedSize ].
-	primitive = #At
-		ifTrue: [ index := arguments first value.
-			value := receiver at: index.
-			^ receiver isBytes
-				ifTrue: [ self integerFor: value ]
-				ifFalse: [ value ] ].
-	primitive = #AtPut
-		ifTrue: [ index := arguments first value.
-			^ receiver at: index put: arguments second ].
-	primitive = #New
-		ifTrue: [ ^ system newSlotsOf: receiver spec instanceSide sized: 0].
-	primitive = #NewSized
-		ifTrue: [ size := arguments first value.
-			^ system newOf: receiver spec instanceSide sized: size ].
-	primitive = #NewBytes
-		ifTrue: [ size := arguments first value.
-			^ system newBytesOf: receiver spec instanceSide sized: size ].
-	primitive = #Equal
-		ifTrue: [ argument := arguments first.
-			^ self
-				booleanFor:
-					(receiver == argument
-						or: [ receiver isImmediate
-								and: [ argument isImmediate and: [ receiver value = argument value ] ] ]) ].
-	primitive = #SMIPlus
-		ifTrue: [ ^ self integerFor: receiver value + arguments first value ].
-	primitive = #SMIMinus
-		ifTrue: [ ^ self integerFor: receiver value - arguments first value ].
-	primitive = #SMITimes
-		ifTrue: [ ^ self integerFor: receiver value * arguments first value ].
-	primitive = #SMIIntDiv
-		ifTrue: [ ^ self integerFor: receiver value // arguments first value ].
-	primitive = #SMIIntQuot
-		ifTrue: [ ^ self integerFor: receiver value \\ arguments first value ].
-	primitive = #SMIBitAnd
-		ifTrue: [ ^ self integerFor: (receiver value bitAnd: arguments first value) ].
-	primitive = #SMIBitXor
-		ifTrue: [ ^ self integerFor: (receiver value bitXor: arguments first value) ].
-	primitive = #SMIBitShift
-		ifTrue:
-			[ ^ self integerFor: (receiver value bitShift: arguments first value) ].
-	primitive = #SMIHighBit
-		ifTrue: [ ^ self integerFor: receiver value highBit ].
-	primitive = #SMIGreaterThan
-		ifTrue: [ ^ self booleanFor: receiver value > arguments first value ].
-	primitive = #SMIGreaterEqualThan
-		ifTrue: [ ^ self booleanFor: receiver value >= arguments first value ].
-	primitive = #SMIEqual
-		ifTrue: [ ^ self booleanFor: receiver value = arguments first value ].
-	primitive = #SMINotEqual
-		ifTrue: [ ^ self booleanFor: receiver value !!= arguments first value ].
-	primitive = #SMISize
-		ifTrue: [ ^ self integerFor: receiver value bytesCount ].
-	primitive = #ClosureValue
-		ifTrue: [ ^ self evaluatePrimitiveClosureValue ].
-	primitive = #ClosureValueWithArgs
-		ifTrue: [ ^ self evaluatePrimitiveClosureValueWithArgs ].
-	primitive = #ClosureWhileTrue
-		ifTrue: [ ^ self evaluatePrimitiveClosureWhileTrue ].
-	primitive = #ClosureWhileFalse
-		ifTrue: [ ^ self evaluatePrimitiveClosureWhileFalse ].
-	primitive = #ClosureArgumentCount
-		ifTrue: [ ^ self evaluatePrimitiveClosureArgumentCount ].
-	primitive = #StringReplaceFromToWithStartingAt
-		ifTrue: [ receiver bytes
-				replaceFrom: arguments first value
-				to: arguments second value
-				with: arguments third bytes
-				startingAt: arguments fourth value.
-			^ receiver ].
-	primitive = #FloatNew
-		ifTrue: [ ^ system newBytesOf: receiver spec instanceSide sized: 8 ].
-	primitive = #PrimeFor
-		ifTrue: [ ^ self evaluatePrimitivePrimeFor ].
-	self assert: false
-! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:20:47'!
-evaluatePrimitiveClosureArgumentCount 
-	| frame block |
-	frame := system builderOf: receiver. 
-	block := frame blockOf: receiver.
-	^ self integerFor: block argumentCount! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:01'!
-evaluatePrimitiveClosureValue 
-
-	^ self evaluateClosure: receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:11'!
-evaluatePrimitiveClosureValueWithArgs 
-
-	^ self evaluateClosure: receiver withArgs: arguments! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:23'!
-evaluatePrimitiveClosureWhileFalse 
-	| result arg |
-	arg := arguments first.
-	[ result := self evaluateClosure: receiver.
-	returning
-		ifTrue: [ ^ returnValue ].
-	system booleanFrom: result ]
-		whileFalse: [ self evaluateClosure: arg.
-			returning
-				ifTrue: [ ^ returnValue ] ].
-	^ receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:45'!
-evaluatePrimitiveClosureWhileTrue 
-	| result arg |
-	arg := arguments first.
-	[ result := self evaluateClosure: receiver. returning ifTrue: [^returnValue].
-	system booleanFrom: result ] whileTrue: [ self evaluateClosure: arg. returning ifTrue: [^returnValue]].
-	^ receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:00'!
-evaluatePrimitiveHash 
-	| hash |
-	hash := receiver headerHash.
-	hash = 0 ifTrue: [ hash := system nextHash. receiver headerHash: hash ].
-	^ self integerFor: hash! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:16'!
-evaluatePrimitivePrimeFor 
-	| num result |
-	num := arguments first value.
-	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
-		detect: [ :i | i >= num ].
-	^ self integerFor: result! !
-
-!MethodEvaluator methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:22:52'!
-initialize 
-
-	blockAstcodes := IdentityDictionary new.
-	closures := IdentityDictionary new.
-	returning := false.
-	isBlock := false! !
-
-!MethodEvaluator methodsFor: 'services' stamp: 'KenD 3/3/2021 11:11:55'!
-classBinding 
-
-	^method classBinding! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:10:54'!
-built: closure 
-
-	^closures includesKey: closure! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:23:38'!
-isHomeOf: env 
-
-	^ environment == env andNot: [ isBlock ]! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:24:00'!
-isUndermessage: selector 
-
-	^ Undermessages includes: selector! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:27'!
-visitArgument: anSIdentifier 
-
-	^arguments at: anSIdentifier binding index! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:37'!
-visitAssignment: anSAssignment 
-	| result |
-	result := anSAssignment expression acceptVisitor: self.
-	anSAssignment assignees
-		do: [ :identifier | identifier binding assign: result within: self ].
-	^result! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:53'!
-visitBlock: anSBlock 
-	| block closure |
-	block := anSBlock isInlined
-		ifTrue: [ SCompiledBlock new ]
-		ifFalse: [ anSBlock compiledCode ].
-	closure := self captureClosure: anSBlock with: block.
-	blockAstcodes at: block put: anSBlock.
-	^ closure! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:04'!
-visitCascade: anSCascade 
-	| recv args selector last |
-	recv := anSCascade receiver acceptVisitor: self.
-	anSCascade messages
-		do: [ :msg | 
-			args := msg arguments collect: [ :code | code acceptVisitor: self ].
-			selector := system symbolFrom: msg selector.
-			last := system
-				send: selector
-				to: recv
-				with: args
-				super: anSCascade receiver isSuper ].
-	^ last! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:25'!
-visitIdentifier: anSIdentifier 
-
-	^anSIdentifier binding valueWithin: self! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:36'!
-visitLiteral: anSLiteral 
-
-	^ system transferLiteral: anSLiteral value! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:49'!
-visitMessage: anSMessage 
-	| recv args selector message |
-	recv := anSMessage receiver acceptVisitor: self.
-	args := anSMessage arguments
-		collect: [ :code | code acceptVisitor: self ].
-	selector := system symbolFrom: anSMessage selector.
-	self assert: selector !!== #error:.
-	^ system send: selector to: recv with: args super: anSMessage receiver isSuper! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:39'!
-visitMethod: anSMethod 
-	| primitive |
-	primitive := anSMethod primitive.
-	primitive 
-		ifNil: [	self visitScript: anSMethod] 
-		ifNotNil: [ self primitive: primitive ].
-	^ returning
-		ifTrue: [ returnValue ]
-		ifFalse: [ system popFrame.  receiver ]! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:58'!
-visitReturn: anSReturn 
-	| value home |
-	value := anSReturn expression acceptVisitor: self.
-	"it could happen that while we were going to return, the
-	expression contained a non-local return that was reached.
-	In that case we just keep unwinding without altering the
-	unwindLimit"
-	returning
-		ifTrue: [ ^ returnValue ].
-	home := anSReturn local
-		ifTrue: [ environment ]
-		ifFalse: [ environment at: 1 ].
-	system unwindUpTo: home returning: value! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:12'!
-visitScript: anSScript 
-	| result |
-	anSScript statements
-		do: [ :node | 
-			result := node acceptVisitor: self.
-			returning
-				ifTrue: [ ^ returnValue ] ].
-	^ result! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:26'!
-visitTemporary: anSIdentifier 
-
-	^temporaries at: anSIdentifier binding index! !
-
-!MethodEvaluator class methodsFor: 'class initialization' stamp: 'KenD 3/3/2021 11:07:59'!
-initialize 
-"
-	self initialize
-"
-
-	Undermessages := #(_basicAt: #_basicAt:put: 
-		_bitShiftLeft: _byteAt: #_byteAt:put: 
-		_smallSize _largeSize _isSmallInteger 
-		_basicHash _basicHash: 
-		_smallIntegerByteAt: 
-		_uShortAtOffset: _uShortAtOffset:put:)
-! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:25:36'!
-=> aSymbol 
-
-	^ kernel at: aSymbol! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:27:52'!
-classFor: anRGBehavior 
-
-	^classes at: anRGBehavior! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:02'!
-classNamed: aString 
-
-	^self classFor: self => aString! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:15'!
-classes 
-
-	^ classes! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:48'!
-false 
-
-	^ falseObj! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:41'!
-kernel 
-
-	^kernel! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:49'!
-kernel: anRGEnvironment 
-
-	kernel := anRGEnvironment ! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:57'!
-map: anObject to: anObjectMap 
-
-	identityMap at: anObject put: anObjectMap! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:34:06'!
-metaclassFor: anRGBehavior 
-
-	^ metaclasses at: anRGBehavior! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:19'!
-nil 
-
-	^ nilObj! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:32'!
-speciesFor: anRGBehavior 
-
-	^classes at: anRGBehavior ifAbsent: [ metaclasses at: anRGBehavior]! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:44'!
-surrogateFor: anObject 
-
-	^ identityMap at: anObject ifAbsent: nil! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:09'!
-transferBlock: anSCompiledBlock 
-	| transferred method format |
-	identityMap at: anSCompiledBlock
-		ifPresent: [ :b | ^ b ].
-	transferred := self newSlots: #CompiledBlock.
-	identityMap at: anSCompiledBlock put: transferred.
-	method := identityMap at: anSCompiledBlock method.
-	format := self newInteger: anSCompiledBlock format.
-	transferred
-		method: method;
-		format: format;
-		nativeCode: nilObj.
-	^ transferred! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:27'!
-transferLiteral: anObject 
-	| class transferred slot |
-	class := anObject class.
-	(class inheritsFrom: ObjectMap)
-		ifTrue: [ ^ anObject ].
-	(class inheritsFrom: Integer)
-		ifTrue: [ ^ self newInteger: anObject ].
-	(class inheritsFrom: Symbol)
-		ifTrue: [ ^ self newSymbol: anObject ].
-	(class inheritsFrom: String)
-		ifTrue: [ ^ self newString: anObject ].
-	class = ByteArray
-		ifTrue: [ ^ self newBytesFrom: anObject ].
-	transferred := self newSlots: anObject class name sized: anObject size.
-	anObject
-		withIndexDo: [ :elem :i | 
-			slot := self transferLiteralDeep: elem.
-			transferred at: i put: slot ].
-	^ transferred! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:55'!
-transferLiteralDeep: anObject 
-	| class transferred slot size ivar |
-	class := anObject class.
-	anObject isInteger
-		ifTrue: [ ^ self newInteger: anObject ].
-	anObject == nil
-		ifTrue: [ ^ nilObj ].
-	anObject == false
-		ifTrue: [ ^ falseObj ].
-	anObject == true
-		ifTrue: [ ^ trueObj ].
-	identityMap at: anObject ifPresent: [ :existing | ^ existing ].
-	(class inheritsFrom: Symbol)
-		ifTrue: [ ^ self newSymbol: anObject ].
-	(class inheritsFrom: String)
-		ifTrue: [ ^ self newString: anObject ].
-	class = ByteArray
-		ifTrue: [ ^ self newBytesFrom: anObject ].
-	(class inheritsFrom: Float)
-		ifTrue: [ ^ self newFloatFrom: anObject ].
-	(class inheritsFrom: ObjectMap)
-		ifTrue: [ ^ anObject ].
-	class == SCompiledBlock
-		ifTrue: [ ^ self transferBlock: anObject ].
-	size := class isVariable
-		ifTrue: [ anObject size ]
-		ifFalse: [ 0 ].
-	transferred := self newSlots: class name sized: size.
-	1 to: class instSize do: [ :i | 
-		ivar := anObject instVarAt: i.
-		slot := self transferLiteralDeep: ivar.
-		transferred slotAt: i put: slot ].
-	size > 0
-		ifTrue: [ anObject
-				withIndexDo: [ :elem :i | 
-					slot := self transferLiteralDeep: elem.
-					transferred at: i put: slot ] ].
-	^ transferred! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:05'!
-true 
-
-	^ trueObj! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:14'!
-wordSize 
-
-	^ wordSize! !
-
-!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:31'!
-wordSize: anInteger 
-
-	wordSize := anInteger.
-	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
-	minSMI := maxSMI negated - 1! !
-
-!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:29:40'!
-fixBehaviors 
-
-	self
-		initializeBehavior: nilObj;
-		initializeBehavior: trueObj;
-		initializeBehavior: falseObj.
-	classes
-		do: [ :c | 
-			| m |
-			m := c behavior slotNamed: 'class'.
-			self
-				initializeBehavior: c instanceBehavior;
-				initializeBehavior: c behavior;
-				initializeBehavior: m ]! !
-
-!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:30:43'!
-genesis 
-"
-	Create the world (should take less than 6 days). This is named 'genesis' to remind us those who had
-	done this (and much more) before us. Namely SELF people. I (JV) would like to use this opportunity and point you to
-	
-	https://github.com/russellallen/self/blob/2bcf2c4cab23f52bf68ac4f617020e748699a548/vm/src/any/memory/universe.cpp#L79
-"
-
-	nilObj := self basicNewSlots: #UndefinedObject.
-	trueObj := self basicNewSlots: #True.
-	falseObj := self basicNewSlots: #False.
-	kernel allClasses do: [ :def | self createSpecies: def ].
-	self fixBehaviors. 
-	kernel allClasses do: [ :def | self buildSpecies: def ]! !
-
-!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:32:56'!
-initializeClass: definition superclass: superclass superbehavior: superbehavior 
-	| class name flag ivars poolnames pools subclasses format |
-	class := classes at: definition.
-	class instanceBehavior next: superbehavior.
-	subclasses := definition subclasses
-		collect: [ :def | classes at: def ].
-	subclasses := self newArray: subclasses.
-	name := self newString: definition name.
-	flag := self formatOfClass: definition.
-	format := self newInteger: flag.
-	ivars := self newStringArray: definition instVarNames.
-	poolnames := definition sharedPools collect: #name.
-	pools := self newStringArray: poolnames.
-	class
-		superclass: superclass;
-		format: format;
-		instanceVariables: ivars;
-		organization: nilObj;
-		name: name;
-		subclasses: subclasses;
-		sharedPools: pools.
-	definition metaclass allInstVarNames
-		do: [ :ivar | class slotNamed: ivar put: nilObj ]! !
-
-!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:33:25'!
-initializeMetaclass: definition superclass: superclass 
-	| meta ivars flags format superbehavior |
-	meta := metaclasses at: definition.
-	superbehavior := superclass instanceBehavior.
-	meta instanceBehavior next: superbehavior.
-	ivars := self newStringArray: definition instVarNames.
-	flags := self formatOfClass: definition. 
-	format := self newInteger: flags.
-	meta
-		superclass: superclass;
-		format: format;
-		instanceVariables: ivars;
-		organization: nilObj! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:30:02'!
-formatOfClass: definition 
-	| variable pointers |
-	variable := definition isVariable ifTrue: [ 16r2000 ] ifFalse: [ 0 ].
-	pointers := definition isBytes ifTrue: [ 0 ] ifFalse: [16r4000 ].
-	^variable | pointers | definition allInstVarNames size! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:20'!
-initialize 
-
-	classes := OrderedDictionary new.
-	metaclasses := OrderedDictionary new.
-		identityMap := IdentityDictionary new! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:37'!
-initializeBehavior: anObjectMap 
-	| class |
-	class := classes at: anObjectMap spec.
-	anObjectMap behavior: class instanceBehavior.! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:25'!
-newArray: anArray 
-	| assoc |
-	assoc := self newSlots: 'Array' sized: anArray size.
-	anArray withIndexDo: [ :obj :i | assoc at: i put: obj ].
-	^ assoc! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:36'!
-newAssociation: anAssociation 
-	| assoc key value |
-	assoc := self newSlots: 'Association'.
-	key := self transferLiteralDeep: anAssociation key.
-	value := self transferLiteralDeep: anAssociation value.
-	^ assoc
-		key: key;
-		value: value; yourself! !
-
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:24:59'!
-newKernelSpec 
-	| current repo spec |
-	current := 'specs/current' asFileReference contents trim.
-	repo := TonelRepository new
-		directory: ('specs/' , current) asFileReference.
-	spec := repo asRingEnvironmentWith: #(Kernel).
-	^ spec clean! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:06'!
-basicNewBytes: classname contents: aByteObject 
-
-	^ self basicNewBytesOf: self => classname contents: aByteObject! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:18'!
-basicNewBytesOf: anRGBehavior  contents: aByteObject 
-
-	^ ByteObjectMap new: anRGBehavior valued: aByteObject! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:32'!
-basicNewSlots: classname 
-
-	^ self basicNewSlots: classname sized: 0! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:43'!
-basicNewSlots: classname in: spec 
-
-	^ self basicNewSlots: classname in: spec sized: 0! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:55'!
-basicNewSlots: classname in: spec sized: size 
-	| species |
-	species := spec at: classname.
-	^self basicNewSlotsOf: species sized: size! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:09'!
-basicNewSlots: classname sized: size 
-
-	^ self basicNewSlots: classname in: kernel sized: size! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:20'!
-basicNewSlotsOf: anRGBehavior sized: size 
-
-	^ SlotObjectMap new: anRGBehavior size: size withAll: nilObj! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:32'!
-buildSpecies: spec 
-	| sspec sclass sbehavior metasuper  |
-	sspec := spec superclass.
-	sspec
-		ifNil: [ sclass := nilObj.
-			sbehavior := nilObj.
-			metasuper := classes at: self => #Class ]
-		ifNotNil: [ sclass := classes at: sspec.
-			sbehavior := sclass instanceBehavior.
-			metasuper := metaclasses at: sspec metaclass ].
-	self
-		initializeClass: spec superclass: sclass superbehavior: sbehavior;
-		initializeMetaclass: spec metaclass superclass: metasuper! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:28:34'!
-createSpecies: definition 
-	| class meta ibehavior cbehavior |
-	class := self basicNewSlots: #Class.
-	class initializeAs: definition metaclass sized: 0.
-	meta := self basicNewSlots: #Metaclass.
-	ibehavior := self basicNewSlots: #Behavior.
-	cbehavior := self basicNewSlots: #Behavior.
-	ibehavior class: class.
-	cbehavior class: meta.
-	meta
-		class: class;
-		instanceBehavior: cbehavior.
-	class
-		instanceBehavior: ibehavior;
-		behavior: cbehavior.
-	classes at: definition put: class.
-	metaclasses at: definition metaclass put: meta! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:06'!
-newBytes: classname contents: aByteObject 
-	| obj |
-	obj := self basicNewBytes: classname contents: aByteObject.
-	self initializeBehavior: obj.
-	^ obj! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:15'!
-newBytesFrom: aByteObject 
-
-	^self newBytes: aByteObject class name contents: aByteObject! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:26'!
-newBytesOf: anRGBehavior contents: aByteObject 
-	| obj |
-	obj := self basicNewBytesOf: anRGBehavior contents: aByteObject.
-	self initializeBehavior: obj.
-	^ obj! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:38'!
-newBytesOf: anRGBehavior sized: anInteger 
-	| contents |
-	contents := ByteArray new: anInteger.
-	^ self newBytesOf: anRGBehavior contents: contents! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:49'!
-newFloatFrom: aFloat 
-
-	^ self newBytes: 'Float' contents: aFloat pointerDouble! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:01'!
-newInteger: anInteger 
-
-	anInteger > maxSMI
-		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
-	anInteger < minSMI
-		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
-	^self newSmallInteger: anInteger! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:15'!
-newLargeNegativeInteger: anInteger 
-	| size bytes byte |
-	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
-	bytes := ByteArray new: size withAll: 16rFF.
-	1 to: anInteger bytesCount do: [ :i | 
-		byte := anInteger byteAt: i.
-		byte > 0
-			ifTrue: [ byte := 256 - byte ].
-		bytes at: i put: byte ].
-	^ self newBytes: #LargeNegativeInteger contents: bytes! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:30'!
-newLargePositiveInteger: anInteger 
-	| size bytes |
-	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
-	bytes := anInteger asByteArrayOfSize: size.
-	^ self newBytes: #LargePositiveInteger contents: bytes reversed! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:40'!
-newSlots: classname 
-
-	^self newSlots: classname sized: 0! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:05'!
-newSlots: classname sized: size 
-"
-	Allocate an object of pointer type (as SlotObjectMap).
-	It is niled-out, and 	`size` is the size of indexed part (i.e.,
-	shall not include named slots)
-"
-	| obj |
-	obj := self basicNewSlots: classname sized: size.
-	self initializeBehavior: obj.
-	^ obj! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:24'!
-newSlotsOf: anRGBehavior sized: size 
-"
-	Allocate an object of pointer type (as SlotObjectMap).
-	It is niled-out, and 	`size` is the size of indexed part (i.e.,
-	shall not include named slots)
-"
-	| obj |
-	obj := self basicNewSlotsOf: anRGBehavior sized: size.
-	self initializeBehavior: obj.
-	^ obj! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:35'!
-newSmallInteger: anInteger 
-	self assert: (anInteger between: minSMI and: maxSMI).
-	^ SmallintObjectMap
-		new: self => #SmallInteger
-		valued: anInteger! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:48'!
-newString: aString 
-	| bytes |
-	bytes := aString copyWith: Character null.
-	^self newBytes: 'String' contents: bytes! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:00'!
-newStringArray: strings 
-	| array bytes |
-	array := self newSlots: 'Array' sized: strings size.
-	strings
-		withIndexDo: [ :s :i |
-			bytes := self newString: s.
-			array at: i put: bytes ].
-	^ array! !
-
-!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:09'!
-newSymbol: aSymbol 
-	| new bytes |
-	identityMap at: aSymbol ifPresent: [ :s | ^ s ].
-	bytes := aSymbol copyWith: Character null.
-	new := self newBytes: 'Symbol' contents: bytes.
-	^ identityMap at: aSymbol put: new! !
-
-!VirtualSmalltalkImage methodsFor: 'testing' stamp: 'KenD 4/8/2021 14:32:08'!
-includes: anObject 
-
-	^identityMap includesKey: anObject! !
-
-!VirtualSmalltalkImage class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 14:23:30'!
-newKernelSpec 
-	| current repo spec |
-	current := 'specs/current' asFileReference contents trim.
-	repo := TonelRepository new
-		directory: ('specs/' , current) asFileReference.
-	spec := repo asRingEnvironmentWith: #(Kernel).
-	^ spec clean! !
-
-!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:33'!
-fromSpec 
-
-	^ self new kernel: self kernelSpec! !
-
-!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:48'!
-kernelSpec 
-
-	^ KernelSpec ifNil: [ KernelSpec := self newKernelSpec ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:55:55'!
-booleanFrom: anObject 
-
-	anObject == image false
-		ifTrue: [ ^ false ].
-	anObject == image true
-		ifTrue: [ ^ true ].
-	self error: 'not a boolean'! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:57:03'!
-builderOf: closure 
-
-	frames
-		reverseDo: [ :frame | 
-			(frame built: closure)
-				ifTrue: [ ^ frame ] ].
-	self error: 'home of closure not found'! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:29'!
-doLookup: aSymbol startingAt: aBehavior 
-	| behavior m c smethod |
-	behavior := aBehavior.
-	[ m := self methodFor: aSymbol in: behavior.
-	m
-		ifNotNil: [ smethod := self compile: m.
-			^ self transferMethodLiterals: smethod ].
-	behavior := behavior superclass.
-	behavior notNil ] whileTrue.
-	^ aBehavior isMeta
-		ifTrue: [ c := aBehavior environment at: #Class.
-			self doLookup: aSymbol startingAt: c ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:45'!
-false 
-
-	^ image false! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:54'!
-frames 
-
-	^ frames! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:59:04'!
-globals 
-
-	^ globals! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:14'!
-lastHash 
-
-	^ lastHash value value! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:22'!
-lastHash: anInteger 
-
-	^ lastHash value value: anInteger! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:58'!
-lookup: aSymbol startingAt: aBehavior 
-
-	^methodCache at: aSymbol -> aBehavior 
-		ifAbsentPut: [ self doLookup: aSymbol startingAt: aBehavior ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:02:09'!
-methodFor: aSymbol in: anRGBehavior 
-
-	overrides at: anRGBehavior->aSymbol ifPresent: [:m | ^m].
-	^anRGBehavior methodNamed: aSymbol! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:04:57'!
-nil 
-
-	^ image nil! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:05:17'!
-override: assoc with: source 
-	| species selector method override |
-	species := image kernel at: assoc key.
-	selector := assoc value.
-	method := species methodNamed: selector.
-	override := method copy sourceCode: source.
-	overrides at: species -> selector put: override! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:07:05'!
-smallintBehavior 
-
-	^smallintBehavior! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:07:21'!
-symbolFrom: anObjectMap 
-
-	^ symbolCache
-		at: anObjectMap
-		ifAbsentPut: [ anObjectMap asString asSymbol ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:08:05'!
-true 
-
-	^image true! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:08:45'!
-virtualClassFor: spec 
-	| superclass supervirtual virtual map |
-	superclass := spec superclass.
-	map := image classFor: spec.
-	supervirtual := superclass
-		ifNotNil: [ self virtualSpeciesFor: superclass ].
-	virtual := VirtualClass new
-		spec: spec;
-		superclass: supervirtual;
-		map: map.
-	virtual createClassAssociationsWith: image.
-	^ virtualSpecies at: spec put: virtual! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:09:00'!
-virtualMetaclassFor: spec 
-	| superclass supervirtual class virtual map |
-	class := self virtualSpeciesFor: spec instanceSide.
-	map := 	image speciesFor: spec.
-	superclass := spec superclass ifNil: image => #Class.
-	supervirtual := self virtualSpeciesFor: superclass.
-	virtual := VirtualMetaclass new
-		spec: spec;
-		superclass: supervirtual;
-		map: map;
-		class: class.
-	^ virtualSpecies at: spec put: virtual! !
-
-!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:09:33'!
-virtualSpeciesFor: spec 
-
-	virtualSpecies at: spec ifPresent: [ :existing | ^ existing ].
-	^spec isMeta 
-		ifTrue: [self virtualMetaclassFor: spec] 
-		ifFalse: [self virtualClassFor: spec]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:56:12'!
-bootstrap 
-	| transferred class smalltalk |
-	transferred := self newInteger: image wordSize.
-	class := image classNamed: #SmalltalkSystem.
-	smalltalk := self send: #new to: class.
-	self send: #bootstrap: to: smalltalk with: {transferred}! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:23'!
-image: aVirtualSmalltalkImage 
-
-	image := aVirtualSmalltalkImage.
-	smallintBehavior := (image classNamed: #SmallInteger) instanceBehavior.
-	self
-		initializeEmulationOverrides;
-		initializeGlobals! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:40'!
-initialize 
-
-	frames := OrderedCollection new.
-	methodCache := Dictionary new.
-	symbolCache := IdentityDictionary new.
-	overrides := Dictionary new.
-	virtualSpecies := OrderedDictionary new.
-	globals := VirtualDictionary new! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:52'!
-initializeClassPools 
-	| dictionary virtual cvars |
-	dictionary := image classNamed: #Dictionary.
-	image classes
-		keysAndValuesDo: [ :spec :map | 
-			virtual := self virtualSpeciesFor: spec.
-			cvars := self send: #new to: dictionary.
-			virtual classPool
-				associations do: [ :assoc | self send: #add: to: cvars with: {assoc} ].
-			map classVariables: cvars ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 08:00:22'!
-initializeEmulationOverrides 
-	self
-		override: #Species -> #basicNew with: 'basicNew <primitive: New>';
-		override: #Species -> #basicNew:
-			with: 'basicNew: anInteger <primitive: NewSized>';
-		override: #Species -> #new with: 'new <primitive: New>';
-		override: #Species -> #new:
-			with: 'new: anInteger <primitive: NewSized>';
-		override: #Species -> #primitiveNewBytes:
-			with: 'primitiveNewBytes: anInteger <primitive: NewBytes>';
-		override: #'Float class' -> #new with: 'new <primitive: FloatNew>';
-		override: #ProtoObject -> #_size
-			with: '_size <primitive: UnderSize>';
-		override: #ProtoObject -> #behavior
-			with: 'behavior <primitive: Behavior>';
-		override: #ProtoObject -> #==
-			with: '== anObject <primitive: Equal>';
-		override: #ProtoObject -> #primitiveSize
-			with: 'primitiveSize <primitive: Size>';
-		override: #ProtoObject -> #primitiveAt:
-			with: 'primitiveAt: anInteger <primitive: At>';
-		override: #ProtoObject -> #primitiveAt:put:
-			with: 'primitiveAt: anInteger put: anObject <primitive: AtPut>';
-		override: #ProtoObject -> #basicHash
-			with: 'basicHash <primitive: Hash>';
-		override: #SmallInteger -> #+
-			with: '+ anObject <primitive: SMIPlus>';
-		override: #SmallInteger -> #-
-			with: '- anObject <primitive: SMIMinus>';
-		override: #SmallInteger -> #*
-			with: '* anObject <primitive: SMITimes>';
-		override: #SmallInteger -> #//
-			with: '// anObject <primitive: SMIIntDiv>';
-		override: #SmallInteger -> #\\
-			with: '\\ anObject <primitive: SMIIntQuot>';
-		override: #SmallInteger -> #bitAnd:
-			with: 'bitAnd: aNumber <primitive: SMIBitAnd>';
-		override: #SmallInteger -> #bitXor:
-			with: 'bitXor: aNumber <primitive: SMIBitXor>';
-		override: #SmallInteger -> #bitShift:
-			with: 'bitShift: aNumber <primitive: SMIBitShift>';
-		override: #SmallInteger -> #highBit
-			with: 'highBit <primitive: SMIHighBit>';
-		override: #SmallInteger -> #>
-			with: '> anObject <primitive: SMIGreaterThan>';
-		override: #SmallInteger -> #>=
-			with: '>= anObject <primitive: SMIGreaterEqualThan>';
-		override: #SmallInteger -> #=
-			with: '= anObject <primitive: SMIEqual>';
-		override: #SmallInteger -> #sizeInBytes
-			with: 'sizeInBytes <primitive: SMISize>';
-		override: #Closure -> #value
-			with: 'value <primitive: ClosureValue>';
-		override: #Closure -> #evaluateAtomically
-			with: 'evaluateAtomically <primitive: ClosureValue>';
-		override: #Closure -> #value:
-			with: 'value: a1 <primitive: ClosureValueWithArgs>';
-		override: #Closure -> #value:value:
-			with: 'value: a1 value: a2 <primitive: ClosureValueWithArgs>';
-		override: #Closure -> #value:value:value:
-			with: 'value: a1 value: a2 value: a3 <primitive: ClosureValueWithArgs>';
-		override: #Closure -> #evaluateWith:
-			with: 'evaluateWith: arg <primitive: ClosureValueWithArgs>';
-		override: #Closure -> #evaluateWith:with:
-			with: 'evaluateWith: a1 with: a2 <primitive: ClosureValueWithArgs>';
-		override: #Closure -> #whileTrue:
-			with: 'whileTrue: aBlock <primitive: ClosureWhileTrue>';
-		override: #Closure -> #whileFalse:
-			with: 'whileFalse: aBlock <primitive: ClosureWhileFalse>';
-		override: #Closure -> #argumentCount
-			with: 'argumentCount <primitive: ClosureArgumentCount>';
-		override: #String -> #replaceFrom:to:with:startingAt:
-			with:
-			'replaceFrom: start to: end with: aCollection startingAt: position <primitive: StringReplaceFromToWithStartingAt>';
-		override: #'HashTable class' -> #primeFor:
-			with: 'primeFor: anInteger <primitive: PrimeFor>'! !
-
-!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 08:00:47'!
-initializeGlobals 
-	| assoc |
-	assoc := image newAssociation: #WordSize -> image wordSize.
-	globals add: assoc.
-	assoc := image newAssociation: #LastHash ->1.
-	globals add: assoc.
-					
-	image classes
-		keysAndValuesDo: [ :spec :map | 
-			assoc := image newAssociation: spec name asSymbol -> map.
-			globals add: assoc.
-			spec
-				sharedPoolsDo: [ :pool | 
-					assoc := image newAssociation: pool name asSymbol -> nil.
-					globals add: assoc ] ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:58:00'!
-declareGlobals: anObjectMap 
-	| assocs |
-	assocs := anObjectMap
-		slots collect: [ :symbol | 
-			image newAssociation: symbol -> nil].
-	assocs do: [:assoc | 	globals add: assoc ].
-		^assocs! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:02:22'!
-newBytesOf: anRGBehavior  sized: anInteger 
-
-	^ image newBytesOf: anRGBehavior  sized: anInteger! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:03:02'!
-newClosure: anInteger 
-
-	^image newSlots: #Closure sized: anInteger! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:03:50'!
-newDictionary 
-	| factory |
-	factory := image classNamed: #Dictionary.
-	^ self send: #new to: factory! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:07'!
-newInteger: anInteger 
-
-	^image newInteger: anInteger ! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:23'!
-newOf: anRGBehavior 
-	
-	^ image newSlotsOf: anRGBehavior sized: 0! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:35'!
-newOf: anRGBehavior sized: anInteger 
-
-	^ anRGBehavior isBytes
-		ifTrue: [ image newBytesOf: anRGBehavior sized: anInteger ]
-		ifFalse: [ image newSlotsOf: anRGBehavior sized: anInteger ]! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:46'!
-newSlotsOf: anRGBehavior sized: anInteger 
-
-	^ image newSlotsOf: anRGBehavior sized: anInteger! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:31'!
-popFrame 
-
-	frames removeLast! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:40'!
-pushFrame: aMethodEvaluator 
-
-	frames addLast: aMethodEvaluator! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:50'!
-send: aSymbol to: receiver 
-
-	^ self send: aSymbol to: receiver with: {}! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:06:00'!
-send: aSymbol to: receiver with: anArray 
-
-	^ self send: aSymbol to: receiver with: anArray super: false! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:06:16'!
-send: aSymbol to: receiver with: arguments super: aBoolean 
-	| behavior method environment frame |
-	(self isUndermessage: aSymbol)
-		ifTrue: [ ^ frames last staticSend: aSymbol to: receiver with: arguments ].
-	behavior := aBoolean
-		ifTrue: [ frames last classBinding superclass spec ]
-		ifFalse: [ receiver spec ].
-	method := self lookup: aSymbol startingAt: behavior.
-	self assert: method notNil.
-	environment := image newSlots: #Array sized: method environmentCount.
-	frame := MethodEvaluator new
-		receiver: receiver;
-		arguments: arguments;
-		environment: environment;
-		method: method;
-		system: self.
-	^ frame evaluate
-! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:07:35'!
-transferLiteral: anObject 
-
-	^image transferLiteral: anObject! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:07:46'!
-transferMethodLiterals: method 
-	| class |
-	method withIndexDo: [:literal :i | 
-		class := literal class.
-		((class inheritsFrom: ObjectMap)
-			or: [ class = SCompiledBlock ])
-			ifFalse: [ method at: i put: (image transferLiteralDeep: literal) ] ].
-	^ method! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:08:27'!
-unwindUpTo: environment returning: value 
-	| frame |
-	frames size to: 1 by: -1 do: [ :i | 
-		frame := frames at: i.
-		frame returning: value.
-		(frame isHomeOf: environment)
-			ifTrue: [ ^ frames removeLast: frames size - i +1 ] ].
-	self error: 'frame not found'! !
-
-!VirtualSmalltalkRuntime methodsFor: 'testing' stamp: 'KenD 4/12/2021 08:01:02'!
-isUndermessage: selector 
-
-	^ Undermessages includes: selector! !
-
-!VirtualSmalltalkRuntime class methodsFor: 'class initialization' stamp: 'KenD 4/12/2021 07:54:56'!
-initialize 
-"
-	self initialize
-"
-	Undermessages := 
-		#(_basicAt: #_basicAt:put:
-		  _bitShiftLeft: _byteAt: #_byteAt:put: 
-		 _smallSize _largeSize 
-		 _isSmallInteger 
-		 _basicHash _basicHash: 
-		 _smallIntegerByteAt: 
-		 _uShortAtOffset: #_uShortAtOffset:put:)! !
-
 !ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
 is32bits 
 
@@ -12754,6 +11277,101 @@ initializePrefixes
 		initializeGroup4.
 	super initializePrefixes! !
 
+!REXPrefix methodsFor: 'accessing' stamp: 'KenD 4/24/2021 13:04:04'!
+b 
+
+	^1! !
+
+!REXPrefix methodsFor: 'accessing' stamp: 'KenD 4/24/2021 13:03:58'!
+r 
+
+	^REX_R! !
+
+!REXPrefix methodsFor: 'accessing' stamp: 'KenD 4/24/2021 13:04:16'!
+rex 
+
+	^REX! !
+
+!REXPrefix methodsFor: 'accessing' stamp: 'KenD 4/24/2021 13:04:28'!
+w 
+
+	^REX_W! !
+
+!REXPrefix methodsFor: 'accessing' stamp: 'KenD 4/24/2021 13:04:38'!
+x 
+
+	^2! !
+
+!REXPrefix methodsFor: 'evaluating' stamp: 'KenD 4/24/2021 13:06:08'!
+value 
+
+	self == REX_W ifTrue: [^16r48].
+	self == REX_R  ifTrue: [^16r44].
+	self == REX      ifTrue: [^16r40].
+	self assert: false.
+	^nil! !
+
+!REXPrefix methodsFor: 'printing' stamp: 'KenD 4/24/2021 13:03:27'!
+print: byte on: aStream 
+
+	self assert: (byte isOnBit: REX value).
+	aStream nextPutAll: '0100'.
+	(byte isOnBit: self w value) ifTrue: [aStream nextPut: $w].
+	(byte isOnBit: self r) ifTrue: [aStream nextPut: $r].
+	(byte isOnBit: self x) ifTrue: [aStream nextPut: $x].
+	(byte isOnBit: self b) ifTrue: [aStream nextPut: $b]! !
+
+!REXPrefix methodsFor: 'services' stamp: 'KenD 4/24/2021 13:03:04'!
+peekFrom: aStream 
+
+	^(aStream peek bitAnd: 16rF0) = 16r40 ifTrue: [aStream next]! !
+
+!REXPrefix methodsFor: 'testing' stamp: 'KenD 4/24/2021 13:04:59'!
+isRex 
+
+	^true! !
+
+!REXPrefix methodsFor: 'testing' stamp: 'KenD 4/24/2021 13:05:10'!
+matches: anInteger 
+
+	^anInteger isOnBit: self value! !
+
+!REXPrefix methodsFor: 'writing' stamp: 'KenD 4/24/2021 13:06:44'!
+writeOn: instruction 
+
+	instruction writeRexPrefix: self value! !
+
+!REXPrefix class methodsFor: 'class initialization' stamp: 'KenD 4/24/2021 13:02:14'!
+initializePrefixes 
+
+	#('REX' 'REX_W' 'REX_R')
+		do: [ :s | 
+			| rex |
+			rex := self new name: s.
+			Prefixes at: s put: rex ].
+	super initializePrefixes.
+	self	compileAll.
+	self class compileAll.! !
+
+!REXPrefix class methodsFor: 'instance creation' stamp: 'KenD 4/24/2021 13:01:29'!
+fromStream: aStream 
+	| s |
+	s := aStream upTo: $+.
+	^self fromString: s! !
+
+!REXPrefix class methodsFor: 'instance creation' stamp: 'KenD 4/24/2021 13:01:43'!
+fromString: aString 
+
+	(aString endsWith: 'REX.W') ifTrue: [^self w].
+	(aString endsWith: 'REX.R') ifTrue: [^self r].
+	(aString endsWith: 'REX') ifTrue: [^self rex].
+	^nil! !
+
+!REXPrefix class methodsFor: 'instance creation' stamp: 'KenD 4/24/2021 13:02:35'!
+new 
+
+	^super new initialize! !
+
 !SegmentPrefix methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:21:26'!
 value
 
@@ -13288,1665 +11906,6 @@ initializeSpecs
 			(spec arity = 0 orNot: [spec operandEncoding isNil])
 				ifTrue: [family add: spec]]].
 	Specs := dict! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:07:26'!
-declaration 
-
-	^self! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:18'!
-literal
-
-	^nil! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:52'!
-name: aString 
-
-	name := aString! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:06:52'!
-canBeAssigned 
-
-	^true! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:20'!
-isArgument 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:30'!
-isClassBinding 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:38'!
-isClassVariable 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:52'!
-isConstantBinding 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:13'!
-isGlobal 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:20'!
-isInStack 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:28'!
-isInstVar 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:38'!
-isLiteral 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:51'!
-isLocal 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:59'!
-isPoolVariableBinding 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:07'!
-isSelf 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:43'!
-isSelfOrSuper 
-
-	^self isSelf or: [self isSuper]! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:23'!
-isSuper 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:33'!
-isTemporary 
-
-	^false! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:56'!
-isUnresolved 
-
-	^false! !
-
-!Binding methodsFor: 'actions' stamp: 'KenD 2/24/2021 11:05:41'!
-beReferencedFrom: aScriptNode
-
-	self notYetImplemented ! !
-
-!Binding methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 11:09:17'!
-encodeUsing: anAstcodeEncoder 
-
-	self assert: false! !
-
-!UnresolvedBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:39:05'!
-isUnresolved 
-
-	^true! !
-
-!UnresolvedBinding class methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:38:42'!
-default 
-
-	^Default ifNil: [Default := self new name: '<unresolved>']! !
-
-!AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
-usesSymbols 
-
-	^false! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:30'!
-association 
-
-	^association! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:41'!
-association: anAssociation 
-
-	association := anAssociation.
-	name := anAssociation key! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:25:02'!
-literal 
-
-	^association! !
-
-!AssociationBinding class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:23:29'!
-on: anAssociation 
-
-	^self new association: anAssociation! !
-
-!ClassVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:25:20'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithClassVar: association! !
-
-!ClassVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:25:32'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeClassVar: association! !
-
-!ClassVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:25:44'!
-isClassVariable 
-
-	^true! !
-
-!GlobalBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:43:12'!
-isGlobal 
-
-	^true! !
-
-!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:39:02'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithGlobal: association! !
-
-!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:42:54'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeGlobalVar: association! !
-
-!GlobalBinding class methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:37:51'!
-usesSymbols 
-
-	^true! !
-
-!GlobalBinding class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:37:20'!
-on: anAssociation 
-	| v class |
-	v := anAssociation value.
-	class := (v isSpecies or: [ v class == SlotObjectMap and: [v spec isMeta]])
-		ifTrue: [ ClassBinding ]
-		ifFalse: [ GlobalBinding ].
-	^ class new association: anAssociation! !
-
-!ClassBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:44:11'!
-isClassBinding 
-
-	^true! !
-
-!ClassBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:44:25'!
-encodeUsing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeClassBinding: association! !
-
-!PoolVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:07'!
-isPoolVariableBinding 
-
-	^true! !
-
-!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:39'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithPoolVar: association! !
-
-!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:50'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodePoolVar: self literal! !
-
-!ConstantPoolBinding methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:45:49'!
-literal 
-
-	^association value! !
-
-!ConstantPoolBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:45:10'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithConstPoolVar: association value! !
-
-!ConstantPoolBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:45:20'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodePoolConst: self literal! !
-
-!ConstantPoolBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:51'!
-canBeAssigned 
-
-	^false! !
-
-!ConstantPoolBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:45:32'!
-isConstantBinding 
-
-	^true! !
-
-!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:41'!
-index 
-
-	^index! !
-
-!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:51'!
-index: aNumber 
-
-	index := aNumber! !
-
-!InstVarBinding methodsFor: 'actions' stamp: 'KenD 3/8/2021 07:52:56'!
-beReferencedFrom: aScriptNode 
-
-	aScriptNode useSelf! !
-
-!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:13'!
-emitLoadAusing: anSExpressionNativizer 
-
-	anSExpressionNativizer encodeLoadAwithInstVar: index! !
-
-!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:25'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeInstVar: index! !
-
-!InstVarBinding methodsFor: 'testing' stamp: 'KenD 3/8/2021 07:54:09'!
-isInstVar 
-
-	^true! !
-
-!LiteralBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:53:29'!
-isLiteral
-
-	^true! !
-
-!TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeTrue! !
-
-!TrueBinding methodsFor: 'evalutaing' stamp: 'KenD 4/8/2021 12:37:35'!
-value 
-
-	^true! !
-
-!FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 13:07:44'!
-value 
-
-	^false! !
-
-!FalseBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:07:22'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeFalse! !
-
-!LocalBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:55:22'!
-beInArray 
-
-	environment := ArrayEnvironment new! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:13'!
-isInStack 
-
-	^environment isStack! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:32'!
-isLocal 
-
-	^true! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:03'!
-sInArray 
-
-	^self isInStack not! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:35'!
-declaration 
-
-	^declaration! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:43'!
-declaration: anIdentifierNode 
-
-	declaration := anIdentifierNode! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:04'!
-environmentIndex 
-
-	^environment index! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:17'!
-environmentIndex: anInteger 
-
-	environment index: anInteger! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:27'!
-environmentObject 
-
-	^environment! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:38'!
-index
-
-	^index! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:47'!
-index: aNumber 
-
-	index := aNumber! !
-
-!TemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:34:23'!
-description 
-
-	^'temporary ' , name! !
-
-!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:35'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithTemp: index env: environment! !
-
-!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:53'!
-encodeUsing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeTemporary: index env: environment! !
-
-!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:35:10'!
-initialize 
-
-	super initialize.
-	environment := StackEnvironment new! !
-
-!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:35:25'!
-isTemporary 
-
-	^true! !
-
-!ArgumentBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:00:20'!
-description 
-
-	^'argument ' , name! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:59:46'!
-beInlined 
-
-	environment := InlinedArgEnvironment new! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 13:01:28'!
-encodeUsing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeArgument: index env: environment! !
-
-!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:02:17'!
-initialize 
-
-	super initialize.
-	environment := ArgumentEnvironment new! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:00:00'!
-canBeAssigned 
-
-	^false! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:01:53'!
-index: aNumber 
-
-	index := aNumber! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:34'!
-isArgument 
-
-	^true! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:55'!
-isInlined 
-
-	^environment isInlinedArgument! !
-
-!ArgumentBinding methodsFor: 'private' stamp: 'KenD 2/25/2021 13:01:12'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithArg: index env: environment! !
-
-!SelfBinding methodsFor: 'actions' stamp: 'KenD 2/27/2021 13:23:18'!
-beReferencedFrom: aScriptNode 
-
-	aScriptNode useSelf! !
-
-!SelfBinding methodsFor: 'emitCode' stamp: 'KenD 2/27/2021 13:24:08'!
-emitLoadAusing: anSExpressionNativizer 
-
-	anSExpressionNativizer encodeLoadAwithSelf! !
-
-!SelfBinding methodsFor: 'emitCode' stamp: 'KenD 2/27/2021 13:24:20'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeSelf! !
-
-!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/27/2021 13:23:33'!
-canBeAssigned 
-
-	^false! !
-
-!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/27/2021 13:24:34'!
-isSelf 
-
-	^true! !
-
-!SuperBinding methodsFor: 'emitCode' stamp: 'KenD 4/8/2021 12:32:04'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeSuper! !
-
-!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:14'!
-isSelf 
-
-	^false! !
-
-!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:25'!
-isSuper 
-
-	^true
-! !
-
-!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
-printOn: aStream indent: anInteger 
-
-	self subclassResponsibility! !
-
-!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:15'!
-contents 
-
-	^contents! !
-
-!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:25'!
-keyFor: aString 
-
-	^self subclassResponsibility! !
-
-!IdentifierBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:42:51'!
-new 
-	^super new initialize! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:50:58'!
-at: aString 
-
-	^contents at: aString ifAbsent: nil! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:12'!
-at: aString ifAbsentPut: aBlock 
-
-	^contents at: aString ifAbsentPut: aBlock! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:23'!
-at: aString put: aBinding 
-
-	contents at: aString put: aBinding! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:36'!
-define: aString as: aBinding 
-
-	contents at: aString put: aBinding! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:09'!
-select: aBlock 
-
-	^contents select: aBlock! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:17'!
-values 
-
-	^contents values! !
-
-!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:52:21'!
-do: aBlock 
-
-	contents do: aBlock! !
-
-!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:53:31'!
-withIndexDo: aBlock 
-
-	contents withIndexDo: aBlock! !
-
-!StaticBinder methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:52:38'!
-initialize 
-
-	super initialize.
-	contents := OrderedDictionary new! !
-
-!StaticBinder methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:52:56'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPut: $<.
-	contents keys
-		do: [:name | name printOn: aStream]
-		separatedBy: [aStream space].
-	aStream nextPut: $>! !
-
-!StaticBinder methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:51:57'!
-defines: identifier 
-
-	^contents includesKey: identifier! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:41'!
-at: aString 
-	| key assoc |
-	key := self keyFor: aString.
-	key ifNil: [ ^nil ].
-	assoc := contents associationAt: key ifAbsent: [^nil].
-	^(type on: assoc) name: key! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:59'!
-at: aString ifPresent: aBlock 
-	| binding |
-	binding := self at: aString.
-	^binding notNil ifTrue: [aBlock value: binding]! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:11'!
-at: aString put: anObject 
-	| key |
-	key := self keyFor: aString.
-	self assert: contents !!== Smalltalk.
-	contents at: key put: anObject! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:25'!
-contents: aDictionary 
-
-	contents := aDictionary! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:37'!
-keyFor: aString 
-
-	^type usesSymbols ifTrue: [aString existingSymbol] ifFalse: [aString]! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:47:34'!
-poolNamed: aSymbol ifPresent: aBlock 
-	| pool |
-	pool := contents at: aSymbol ifAbsent: nil.
-	^pool notNil ifTrue: [aBlock evaluateWith: pool]! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:02:55'!
-type: aClass 
-
-	type := aClass! !
-
-!DynamicBinder methodsFor: 'initialization' stamp: 'KenD 3/3/2021 10:46:50'!
-on: aDictionary type: aClass 
-
-	contents := aDictionary.
-	type := aClass! !
-
-!DynamicBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:02:14'!
-printOn: aStream indent: anInteger 
-	aStream
-		tab: anInteger;
-		nextPutAll: 'binder for ';
-		nextPutAll: type name;
-		nextPutAll: ': '.
-	type == GlobalBinding
-		ifTrue: [aStream nextPut: $G] "??? … ???"
-		ifFalse: [contents keys asArray printOn: aStream]! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:44:52'!
-of: type 
-
-	^self new type: type! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:05'!
-on: aPoolDictionary 
-	| type |
-	type := aPoolDictionary isConstant
-		ifTrue: [ConstantPoolBinding]
-		ifFalse: [PoolVarBinding].
-	^self new on: aPoolDictionary type: type! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:21'!
-on: aDictionary of: type 
-
-	^self new on: aDictionary type: type! !
-
-!LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:58:34'!
-isInlinedArgument 
-
-	^false! !
-
-!StackEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:06:37'!
-isStack 
-
-	^true! !
-
-!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:06:18'!
-index 
-
-	^nil! !
-
-!ArgumentEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:07:51'!
-environmentType 
-
-	^LocalArgument! !
-
-!InlinedArgEnvironment methodsFor: 'testing' stamp: 'KenD 3/7/2021 08:17:09'!
-isInlinedArgument 
-
-	^true! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:43'!
-isCurrent 
-
-	^index isNil! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:52'!
-isIndirect 
-
-	^self isCurrent not! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:12:05'!
-isStack 
-
-	^false! !
-
-!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:07'!
-environmentType 
-
-	^EnvironmentValue! !
-
-!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:19'!
-index 
-
-	^index! !
-
-!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:26'!
-index: anInteger 
-
-	index := anInteger! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:04'!
-inlineConditional 
-	| arguments |
-	arguments := message arguments.
-	arguments size >= 1 ifFalse: [^self].
-	arguments do: [:arg | arg isEvaluable ifFalse: [^self]].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:33'!
-inlineIfNilIfNotNil 
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	arguments first isEvaluable ifFalse: [^self].
-	arg := arguments second.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:52'!
-inlineIfNotNil 
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 1 ifFalse: [^self].
-	arg := arguments first.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arg isBlockNode ifTrue: [arg beInlined]! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:07'!
-inlineIfNotNilIfNil 
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	arguments second isEvaluable ifFalse: [^self].
-	arg := arguments first.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:16'!
-inlineRepeat 
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable
-		ifFalse: [ ^ self ].
-	arguments := message arguments.
-	arguments isEmpty
-		ifFalse: [ ^ self ].
-	receiver isBlockNode
-		ifFalse: [ ^ self ].
-	message beInlined.
-	receiver beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:35'!
-inlineToByDo 
-	| arguments arg step |
-	arguments := message arguments.
-	arguments size = 3 ifFalse: [^self].
-	arg := arguments at: 3.
-	arg isBlockNode ifFalse: [^self].
-	arg arguments size = 1 ifFalse: [^self].
-	step := arguments at: 2.
-	(step isNumberNode and: [step value isSmallInteger]) ifFalse: [^self].
-	message beInlined.
-	arg beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:46'!
-inlineToDo 
-	| arguments last |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	last := arguments at: 2.
-	last isBlockNode ifFalse: [^self].
-	last arguments size = 1 ifFalse: [^self].
-	message beInlined.
-	last beInlined! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:49:15'!
-inlineWhile 
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable
-		ifFalse: [ ^ self ].
-	arguments := message arguments.
-	arguments size = 1
-		ifFalse: [ ^ self ].
-	arguments last isNullary
-		ifFalse: [ ^ self ].
-	self inlineConditional.
-	receiver isBlockNode
-		ifTrue: [ receiver beInlined ]! !
-
-!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:46:20'!
-inline: aMessageNode 
-	| s keywords |
-	message := aMessageNode.
-	message receiver isSuper
-		ifTrue: [ ^ self ].
-	(message isCascadeMessage and: [ message receiver isBlockNode ])
-		ifTrue: [ ^ self ].
-	s := message selector value.
-	s == #ifTrue:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifFalse:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #or:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #and:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #timesRepeat:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifTrue:ifFalse:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifFalse:ifTrue:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #andNot:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #orNot:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifNil:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifNotNil:
-		ifTrue: [ ^ self inlineIfNotNil ].
-	s == #ifNil:ifNotNil:
-		ifTrue: [ ^ self inlineIfNilIfNotNil ].
-	s == #ifNotNil:ifNil:
-		ifTrue: [ ^ self inlineIfNotNilIfNil ].
-	s == #whileTrue:
-		ifTrue: [ ^ self inlineWhile ].
-	s == #whileFalse:
-		ifTrue: [ ^ self inlineWhile ].
-	s == #whileTrue
-		ifTrue: [ ^ self inlineUnitaryWhile ].
-	s == #whileFalse
-		ifTrue: [ ^ self inlineUnitaryWhile ].
-	s == #repeat
-		ifTrue: [ ^ self inlineRepeat ].
-	s == #to:do:
-		ifTrue: [ ^ self inlineToDo ].
-	s == #to:by:do:
-		ifTrue: [ ^ self inlineToByDo ].
-	keywords := $: split: s.
-	keywords last = '' ifTrue: [ keywords := keywords allButLast ].
-	(keywords conform: [ :k | k = 'and' ])
-		ifTrue: [ ^ self inlineConditional ].
-	(keywords conform: [ :k | k = 'or' ])
-		ifTrue: [ ^ self inlineConditional ].
-	((keywords allButLast conform: [ :k | k = 'and' ])
-		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
-		ifTrue: [ ^ self inlineConditional ].
-	((keywords allButLast conform: [ :k | k = 'or' ])
-		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
-		ifTrue: [ self inlineConditional ]! !
-
-!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:49:02'!
-inlineUnitaryWhile 
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable ifFalse: [^self].
-	arguments := message arguments.
-	arguments size = 0 ifFalse: [^self].
-	self inlineConditional.
-	receiver isBlockNode ifTrue: [
-		message beInlined.
-		receiver beInlined]! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:43'!
-ast 
-
-	^ast! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:53'!
-ast: aParseNode 
-
-	ast := aParseNode! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:48:32'!
-compiler: aSmalltalkCompiler 
-
-	compiler := aSmalltalkCompiler! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:49:27'!
-method 
-
-	^method! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:49:38'!
-method: aCompiledMethod 
-
-	method := aCompiledMethod! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:48:21'!
-beSuccessful 
-
-	error := nil! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:48:58'!
-error 
-
-	^error! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:49:10'!
-error: aCompilationError 
-
-	error := aCompilationError! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:54:45'!
-argumentCount 
-
-	^format bitsAt: ArgCount! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:54:57'!
-argumentCount: anInteger 
-
-	format := format bitsAt: ArgCount put: anInteger! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:55:32'!
-capturesHome 
-
-	^ format anyMask: CapturesHome! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:55:46'!
-capturesHome: aBoolean 
-
-	format := aBoolean
-		          ifTrue: [ format bitOr: CapturesHome ]
-		          ifFalse: [ format bitClear: CapturesHome ]! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:07'!
-capturesSelf 
-
-	^format anyMask: CapturesSelf! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:34'!
-capturesSelf: aBoolean 
-
-	format := aBoolean
-		ifTrue: [ format bitOr: CapturesSelf ]
-		ifFalse: [ format bitClear: CapturesSelf ]! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:52'!
-environmentCount 
-
-	^ format bitsAt: EnvCount! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:02'!
-environmentCount: anInteger 
-
-	format := format bitsAt: EnvCount put: anInteger! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:22'!
-id 
-
-	^format bitsAt: Id! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:31'!
-id: anInteger 
-
-	format := format bitsAt: Id put: anInteger! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:04:52'!
-method 
-
-	^method! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:02'!
-method: aCompiledMethod 
-
-	method := aCompiledMethod! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:21'!
-nativeCode 
-
-	^nativeCode! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:32'!
-nativeCode: code 
-
-	nativeCode := code! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:57'!
-newClosure 
-	| closure |
-	closure := SClosure new: self environmentCount.
-	^ closure block: self! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:17'!
-tempCount 
-
-	^format bitsAt: TempCount! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:27'!
-tempCount: anInteger 
-
-	format := format bitsAt: TempCount put: anInteger! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:47'!
-value 
-
-	self halt
-"	<primitive: BlockValue>
-	^ self primitiveFailed" ! !
-
-!SCompiledBlock methodsFor: 'initialization' stamp: 'KenD 4/7/2021 13:58:07'!
-initialize 
-
-	super initialize.
-	format := 0! !
-
-!SCompiledBlock methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:04:41'!
-isBlock 
-
-	^true! !
-
-!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:08:19'!
-argumentDescriptors 
-	| parent |
-	parent := node parent.
-	^scope capturedArguments
-		collect: [:arg | self descriptorForArgument: arg parent: parent]! !
-
-!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:45'!
-node
-
-	^node! !
-
-!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:35'!
-node: aNode
-
-	node :=  aNode! !
-
-!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:08:45'!
-scope
-
-	^scope! !
-
-!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:02'!
-scope: aScope
-
-	scope := aScope! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:35'!
-addPool: aPoolDictionary 
-	| dict |
-	dict := DynamicBinder on: aPoolDictionary.
-	pools add: dict! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:52'!
-addPool: aDictionary of: type 
-	| dict |
-	dict := DynamicBinder on: aDictionary of: type.
-	pools add: dict! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:32:34'!
-classBinding: aSpecies 
-	| instance |
-	class := aSpecies.
-	instance := aSpecies instanceSide.
-	(instance respondsTo: #configureCompiler)
-		ifTrue: [instance configureCompiler: self]! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:03'!
-namespace: aDictionary 
-
-	namespace := aDictionary! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:51'!
-peekForIdentifier: aStream 
-	| char next |
-	char := aStream peek.
-	(self canBeInIdentifier: char) ifTrue: [
-		aStream skip: 1.
-		^true].
-	char = $. ifFalse: [^false].
-	aStream prev isLetter ifFalse: [
-		aStream skip: 1.
-		^false].
-	next := aStream skip: 2; peek.
-	next isNil ifTrue: [
-		aStream skip: -1.
-		^false].
-	^next isLetter ifFalse: [aStream skip: -1]; yourself! !
-
-!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:35:04'!
-protect: aBlock 
-
-	^aBlock value! !
-
-!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:32'!
-forClass: aClass 
-	| c |
-	c := aClass ifNil: [UndefinedObject].
-	self classBinding: c! !
-
-!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:45'!
-initialize: aDictionary 
-
-	namespace := aDictionary.
-	class := aDictionary at: #UndefinedObject ifAbsent: nil.
-	pools := OrderedCollection new! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:17'!
-newScope 
-
-	^MethodScope new
-		namespace: namespace;
-		species: class;
-		addPoolBinders: pools! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:35'!
-parse: aString 
-
-	result := self smalltalkCompiler parseMethod: aString.
-	^result ast! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:15'!
-smalltalkCompiler 
-
-	^ SSmalltalkCompiler new frontend: self! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:33'!
-smalltalkParser 
-
-	^ self smalltalkCompiler parser! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:43'!
-smalltalkScanner 
-
-	^ self smalltalkCompiler scanner! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:11'!
-anBeInIdentifier: aCharacter 
-
-	^aCharacter isLetter or: [aCharacter isDigit] or: [aCharacter = $_]! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:21'!
-canStartIdentifier: aCharacter 
-
-	^aCharacter isLetter or: [aCharacter = $_]! !
-
-!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:29:55'!
-forClass: aClass 
-
-	^self new forClass: aClass! !
-
-!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:19'!
-namespace: aDictionary 
-
-	^self basicNew initialize: aDictionary! !
-
-!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:36'!
-new 
-
-	^self namespace: Smalltalk globals! !
-
-!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:29:33'!
-compile: aString in: aClass 
-	| compiler |
-	compiler := self forClass: aClass.
-	^compiler compile: aString! !
-
-!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:30:52'!
-parse: aString in: aClass 
-	| compiler |
-	compiler := self forClass: aClass.
-	^compiler parse: aString! !
-
-!ScriptScope methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:03:15'!
-script: aScriptNode 
-
-	script := aScriptNode! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:57:31'!
-defineArgument: identifier 
-	| binding |
-	(self resolves: identifier) ifTrue: [self redefinitionError: identifier].
-	binding := ArgumentBinding new name: identifier.
-	arguments define: identifier as: binding.
-	^binding! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:58:03'!
-defineTemporary: identifier 
-	| binding |
-	(temporaries defines: identifier)
-		ifTrue: [self redefinitionError: identifier].
-	binding := TemporaryBinding new name: identifier.
-	temporaries define: identifier as: binding.
-	^binding! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:58:20'!
-defines: aString 
-
-	^(temporaries defines: aString) or: [arguments defines: aString]! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:00:33'!
-localBindings 
-
-	^arguments values , temporaries values! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:02:23'!
-resolveLocal: aString 
-
-	(temporaries at: aString) ifNotNil: [:binding | ^binding].
-	^arguments at: aString! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:02:40'!
-resolves: aString 
-
-	^(self resolve: aString) isUnresolved not! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:57:03'!
-capturesSelf 
-
-	^ captureSelf! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:58:36'!
-describe: identifier 
-	| binding type |
-	binding := self resolve: identifier.
-	type := self class name asLowercase allButLast: 'scope' size.
-	^binding description , ' of ' , type! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:59:13'!
-environmentSize 
-
-	^envSize! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 13:02:54'!
-scopeOf: aString 
-	| s |
-	s := self scriptDefining: aString.
-	^s notNil ifTrue: [s scope]! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 13:03:29'!
-stackSize 
-
-	^stackSize! !
-
-!ScriptScope methodsFor: 'initialization' stamp: 'KenD 2/27/2021 13:00:10'!
-initialize 
-
-	super initialize.
-	arguments := StaticBinder new.
-	temporaries := StaticBinder new.
-	stackSize := envSize := 0.
-		captureSelf := false.! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 12:59:39'!
-growEnvironment 
-
-	^envSize := envSize + 1! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 12:59:50'!
-growStack 
-
-	^stackSize := stackSize + 1! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:00:48'!
-positionDefinedArguments 
-
-	arguments withIndexDo: [:binding :index | binding index: index]! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:00:59'!
-positionDefinedLocals 
-
-	self positionDefinedTemporariesIn: self; positionDefinedArguments! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:15'!
-positionDefinedTemporariesIn: aScriptScope 
-
-	temporaries do: [:binding | | position |
-		position := binding isInStack
-			ifTrue: [aScriptScope growStack]
-			ifFalse: [aScriptScope growEnvironment].
-		binding index: position]! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:30'!
-positionLocals 
-
-	self positionDefinedLocals! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:41'!
-realScope 
-
-	^script realScript scope! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:59'!
-redefinitionError: name 
-	| scope description |
-	scope := self scopeOf: name.
-	description := scope describe: name.
-	script compiler
-		warning: name , ' already declared as ' , description
-		at: script stretch! !
-
-!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:56:01'!
-new 
-
-	^super new initialize! !
-
-!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:56:15'!
-on: aScriptNode 
-
-	^self new script: aScriptNode! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:41'!
-capturedEnvironmentIndexOf: aScriptNode 
-	| index |
-	aScriptNode realScript == script realScript
-		ifTrue: [ ^ nil ].
-	index := environments indexOf: aScriptNode ifAbsent: nil.
-	self assert: index notNil.
-	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:44:16'!
-capturedEnvironments 
-
-	^environments! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:57'!
-environmentIndexOf: aScriptNode 
-	"
-	temporal compatibility
-	"
-	(aScriptNode isKindOf: SScriptNode)
-		ifFalse: [ self assert: false. ^nil ].
-	^self capturedEnvironmentIndexOf: aScriptNode! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:17'!
-environmentSizeUpToCapturedArguments 
-
-	^self environmentSizeUpToEnvironments + self capturedArguments size! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:29'!
-environmentSizeUpToEnvironments 
-	| receiver |
-	receiver := self capturesSelf ifTrue: [ 1 ] ifFalse: [ 0 ].
-	^receiver + environments size! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:47'!
-environments 
-	"
-	compatibility, removes the home environment
-	"
-	| first |
-	environments isEmpty ifTrue: [^#()].
-	first := environments first.
-	^first isMethod ifTrue: [environments allButFirst] ifFalse: [environments]! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:21'!
-home 
-	| first |
-	environments isEmpty ifTrue: [^nil].
-	first := environments first.
-	^first isMethod ifTrue: [first]! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:59'!
-localBindings 
-
-	^super localBindings , captured values! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:48:26'!
-parent 
-
-	^script parent scope! !
-
-!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:53:17'!
-scriptDefining: aString 
-
-	(self defines: aString) ifTrue: [^script].
-	^self parent scriptDefining: aString! !
-
-!BlockScope methodsFor: 'initialization' stamp: 'KenD 2/28/2021 12:47:45'!
-initialize 
-
-	super initialize.
-	captured := StaticBinder new.
-	environments := OrderedCollection new! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:48:57'!
-positionCapturedArgument: anArgumentBinding 
-
-	anArgumentBinding index: self growEnvironment! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:09'!
-positionCapturedLocals 
-
-	script isInlined ifTrue: [^self].
-	envSize := self environmentSizeUpToEnvironments.
-	captured do: [:binding | 
-		binding isArgument
-			ifTrue: [self positionCapturedArgument: binding]
-			ifFalse: [self positionCapturedTemporary: binding]]! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:30'!
-positionCapturedTemporary: aTemporaryBinding 
-	| outest index declaration |
-	outest := self scriptDefining: aTemporaryBinding name.
-	index := self capturedEnvironmentIndexOf: outest realScript.
-	aTemporaryBinding environmentIndex: index.
-	declaration := outest scope resolve: aTemporaryBinding name.
-	self assert: declaration index isInteger.
-	aTemporaryBinding index: declaration index! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:50:56'!
-positionDefinedArgumentsIn: aScriptScope 
-
-	arguments do: [:binding | | index |
-		index := binding isInArray
-			ifTrue: [aScriptScope growEnvironment]
-			ifFalse: [aScriptScope growStack].
-		binding index: index]! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:51:14'!
-positionLocals 
-
-	self positionCapturedLocals.
-	super positionLocals! !
-
-!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:53:34'!
-transferLocal: name 
-	| binding copy |
-	(self resolveLocal: name) ifNotNil: [:b | ^b].
-	binding := self parent transferLocal: name.
-	copy := self copyLocal: binding.
-	captured at: name put: copy.
-	^copy! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:41:40'!
-captureArgument: anArgumentBinding 
-	| name |
-	name := anArgumentBinding name.
-	^captured at: name ifAbsentPut: [| transferred copy |
-		transferred := self parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
-			ifTrue: [anArgumentBinding beInArray].
-		copy declaration: transferred declaration]! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:19'!
-captureEnvironment: aScriptNode 
-
-	script == aScriptNode ifTrue: [^self].
-	(environments identityIncludes: aScriptNode) ifTrue: [^self].
-	self realParent captureEnvironment: aScriptNode.
-	aScriptNode isMethod
-		ifTrue: [environments addFirst: aScriptNode]
-		ifFalse: [environments addLast: aScriptNode]! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:37'!
-captureLocal: aLocalBinding 
-
-	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
-	^aLocalBinding isTemporary
-		ifTrue: [self captureTemporary: aLocalBinding]
-		ifFalse: [self captureArgument: aLocalBinding]! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:52'!
-captureSelf 
-
-	captureSelf ifTrue: [^self].
-	captureSelf := true.
-	self parent captureSelf! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:07'!
-captureTemporary: aTemporaryBinding 
-	| name |
-	name := aTemporaryBinding name.
-	(self defines: name) ifTrue: [^aTemporaryBinding].
-	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
-		parent := self parent.
-		declaration := parent scriptDefining: name.
-		self realScope captureEnvironment: declaration realScript.
-		transferred := parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		copy isInArray ifTrue: [aTemporaryBinding beInArray].
-		copy declaration: transferred declaration]! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:27'!
-capturedArguments 
-
-	^captured select: [:b | b isArgument]! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:51:56'!
-resolve: aString 
-
-	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^self parent resolve: aString! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:53:01'!
-resolveLocal: aString 
-
-	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^captured at: aString! !
-
-!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:44:37'!
-capturesHome 
-
-	^self home notNil! !
-
-!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:45:06'!
-capturesSelf 
-
-	^captureSelf! !
-
-!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:47:01'!
-hasMultipleBindingsFor: aString 
-	"
-	temporal compatibility
-	"
-	^self parent hasMultipleBindingsFor: aString! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:45:42'!
-copyLocal: binding 
-
-	^script isInlined ifTrue: [binding] ifFalse: [binding copy beInArray]! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:51:31'!
-realParent 
-
-	^script realParent scope! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:11'!
-addPool: aPoolDictionary 
-	| binder |
-	binder := DynamicBinder on: aPoolDictionary .
-	pools add: binder! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:22'!
-addPool: aDictionary of: type 
-	| dict |
-	dict := DynamicBinder on: aDictionary of: type.
-	pools add: dict! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:35'!
-addPoolBinders: aCollection 
-
-	pools addAll: aCollection
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:54'!
-captureEnvironment: aScriptNode 
-
-	self assert: aScriptNode == script! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:34:18'!
-captureLocal: aLocalBinding 
-
-	self assert: (self resolveLocal: aLocalBinding name) notNil.
-	^aLocalBinding! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:39:13'!
-captureSelf 
-
-	captureSelf := true! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:06'!
-resolve: aString 
-
-	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^self resolveShared: aString! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:21'!
-resolveShared: aString 
-
-	(pseudo at: aString) ifNotNil: [:binding | ^binding].
-	(ivars at: aString) ifNotNil: [:binding | ^binding].
-	cvars do: [:binder | binder at: aString ifPresent: [:binding | ^binding]].
-	pools do: [:pool | pool at: aString ifPresent: [:binding | ^binding]].
-	^(globals at: aString) ifNil: [UnresolvedBinding new name: aString]! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:36'!
-scriptDefining: aString 
-
-	(self resolveLocal: aString) ifNotNil: [^script].
-	(self resolveShared: aString) ifNotNil: [^script].
-	self assert: false.
-	^nil! !
-
-!MethodScope methodsFor: 'testing' stamp: 'KenD 3/20/2021 14:41:14'!
-hasMultipleBindingsFor: aString 
-"
-	temporal compatibility
-"
-	| count |
-	count := 0.
-	cvars
-		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
-	pools
-		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
-	^count > 1! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:39:37'!
-classBinding 
-
-	^species! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:40:39'!
-environmentIndexOf: aScriptNode 
-
-	self assert: aScriptNode == script.
-	^nil! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:30'!
-namespace 
-
-	^globals! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:39'!
-namespace: aDictionary 
-
-	globals contents: aDictionary! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:53'!
-poolFor: aString 
-
-	cvars do: [:binder | binder at: aString ifPresent: [:b | ^binder contents]].
-	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
-	self error: 'not found'! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:46:58'!
-species: aSpecies 
-
-	species ifNotNil: [^self].
-	species := aSpecies.
-	self initializeInstVars; initializeClassVars; initializePoolVars.
-	species superclass isNil ifTrue: [^self].
-	pseudo at: 'super' put: SuperBinding new! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:47:12'!
-transferLocal: name 
-
-	^self resolveLocal: name! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:41:32'!
-initialize 
-
-	super initialize.
-	globals := DynamicBinder on: Dictionary new of: GlobalBinding.
-	ivars := StaticBinder new.
-	cvars := OrderedCollection new. 
-	pools := OrderedCollection new.
-	self initializePseudoVars! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:43:54'!
-initializeClassVars 
-"
-	fixme: bootstrapping should be properly abstracted
-	and not checked with isKindOf:
-"
-	| vars |
-	species instanceSide withAllSuperclasses
-		do: [ :class | 
-			| binder |
-			vars := class classPool.
-			binder := DynamicBinder on: vars of: ClassVarBinding.
-			cvars add: binder ]! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:07'!
-initializeInstVars 
-
-	species allInstVarNames withIndexDo: [:name :i | | binding |
-		binding := InstVarBinding new name: name; index: i.
-		ivars at: name put: binding]! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:19'!
-initializePoolVars 
-	| instance |
-	instance := species instanceSide.
-	(instance allSharedPoolsUsing: globals)
-		do:
-			[ :pool | self addPool: pool ] .
-	instance withAllSuperclasses
-		do: [ :class | class localPools do: [ :pool | self addPool: pool ] ]! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:45:00'!
-initializePseudoVars 
-
-	pseudo := StaticBinder new.
-	pseudo
-		at: 'nil' put: NilBinding new;
-		at: 'true' put: TrueBinding new;
-		at: 'false' put: FalseBinding new;
-		at: 'self' put: SelfBinding new! !
 
 !Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:48:02'!
 addressLength 
@@ -17959,6 +14918,44 @@ initialize
 	super initialize.
 	ExternalFunctions := Dictionary new! !
 
+!NameOfSubclass methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:40:52'!
+baseAddress 
+
+	^address! !
+
+!NameOfSubclass methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:41:05'!
+bytes 
+
+	^stream contents! !
+
+!NameOfSubclass methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:41:15'!
+codeSize 
+
+	^stream size! !
+
+!NameOfSubclass methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:41:27'!
+currentAddress 
+
+	^address + stream position! !
+
+!NameOfSubclass methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:39:52'!
+addAbsoluteFixup: label 
+	| fixup |
+	fixup := RelocationFixup absoluteFrom: self currentAddress to: label.
+	fixups add: fixup! !
+
+!NameOfSubclass methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:40:10'!
+addRelativeFixup: label size: n 
+	| fixup |
+	fixup := RelocationFixup relativeFrom: self currentAddress to: label.
+	fixup size: n.
+	fixups add: fixup! !
+
+!NameOfSubclass methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:40:28'!
+applyFixupsWith: solver 
+
+	fixups do: [:fixup | fixup patch: self with: solver]! !
+
 !NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:28'!
 beAbsolute 
 
@@ -18014,6 +15011,223 @@ absoluteFor: anObject
 
 	^(self new for: anObject) beAbsolute! !
 
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:48:15'!
+baseAddress 
+
+	^address! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:48:24'!
+bytes 
+
+	^stream contents! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:48:32'!
+codeSize 
+
+	^stream size! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:48:42'!
+currentAddress 
+
+	^address + stream position! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:50:48'!
+peek 
+
+	^stream peek! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:50:56'!
+peek: n 
+
+	^stream peek: n! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:51:04'!
+position 
+
+	^stream position! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:51:15'!
+position: anInteger 
+
+	stream position: anInteger
+! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:52:14'!
+size 
+
+	^stream size! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:52:24'!
+skip: anInteger 
+
+	stream skip: anInteger! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:52:49'!
+stream 
+
+	^stream
+! !
+
+!RelocatableBuffer methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:52:58'!
+stream: aStream 
+
+	stream := aStream! !
+
+!RelocatableBuffer methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:47:26'!
+addAbsoluteFixup: label 
+	| fixup |
+	fixup := RelocationFixup absoluteFrom: self currentAddress to: label.
+	fixups add: fixup! !
+
+!RelocatableBuffer methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:47:37'!
+addRelativeFixup: label size: n 
+	| fixup |
+	fixup := RelocationFixup relativeFrom: self currentAddress to: label.
+	fixup size: n.
+	fixups add: fixup! !
+
+!RelocatableBuffer methodsFor: 'fixups' stamp: 'KenD 4/24/2021 12:47:49'!
+applyFixupsWith: solver 
+
+	fixups do: [:fixup | fixup patch: self with: solver]! !
+
+!RelocatableBuffer methodsFor: 'initialization' stamp: 'KenD 4/24/2021 12:49:00'!
+initialize 
+
+	super initialize.
+	fixups := OrderedCollection new.
+	address := 0.
+	stream := #[] writeStream! !
+
+!RelocatableBuffer methodsFor: 'initialization' stamp: 'KenD 4/24/2021 12:52:03'!
+reset 
+
+	fixups := OrderedCollection new.
+	stream reset! !
+
+!RelocatableBuffer methodsFor: 'relocation' stamp: 'KenD 4/24/2021 12:51:42'!
+relocateTo: location with: solver 
+	| delta |
+	delta := location - address.
+	address := location.
+	fixups do: [:fixup | fixup relocateBy: delta].
+	self applyFixupsWith: solver! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:49:36'!
+nextBytePut: byte 
+	| value |
+	value := byte < 0 ifTrue: [ byte + 256 ] ifFalse: byte.
+	stream nextBytePut: value! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:49:45'!
+nextBytesPut: aByteArray 
+
+	stream nextBytesPut: aByteArray! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:50:05'!
+nextPut: byte 
+
+	stream nextPut: byte! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:50:14'!
+nextPutAll: aByteArray 
+
+	stream nextPutAll: aByteArray! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:50:25'!
+nextULargePut: long 
+
+	stream nextULargePut: long! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:50:33'!
+nextULongPut: long 
+
+	stream nextULongPut: long! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:53:14'!
+writeByte: byte at: location 
+	| previous value |
+	previous := stream position.
+	value := byte < 0 ifTrue: [ byte + 256 ] ifFalse: [ byte ].
+	stream
+		position: location - address;
+		nextBytePut: value;
+		position: previous! !
+
+!RelocatableBuffer methodsFor: 'writing' stamp: 'KenD 4/24/2021 12:53:49'!
+writeLong: long at: location 
+	| previous |
+	previous := stream position.
+	stream
+		position: location - address;
+		nextLongPut: long;
+		position: previous! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:44:47'!
+addressSize 
+
+	^4! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:44:56'!
+beAbsolute 
+
+	relative := false.
+	size := self addressSize! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:45:05'!
+beRelative 
+
+	relative := true! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:45:15'!
+from: address1 to: address2 
+
+	source := address1.
+	target := address2! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:46:55'!
+size: anInteger 
+
+	size := anInteger! !
+
+!RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:47:05'!
+target 
+
+	^target! !
+
+!RelocationFixup methodsFor: 'services' stamp: 'KenD 4/24/2021 12:45:54'!
+patch: buffer with: solver 
+	| delta address |
+	address := solver resolveLabel: target.
+	self assert: address notNil.
+	relative
+		ifTrue: [
+			delta := address - source - size.
+			size = 1
+				ifTrue: [buffer writeByte: delta at: source]
+				ifFalse: [buffer writeLong: delta at: source]]
+		ifFalse: [buffer writeLong: address at: source]! !
+
+!RelocationFixup methodsFor: 'services' stamp: 'KenD 4/24/2021 12:46:45'!
+relocateBy: delta 
+
+	source := source + delta! !
+
+!RelocationFixup methodsFor: 'testing' stamp: 'KenD 4/24/2021 12:45:33'!
+isRelative 
+
+	^relative! !
+
+!RelocationFixup class methodsFor: 'instance creation' stamp: 'KenD 4/24/2021 12:44:10'!
+absoluteFrom: source to: target 
+
+	^self new beAbsolute; from: source to: target! !
+
+!RelocationFixup class methodsFor: 'instance creation' stamp: 'KenD 4/24/2021 12:44:22'!
+relativeFrom: source to: target 
+
+	^self new beRelative; from: source to: target! !
+
 !Assembly methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:21:22'!
 parser: anAssemblerParser 
 
@@ -18050,6 +15264,5150 @@ new
 on: aString 
 
 	^self new source: aString! !
+
+!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:00'!
+contents 
+
+	^contents contents! !
+
+!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:08'!
+from: aStream 
+
+	contents := #[] writeStream! !
+
+!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:40'!
+contents 
+
+	^contents! !
+
+!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:54'!
+from: aStream 
+
+	contents := aStream atEnd ifFalse: [ModRM new on: aStream next]! !
+
+!ISAOpcodeReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:38:12'!
+from: aStream 
+	| byte octets |
+	super from: aStream.
+	byte := aStream next.
+	contents nextPut: byte.
+	byte = 16rF ifTrue: [
+		octets := (#[16r66 16rF2 16rF3] includes: contents contents first)
+			ifTrue: [aStream next: 2]
+			ifFalse: [{aStream next}].
+		contents nextPutAll: octets]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:15'!
+printLegacyOn: aStream 
+
+	legacy contents
+		do: [:p | aStream nextPutAll: p asString]
+		separatedBy: [aStream space]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:02'!
+printRexOn: aStream 
+
+	rex isNil ifTrue: [^self].
+	aStream nextPutAll: REXPrefix rex asString.
+	(rex isOnBit: REXPrefix w value) ifTrue: [aStream nextPutAll: '.W'].
+	(rex isOnBit: REXPrefix r value) ifTrue: [aStream nextPutAll: '.R'].
+	(rex isOnBit: 1) ifTrue: [aStream nextPutAll: '.B'].
+	(rex isOnBit: 2) ifTrue: [aStream nextPutAll: '.X']! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:29'!
+printVex2On: aStream 
+
+	self printVexVvvvLpp: vex second on: aStream! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:42'!
+printVex3On: aStream 
+	| byte x b mmmmm w |
+	byte := vex second.
+	x := (byte bitAnd: 2r1000000) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: x; nextPut: $..
+	b := (byte bitAnd: 2r100000) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: b; nextPut: $..
+	mmmmm := byte bitAnd: 2r11111.
+	aStream
+		nextPutAll: (mmmmm bin: 5);
+		nextPut: $|.
+	byte := vex third.
+	w := byte >= 16r80 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: w; nextPut: $..
+	self printVexVvvvLpp: byte on: aStream! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:02'!
+printVexOn: aStream 
+	| byte r |
+	vex isNil ifTrue: [^self].
+	aStream nextPutAll: vex first hex; nextPut: $|.
+	byte := vex second.
+	r := byte // 16r80 > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: r; nextPut: $..
+	vex size = 2
+		ifTrue: [self printVex2On: aStream]
+		ifFalse: [self printVex3On: aStream]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:15'!
+printVexVvvvLpp: byte on: aStream 
+	| vvvv l pp |
+	vvvv := (byte bitShift: -3) bitAnd: 2r1111.
+	aStream
+		nextPutAll: (vvvv bin: 4);
+		nextPut: $..
+	l := (byte bitAnd: 2r100) > 0 ifTrue: [$1] ifFalse: [$0].
+	aStream nextPut: l; nextPut: $..
+	pp := byte bitAnd: 2r11.
+	aStream nextPutAll: (pp bin: 2)! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:30'!
+from: aStream 
+
+	super from: aStream.
+	self
+		legacyFrom: aStream;
+		rexFrom: aStream;
+		vexFrom: aStream! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:44'!
+legacyFrom: aStream 
+	| prefix |
+	legacy := #() writeStream.
+	[
+		prefix := LegacyPrefix withValue: aStream peek.
+		prefix isNil]
+		whileFalse: [
+			legacy nextPut: prefix.
+			contents nextPut: aStream next]! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:33'!
+rexFrom: aStream 
+
+	(aStream peek bitAnd: 16rF0) = REXPrefix rex value ifTrue: [
+		rex := aStream next.
+		contents nextPut: rex]! !
+
+!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:45'!
+vexFrom: aStream 
+	| byte |
+	byte := aStream peek.
+	vex := byte = 16rC4 ifTrue: [aStream next: 3] ifFalse: [
+		byte = 16rC5 ifFalse: [^self].
+		aStream next: 2].
+	contents nextPutAll: vex! !
+
+!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:44'!
+contents 
+
+	^contents! !
+
+!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:52'!
+from: aStream 
+
+	contents := SIB new on: aStream next! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:43'!
+displacementFrom: aStream
+
+	self notYetImplemented ! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:57'!
+from: aStream 
+
+	self
+		prefixesFrom: aStream;
+		opcodeFrom: aStream;
+		modrmFrom: aStream;
+		sibFrom: aStream;
+		displacementFrom: aStream;
+		immediateFrom: aStream! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:40'!
+immediateFrom: aStream 
+
+	immediate := aStream upToEnd! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:53'!
+modrmFrom: aStream 
+
+	modrm := ISAModRMReader new from: aStream; contents! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:07'!
+opcodeFrom: aStream 
+
+	opcode := ISAOpcodeReader new from: aStream; asString! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:25'!
+prefixesFrom: aStream 
+
+	prefixes := ISAPrefixReader new from: aStream; asString! !
+
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:33:26'!
+sibFrom: aStream 
+
+	self hasSib ifFalse: [^self].
+	aStream atEnd ifTrue: [^self].
+	sib := ISASibReader new from: aStream; contents! !
+
+!ISAInstructionReader methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:31:24'!
+hasSib 
+
+	^modrm notNil and: [modrm mod = 0]! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:10'!
+hi 
+
+	^byte bitShift: -6! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:22'!
+hi: anInteger 
+	| bits |
+	self assert: anInteger < 4.
+	bits := anInteger bitShift: 6.
+	byte := (byte bitAnd: 2r111111) bitOr: bits! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:38'!
+lo 
+
+	^byte bitAnd: 7! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:48'!
+lo: anInteger 
+
+	self assert: anInteger < 8.
+	byte := (byte bitAnd: 2r11111000) bitOr: anInteger! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:59'!
+mid 
+
+	^(byte bitShift: -3) bitAnd: 7! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:09'!
+mid: anInteger 
+	| bits |
+	self assert: anInteger < 8.
+	bits := anInteger bitShift: 3.
+	byte := (byte bitAnd: 2r11000111) bitOr: bits! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:26'!
+on: anInteger 
+
+	byte := anInteger! !
+
+!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:02:13'!
+value 
+
+	^byte! !
+
+!OctalStructure class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 14:59:45'!
+new 
+
+	^super new initialize! !
+
+!ModRM methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:03:27'!
+initialize 
+
+	byte := 0! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:12'!
+beRR 
+
+	self mod: 2r11! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:41'!
+mod 
+
+	^self hi
+! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:51'!
+mod: anInteger 
+
+	self hi: anInteger! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:01'!
+opcode 
+
+	^self reg! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:09'!
+opcode: anInteger 
+
+	self reg: anInteger! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:19'!
+reg 
+
+	^self mid! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:29'!
+reg: aRegister 
+	| mid |
+	mid := aRegister isInteger
+		ifTrue: [aRegister]
+		ifFalse: [aRegister index \\ 8].
+	self mid: mid! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:39'!
+rm 
+
+	^self lo! !
+
+!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:51'!
+rm: anInteger 
+
+	self lo: anInteger! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:54:49'!
+base 
+
+	^self lo! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:54:58'!
+base: anInteger 
+
+	self lo: anInteger! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:22'!
+baseRegister: aRegister 
+
+	self base: aRegister index! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:32'!
+index 
+
+	^self mid! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:42'!
+index: anInteger 
+
+	self mid: anInteger! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:55'!
+indexRegister: aRegister 
+
+	self index: aRegister index! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:03'!
+scale 
+
+	^self hi! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:14'!
+scale: anInteger 
+
+	self hi: anInteger! !
+
+!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:31'!
+scaleFactor: s 
+	| index |
+	index := #[1 2 4 8] indexOf: s.
+	self scale: index - 1! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:13:30'!
+classSpecs 
+
+	^ self spec allClasses! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:15:39'!
+classes 
+
+	^classes! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:20:03'!
+image 
+
+	^ image! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:26'!
+module 
+
+	^ module! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:04'!
+newSymbol: aSymbol 
+
+	^runtime newSymbol: aSymbol! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:22'!
+runtime 
+
+	^ runtime! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:12:24'!
+specAt: aSymbol 
+
+	^ self spec at: aSymbol! !
+
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:29:54'!
+writer 
+
+	^ ImageSegmentWriter new roots:
+		objects;
+		module: module;
+		wordSize: image wordSize;
+		yourself! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:04'!
+nativizeForDMR 
+
+	DMRBootstrapper new
+		image: image;
+		builder: self;
+		nativize;
+		initializeKernelModule! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:38'!
+newCallback: aNativeCode bytesFrom: aByteArray 
+	| code original behavior class |
+	code := image newBytesFrom: aByteArray.
+	original := code behavior.
+	behavior := image newSlots: 'CallbackBehavior'.
+	class := original slotNamed: 'class'.
+	behavior
+		slotNamed: 'class' put: class;
+		methods: original methods;
+		next: image nil;
+		nativeCode: aNativeCode.
+	code behavior: behavior.
+	^ code! !
+
+!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:24:45'!
+newMethod: anAstcode 
+selector: aSymbol 
+in: classname 
+format: anInteger 
+literals: anArray 
+	| method astcodes class selector format |
+	method := image newSlots: 'CompiledMethod'.
+	astcodes := self transferAstcodesFrom: anAstcode.
+	class := image classNamed: classname.
+	selector := image newSymbol: aSymbol.
+	format := image newInteger: anInteger.
+	method
+		nativeCode: image nil;
+		astcodes: astcodes;
+		class: class;
+		selector: selector;
+		format: format;
+		source: image nil.
+	^ method! !
+
+!ImageSegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:20:38'!
+initialize 
+
+	index := OrderedDictionary new.
+	classes := OrderedDictionary new.
+	methods := OrderedDictionary new.
+	globals := VirtualDictionary new.
+	objects := OrderedCollection new! !
+
+!ImageSegmentBuilder methodsFor: 'printing' stamp: 'KenD 3/4/2021 08:22:07'!
+log: aString 
+
+	Transcript
+		show: aString;
+		cr! !
+
+!ImageSegmentBuilder methodsFor: 'validating' stamp: 'KenD 3/4/2021 08:29:04'!
+validate 
+
+	objects do:[:obj | obj validate]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:12:46'!
+addObjectDeep: anObject 
+
+	self assert: (anObject isKindOf: ObjectMap).
+	anObject isImport
+		ifTrue: [ ^ self addImport: anObject ].
+	anObject isImmediate
+		ifTrue: [ ^ self ].
+	(objects includes: anObject)
+		ifTrue: [ ^ self ].
+	objects add: anObject.
+	anObject slotsDo: [ :s | self addObjectDeep: s ].
+	^ anObject! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:13:04'!
+bootstrapModule 
+
+	runtime send: #bootstrap to: module! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:16:19'!
+createLoadAction 
+
+	^ image nil! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:33'!
+createMethodDictionary: species sized: anInteger 
+	| behavior md size dictionary |
+	behavior := species instanceBehavior.
+	md := image classNamed: #MethodDictionary.
+	size := image newInteger: anInteger.
+	dictionary := runtime send: #new: to: md with: {size}.
+	behavior methods: dictionary.
+	^dictionary! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:48'!
+export: anObject as: aSymbol 
+
+	runtime globals at: aSymbol put: anObject! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:01'!
+fillClasses 
+	| class meta |
+	self classSpecs
+		do: [ :def | 
+			self log: 'filling ' , def name , '...'.
+			class := image classFor: def.
+			meta := class behavior slotNamed: #class.
+			self
+				fillSpecies: meta with: def metaclass;
+				fillSpecies: class with: def ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:59'!
+fillSpecies: species with: classDefinition 
+	| dictionary smethod transferred |
+	dictionary := self
+		createMethodDictionary: species
+		sized: classDefinition methods size.
+	classDefinition methods
+		do: [ :methodDefinition | 
+			smethod := runtime compile: methodDefinition.
+			methods at: methodDefinition put: smethod.
+			transferred := self transferMethod: smethod in: species.
+			runtime
+				send: #basicAt:put:
+				to: dictionary
+				with:
+					{transferred selector.
+					transferred} ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:19:27'!
+generateModule 
+	| class dictionary exports array assocs |
+	class := image classNamed: self moduleName.
+	dictionary := image classNamed: #Dictionary.
+	module := runtime send: #basicNew to: class.
+	exports := runtime send: #new to: dictionary.
+	array := runtime send: #declaredGlobals to: module.
+	assocs := runtime declareGlobals: array.
+	assocs := image newArray: assocs.
+	runtime send: #addAll: to: exports with: {assocs}.
+	module exports: exports.
+	"self classes
+		do: [ :c | | args |
+			args := Array with: c name with: c.
+			runtime send: #at:put: to: exports with: args ]."
+! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:06'!
+initialize32BitImage 
+
+	image := VirtualSmalltalkImage fromSpec
+		wordSize: 4;
+		genesis.
+	runtime := VirtualSmalltalkRuntime new image: image; initializeClassPools
+! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:30'!
+initialize64BitImage 
+
+	image := VirtualSmalltalkImage fromSpec
+		wordSize: 8;
+		genesis.
+	runtime := VirtualSmalltalkRuntime new
+		image: image;
+		initializeClassPools! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:23:57'!
+newClassVarDictionary: anArray 
+	| dict |
+	dict := runtime newDictionary.
+	anArray do: [ :assoc | runtime send: #add: to: dict with: {assoc} ]! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:37'!
+transferArrayDeep: anArray 
+	| copy transferred |
+	copy := image newSlots: 'Array' sized: anArray size.
+	anArray
+		withIndexDo: [ :elem :i | 
+			transferred := elem isInteger
+				ifTrue: [ image newInteger: elem ]
+				ifFalse: [ self transferArrayDeep: elem ].
+			copy at: i put: transferred ].
+	^ copy! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:53'!
+transferAstcodesFrom: anArray 
+	| copy transferred |
+	copy := image newSlots: 'Array' sized: anArray size.
+	anArray
+		withIndexDo: [ :elem :i | 
+			transferred := elem isInteger
+				ifTrue: [ image newInteger: elem ]
+				ifFalse: [ self transferAstcodesFrom: elem ].
+			copy at: i put: transferred ].
+	^ copy! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:21'!
+transferMethod: anSCompiledMethod in: species 
+	| size classname transferred astcodes selector format literal tliteral |
+	(image includes: anSCompiledMethod)
+		ifTrue: [ self assert: false ].
+	size := anSCompiledMethod size.
+	classname := anSCompiledMethod isCallback
+		ifTrue: [ 'CallbackMethod' ]
+		ifFalse: [ 'CompiledMethod' ].
+	transferred := image newSlots: classname sized: size.
+	image map: anSCompiledMethod to: transferred.
+	astcodes := image transferLiteralDeep: anSCompiledMethod astcodes.
+	selector := image newSymbol: anSCompiledMethod selector.
+	format := image newInteger: anSCompiledMethod format.
+	transferred
+		astcodes: astcodes;
+		class: species;
+		selector: selector;
+		format: format;
+		source: image nil.
+	1 to: size do: [ :i | 
+		literal := anSCompiledMethod at: i.
+		tliteral := image transferLiteralDeep: literal.
+		transferred at: i put: tliteral ].
+	^ transferred! !
+
+!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:46'!
+transferSimpleLiterals: method 
+	"fixme: to be used by emulator only"
+	| literal class |
+	1 to: method size do: [ :i | 
+		literal := method at: i.
+		class := literal class.
+		((class inheritsFrom: ObjectMap)
+			or: [ class = SCompiledBlock ])
+			ifFalse: [ method at: i put: (self transferLiteralDeep: literal) ] ].
+	^ method! !
+
+!ImageSegmentBuilder methodsFor: 'visiting' stamp: 'KenD 3/4/2021 08:25:12'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:32'!
+moduleName 
+
+	^'Kernel'! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:53'!
+spec 
+
+	^image kernel! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:08'!
+undermethods 
+
+	^ (self => #ProtoObject) methods
+		select: [ :m | m category = 'header access' ]! !
+
+!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:19'!
+writer 
+
+	^ super writer space: smalltalk value memory edenSpace! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:02'!
+addGenesisObjects 
+
+	objects
+		add: image nil;
+		add: image false;
+		add: image true;
+		add: module.
+	globals valuesDo: [ :obj | objects add: obj ].
+	smalltalk ifNotNil: [ objects add: smalltalk value ]! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:33'!
+generateModule 
+	| wordsize lasthash |
+	super generateModule.
+	smalltalk := runtime globals associationAt: #Smalltalk.
+	wordsize := runtime globals associationAt: #WordSize.
+	lasthash := runtime globals associationAt: #LastHash.
+	runtime send: #add: to: module exports with: {wordsize}.
+	runtime send: #add: to: module exports with: {lasthash}! !
+
+!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:59'!
+methodSubset: aDictionary 
+	| all species m |
+	all := aDictionary
+		flatCollect: [ :assoc | 
+			species := self => assoc key.
+			assoc value
+				collect: [ :sel | 
+					m := species >> sel.
+					self assert: m notNil.
+					m ] ].
+	^ all asOrderedCollection! !
+
+!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:19'!
+spec 
+
+	^ spec! !
+
+!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:31'!
+spec: anRGEnvironment 
+
+	spec := anRGEnvironment! !
+
+!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:42'!
+addClasses
+
+	self notYetImplemented ! !
+
+!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:56'!
+importKernelObjects 
+
+	self addImport: image nil; addImport: image true; addImport: image false! !
+
+!LibrarySegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/9/2021 07:47:05'!
+initialize 
+
+	super initialize.
+	kernelBuilder := KernelSegmentBuilder new.! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:34:29'!
+addClosure 
+	| remaining obj b |
+	remaining := OrderedCollection withAll: roots.
+	remaining do: [ :s | offsets at: s put: nil ].
+	[ remaining isEmpty ]
+		whileFalse: [ obj := remaining removeFirst.
+			objects add: obj.
+			b := obj behavior.
+			(offsets includesKey: b)
+				ifFalse: [ offsets at: b put: nil. remaining add: b ].
+			obj
+				slotsDo: [ :s | 
+					(s isImmediate or: [ offsets includesKey: s ])
+						ifFalse: [ offsets at: s put: nil.
+							remaining add: s ] ] ]! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:09'!
+base 
+"
+	Return preferred base address for this segment
+"
+	^ base! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:32'!
+base: anInteger 
+"
+	 Set the preferred base address for this segment. 
+	 This is a hint only, loaders may load a segment
+	 at a different address but then they must relocate.
+"
+	base := anInteger! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:36:59'!
+image 
+
+	^stream contents! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:00'!
+module: aSlotObjectMap 
+
+	module := aSlotObjectMap! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:11'!
+nextHash 
+	|  result |
+	result := nextHash.
+	nextHash := nextHash linearFeedbackShiftRandom: 16rB9C8.
+	^result! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:35'!
+objects 
+
+	^ objects! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:44'!
+objectsOffset 
+
+	^self class objectsOffset! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:52'!
+offsetOf: anObjectMap 
+
+	^ offsets at: anObjectMap! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:00'!
+roots: aCollection 
+
+	roots := aCollection! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:15'!
+space: aGCSpace 
+
+	space := aGCSpace! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:38'!
+stream: aWriteStream 
+
+	stream := aWriteStream! !
+
+!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:52'!
+wordSize: anInteger 
+
+	wordSize := anInteger! !
+
+!ImageSegmentWriter methodsFor: 'encoding' stamp: 'KenD 3/4/2021 08:36:46'!
+encodedReferenceTo: anObject 
+	| offset |
+	anObject isImmediate
+		ifTrue: [ ^ anObject value * 2 + 1 ].
+	offset := offsets at: anObject.
+	^base + offset! !
+
+!ImageSegmentWriter methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:37:20'!
+initialize 
+
+	offsets := IdentityDictionary new.
+	objects := OrderedCollection new.
+	stream := #[] writeStream.
+	nextHash := 1.
+	base := 0! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:36:00'!
+configureSpace 
+	| basemap free limit |
+	basemap := SmallintObjectMap new value: base // 2.
+	free := SmallintObjectMap new value: (base + size) // 2.
+	limit := SmallintObjectMap new value: (base + size + 16r20000 // 2).
+	space
+		base: basemap;
+		nextFree: free;
+		softLimit: limit;
+		commitedLimit: limit;
+		reservedLimit: limit! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:37:40'!
+layoutObjects 
+	| offset oop |
+	offset := self objectsOffset.
+	objects
+		do: [ :obj | 
+			oop := offset + obj headerSizeInBytes.
+			offsets at: obj put: oop.
+			offset := oop + obj bodySizeInBytes ].
+	size := offset! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:14'!
+write 
+
+	self
+		addClosure;
+		layoutObjects;
+		configureSpace;
+		writeSignature;
+		writeHeader;
+		writeObjects! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:35'!
+writeHeader 
+	"See ImageSegment.h for structure of a segment header"
+	| reserved |
+	reserved := (space reservedLimit value - space base value) * 2.
+	stream uint64le: base; uint64le: size; uint64le: reserved.
+	self writeReferenceTo: module! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:54'!
+writeObjectBody: obj 
+	obj isBytes
+		ifTrue: [ self writeObjectBytes: obj ]
+		ifFalse: [ self writeObjectSlots: obj ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:08'!
+writeObjectBytes: obj 
+	| current aligned |
+	stream nextBytesPutAll: obj bytes.
+	current := stream position.
+	aligned := current alignedTo: wordSize.
+	aligned - current timesRepeat: [ stream nextPut: 0 ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:22'!
+writeObjectHeader: obj 
+	| behavior |
+	obj isSmall
+		ifFalse: [ stream
+				uint32le: obj size;
+				uint32le: 0 ].
+	behavior := self encodedReferenceTo: obj behavior.
+	stream
+		uint16le: obj headerHash;
+		nextPut: obj headerSmallSize;
+		nextPut: obj headerFlags;
+		uint32le: behavior.
+	self assert: stream position == (self offsetOf: obj)! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:41'!
+writeObjectSlots: obj 
+
+	obj slots do: [ :slot | self writeReferenceTo: slot ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:53'!
+writeObjects 
+	self assert: stream position == self objectsOffset.
+	objects
+		do: [ :obj | 
+			self
+				writeObjectHeader: obj;
+				writeObjectBody: obj ]! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:03'!
+writeReferenceTo: slot 
+	| encoded |
+	encoded := self encodedReferenceTo: slot.
+	wordSize = 8
+		ifFalse: [ self assert: false ].
+	stream uint64le: encoded! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:15'!
+writeSignature 
+
+	stream
+		nextBytesPutAll: 'P_IM_S';
+		nextPut: Character lf asInteger;
+		nextPut: 0! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:27'!
+writeTo: aStream 
+
+	self stream: aStream.
+	self write.
+! !
+
+!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:39'!
+writeToFile: filename 
+	filename asFileReference binaryWriteStreamDo: [ :fileStream |
+		| bytes |
+		
+		"Bit stupid - we write into internal ByteArray backed stream and
+      then write it to real file. That's because WriteStream and ZnWriteStream
+      are not polymorphic. Sigh"
+		bytes := ByteArray streamContents:[:byteStream | self writeTo: byteStream ].
+		fileStream nextPutAll: bytes.
+	]! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:06'!
+behaviorOffset 
+"
+	The offset at which the behavior is from the oop (negated)
+	[Oop is pointer to 1st slot, behavior is slot preceeding].
+"
+
+	^ -4! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:26'!
+nilOffset 
+
+	^self objectsOffset + 8! !
+
+!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:57'!
+objectsOffset 
+"
+	The offset at which header terminates and objects are stored.
+	See ImageSegment.h for structure of a segment header
+"
+	^40! !
+
+!LookupNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:17:05'!
+nativizeMethods 
+	| environment | 
+	methods := self closureMethods collect: [:m | bootstrapper compile: m ].
+	environment := self newNativizationEnvironment.
+	methods do: [:m | environment nativize: m]! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:22'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:33'!
+closureMethods 
+
+	^ self selectorLookupMethods , self globalLookupMethods
+		, self otherLookupMethods , bootstrapper undermethods
+		, self sendSiteMethods! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:13:54'!
+findSymbol: aSymbol 
+
+	^bootstrapper spec at: aSymbol! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:56'!
+globalLookupMethods 
+	| result out global |
+	result := OrderedCollection new.
+	result
+		add: (self >> #ProtoObject) >> #_cachedLookup:;
+		add: (self >> #ProtoObject) >> #_cachedLookup:in:;
+		add: (self >> #Thread) metaclass >> #currentGlobalLookup;
+		add: (self >> #GlobalDispatchCache) metaclass >> #current.
+	out := #(initialize flushAll: #flush:forSpecies: #flush:for: #flush:for:startingAt:).
+	global := (self >> #GlobalDispatchCache) methods
+		reject: [ :m | out includes: m selector ].
+	^ result
+		addAll: global;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:30'!
+methodFor: selector 
+
+	^methods detect: [:m | m selector == selector]! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:19:53'!
+otherLookupMethods 
+
+	^ OrderedCollection new
+		add: self >> #ProtoObject >> #objectAtValid:put:;
+		add: self >> #ProtoObject >> #behavior;
+		add: self >> #CompiledMethod >> #prepareForExecution;
+		add: self >> #CompiledMethod >> #isNativized;
+		add: self >> #CompiledMethod >> #validNativeCodeAddress;
+		add: self >> #CompiledMethod >> #nativeCode;
+		add: self >> #CompiledMethod >> #selector;
+		add: self >> #NativeCode >> #code;
+		add: self >> #NativeCode >> #compiledCode;
+		add: self >> #Species >> #instanceBehavior;
+		add: self >> #Process >> #wantsToStepInto;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:06'!
+selectorLookupMethods 
+
+	^ OrderedCollection new
+		add: (self >> #ProtoObject) >> #_lookup:;
+		add: (self >> #ProtoObject) >> #_lookup:in:;
+		add: (self >> #ProtoObject) >> #_lookup:inDictionary:;
+		yourself! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:17'!
+sendSiteMethods 
+	| sendsite |
+	sendsite := self >> #SendSite.
+	^ #(_dispatchOn: _dispatchOn:startingAt: _dispatchDebuggableOn: _dispatchDebuggableOn:startingAt: sentSelector when:use: beInvoke:using: bePolymorphic isStaticSend monomorphicMap:to: polymorphicMap:to: maxSize reset takeNextFreeMIC takeNextFreePIC)
+		collect: [ :s | sendsite >> s ]! !
+
+!LookupNativizer methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 13:19:21'!
+newNativizationEnvironment 
+	| environment ignored lookup invoke |
+	environment := NativizationEnvironment new
+		globals: bootstrapper nativizer globals;
+		optimizedMethods: bootstrapper nativizer optimizedMethods.
+	ignored := HaltingSend new
+		filter: #(< <= = > + - * // bitAnd: bitOr: bitXor:).
+	lookup := LookupLinker new initializeFrom: environment.
+	lookup
+		filter:
+			#(debuggableCopy acquireReferences nativize refreshBlocks doesNotUnderstandSelector: mustBeBoolean class allocateMoreCaches).
+	invoke := InvokeLinker new
+		invoker: environment invokeStub;
+		addMethods: methods.
+	^ environment
+		addLinker: invoke;
+		addLinker: ignored;
+		addLinker: lookup;
+		completeInitialization
+! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
+isImmediate 
+
+	^ false! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:14'!
+isSmall 
+
+	^self size < 256! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:31:21'!
+initializeAs: anRGBehavior sized: size 
+
+	self subclassResponsibility! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:33'!
+nilAll: nilObject! !
+
+!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:41'!
+nilWith: nilObject ! !
+
+!ObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:35:51'!
+slotsDo: aBlock
+
+	self notYetImplemented ! !
+
+!ObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:38:23'!
+validate 
+	
+	self assert: behavior notNil! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:28:54'!
+arrayedSize 
+
+	^self size! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:11'!
+at: index 
+
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:24'!
+at: index put: value 
+
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:36'!
+behavior 
+
+	^behavior! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:49'!
+behavior: anObjectMap 
+
+	behavior := anObjectMap! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:03'!
+bodySizeInBytes 
+
+	"Return the size of object body(s) in bytes,
+	 padded if a byte object"
+	^ self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:14'!
+classname 
+
+	^spec name! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:30'!
+headerSizeInBytes 
+	"
+		Return the size of object header in bytes, 
+		including both small and large part (if any).
+	"
+	
+	^ self isSmall ifTrue: [ 8 ] ifFalse: [ 16 ]! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:31:00'!
+headerSmallSize 
+
+	"Return value of 'size' field of small header"
+	 | size |	
+ 	size := self size.
+  	^ size < 256 ifTrue: [ size ] ifFalse: [ 0 ]! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:29'!
+size 
+
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:43'!
+sizeInBytes 
+
+	"Return the size of object in bytes without padding"
+	^ self subclassResponsibility ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:03'!
+slotAt: index 
+
+	"Get named slot at given `index`, starting with 1. This CANNOT be used 
+	 for accessing indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:"
+	
+	self subclassResponsibility  ! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:26'!
+slotAt: index put: value 
+
+	"Set named slot at given `index` to `value`. This CANNOT be used 
+	 for setting indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:put:"
+	
+	self subclassResponsibility! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:47'!
+slotNamed: name 
+
+	"Get a named slot with given `name`"
+
+	| index |
+	index := self allInstVarNames indexOf: name.
+	index == 0
+		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
+	^ self slotAt: index! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:35:02'!
+slotNamed: name put: value 
+
+	"Set a named slot with given `name` to `value`"
+
+	| index |
+	index := self allInstVarNames indexOf: name.
+	index == 0
+		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
+	^ self slotAt: index put: value! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:35'!
+spec 
+
+	^ spec! !
+
+!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:51'!
+wordSize 
+
+	"Return the size in bytes of the word (i.e, a reference to an object)"
+	
+	^ 8 "For now, 64bit only!!"! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:26:08'!
+classFor: anRGBehavior 
+
+	anRGBehavior name == #SmallInteger ifTrue: [^SmallintObjectMap].
+	^anRGBehavior isBytes
+		ifTrue: [ ByteObjectMap ]
+		ifFalse: [ SlotObjectMap ]! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:00'!
+new: anRGBehavior 
+	
+	^self new: anRGBehavior size: 0! !
+
+!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:19'!
+new: anRGBehavior size: size 
+
+	| class |
+	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
+	class := self classFor: anRGBehavior.
+	^ class new initializeAs: anRGBehavior sized: size! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:04'!
+initialize 
+
+	hash := 0! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:18'!
+initializeAs: anRGBehavior sized: size 
+
+	self assert: anRGBehavior notNil.
+	self assert: anRGBehavior isPointers.
+	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
+	spec := anRGBehavior.
+	slots := Array new: self instSize + size! !
+
+!SlotObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:53:24'!
+validate 
+
+	super validate.
+	slots withIndexDo:[:value :index | self assert: value notNil ]! !
+
+!SlotObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:52:58'!
+slotsDo: aBlock 
+
+	slots do: aBlock! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:45'!
+arrayedSize 
+
+	"
+	 Return the size of the arrayed part of this object, that this,
+	 the value of size field in object header minus the instSize. 
+	"
+
+	^ self size - self instSize! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:22'!
+asBoolean 
+	spec name = #True ifTrue: [ ^true ].	spec name = #False ifTrue: [ ^false ].
+	self assert: false! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:40'!
+at: index 
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: slots size - self instSize).
+	^slots at: self instSize + index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:52'!
+at: index put: value 
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+	self assert: spec isVariable.
+	self assert: (index between: 1 and: slots size - self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: self instSize + index put: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:07'!
+atAllPut: value 
+
+	slots atAllPut: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:18'!
+basicAt: index 
+	"Return indexed value at given raw index, starting with 1"
+
+	self assert: (index between: 1 and: slots size).
+	^ slots at: index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:32'!
+bodySizeInBytes 
+	
+	^ self sizeInBytes! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:48:52'!
+doesNotUnderstand: aMessage 
+	"Assume setter or accessor and try to do the right thing"
+	| sel ivars |
+	sel := aMessage selector.
+	ivars := self allInstVarNames.
+	sel isUnary
+		ifTrue: [ (ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel ] ].
+	(sel isKeyword and: [ sel numArgs == 1 ])
+		ifTrue: [ sel := sel allButLast.
+			(ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel put: aMessage arguments first ] ].
+	^ super doesNotUnderstand: aMessage! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:20'!
+headerFlags 
+
+	| variable named small |
+	variable := spec isVariable ifTrue: [2] ifFalse: [0].
+	named := spec instSize == 0 ifTrue: [0] ifFalse: [4].
+	small := self isSmall ifTrue: [16r80] ifFalse: [0].
+	^ variable | named | small! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:31'!
+headerHash 
+
+	^hash! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:43'!
+headerHash: anInteger 
+
+	hash := anInteger! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:28'!
+size 
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ slots size! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:56'!
+sizeInBytes 
+
+	^ self size * self wordSize! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:09'!
+slotAt: index 
+	"Get named slot at given `index`, starting with 1. This CANNOT be used 
+	 for accessing indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:"
+	
+	self assert: (index between: 1 and: self instSize).
+	^slots at: index! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:24'!
+slotAt: index put: value 
+	"Set named slot at given `index` to `value`. This CANNOT be used 
+	 for setting indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:put:"
+	
+	self assert: (index between: 1 and: self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: index put: value! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:35'!
+slots 
+
+	^slots! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:54:19'!
+value 
+
+	| message |
+	(self allInstVarNames includes: #value) ifFalse: [ ^super value ].
+	message := Message selector: #value.
+	^ self doesNotUnderstand: message! !
+
+!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:44:48'!
+new: anRGBehavior size: size withAll: value 
+
+	| obj |
+	obj := self new: anRGBehavior size: size.
+	^obj atAllPut: value; yourself! !
+
+!SmallintObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:58:25'!
+isImmediate 
+
+	^ true! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:39'!
+initializeAs: anRGBehavior sized: size 
+
+	self shouldNotImplement! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:49'!
+initializeAs: anRGBehavior valued: anInteger 
+
+	self assert: anRGBehavior name == #SmallInteger.
+	self assert: anInteger isInteger.
+	spec := anRGBehavior.
+	value := anInteger! !
+
+!SmallintObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 14:02:57'!
+validate 
+
+	super validate.
+"	self assert: value isSmallInteger "
+	self assert: value class == SmallInteger! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:56:49'!
+at: index 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:06'!
+at: index put: anObject 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:21'!
+hash 
+
+	^ value hash! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:21'!
+size 
+	"I have zero object slots"
+	^ 0! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:32'!
+slotAt: index 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:42'!
+slotAt: index put: anObject 
+
+	self errorNotIndexable! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:00:55'!
+value 
+
+	^value! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:01:10'!
+value: aSmallInteger 
+
+	value := aSmallInteger! !
+
+!SmallintObjectMap methodsFor: 'comparing' stamp: 'KenD 2/22/2021 13:56:26'!
+= anObject 
+
+	anObject class == self class
+		ifFalse: [ ^ false ].
+	^value == anObject value! !
+
+!SmallintObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:55:55'!
+new: anRGBehavior valued: anInteger 
+
+	^self new initializeAs: anRGBehavior valued: anInteger! !
+
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
+initialize 
+
+	hash := 0! !
+
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:38'!
+initializeAs: anRGBehavior sized: size 
+
+	self assert: anRGBehavior notNil.
+"	self assert: anRGBehavior isBytes.
+	self assert: anRGBehavior isVariable.
+"	
+	spec := anRGBehavior.
+	bytes := ByteArray new: size! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:32'!
+at: index 
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: bytes size).
+	^bytes at: index! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:47'!
+at: index put: anObjectMap 
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+
+	| value |
+	self assert: (index between: 1 and: bytes size).
+	self assert: anObjectMap isImmediate.
+	value := anObjectMap value.
+	self assert: (value between: 0 and: 255).
+	bytes at: index put: value.
+	^anObjectMap! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:13'!
+bodySizeInBytes 
+	"Return the size of object body(s) in bytes, padded"
+	
+	^ self size alignedTo: self wordSize! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:26'!
+bytes 
+
+	^ bytes! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:11'!
+contentsString 
+
+	spec name == #String
+		ifTrue: [ ^bytes allButLast asString storeString ].
+	spec name == #Symbol
+		ifTrue: [ ^bytes allButLast asString asSymbol storeString ].
+	spec name == #ByteArray
+		ifTrue: [ ^bytes storeString ].
+	^spec name withArticle, ': ', bytes printString! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:27'!
+fillFrom: anObject 
+
+	self assert: anObject size == bytes size.
+	bytes replaceFrom: 1 to: bytes size with: anObject startingAt: 1! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:38'!
+headerFlags 
+
+	| byte variable small |
+	byte := 1.
+	variable := 2.
+	small := self isSmall ifTrue: [ 16r80 ] ifFalse: [ 0 ].
+	^ byte | variable | small! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:57'!
+headerHash 
+
+	^ hash! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:11:08'!
+headerHash: anInteger 
+
+	hash := anInteger! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:12:42'!
+size 
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ bytes size! !
+
+!ByteObjectMap methodsFor: 'converting' stamp: 'KenD 2/22/2021 14:08:13'!
+asString 
+
+	^ bytes allButLast asString! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:05:48'!
+new: anRGBehavior size: anInteger 
+
+	^ self new
+		initializeAs: anRGBehavior sized: anInteger! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:06:08'!
+new: anRGBehavior valued: bytes 
+	"self assert: anRGBehavior isBytes."
+	
+	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
+
+!ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
+initialize 
+
+	shapes := Dictionary new! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:41'!
+at: type 
+
+	^shapes at: type! !
+
+!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:06'!
+indexInCurrentOf: varname at: type 
+
+	| species slot |
+	species := Smalltalk at: type asSymbol.
+	slot := species slotNamed: varname.
+	slot isNil
+		ifTrue: [ self error: 'inst var ' , varname , ' not found' ].
+	^ slot index! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:16:44'!
+add: structure 
+
+	shapes at: structure name put: structure! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:47'!
+indexOf: varname at: type 
+
+	| shape |
+	shape := shapes at: type ifAbsent: [
+		^self indexInCurrentOf: varname at: type].
+	^shape indexOf: varname! !
+
+!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:29'!
+load: aClassDefinition 
+
+	| shape |
+	shape := ObjectShape new loadFrom: aClassDefinition.
+	self add: shape! !
+
+!ShapeMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:16:01'!
+new 
+
+	^self basicNew initialize! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
+argumentAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:05'!
+arguments 
+
+	^arguments! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:16'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:24'!
+associationValueAt: anInteger 
+
+	^ (method at: anInteger) value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:34'!
+associationValueAt: anInteger put: value 
+	| association |
+	association := (method at: anInteger).
+	^association value: value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:01'!
+beBlock 
+	
+	isBlock := true! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:11'!
+blockAstcodesOf: anSCompiledBlock 
+
+	^blockAstcodes at: anSCompiledBlock! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:23'!
+blockOf: anObjectMap 
+
+	^closures at: anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:36'!
+booleanFor: aBoolean 
+
+	^ aBoolean
+		ifTrue: [ system true ]
+		ifFalse: [ system false ]! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:11:10'!
+captureClosure: anSBlock with: block 
+	| closure s i type env arg |
+	closure := system newClosure: block environmentCount.
+	closures at: closure put: block.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment ].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:08'!
+closures 
+
+	^closures! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:20'!
+constPoolValueAt: anInteger 
+
+	^ method at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:13:59'!
+environment: anObjectMap 
+
+	environment := anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:14:24'!
+environmentFor: anInteger 
+"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. 
+"
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:22:34'!
+falseLiteral 
+
+	^ system false! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:06'!
+instanceVarAt: anInteger 
+
+	^ receiver slotAt: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:17'!
+instanceVarAt: index put: aValue 
+
+	^ receiver slotAt: index put: aValue! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:28'!
+integerFor: anInteger 
+
+	^ system newInteger: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:11'!
+literal: anObject 
+
+	^anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:22'!
+method 
+
+	^method! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:36'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	temporaries := Array new: anSCompiledMethod tempCount! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:48'!
+nilLiteral 
+
+	^ system nil! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:57'!
+parent 
+
+	^parent! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:05'!
+parent: anInterpreter 
+
+	parent := anInterpreter! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:29'!
+primitive: primitive 
+	| result |
+	result := self evaluatePrimitive: primitive.
+	returning ifTrue: [ ^self ].
+	system popFrame.
+	self returning: result! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:26:59'!
+receiver 
+
+	^receiver! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:10'!
+receiver: anObject 
+
+	receiver := anObject.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:24'!
+returning: anObject 
+
+	returning := true.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:15'!
+system: anEmulator 
+
+	system := anEmulator! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:27'!
+temporaryAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:40'!
+temporaryAt: index in: anInteger put: aValue 
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue
+! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:55'!
+trueLiteral 
+
+	^system true! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:13:04'!
+dispatchUndermessage: message 
+	| selector recv args result |
+	selector := message selector.
+	recv := message receiver.
+	args := message arguments.
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:27:51'!
+staticSend: selector to: recv with: args 
+	| result |
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:09:45'!
+backtrace 
+	| bt next |
+	bt := OrderedCollection new.
+	next := self.
+	[ next notNil ]
+		whileTrue: [ bt
+				add:
+					{next method signature.
+					next receiver} , next arguments.
+			next := next parent ].
+	^ bt! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:14:55'!
+evaluate 
+
+	system pushFrame: self.
+	^ self visitMethod: method sexpressions! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:18'!
+evaluateBlock: sblock args: anArray 
+	" as this block is inlined, we didn't capture parent environment.
+	Thus, we don't know if environment is a closure or a method home.
+	We unwind to that environment and clean up later if it was a closure. "
+
+	anArray
+		with: sblock inlinedArgs
+		do: [ :arg :i | temporaries at: i put: arg ].
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:36'!
+evaluateBlock: sblock args: anArray closure: closure 
+	" inlined blocks can only return to their real parent environment.
+	Here we complete the non-local return process for them, unwinding
+	to the real home environment "
+
+	temporaries := Array new: sblock tempCount.
+	environment := closure.
+	arguments := anArray.
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:51'!
+evaluateClosure: aPClosure 
+
+	^self evaluateClosure: aPClosure withArgs: {}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:45'!
+evaluateClosure: aPClosure with: anObject 
+
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:58'!
+evaluateClosure: aPClosure with: anObject with: anotherObject 
+
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:17:12'!
+evaluateClosure: closure withArgs: anArray 
+	| frame block sblock evaluator result |
+	frame := system builderOf: closure.
+	block := frame blockOf: closure.
+	sblock := frame blockAstcodesOf: block.
+	evaluator := frame copy beBlock.
+	system pushFrame: evaluator.
+	result := sblock isInlined
+		ifTrue: [ evaluator evaluateBlock: sblock args: anArray ]
+		ifFalse: [ evaluator evaluateBlock: sblock args: anArray closure: closure ].
+	returning ifFalse: [ system popFrame ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:19:55'!
+evaluatePrimitive: primitive 
+	| index size argument value |
+	primitive = #Behavior
+		ifTrue: [ ^ receiver isImmediate
+				ifTrue: [ system smallintBehavior ]
+				ifFalse: [ receiver behavior ] ].
+	primitive = #UnderSize
+		ifTrue: [ ^ self integerFor: receiver size ].
+	primitive = #Size
+		ifTrue: [ ^ self integerFor: receiver arrayedSize ].
+	primitive = #At
+		ifTrue: [ index := arguments first value.
+			value := receiver at: index.
+			^ receiver isBytes
+				ifTrue: [ self integerFor: value ]
+				ifFalse: [ value ] ].
+	primitive = #AtPut
+		ifTrue: [ index := arguments first value.
+			^ receiver at: index put: arguments second ].
+	primitive = #New
+		ifTrue: [ ^ system newSlotsOf: receiver spec instanceSide sized: 0].
+	primitive = #NewSized
+		ifTrue: [ size := arguments first value.
+			^ system newOf: receiver spec instanceSide sized: size ].
+	primitive = #NewBytes
+		ifTrue: [ size := arguments first value.
+			^ system newBytesOf: receiver spec instanceSide sized: size ].
+	primitive = #Equal
+		ifTrue: [ argument := arguments first.
+			^ self
+				booleanFor:
+					(receiver == argument
+						or: [ receiver isImmediate
+								and: [ argument isImmediate and: [ receiver value = argument value ] ] ]) ].
+	primitive = #SMIPlus
+		ifTrue: [ ^ self integerFor: receiver value + arguments first value ].
+	primitive = #SMIMinus
+		ifTrue: [ ^ self integerFor: receiver value - arguments first value ].
+	primitive = #SMITimes
+		ifTrue: [ ^ self integerFor: receiver value * arguments first value ].
+	primitive = #SMIIntDiv
+		ifTrue: [ ^ self integerFor: receiver value // arguments first value ].
+	primitive = #SMIIntQuot
+		ifTrue: [ ^ self integerFor: receiver value \\ arguments first value ].
+	primitive = #SMIBitAnd
+		ifTrue: [ ^ self integerFor: (receiver value bitAnd: arguments first value) ].
+	primitive = #SMIBitXor
+		ifTrue: [ ^ self integerFor: (receiver value bitXor: arguments first value) ].
+	primitive = #SMIBitShift
+		ifTrue:
+			[ ^ self integerFor: (receiver value bitShift: arguments first value) ].
+	primitive = #SMIHighBit
+		ifTrue: [ ^ self integerFor: receiver value highBit ].
+	primitive = #SMIGreaterThan
+		ifTrue: [ ^ self booleanFor: receiver value > arguments first value ].
+	primitive = #SMIGreaterEqualThan
+		ifTrue: [ ^ self booleanFor: receiver value >= arguments first value ].
+	primitive = #SMIEqual
+		ifTrue: [ ^ self booleanFor: receiver value = arguments first value ].
+	primitive = #SMINotEqual
+		ifTrue: [ ^ self booleanFor: receiver value !!= arguments first value ].
+	primitive = #SMISize
+		ifTrue: [ ^ self integerFor: receiver value bytesCount ].
+	primitive = #ClosureValue
+		ifTrue: [ ^ self evaluatePrimitiveClosureValue ].
+	primitive = #ClosureValueWithArgs
+		ifTrue: [ ^ self evaluatePrimitiveClosureValueWithArgs ].
+	primitive = #ClosureWhileTrue
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileTrue ].
+	primitive = #ClosureWhileFalse
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileFalse ].
+	primitive = #ClosureArgumentCount
+		ifTrue: [ ^ self evaluatePrimitiveClosureArgumentCount ].
+	primitive = #StringReplaceFromToWithStartingAt
+		ifTrue: [ receiver bytes
+				replaceFrom: arguments first value
+				to: arguments second value
+				with: arguments third bytes
+				startingAt: arguments fourth value.
+			^ receiver ].
+	primitive = #FloatNew
+		ifTrue: [ ^ system newBytesOf: receiver spec instanceSide sized: 8 ].
+	primitive = #PrimeFor
+		ifTrue: [ ^ self evaluatePrimitivePrimeFor ].
+	self assert: false
+! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:20:47'!
+evaluatePrimitiveClosureArgumentCount 
+	| frame block |
+	frame := system builderOf: receiver. 
+	block := frame blockOf: receiver.
+	^ self integerFor: block argumentCount! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:01'!
+evaluatePrimitiveClosureValue 
+
+	^ self evaluateClosure: receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:11'!
+evaluatePrimitiveClosureValueWithArgs 
+
+	^ self evaluateClosure: receiver withArgs: arguments! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:23'!
+evaluatePrimitiveClosureWhileFalse 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver.
+	returning
+		ifTrue: [ ^ returnValue ].
+	system booleanFrom: result ]
+		whileFalse: [ self evaluateClosure: arg.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:45'!
+evaluatePrimitiveClosureWhileTrue 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver. returning ifTrue: [^returnValue].
+	system booleanFrom: result ] whileTrue: [ self evaluateClosure: arg. returning ifTrue: [^returnValue]].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:00'!
+evaluatePrimitiveHash 
+	| hash |
+	hash := receiver headerHash.
+	hash = 0 ifTrue: [ hash := system nextHash. receiver headerHash: hash ].
+	^ self integerFor: hash! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:16'!
+evaluatePrimitivePrimeFor 
+	| num result |
+	num := arguments first value.
+	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
+		detect: [ :i | i >= num ].
+	^ self integerFor: result! !
+
+!MethodEvaluator methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:22:52'!
+initialize 
+
+	blockAstcodes := IdentityDictionary new.
+	closures := IdentityDictionary new.
+	returning := false.
+	isBlock := false! !
+
+!MethodEvaluator methodsFor: 'services' stamp: 'KenD 3/3/2021 11:11:55'!
+classBinding 
+
+	^method classBinding! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:10:54'!
+built: closure 
+
+	^closures includesKey: closure! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:23:38'!
+isHomeOf: env 
+
+	^ environment == env andNot: [ isBlock ]! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:24:00'!
+isUndermessage: selector 
+
+	^ Undermessages includes: selector! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:27'!
+visitArgument: anSIdentifier 
+
+	^arguments at: anSIdentifier binding index! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:37'!
+visitAssignment: anSAssignment 
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:53'!
+visitBlock: anSBlock 
+	| block closure |
+	block := anSBlock isInlined
+		ifTrue: [ SCompiledBlock new ]
+		ifFalse: [ anSBlock compiledCode ].
+	closure := self captureClosure: anSBlock with: block.
+	blockAstcodes at: block put: anSBlock.
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:04'!
+visitCascade: anSCascade 
+	| recv args selector last |
+	recv := anSCascade receiver acceptVisitor: self.
+	anSCascade messages
+		do: [ :msg | 
+			args := msg arguments collect: [ :code | code acceptVisitor: self ].
+			selector := system symbolFrom: msg selector.
+			last := system
+				send: selector
+				to: recv
+				with: args
+				super: anSCascade receiver isSuper ].
+	^ last! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:25'!
+visitIdentifier: anSIdentifier 
+
+	^anSIdentifier binding valueWithin: self! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:36'!
+visitLiteral: anSLiteral 
+
+	^ system transferLiteral: anSLiteral value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:49'!
+visitMessage: anSMessage 
+	| recv args selector message |
+	recv := anSMessage receiver acceptVisitor: self.
+	args := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := system symbolFrom: anSMessage selector.
+	self assert: selector !!== #error:.
+	^ system send: selector to: recv with: args super: anSMessage receiver isSuper! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:39'!
+visitMethod: anSMethod 
+	| primitive |
+	primitive := anSMethod primitive.
+	primitive 
+		ifNil: [	self visitScript: anSMethod] 
+		ifNotNil: [ self primitive: primitive ].
+	^ returning
+		ifTrue: [ returnValue ]
+		ifFalse: [ system popFrame.  receiver ]! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:58'!
+visitReturn: anSReturn 
+	| value home |
+	value := anSReturn expression acceptVisitor: self.
+	"it could happen that while we were going to return, the
+	expression contained a non-local return that was reached.
+	In that case we just keep unwinding without altering the
+	unwindLimit"
+	returning
+		ifTrue: [ ^ returnValue ].
+	home := anSReturn local
+		ifTrue: [ environment ]
+		ifFalse: [ environment at: 1 ].
+	system unwindUpTo: home returning: value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:12'!
+visitScript: anSScript 
+	| result |
+	anSScript statements
+		do: [ :node | 
+			result := node acceptVisitor: self.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:26'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!MethodEvaluator class methodsFor: 'class initialization' stamp: 'KenD 3/3/2021 11:07:59'!
+initialize 
+"
+	self initialize
+"
+
+	Undermessages := #(_basicAt: #_basicAt:put: 
+		_bitShiftLeft: _byteAt: #_byteAt:put: 
+		_smallSize _largeSize _isSmallInteger 
+		_basicHash _basicHash: 
+		_smallIntegerByteAt: 
+		_uShortAtOffset: _uShortAtOffset:put:)
+! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:25:36'!
+=> aSymbol 
+
+	^ kernel at: aSymbol! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:27:52'!
+classFor: anRGBehavior 
+
+	^classes at: anRGBehavior! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:02'!
+classNamed: aString 
+
+	^self classFor: self => aString! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:15'!
+classes 
+
+	^ classes! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:28:48'!
+false 
+
+	^ falseObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:41'!
+kernel 
+
+	^kernel! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:49'!
+kernel: anRGEnvironment 
+
+	kernel := anRGEnvironment ! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:33:57'!
+map: anObject to: anObjectMap 
+
+	identityMap at: anObject put: anObjectMap! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:34:06'!
+metaclassFor: anRGBehavior 
+
+	^ metaclasses at: anRGBehavior! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:19'!
+nil 
+
+	^ nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:32'!
+speciesFor: anRGBehavior 
+
+	^classes at: anRGBehavior ifAbsent: [ metaclasses at: anRGBehavior]! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:38:44'!
+surrogateFor: anObject 
+
+	^ identityMap at: anObject ifAbsent: nil! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:09'!
+transferBlock: anSCompiledBlock 
+	| transferred method format |
+	identityMap at: anSCompiledBlock
+		ifPresent: [ :b | ^ b ].
+	transferred := self newSlots: #CompiledBlock.
+	identityMap at: anSCompiledBlock put: transferred.
+	method := identityMap at: anSCompiledBlock method.
+	format := self newInteger: anSCompiledBlock format.
+	transferred
+		method: method;
+		format: format;
+		nativeCode: nilObj.
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:27'!
+transferLiteral: anObject 
+	| class transferred slot |
+	class := anObject class.
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	(class inheritsFrom: Integer)
+		ifTrue: [ ^ self newInteger: anObject ].
+	(class inheritsFrom: Symbol)
+		ifTrue: [ ^ self newSymbol: anObject ].
+	(class inheritsFrom: String)
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	transferred := self newSlots: anObject class name sized: anObject size.
+	anObject
+		withIndexDo: [ :elem :i | 
+			slot := self transferLiteralDeep: elem.
+			transferred at: i put: slot ].
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:39:55'!
+transferLiteralDeep: anObject 
+	| class transferred slot size ivar |
+	class := anObject class.
+	anObject isInteger
+		ifTrue: [ ^ self newInteger: anObject ].
+	anObject == nil
+		ifTrue: [ ^ nilObj ].
+	anObject == false
+		ifTrue: [ ^ falseObj ].
+	anObject == true
+		ifTrue: [ ^ trueObj ].
+	identityMap at: anObject ifPresent: [ :existing | ^ existing ].
+	(class inheritsFrom: Symbol)
+		ifTrue: [ ^ self newSymbol: anObject ].
+	(class inheritsFrom: String)
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	(class inheritsFrom: Float)
+		ifTrue: [ ^ self newFloatFrom: anObject ].
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	class == SCompiledBlock
+		ifTrue: [ ^ self transferBlock: anObject ].
+	size := class isVariable
+		ifTrue: [ anObject size ]
+		ifFalse: [ 0 ].
+	transferred := self newSlots: class name sized: size.
+	1 to: class instSize do: [ :i | 
+		ivar := anObject instVarAt: i.
+		slot := self transferLiteralDeep: ivar.
+		transferred slotAt: i put: slot ].
+	size > 0
+		ifTrue: [ anObject
+				withIndexDo: [ :elem :i | 
+					slot := self transferLiteralDeep: elem.
+					transferred at: i put: slot ] ].
+	^ transferred! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:05'!
+true 
+
+	^ trueObj! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:14'!
+wordSize 
+
+	^ wordSize! !
+
+!VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:40:31'!
+wordSize: anInteger 
+
+	wordSize := anInteger.
+	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
+	minSMI := maxSMI negated - 1! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:29:40'!
+fixBehaviors 
+
+	self
+		initializeBehavior: nilObj;
+		initializeBehavior: trueObj;
+		initializeBehavior: falseObj.
+	classes
+		do: [ :c | 
+			| m |
+			m := c behavior slotNamed: 'class'.
+			self
+				initializeBehavior: c instanceBehavior;
+				initializeBehavior: c behavior;
+				initializeBehavior: m ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:30:43'!
+genesis 
+"
+	Create the world (should take less than 6 days). This is named 'genesis' to remind us those who had
+	done this (and much more) before us. Namely SELF people. I (JV) would like to use this opportunity and point you to
+	
+	https://github.com/russellallen/self/blob/2bcf2c4cab23f52bf68ac4f617020e748699a548/vm/src/any/memory/universe.cpp#L79
+"
+
+	nilObj := self basicNewSlots: #UndefinedObject.
+	trueObj := self basicNewSlots: #True.
+	falseObj := self basicNewSlots: #False.
+	kernel allClasses do: [ :def | self createSpecies: def ].
+	self fixBehaviors. 
+	kernel allClasses do: [ :def | self buildSpecies: def ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:32:56'!
+initializeClass: definition superclass: superclass superbehavior: superbehavior 
+	| class name flag ivars poolnames pools subclasses format |
+	class := classes at: definition.
+	class instanceBehavior next: superbehavior.
+	subclasses := definition subclasses
+		collect: [ :def | classes at: def ].
+	subclasses := self newArray: subclasses.
+	name := self newString: definition name.
+	flag := self formatOfClass: definition.
+	format := self newInteger: flag.
+	ivars := self newStringArray: definition instVarNames.
+	poolnames := definition sharedPools collect: #name.
+	pools := self newStringArray: poolnames.
+	class
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		organization: nilObj;
+		name: name;
+		subclasses: subclasses;
+		sharedPools: pools.
+	definition metaclass allInstVarNames
+		do: [ :ivar | class slotNamed: ivar put: nilObj ]! !
+
+!VirtualSmalltalkImage methodsFor: 'building' stamp: 'KenD 4/8/2021 14:33:25'!
+initializeMetaclass: definition superclass: superclass 
+	| meta ivars flags format superbehavior |
+	meta := metaclasses at: definition.
+	superbehavior := superclass instanceBehavior.
+	meta instanceBehavior next: superbehavior.
+	ivars := self newStringArray: definition instVarNames.
+	flags := self formatOfClass: definition. 
+	format := self newInteger: flags.
+	meta
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		organization: nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:30:02'!
+formatOfClass: definition 
+	| variable pointers |
+	variable := definition isVariable ifTrue: [ 16r2000 ] ifFalse: [ 0 ].
+	pointers := definition isBytes ifTrue: [ 0 ] ifFalse: [16r4000 ].
+	^variable | pointers | definition allInstVarNames size! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:20'!
+initialize 
+
+	classes := OrderedDictionary new.
+	metaclasses := OrderedDictionary new.
+		identityMap := IdentityDictionary new! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:37'!
+initializeBehavior: anObjectMap 
+	| class |
+	class := classes at: anObjectMap spec.
+	anObjectMap behavior: class instanceBehavior.! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:25'!
+newArray: anArray 
+	| assoc |
+	assoc := self newSlots: 'Array' sized: anArray size.
+	anArray withIndexDo: [ :obj :i | assoc at: i put: obj ].
+	^ assoc! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:34:36'!
+newAssociation: anAssociation 
+	| assoc key value |
+	assoc := self newSlots: 'Association'.
+	key := self transferLiteralDeep: anAssociation key.
+	value := self transferLiteralDeep: anAssociation value.
+	^ assoc
+		key: key;
+		value: value; yourself! !
+
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:24:59'!
+newKernelSpec 
+	| current repo spec |
+	current := 'specs/current' asFileReference contents trim.
+	repo := TonelRepository new
+		directory: ('specs/' , current) asFileReference.
+	spec := repo asRingEnvironmentWith: #(Kernel).
+	^ spec clean! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:06'!
+basicNewBytes: classname contents: aByteObject 
+
+	^ self basicNewBytesOf: self => classname contents: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:18'!
+basicNewBytesOf: anRGBehavior  contents: aByteObject 
+
+	^ ByteObjectMap new: anRGBehavior valued: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:32'!
+basicNewSlots: classname 
+
+	^ self basicNewSlots: classname sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:43'!
+basicNewSlots: classname in: spec 
+
+	^ self basicNewSlots: classname in: spec sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:26:55'!
+basicNewSlots: classname in: spec sized: size 
+	| species |
+	species := spec at: classname.
+	^self basicNewSlotsOf: species sized: size! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:09'!
+basicNewSlots: classname sized: size 
+
+	^ self basicNewSlots: classname in: kernel sized: size! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:20'!
+basicNewSlotsOf: anRGBehavior sized: size 
+
+	^ SlotObjectMap new: anRGBehavior size: size withAll: nilObj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:27:32'!
+buildSpecies: spec 
+	| sspec sclass sbehavior metasuper  |
+	sspec := spec superclass.
+	sspec
+		ifNil: [ sclass := nilObj.
+			sbehavior := nilObj.
+			metasuper := classes at: self => #Class ]
+		ifNotNil: [ sclass := classes at: sspec.
+			sbehavior := sclass instanceBehavior.
+			metasuper := metaclasses at: sspec metaclass ].
+	self
+		initializeClass: spec superclass: sclass superbehavior: sbehavior;
+		initializeMetaclass: spec metaclass superclass: metasuper! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:28:34'!
+createSpecies: definition 
+	| class meta ibehavior cbehavior |
+	class := self basicNewSlots: #Class.
+	class initializeAs: definition metaclass sized: 0.
+	meta := self basicNewSlots: #Metaclass.
+	ibehavior := self basicNewSlots: #Behavior.
+	cbehavior := self basicNewSlots: #Behavior.
+	ibehavior class: class.
+	cbehavior class: meta.
+	meta
+		class: class;
+		instanceBehavior: cbehavior.
+	class
+		instanceBehavior: ibehavior;
+		behavior: cbehavior.
+	classes at: definition put: class.
+	metaclasses at: definition metaclass put: meta! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:06'!
+newBytes: classname contents: aByteObject 
+	| obj |
+	obj := self basicNewBytes: classname contents: aByteObject.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:15'!
+newBytesFrom: aByteObject 
+
+	^self newBytes: aByteObject class name contents: aByteObject! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:26'!
+newBytesOf: anRGBehavior contents: aByteObject 
+	| obj |
+	obj := self basicNewBytesOf: anRGBehavior contents: aByteObject.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:38'!
+newBytesOf: anRGBehavior sized: anInteger 
+	| contents |
+	contents := ByteArray new: anInteger.
+	^ self newBytesOf: anRGBehavior contents: contents! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:35:49'!
+newFloatFrom: aFloat 
+
+	^ self newBytes: 'Float' contents: aFloat pointerDouble! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:01'!
+newInteger: anInteger 
+
+	anInteger > maxSMI
+		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
+	anInteger < minSMI
+		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
+	^self newSmallInteger: anInteger! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:15'!
+newLargeNegativeInteger: anInteger 
+	| size bytes byte |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := ByteArray new: size withAll: 16rFF.
+	1 to: anInteger bytesCount do: [ :i | 
+		byte := anInteger byteAt: i.
+		byte > 0
+			ifTrue: [ byte := 256 - byte ].
+		bytes at: i put: byte ].
+	^ self newBytes: #LargeNegativeInteger contents: bytes! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:30'!
+newLargePositiveInteger: anInteger 
+	| size bytes |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := anInteger asByteArrayOfSize: size.
+	^ self newBytes: #LargePositiveInteger contents: bytes reversed! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:36:40'!
+newSlots: classname 
+
+	^self newSlots: classname sized: 0! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:05'!
+newSlots: classname sized: size 
+"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+"
+	| obj |
+	obj := self basicNewSlots: classname sized: size.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:24'!
+newSlotsOf: anRGBehavior sized: size 
+"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+"
+	| obj |
+	obj := self basicNewSlotsOf: anRGBehavior sized: size.
+	self initializeBehavior: obj.
+	^ obj! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:35'!
+newSmallInteger: anInteger 
+	self assert: (anInteger between: minSMI and: maxSMI).
+	^ SmallintObjectMap
+		new: self => #SmallInteger
+		valued: anInteger! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:37:48'!
+newString: aString 
+	| bytes |
+	bytes := aString copyWith: Character null.
+	^self newBytes: 'String' contents: bytes! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:00'!
+newStringArray: strings 
+	| array bytes |
+	array := self newSlots: 'Array' sized: strings size.
+	strings
+		withIndexDo: [ :s :i |
+			bytes := self newString: s.
+			array at: i put: bytes ].
+	^ array! !
+
+!VirtualSmalltalkImage methodsFor: 'services' stamp: 'KenD 4/8/2021 14:38:09'!
+newSymbol: aSymbol 
+	| new bytes |
+	identityMap at: aSymbol ifPresent: [ :s | ^ s ].
+	bytes := aSymbol copyWith: Character null.
+	new := self newBytes: 'Symbol' contents: bytes.
+	^ identityMap at: aSymbol put: new! !
+
+!VirtualSmalltalkImage methodsFor: 'testing' stamp: 'KenD 4/8/2021 14:32:08'!
+includes: anObject 
+
+	^identityMap includesKey: anObject! !
+
+!VirtualSmalltalkImage class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 14:23:30'!
+newKernelSpec 
+	| current repo spec |
+	current := 'specs/current' asFileReference contents trim.
+	repo := TonelRepository new
+		directory: ('specs/' , current) asFileReference.
+	spec := repo asRingEnvironmentWith: #(Kernel).
+	^ spec clean! !
+
+!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:33'!
+fromSpec 
+
+	^ self new kernel: self kernelSpec! !
+
+!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:48'!
+kernelSpec 
+
+	^ KernelSpec ifNil: [ KernelSpec := self newKernelSpec ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:55:55'!
+booleanFrom: anObject 
+
+	anObject == image false
+		ifTrue: [ ^ false ].
+	anObject == image true
+		ifTrue: [ ^ true ].
+	self error: 'not a boolean'! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:57:03'!
+builderOf: closure 
+
+	frames
+		reverseDo: [ :frame | 
+			(frame built: closure)
+				ifTrue: [ ^ frame ] ].
+	self error: 'home of closure not found'! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:29'!
+doLookup: aSymbol startingAt: aBehavior 
+	| behavior m c smethod |
+	behavior := aBehavior.
+	[ m := self methodFor: aSymbol in: behavior.
+	m
+		ifNotNil: [ smethod := self compile: m.
+			^ self transferMethodLiterals: smethod ].
+	behavior := behavior superclass.
+	behavior notNil ] whileTrue.
+	^ aBehavior isMeta
+		ifTrue: [ c := aBehavior environment at: #Class.
+			self doLookup: aSymbol startingAt: c ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:45'!
+false 
+
+	^ image false! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:58:54'!
+frames 
+
+	^ frames! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 07:59:04'!
+globals 
+
+	^ globals! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:14'!
+lastHash 
+
+	^ lastHash value value! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:22'!
+lastHash: anInteger 
+
+	^ lastHash value value: anInteger! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:01:58'!
+lookup: aSymbol startingAt: aBehavior 
+
+	^methodCache at: aSymbol -> aBehavior 
+		ifAbsentPut: [ self doLookup: aSymbol startingAt: aBehavior ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:02:09'!
+methodFor: aSymbol in: anRGBehavior 
+
+	overrides at: anRGBehavior->aSymbol ifPresent: [:m | ^m].
+	^anRGBehavior methodNamed: aSymbol! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:04:57'!
+nil 
+
+	^ image nil! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:05:17'!
+override: assoc with: source 
+	| species selector method override |
+	species := image kernel at: assoc key.
+	selector := assoc value.
+	method := species methodNamed: selector.
+	override := method copy sourceCode: source.
+	overrides at: species -> selector put: override! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:07:05'!
+smallintBehavior 
+
+	^smallintBehavior! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:07:21'!
+symbolFrom: anObjectMap 
+
+	^ symbolCache
+		at: anObjectMap
+		ifAbsentPut: [ anObjectMap asString asSymbol ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:08:05'!
+true 
+
+	^image true! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:08:45'!
+virtualClassFor: spec 
+	| superclass supervirtual virtual map |
+	superclass := spec superclass.
+	map := image classFor: spec.
+	supervirtual := superclass
+		ifNotNil: [ self virtualSpeciesFor: superclass ].
+	virtual := VirtualClass new
+		spec: spec;
+		superclass: supervirtual;
+		map: map.
+	virtual createClassAssociationsWith: image.
+	^ virtualSpecies at: spec put: virtual! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:09:00'!
+virtualMetaclassFor: spec 
+	| superclass supervirtual class virtual map |
+	class := self virtualSpeciesFor: spec instanceSide.
+	map := 	image speciesFor: spec.
+	superclass := spec superclass ifNil: image => #Class.
+	supervirtual := self virtualSpeciesFor: superclass.
+	virtual := VirtualMetaclass new
+		spec: spec;
+		superclass: supervirtual;
+		map: map;
+		class: class.
+	^ virtualSpecies at: spec put: virtual! !
+
+!VirtualSmalltalkRuntime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 08:09:33'!
+virtualSpeciesFor: spec 
+
+	virtualSpecies at: spec ifPresent: [ :existing | ^ existing ].
+	^spec isMeta 
+		ifTrue: [self virtualMetaclassFor: spec] 
+		ifFalse: [self virtualClassFor: spec]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:56:12'!
+bootstrap 
+	| transferred class smalltalk |
+	transferred := self newInteger: image wordSize.
+	class := image classNamed: #SmalltalkSystem.
+	smalltalk := self send: #new to: class.
+	self send: #bootstrap: to: smalltalk with: {transferred}! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:23'!
+image: aVirtualSmalltalkImage 
+
+	image := aVirtualSmalltalkImage.
+	smallintBehavior := (image classNamed: #SmallInteger) instanceBehavior.
+	self
+		initializeEmulationOverrides;
+		initializeGlobals! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:40'!
+initialize 
+
+	frames := OrderedCollection new.
+	methodCache := Dictionary new.
+	symbolCache := IdentityDictionary new.
+	overrides := Dictionary new.
+	virtualSpecies := OrderedDictionary new.
+	globals := VirtualDictionary new! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 07:59:52'!
+initializeClassPools 
+	| dictionary virtual cvars |
+	dictionary := image classNamed: #Dictionary.
+	image classes
+		keysAndValuesDo: [ :spec :map | 
+			virtual := self virtualSpeciesFor: spec.
+			cvars := self send: #new to: dictionary.
+			virtual classPool
+				associations do: [ :assoc | self send: #add: to: cvars with: {assoc} ].
+			map classVariables: cvars ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 08:00:22'!
+initializeEmulationOverrides 
+	self
+		override: #Species -> #basicNew with: 'basicNew <primitive: New>';
+		override: #Species -> #basicNew:
+			with: 'basicNew: anInteger <primitive: NewSized>';
+		override: #Species -> #new with: 'new <primitive: New>';
+		override: #Species -> #new:
+			with: 'new: anInteger <primitive: NewSized>';
+		override: #Species -> #primitiveNewBytes:
+			with: 'primitiveNewBytes: anInteger <primitive: NewBytes>';
+		override: #'Float class' -> #new with: 'new <primitive: FloatNew>';
+		override: #ProtoObject -> #_size
+			with: '_size <primitive: UnderSize>';
+		override: #ProtoObject -> #behavior
+			with: 'behavior <primitive: Behavior>';
+		override: #ProtoObject -> #==
+			with: '== anObject <primitive: Equal>';
+		override: #ProtoObject -> #primitiveSize
+			with: 'primitiveSize <primitive: Size>';
+		override: #ProtoObject -> #primitiveAt:
+			with: 'primitiveAt: anInteger <primitive: At>';
+		override: #ProtoObject -> #primitiveAt:put:
+			with: 'primitiveAt: anInteger put: anObject <primitive: AtPut>';
+		override: #ProtoObject -> #basicHash
+			with: 'basicHash <primitive: Hash>';
+		override: #SmallInteger -> #+
+			with: '+ anObject <primitive: SMIPlus>';
+		override: #SmallInteger -> #-
+			with: '- anObject <primitive: SMIMinus>';
+		override: #SmallInteger -> #*
+			with: '* anObject <primitive: SMITimes>';
+		override: #SmallInteger -> #//
+			with: '// anObject <primitive: SMIIntDiv>';
+		override: #SmallInteger -> #\\
+			with: '\\ anObject <primitive: SMIIntQuot>';
+		override: #SmallInteger -> #bitAnd:
+			with: 'bitAnd: aNumber <primitive: SMIBitAnd>';
+		override: #SmallInteger -> #bitXor:
+			with: 'bitXor: aNumber <primitive: SMIBitXor>';
+		override: #SmallInteger -> #bitShift:
+			with: 'bitShift: aNumber <primitive: SMIBitShift>';
+		override: #SmallInteger -> #highBit
+			with: 'highBit <primitive: SMIHighBit>';
+		override: #SmallInteger -> #>
+			with: '> anObject <primitive: SMIGreaterThan>';
+		override: #SmallInteger -> #>=
+			with: '>= anObject <primitive: SMIGreaterEqualThan>';
+		override: #SmallInteger -> #=
+			with: '= anObject <primitive: SMIEqual>';
+		override: #SmallInteger -> #sizeInBytes
+			with: 'sizeInBytes <primitive: SMISize>';
+		override: #Closure -> #value
+			with: 'value <primitive: ClosureValue>';
+		override: #Closure -> #evaluateAtomically
+			with: 'evaluateAtomically <primitive: ClosureValue>';
+		override: #Closure -> #value:
+			with: 'value: a1 <primitive: ClosureValueWithArgs>';
+		override: #Closure -> #value:value:
+			with: 'value: a1 value: a2 <primitive: ClosureValueWithArgs>';
+		override: #Closure -> #value:value:value:
+			with: 'value: a1 value: a2 value: a3 <primitive: ClosureValueWithArgs>';
+		override: #Closure -> #evaluateWith:
+			with: 'evaluateWith: arg <primitive: ClosureValueWithArgs>';
+		override: #Closure -> #evaluateWith:with:
+			with: 'evaluateWith: a1 with: a2 <primitive: ClosureValueWithArgs>';
+		override: #Closure -> #whileTrue:
+			with: 'whileTrue: aBlock <primitive: ClosureWhileTrue>';
+		override: #Closure -> #whileFalse:
+			with: 'whileFalse: aBlock <primitive: ClosureWhileFalse>';
+		override: #Closure -> #argumentCount
+			with: 'argumentCount <primitive: ClosureArgumentCount>';
+		override: #String -> #replaceFrom:to:with:startingAt:
+			with:
+			'replaceFrom: start to: end with: aCollection startingAt: position <primitive: StringReplaceFromToWithStartingAt>';
+		override: #'HashTable class' -> #primeFor:
+			with: 'primeFor: anInteger <primitive: PrimeFor>'! !
+
+!VirtualSmalltalkRuntime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 08:00:47'!
+initializeGlobals 
+	| assoc |
+	assoc := image newAssociation: #WordSize -> image wordSize.
+	globals add: assoc.
+	assoc := image newAssociation: #LastHash ->1.
+	globals add: assoc.
+					
+	image classes
+		keysAndValuesDo: [ :spec :map | 
+			assoc := image newAssociation: spec name asSymbol -> map.
+			globals add: assoc.
+			spec
+				sharedPoolsDo: [ :pool | 
+					assoc := image newAssociation: pool name asSymbol -> nil.
+					globals add: assoc ] ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:58:00'!
+declareGlobals: anObjectMap 
+	| assocs |
+	assocs := anObjectMap
+		slots collect: [ :symbol | 
+			image newAssociation: symbol -> nil].
+	assocs do: [:assoc | 	globals add: assoc ].
+		^assocs! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:02:22'!
+newBytesOf: anRGBehavior  sized: anInteger 
+
+	^ image newBytesOf: anRGBehavior  sized: anInteger! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:03:02'!
+newClosure: anInteger 
+
+	^image newSlots: #Closure sized: anInteger! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:03:50'!
+newDictionary 
+	| factory |
+	factory := image classNamed: #Dictionary.
+	^ self send: #new to: factory! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:07'!
+newInteger: anInteger 
+
+	^image newInteger: anInteger ! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:23'!
+newOf: anRGBehavior 
+	
+	^ image newSlotsOf: anRGBehavior sized: 0! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:35'!
+newOf: anRGBehavior sized: anInteger 
+
+	^ anRGBehavior isBytes
+		ifTrue: [ image newBytesOf: anRGBehavior sized: anInteger ]
+		ifFalse: [ image newSlotsOf: anRGBehavior sized: anInteger ]! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:04:46'!
+newSlotsOf: anRGBehavior sized: anInteger 
+
+	^ image newSlotsOf: anRGBehavior sized: anInteger! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:31'!
+popFrame 
+
+	frames removeLast! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:40'!
+pushFrame: aMethodEvaluator 
+
+	frames addLast: aMethodEvaluator! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:05:50'!
+send: aSymbol to: receiver 
+
+	^ self send: aSymbol to: receiver with: {}! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:06:00'!
+send: aSymbol to: receiver with: anArray 
+
+	^ self send: aSymbol to: receiver with: anArray super: false! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:06:16'!
+send: aSymbol to: receiver with: arguments super: aBoolean 
+	| behavior method environment frame |
+	(self isUndermessage: aSymbol)
+		ifTrue: [ ^ frames last staticSend: aSymbol to: receiver with: arguments ].
+	behavior := aBoolean
+		ifTrue: [ frames last classBinding superclass spec ]
+		ifFalse: [ receiver spec ].
+	method := self lookup: aSymbol startingAt: behavior.
+	self assert: method notNil.
+	environment := image newSlots: #Array sized: method environmentCount.
+	frame := MethodEvaluator new
+		receiver: receiver;
+		arguments: arguments;
+		environment: environment;
+		method: method;
+		system: self.
+	^ frame evaluate
+! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:07:35'!
+transferLiteral: anObject 
+
+	^image transferLiteral: anObject! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:07:46'!
+transferMethodLiterals: method 
+	| class |
+	method withIndexDo: [:literal :i | 
+		class := literal class.
+		((class inheritsFrom: ObjectMap)
+			or: [ class = SCompiledBlock ])
+			ifFalse: [ method at: i put: (image transferLiteralDeep: literal) ] ].
+	^ method! !
+
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 08:08:27'!
+unwindUpTo: environment returning: value 
+	| frame |
+	frames size to: 1 by: -1 do: [ :i | 
+		frame := frames at: i.
+		frame returning: value.
+		(frame isHomeOf: environment)
+			ifTrue: [ ^ frames removeLast: frames size - i +1 ] ].
+	self error: 'frame not found'! !
+
+!VirtualSmalltalkRuntime methodsFor: 'testing' stamp: 'KenD 4/12/2021 08:01:02'!
+isUndermessage: selector 
+
+	^ Undermessages includes: selector! !
+
+!VirtualSmalltalkRuntime class methodsFor: 'class initialization' stamp: 'KenD 4/12/2021 07:54:56'!
+initialize 
+"
+	self initialize
+"
+	Undermessages := 
+		#(_basicAt: #_basicAt:put:
+		  _bitShiftLeft: _byteAt: #_byteAt:put: 
+		 _smallSize _largeSize 
+		 _isSmallInteger 
+		 _basicHash _basicHash: 
+		 _smallIntegerByteAt: 
+		 _uShortAtOffset: #_uShortAtOffset:put:)! !
+
+!Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
+initialize 
+
+	cache := IdentityDictionary new.
+	objects := Dictionary new! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:03:48'!
+globalNamed: aSymbol 
+
+	^objects at: aSymbol ifAbsentPut: [self findGlobalNamed: aSymbol]! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:02'!
+globalNamed: aSymbol ifAbsent: aBlock 
+
+	^objects at: aSymbol ifAbsent: aBlock! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:46'!
+mirrorOn: address 
+
+	^(runtime handleOn: address) mirror! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:59'!
+name: object as: name 
+
+	^objects at: name put: object! !
+
+!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:05:12'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!Bridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:03:11'!
+new 
+
+	^self basicNew initialize! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:36'!
+setFalseObj: aFalse
+
+	falseObj := aFalse! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:15:47'!
+setNilObj: aNil
+
+	nilObj := aNil! !
+
+!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:14'!
+setTrueObj: aTrue
+
+	trueObj := aTrue! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:33'!
+false 
+
+	^falseObj! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:28'!
+findRootObjects 
+
+	self subclassResponsibility
+! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:44'!
+nil 
+
+	^nilObj! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:56'!
+smalltalk 
+
+	^self
+		globalNamed: #Smalltalk
+		ifAbsent: [self update; globalNamed: #Smalltalk]! !
+
+!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:08:09'!
+true 
+
+	^trueObj! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:08:51'!
+update 
+
+	self findRootObjects! !
+
+!SmalltalkBridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:06:56'!
+new 
+
+	^self basicNew initialize! !
+
+!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:20:12'!
+findRootObjects 
+
+	super setNilObj: (ObjectHandle 
+						on: bootstrapper nilObject 
+						within: runtime).
+	super setTrueObj: (ObjectHandle 
+						on: bootstrapper trueObject 
+						within: runtime).
+	super setFalseObj: (ObjectHandle 
+						on: bootstrapper falseObject 
+						within: runtime)! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:09:50'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:10:07'!
+findNilObject 
+
+	^ nilObj := ObjectHandle
+		on: runtime storage nilObject
+		within: runtime! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:21:20'!
+updateGlobals 
+
+	bootstrapper globals 
+		keysAndValuesDo: [:name :obj | objects at: name put: obj ]! !
+
+!CuisBridge methodsFor: 'initialization' stamp: 'KenD 3/21/2021 13:27:20'!
+findRootObjects 
+
+	nilObj     := LocalHandle on: nil     within: runtime.
+	trueObj  := LocalHandle on: true  within: runtime.
+	falseObj := LocalHandle on: false within: runtime
+! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:40:38'!
+findFalseObject 
+	| s handle |
+	s := runtime storage.
+	handle := s class = VirtualSmalltalkImage
+		ifTrue: [ s false ]
+		ifFalse: [ self assert: false ].
+	^ falseObj := ObjectHandle on: handle within: runtime! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:40:52'!
+findGlobalNamed: name 
+	| globals array |
+	globals := self smalltalk slotOf: #SmalltalkSystem named: #globals.
+	array := globals slotOf: #Dictionary named: 'table'.
+	array do: [:slot | | assoc |
+		assoc :=  slot asAssociationMirror.
+		assoc reflectsNil
+			ifFalse: [assoc key asLocalString = name ifTrue: [^assoc value]]].
+	self error: 'global not found'! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:04'!
+findNilObject 
+
+	^ nilObj := ObjectHandle
+		on: ImageSegmentWriter nilOffset
+		within: runtime! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:14'!
+findRootClasses 
+	| object subclasses |
+	object := self globalNamed: 'Object'.
+	subclasses := object asSpeciesMirror subclasses.
+	1 to: subclasses size do: [:i | | subclass name |
+		subclass := (subclasses slotAt: i) asSpeciesMirror.
+		name := subclass name asLocalString.
+		self name: subclass as: name]! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:30'!
+findRootObjects 
+	| class |
+	nilObj := self findNilObject.
+	class := nilObj mirror reflectedClass.
+	[ class reflectsNil ]
+		whileFalse: [ | name |
+			name := class name asLocalString.
+			self name: class as: name.
+			class := class superclass ].
+	self findRootClasses
+	"; findSmalltalk"! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:59'!
+findSmalltalk 
+	| smalltalk |
+	smalltalk := self halt.
+	self name: smalltalk as: #Smalltalk.
+	^smalltalk! !
+
+!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:42:13'!
+findTrueObject 
+
+	self assert: false.
+	^ trueObj := ObjectHandle on: 0 within: runtime! !
+
+!Gate methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:51:59'!
+isLocal 
+
+	^handle isLocal! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:33'!
+asLocalCollection 
+
+	^handle asLocalCollection! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:45'!
+asLocalString 
+
+	^handle asLocalString! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:56'!
+dispatch: aMessage 
+
+	^self dispatch: aMessage from: nil! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:19'!
+handle 
+
+	^handle! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:27'!
+handle: anObjectHandle 
+
+	handle := anObjectHandle! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:40'!
+handleOn: objectHandle 
+
+	^handle handleOn: objectHandle! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:18'!
+maneuvererOn: objectHandle 
+
+	^DirectGate subjectOn: objectHandle! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:33'!
+mirageOn: objectHandle 
+
+	^MirageGate subjectOn: objectHandle! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:45'!
+mirror 
+
+	^handle mirror! !
+
+!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:55'!
+subject 
+
+	^Subject new _gate: self! !
+
+!Gate class methodsFor: 'instance creation' stamp: 'KenD 3/2/2021 12:49:58'!
+on: handle 
+
+	^self new handle: handle! !
+
+!Gate class methodsFor: 'instance creation' stamp: 'KenD 3/2/2021 12:50:08'!
+subjectOn: handle 
+
+	^(self on: handle) subject! !
+
+!DirectGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:54:54'!
+dispatch: aMessage from: parentInterpreter 
+	| receiver method interpreter |
+	receiver := aMessage receiver.
+	method := handle runtime lookup: aMessage selector on: receiver.
+	method ifNil: [ self assert: false ].
+	interpreter := SmalltalkInterpreter
+		on: receiver
+		with: aMessage arguments
+		for: method.
+	^ interpreter
+		parent: parentInterpreter;
+		evaluate: method! !
+
+!DirectGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:55:24'!
+dispatchSuper: aMessage from: parentInterpreter 
+	| receiver method interpreter |
+	receiver := aMessage receiver.
+	method := handle runtime
+		lookupSuper: aMessage selector
+		on: receiver
+		from: parentInterpreter method classBinding superclass name.
+	method ifNil: [ self assert: false ].
+	interpreter := SmalltalkInterpreter
+		on: receiver
+		with: aMessage arguments
+		for: method.
+	^ interpreter
+		parent: parentInterpreter;
+		evaluate: method! !
+
+!DirectGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:55:42'!
+getInstVarNamed: name 
+	| index |
+	index := handle mirror reflectedClass indexOfSlot: name.
+	index = 0 ifTrue: [self error: 'instance variable not found'].
+	^self slotAt: index! !
+
+!DirectGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:55:55'!
+slotAt: index 
+	| slot |
+	slot := handle slotAt: index.
+	^self maneuvererOn: slot! !
+
+!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:58:46'!
+classBinding 
+
+	^class! !
+
+!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:30'!
+getInstVarNamed: name 
+	| index |
+	index := class indexOfSlot: name.
+	index = 0 ifTrue: [self error: 'instance variable not found'].
+	^self slotAt: index! !
+
+!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:42'!
+handle: anObjectHandle 
+
+	super handle: anObjectHandle.
+	class := handle isLocal
+		ifTrue: [ handle oid class ]
+		ifFalse: [ handle mirror reflectedClass localEquivalent ]! !
+
+!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:57'!
+lookup: selector 
+
+	^class methodNamed: selector! !
+
+!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:01:24'!
+slotAt: index 
+	| slot |
+	slot := handle slotAt: index.
+	^self mirageOn: slot! !
+
+!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:58:59'!
+dispatch: aMessage 
+
+	^self dispatch: aMessage from: nil
+! !
+
+!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:59:11'!
+dispatch: aMessage from: parentInterpreter 
+	| receiver |
+	receiver := aMessage receiver.
+	^receiver _gate isLocal
+		ifTrue: [ self dispatchLocal: aMessage from: parentInterpreter ]
+		ifFalse: [ self dispatchRemote: aMessage from: parentInterpreter ]! !
+
+!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:59:29'!
+dispatchLocal: aMessage from: parentInterpreter 
+	| args receiver result hresult |
+	"args := aMessage arguments
+		collect: [ :arg | 
+			arg class == Subject
+				ifTrue: [ arg _gate handle oid ]
+				ifFalse: [ arg ] ]."
+	args := aMessage arguments.
+	receiver := aMessage receiver _gate handle.
+	result := receiver oid perform: aMessage selector withArguments: args.
+	result class == Subject
+		ifTrue: [ ^ result ].
+	hresult := LocalHandle on: result within: receiver runtime.
+	^ hresult mirage! !
+
+!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 13:00:14'!
+dispatchRemote: aMessage from: parentInterpreter 
+	| method interpreter |
+	method := self lookup: aMessage selector.
+	method ifNil: [ self error: 'cannot interpet ' , aMessage selector ].
+	interpreter := SmalltalkInterpreter
+		on: aMessage receiver
+		with: aMessage arguments
+		for: method.
+	^ interpreter
+		parent: parentInterpreter;
+		evaluate: method! !
+
+!Handle methodsFor: 'testing' stamp: 'KenD 3/3/2021 13:12:02'!
+isLocal 
+
+	^runtime isLocal! !
+
+!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:38'!
+runtime 
+
+	^runtime! !
+
+!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:51'!
+runtime: aRuntime 
+	
+	runtime := aRuntime! !
+
+!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:11:38'!
+handleOn: objectId 
+
+	^self class on: objectId within: runtime! !
+
+!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:12:18'!
+objectHandleOn: objectId 
+
+	^ ObjectHandle on: objectId within: runtime! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
+currentIp 
+
+	^frame currentIp! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:27:59'!
+frame: aFrame 
+
+	frame := aFrame! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:28:35'!
+objectAtSlot: index 
+	| slot |
+	slot := frame slotAt: index.
+	^self objectHandleOn: slot! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:29:57'!
+slotAt: index 
+
+	^self objectAtSlot: index! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:30:10'!
+slotAtTop 
+
+	^frame slotAtTop! !
+
+!PstFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 3/27/2021 08:27:27'!
+on: frame within: runtime 
+
+	^self new frame: frame; runtime: runtime! !
+
+!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:23'!
+currentIp 
+
+	^frame currentIp! !
+
+!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:31'!
+frame: aFrame 
+
+	frame := aFrame! !
+
+!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:47'!
+objectAtSlot: index 
+	| slot |
+	slot := frame slotAt: index.
+	^self objectHandleOn: slot! !
+
+!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:45:33'!
+slotAt: index 
+
+	^self objectAtSlot: index! !
+
+!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:45:42'!
+slotAtTop 
+
+	^frame slotAtTop! !
+
+!CuisStFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 10:44:01'!
+on: frame within: runtime 
+
+	^self new frame: frame; runtime: runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:05'!
+handleOn: anObject 
+
+	^self class on: anObject within: runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:17'!
+hash 
+
+	^oid hash! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:30'!
+indexOf: varname for: aMirror 
+	| type |
+	type := self structureOf: aMirror structureType.
+	^type indexOf: varname! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:40'!
+indexOf: varname inStructureOf: type 
+
+	^runtime indexOf: varname inStructureOf: type! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:12'!
+maneuverer 
+
+	^ DirectGate subjectOn: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:23'!
+mirage 
+
+	^MirageGate subjectOn: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:34'!
+mirror 
+
+	^ObjectMirror on: self! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:45'!
+nilObject 
+
+	^runtime nil! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:57'!
+oid
+
+	^oid! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:07'!
+oid: objectId 
+
+	self assert: objectId !!== nil.
+	oid := objectId! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:58'!
+runtime 
+
+	^runtime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:10'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:22'!
+size 
+
+	^runtime objectFormat sizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:33:58'!
+arrayedSize 
+
+	^ runtime objectFormat arrayedSizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:35'!
+asLocalBoolean 
+
+	runtime false oid = oid ifTrue: [ ^false ].
+	runtime true oid = oid ifTrue: [ ^true ].
+	self assert: false.! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:51'!
+asLocalBytes 
+
+	^runtime objectFormat bytesOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:02'!
+asLocalCollection 
+
+	^self isBytes ifTrue: [runtime bytesOf: oid] ifFalse: [self assert: false]! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:16'!
+asLocalInteger 
+
+	^runtime integerOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:25'!
+asLocalString 
+
+	^runtime stringOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:35'!
+asLocalSymbol 
+
+	^runtime symbolOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:22'!
+basicFlags 
+
+	^runtime objectFormat flagsOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:34'!
+getBehavior 
+	| behavior |
+	behavior := runtime objectFormat behaviorOf: oid.
+	^self handleOn: behavior! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:47'!
+getClass 
+
+	^runtime objectFormat classOf: self.! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:39:57'!
+largeSize 
+
+	^runtime objectFormat largeSizeOf: oid! !
+
+!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:43:10'!
+structureOf: type 
+
+	^runtime structureOf: type! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:35:54'!
+at: index 
+	| slot |
+	slot := runtime arrayedSlotOf: oid at: index.
+	^ self handleOn: slot! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:36:42'!
+at: index put: anOid 
+
+	^ runtime arrayedSlotOf: oid at: index put: anOid! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:44'!
+slotAt: index 
+	| slot |
+	slot := runtime slotOf: oid at: index.
+	^self handleOn: slot! !
+
+!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:54'!
+slotAt: index put: anOid 
+
+	^runtime slotOf: oid at: index put: anOid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 08:55:45'!
+= anObject 
+
+	^ anObject class = self class and: [ oid = anObject oid ]! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:38:55'!
+isArrayed 
+
+	^runtime objectFormat isArrayed: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:24'!
+isInteger 
+
+	^runtime objectFormat isInteger: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:33'!
+isLarge 
+
+	^self isSmall not! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:42'!
+isSmall 
+
+	^runtime objectFormat isSmall: oid! !
+
+!ObjectHandle class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 08:54:22'!
+on: anObject within: aRuntime 
+
+	^self new oid: anObject; runtime: aRuntime! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:27'!
+asLocalCollection 
+
+	^ oid! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:51'!
+asLocalInteger 
+
+	^ oid! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:01'!
+asLocalString 
+
+	^ oid asString! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:13'!
+getClass 
+	| handle |
+	handle := runtime handleOn: oid class.
+	^ handle mirror asSpeciesMirror! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:24'!
+indexOf: varname for: aMirror 
+
+	^ oid class indexOfSlot: varname asString! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:55'!
+nilObject 
+
+	^self handleOn: nil! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:08'!
+oid: objectId 
+
+	oid !!= nil ifTrue: [ self halt ].
+	objectId class = ByteString
+		ifTrue: [ self halt ].
+	oid := objectId! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:21'!
+size 
+
+	^ oid basicSize + oid class instSize! !
+
+!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:33'!
+slotAt: index 
+	| slot |
+	slot := oid instVarAt: index.
+	^ self handleOn: slot! !
+
+!LocalHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:08:43'!
+isLocal 
+
+	^true! !
+
+!MethodLookup methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 11:04:34'!
+lookup: aSymbol on: aSubject 
+
+	^self subclassResponsibility! !
+
+!CuisLookup methodsFor: 'meta accessing' stamp: 'KenD 3/21/2021 13:28:29'!
+lookup: aSymbol on: aSubject 
+
+	^ aSubject _gate handle oid class lookupSelector: aSymbol! !
+
+!EmulationLookup methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:34:32'!
+initialize 
+
+	cache := Dictionary new! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:06'!
+compiledMethodFor: anRGMethod 
+	| method |
+	cache at: anRGMethod ifPresent: [ :cm | ^ cm ].
+	method := self compile: anRGMethod.
+	^ cache at: anRGMethod put: method! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:19'!
+globals: aPoolDictionary 
+
+	globals := aPoolDictionary! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:45'!
+lookup: aSymbol on: aSubject 
+	| behavior classname |
+	classname := aSubject _gate handle oid classname.
+	behavior := spec at: classname.
+	^ self lookup: aSymbol startingAt: behavior! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:58'!
+lookup: aSymbol startingAt: aBehavior 
+	| next m c |
+	next := aBehavior.
+	[ m := next methodNamed: aSymbol.
+	m ifNotNil: [ ^ self compiledMethodFor: m ].
+	next := next superclass.
+	next notNil ] whileTrue.
+	^ aBehavior isMeta
+		ifTrue: [ c := aBehavior environment at: #Class.
+			self lookup: aSymbol startingAt: c ]! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:14'!
+lookupSuper: aSymbol on: aSubject from: classname 
+	| behavior |
+	cache at: classname -> aSymbol ifPresent: [ :cached | ^ cached ].
+	behavior := spec at: classname.
+	^ self lookup: aSymbol startingAt: behavior! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:25'!
+spec 
+
+	^spec! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:34'!
+spec: anRGEnvironment 
+
+	spec := anRGEnvironment! !
+
+!MirrorLookup methodsFor: 'meta accessing' stamp: 'KenD 3/20/2021 14:52:06'!
+lookup: aSymbol on: aSubject 
+
+	^aSubject _gate mirror lookup: aSymbol! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:13'!
+bytesOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self bytesOf: oid count: size! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:30'!
+bytesOf: oid count: size 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:42'!
+runtime 
+
+	^ runtime! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:50'!
+runtime: aRuntime 
+
+	runtime := aRuntime! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:59'!
+sizeOf: oid 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:08'!
+storage 
+
+	^ storage! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:17'!
+storage: anObject 
+
+	storage := anObject! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:31'!
+stringOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self stringOf: oid count: size - 1! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:42'!
+stringOf: oid count: size 
+
+	^self subclassResponsibility! !
+
+!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:55'!
+symbolOf: oid 
+	| size |
+	size := self sizeOf: oid.
+	^self stringOf: oid count: size! !
+
+!ObjectFormat class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 09:23:44'!
+on: storage 
+
+	^self new storage: storage! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:09'!
+arrayedSizeOf: oid 
+
+	^ oid arrayedSize! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:17'!
+arrayedSlotOf: oid at: index 
+
+	^ oid at: index! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:30'!
+arrayedSlotOf: oid at: index put: anotherOid 
+
+	^ oid at: index put: anotherOid! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:39'!
+behaviorOf: oid 
+
+	^oid behavior! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:50'!
+bytesOf: oid count: size 
+
+	^oid bytes copyFrom: 1 to: size! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:04'!
+classOf: anObjectHandle 
+	| oid behavior handle class |
+	oid := anObjectHandle oid.
+	(self isInteger: oid) ifTrue: [ 
+		class := storage classNamed: 'SmallInteger'.
+		^(anObjectHandle runtime handleOn: class) mirror asClassMirror].
+	behavior := self behaviorOf: oid.
+	handle := anObjectHandle runtime handleOn: behavior.
+	^handle mirror asBehaviorMirror instanceClass! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:55'!
+integerOf: oid 
+
+	self assert: oid isImmediate.
+	^ oid value! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:58:56'!
+labelFor: oid 
+	| c |
+	(self isInteger: oid) 
+		ifTrue: [ ^'SMI 0x', (self integerOf: oid) printString ].
+	(storage nameOf: oid) ifNotNil: [:name | ^name].
+	c := self classOf: (runtime handleOn: oid).
+	^c localName! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:59:22'!
+newInteger: anInteger 
+
+	^storage newSmallInteger: anInteger! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:13'!
+sizeOf: oid 
+
+	^oid size! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:31'!
+slotOf: oid at: index 
+
+	^ oid slotAt: index! !
+
+!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:42'!
+stringOf: oid count: size 
+
+	^(oid bytes copyFrom: 1 to: size) asString! !
+
+!BootstrapObjectFormat methodsFor: 'printing' stamp: 'KenD 2/28/2021 12:59:55'!
+print: oid on: aStream 
+	| label |
+	label := self labelFor: oid.
+	aStream
+		nextPut: $@;
+		nextPutAll: label;
+		nextPutAll: ' [size: 0x';
+		nextPutAll: (self sizeOf: oid) printStringHex;
+		nextPut: $]! !
+
+!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:07'!
+isBytes: oid 
+
+	^oid isBytes! !
+
+!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:40'!
+isInteger: oid 
+
+	^oid isImmediate! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:08'!
+behaviorOf: oid 
+
+	^self assert: false! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:21'!
+bytesOf: oid count: size 
+
+	^oid copyFrom: 1 to: size! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:31'!
+classOf: anObjectHandle 
+
+	^anObjectHandle oid class! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:42'!
+integerOf: oid 
+
+	self assert: oid isInteger.
+	^ oid! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:31:32'!
+labelFor: oid 
+	| label |
+	label := storage ifNotNil: [storage nameOf: oid].
+	^label ifNil: [ 'unknown' ]! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:17'!
+sizeOf: oid 
+
+	^oid basicSize + oid class instSize! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:33'!
+slotOf: oid at: index 
+
+	^ oid instVarAt: index! !
+
+!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:43'!
+stringOf: oid count: size 
+
+	^(oid copyFrom: 1 to: size) asString! !
+
+!CuisObjectFormat methodsFor: 'printing' stamp: 'KenD 3/21/2021 13:32:04'!
+print: oid on: aStream 
+
+	aStream
+		nextPutAll: '@local {';
+		print: oid;
+		nextPut: $}! !
+
+!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:08'!
+isBytes: anObject 
+
+	^anObject class isBytes! !
+
+!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:18'!
+isInteger: oid 
+
+	^oid isInteger! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:33:26'!
+behaviorOf: oid 
+
+	^ storage uint32of: oid atOffset: BehaviorOffset! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:33:48'!
+bytesOf: oid count: size 
+	
+	^ storage bytesAt: oid sized: size! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:01'!
+classOf: anObjectHandle 
+	| oid class behavior handle |
+	oid := anObjectHandle oid.
+	oid odd ifTrue: [ class := storage classNamed: 'SmallInteger'.
+			^ (anObjectHandle runtime handleOn: class) mirror asClassMirror ].
+	behavior := self behaviorOf: oid.
+	handle := anObjectHandle runtime handleOn: behavior.
+	^ handle mirror asBehaviorMirror instanceClass! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:16'!
+flagsOf: anObject 
+	^ storage uint8of: anObject atOffset: FlagsOffset! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:27'!
+integerOf: oid 
+	| shifted complement |
+	self assert: oid odd.
+	shifted := oid bitShift: -1. 
+	complement := 1 bitShift: storage wordSize * 8 - 1.
+	^ oid >= complement
+		ifTrue: [ shifted - complement ]
+		ifFalse: [ shifted ]! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:11'!
+sizeOf: oid 
+
+	^ (self isSmall: oid)
+		ifTrue: [ self smallSizeOf: oid ]
+		ifFalse: [ self largeSizeOf: oid ]! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:26'!
+slotOf: base at: index 
+
+	^ storage uint64atOffset: base + (8 * (index - 1))! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:42'!
+smallSizeOf: oid 
+
+	^ storage uint8of: oid atOffset: SizeOffset! !
+
+!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:54'!
+stringOf: oid count: anInteger 
+
+	^storage stringAt: oid sized: anInteger! !
+
+!DmrObjectFormat methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:37:05'!
+print: oid on: aStream 
+	| size |
+	aStream
+		nextPut: $@;
+		nextPutAll: oid hex;
+		nextPutAll: '[flags: 0x';
+		nextPutAll: (self flagsOf: oid) printStringHex.
+	self printFlagsOf: oid on: aStream.
+	size := self sizeOf: oid.
+	aStream
+		nextPutAll: ', size: 0x';
+		nextPutAll: size printStringHex;
+		nextPut: $]
+! !
+
+!DmrObjectFormat methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:37:40'!
+printFlagsOf: oid on: aStream 
+	| char |
+	aStream nextPut: $(.
+	char := (self isSmall: oid)
+		ifTrue: [ $S ]
+		ifFalse: [ $L ].
+	aStream
+		nextPut: char;
+		space.
+	char := (self isBytes: oid)
+		ifTrue: [ $B ]
+		ifFalse: [ $P ].
+	aStream
+		nextPut: char;
+		space.
+	char := (self isArrayed: oid)
+		ifTrue: [ $A ]
+		ifFalse: [ $F ].
+	aStream
+		nextPut: char;
+		nextPut: $)! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:01'!
+isArrayed: anObject 
+
+	^ (self flagsOf: anObject) anyMask: IsArrayed! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:16'!
+isBytes: anObject 
+
+	^ ((self flagsOf: anObject) anyMask: IsBytes)! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:25'!
+isInteger: oid 
+
+	^oid odd! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:34'!
+isLarge: anObject 
+
+	^(self isSmall: anObject) not! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:46'!
+isNamed: anObject 
+
+	^ (self flagsOf: anObject) anyMask: IsNamed! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:59'!
+isSmall: oid 
+
+	^ (self flagsOf: oid) anyMask: IsSmall! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:36:09'!
+labelFor: oid 
+
+	^oid hex! !
+
+!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:36:19'!
+largeSizeOf: oid 
+
+	^ storage uint32of: oid atOffset: LargeSizeOffset! !
+
+!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:18'!
+initialize 
+
+	fields := Dictionary new! !
+
+!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:52'!
+loadFrom: aClassDefinition 
+
+	name := aClassDefinition name asSymbol.
+	aClassDefinition allInstVarNames
+		withIndexDo: [:ivarName :i | self indexOf: ivarName be: i]! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:45'!
+indexOf: ivarName 
+	
+	^fields at: ivarName asString! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:57'!
+indexOf: ivarName be: i 
+
+	fields at: ivarName put: i! !
+
+!ObjectShape class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:21:32'!
+new 
+
+	^self basicNew initialize! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:47'!
+bridge 
+
+	^bridge! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:57'!
+bridge: aBridge 
+
+	bridge := aBridge.
+	bridge runtime: self! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:17'!
+false 
+
+	^ bridge false! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:27'!
+globalNamed: name 
+
+	^bridge globalNamed: name! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:35:06'!
+loadBridge 
+
+	bridge findRootObjects! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:01'!
+nil 
+
+	^bridge nil! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:09'!
+objectFormat 
+
+	^objectFormat! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:17'!
+objectFormat: anObjectFormat 
+
+	objectFormat := anObjectFormat.
+	anObjectFormat runtime: self! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:25'!
+objectModel 
+
+	^objectModel! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:43'!
+objectModel: aModuleSpec 
+
+	^objectModel := aModuleSpec! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:15'!
+storage 
+
+	^storage! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:23'!
+storage: anObject 
+
+	storage := anObject! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:33'!
+stringOf: oid 
+
+	^objectFormat stringOf: oid! !
+
+!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:40:05'!
+true 
+
+	^ bridge true! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:33:46'!
+initialize 
+
+	shapeMap := ShapeMap new.
+	self useMirrorLookup! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:21'!
+loadShapesFrom: anRGEnvironment 
+
+	objectModel := anRGEnvironment.
+	anRGEnvironment allClasses do: [ :class | shapeMap load: class ]! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:38'!
+loadShapesFromImage 
+	| classes |
+	objectModel := Smalltalk.
+	classes := #(ClassDescription Class Metaclass) 
+				collect: [ :name | Smalltalk at: name ].
+	classes do: [ :class | shapeMap load: class ]! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:58'!
+useCuisLookup 
+
+	lookup := CuisLookup new! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:22'!
+useEmulationLookup: anRGEnvironment 
+	
+	lookup := EmulationLookup new spec: anRGEnvironment! !
+
+!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:32'!
+useMirrorLookup 
+
+	lookup := MirrorLookup new! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:32:53'!
+handleOn: oid 
+
+	^ ObjectHandle on: oid within: self! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:33:01'!
+handleOnGlobal: aString 
+	| oid |
+	oid := self globalNamed: aString.
+	^self handleOn: oid! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:35:54'!
+lookup 
+
+	^ lookup! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:03'!
+lookup: aSymbol on: aSubject 
+
+	^lookup lookup: aSymbol on: aSubject! !
+
+!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:13'!
+lookupSuper: aSymbol on: aSubject from: classname 
+
+	^ lookup lookupSuper: aSymbol on: aSubject from: classname! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:20'!
+integerHandle: anInteger 
+	| oid |
+	oid := objectFormat newInteger: anInteger.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:30'!
+integerOf: oid 
+
+	^objectFormat integerOf: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:36:28'!
+new: oid 
+	| instance |
+	instance := storage new: oid.
+	^ self handleOn: instance! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:12'!
+new: oid sized: anInteger 
+	| instance |
+	instance := storage new: oid sized: anInteger.
+	^ self handleOn: instance! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:28'!
+newClosure: anObjectHandle 
+	| oid |
+	oid := storage newClosure: anObjectHandle.
+	"should put a thing that lives in remote runtime, not a PCompiledBlock"
+	oid block: anObjectHandle.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:44'!
+newClosureHandle: aPCompiledBlock 
+	| oid |
+	oid := storage newClosure: aPCompiledBlock.
+	"should put a thing that lives in remote runtime, not a PCompiledBlock"
+	oid block: aPCompiledBlock.
+	^ self handleOn: oid! !
+
+!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:33:26'!
+indexOf: varname inStructureOf: type 
+
+	^shapeMap indexOf: varname at: type! !
+
+!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:39:44'!
+structureOf: type 
+
+	^shapeMap at: type! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:13'!
+arrayedSlotOf: object at: index 
+
+	^ objectFormat arrayedSlotOf: object at: index! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:23'!
+arrayedSlotOf: object at: index put: value 
+
+	^ storage arrayedSlotOf: object at: index put: value! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:32:08'!
+bytesOf: oid 
+
+	^objectFormat bytesOf: oid! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:38:55'!
+slotOf: object at: index 
+
+	^objectFormat slotOf: object at: index! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:03'!
+slotOf: object at: index put: value 
+
+	^ storage slotOf: object at: index put: value! !
+
+!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:54'!
+symbolOf: oid 
+
+	^objectFormat symbolOf: oid! !
+
+!Runtime methodsFor: 'testing' stamp: 'KenD 4/12/2021 12:34:50'!
+isLocal 
+
+	^objectModel == Smalltalk.! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:26:17'!
+forBootstrappingCuisSt: aSmalltalkBootstrapper spec: anRGEnvironment 
+
+	^ self new
+		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
+		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
+		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
+		useEmulationLookup: anRGEnvironment! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:29:12'!
+forEmulatingCuisSt: aSmalltalkBootstrapper 
+
+	^ self new
+		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
+		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
+		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
+		loadBridge! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:02'!
+forLocalCuis
+	^ self new
+		bridge: CuisBridge new;
+		objectFormat: CuisObjectFormat new;
+		useCuisLookup;
+		loadBridge;
+		loadShapesFromImage! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:32'!
+forSimulating: aModuleSpec memory: aByteArray 
+	| adapter |
+	adapter := ByteArrayAdapter on: aByteArray.
+	^ self new
+		bridge: CuisStBridge new;
+		objectFormat: (DmrObjectFormat on: adapter);
+		storage: adapter;
+		loadShapesFrom: aModuleSpec;
+		loadBridge! !
+
+!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:46'!
+new 
+
+	^self basicNew initialize! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
+isitReturn: anSReturn 
+
+	returnValue := anSReturn expression acceptVisitor: self.
+	returned := true.
+	^returnValue! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:17'!
+visitArgument: anSIdentifier 
+
+	^arguments at: anSIdentifier binding index! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:32'!
+visitAssignment: anSAssignment 
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:48'!
+visitBlock: anSBlock 
+	| closure handle |
+	closure := anSBlock isInlined
+		           ifTrue: [ SCompiledBlock new newClosure home: self ]
+		           ifFalse: [ self captureClosure: anSBlock ].
+	blockAstcodes at: closure block put: anSBlock.
+	self halt.
+	"	handle := LocalHandle on: closure within: localRuntime."
+	^ handle mirage! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:24'!
+visitIdentifier: anSIdentifier 
+
+	^anSIdentifier binding valueWithin: self! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:37'!
+visitMessage: anSMessage 
+	| msgReceiver msgArguments selector message |
+	msgReceiver := anSMessage receiver acceptVisitor: self.
+	msgArguments := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := anSMessage selector.
+	message := MessageSend
+		receiver: msgReceiver
+		selector: selector
+		arguments: msgArguments.
+	 (self isSpecial: selector)
+		ifTrue: [ ^self dispatchSpecial: message ].
+	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
+	^self dispatch: message to: msgReceiver! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:10'!
+visitMethod: anSMethod 
+	| primitive value |
+	primitive := anSMethod primitive.
+	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
+	environment := Array new: method environmentCount.
+	value := self visitScript: anSMethod.
+	^returned ifTrue: [ value ] ifFalse: [ receiver ]! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:57'!
+visitScript: anSScript 
+	| result |
+	anSScript statements do: [:node | 
+		result := node acceptVisitor: self.
+		returned ifTrue: [^returnValue]
+	].
+	^result! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:11:12'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:00:53'!
+instVarAt: anInteger 
+
+	^receiver _gate slotAt: anInteger! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:18'!
+instVarAt: index put: aValue 
+
+	^ receiver _gate handle slotAt: index put: aValue _gate handle oid! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:43'!
+method 
+
+	^method! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:03'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod.
+	temporaries := Array new: aCompiledMethod tempCount! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:25'!
+mirageOnBoolean: aBoolean 
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:37'!
+mirageOnInteger: anInteger 
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := runtime integerHandle: anInteger.
+	^ handle mirage! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:52'!
+mirageOnObject: anObject 
+
+	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
+	self assert: false! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:16'!
+parent 
+
+	^parent! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:26'!
+parent: anInterpreter 
+
+	parent := anInterpreter! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:16'!
+receiver 
+
+	^receiver! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:26'!
+receiver: anObject 
+
+	receiver := anObject.
+	returnValue := anObject! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:11'!
+temporaryAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:46'!
+temporaryAt: index in: anInteger put: aValue 
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:56:58'!
+argumentAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:13'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:30'!
+captureClosure: anSBlock 
+	| closure s i type env arg |
+	closure := anSBlock compiledCode newClosure home: self.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:12'!
+dispatch: message to: msgReceiver 
+
+	^ self subclassResponsibility! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:23'!
+dispatchSpecial: message 
+
+		^self subclassResponsibility ! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:36'!
+environmentFor: anInteger 
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:57'!
+evaluate: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	^ self visitMethod: anSCompiledMethod sexpressions! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:13'!
+evaluateClosure: aPClosure 
+
+	^self evaluateClosure: aPClosure withArgs: {}! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:25'!
+evaluateClosure: aPClosure with: anObject 
+
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:37'!
+evaluateClosure: aPClosure with: anObject with: anotherObject 
+
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:58'!
+evaluateClosure: aPClosure withArgs: anArray 
+	| oldArgs oldTemps oldEnv block sblock result |
+	block := aPClosure block.
+	sblock := blockAstcodes at: block.
+	sblock isInlined ifTrue: [
+			 anArray with: sblock inlinedArgs do: [:arg :i | temporaries at: i put: arg].
+			^ self visitScript: sblock ].
+	oldArgs := arguments.
+	oldTemps := temporaries.
+	oldEnv := environment.
+	arguments := anArray.
+	temporaries := Array new: block tempCount.
+	environment := aPClosure.
+	result := self visitScript: sblock.
+	environment := oldEnv.
+	temporaries := oldTemps.
+	arguments := oldArgs.
+	^ result! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:04:48'!
+subjectOn: anObjectHandle 
+
+	^ anObjectHandle maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:19'!
+subjectOnBoolean: aBoolean in: aRuntime 
+	| t f |
+	^ aBoolean
+		ifTrue: [ t := aRuntime true. 
+			(t oid = true) ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] 
+		]
+		ifFalse: [ f := aRuntime false. 
+			(f oid = false) ifTrue: [ f mirage ] ifFalse: [ f maneuverer]
+		] ! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:42'!
+subjectOnObject: anObjectHandle 
+
+	^ anObjectHandle maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:54'!
+subjectOnObjectOk: anObjectHandle 
+
+	^ self maneuvererOn: anObjectHandle! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:32'!
+ubjectOnInteger: anInteger in: aRuntime 
+
+	^ (aRuntime integerHandle: anInteger) maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:00:30'!
+initialize 
+
+	returned := false.
+	blockAstcodes := IdentityDictionary new! !
+
+!SExpressionInterpreter methodsFor: 'testing' stamp: 'KenD 2/27/2021 16:01:33'!
+isSpecial: aSelectorMirror 
+
+	^ self subclassResponsibility ! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:13'!
+new 
+
+	^self basicNew initialize! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:31'!
+on: receiverMirror with: arguments for: method 
+
+	^self new
+		receiver: receiverMirror;
+		arguments: arguments;
+		method: method! !
+
+!SmalltalkInterpreter methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:14:04'!
+primitivePrimeFor 
+	| num result  |
+	num := arguments first _gate handle asLocalInteger.
+	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
+		detect: [ :i | i >= num ].
+	^ self subjectOnInteger: result in: receiver _gate handle runtime! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:08:27'!
+dispatch: message to: msgReceiver 
+
+	^ msgReceiver _gate dispatch: message from: self! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:09:26'!
+dispatchSpecial: message 
+	| selector mirror gate |
+	selector := message selector.
+	gate := message receiver _gate.
+	mirror := gate mirror.
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self subjectOnBoolean: gate handle isInteger in: gate handle runtime].
+	selector == #_isLarge
+		ifTrue: [ ^ self subjectOnBoolean: mirror reflectsLargeObject in: gate handle runtime].
+	selector == #_smallSize
+		ifTrue: [ ^ self subjectOnInteger: mirror  smallSize in: gate handle runtime ].
+	selector == #_largeSize
+		ifTrue: [ ^ self subjectOnInteger: mirror largeSize in: gate handle runtime ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self subjectOnInteger: mirror basicFlags in: gate handle runtime ].
+	selector == #_basicHash
+		ifTrue: [ ^ self subjectOnInteger: 0 in: gate handle runtime ].
+	selector == #_basicHash:
+		ifTrue: [ ^ message receiver ].
+	self assert: false
+! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:13'!
+dispatchSuper: message to: msgReceiver 
+
+	^ msgReceiver _gate dispatchSuper: message from: self! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:24'!
+falseLiteral 
+
+	^receiver _gate handle runtime false maneuverer.! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:35'!
+gateOnBlock: aPCompiledBlock 
+	| runtime closure handle |
+	runtime := receiver _gate handle runtime.
+	closure := aPCompiledBlock newClosure home: self.
+	handle := LocalHandle on: closure within: localRuntime.
+	^ closure mirage! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:22'!
+literal: anObject 
+	| handle |
+	handle := receiver _gate handleOn: anObject.
+	^ self subjectOn: handle! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:33'!
+mirageOnBlock: aPCompiledBlock 
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := runtime newClosureHandle: aPCompiledBlock.
+	^ handle mirage! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:49'!
+nilLiteral 
+
+	^receiver _gate handle runtime nil maneuverer! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:13:07'!
+primitiveClosureValue 
+	| closure block sblock prev result interpreter next |
+	closure := receiver _gate handle.
+	block := closure mirror asClosureMirror block handle oid.
+	interpreter := self.
+	[ next := interpreter blocks. next includesKey: block] whileFalse: [ interpreter := interpreter parent ].
+	sblock := next at: block.
+	prev := environment.
+	environment := closure.
+	result := interpreter visitScript: sblock.
+	environment := prev.
+	^result! !
+
+!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:14:16'!
+trueLiteral 
+
+	^receiver _gate handle runtime true maneuverer.! !
+
+!SmalltalkInterpreter methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:11:33'!
+initialize 
+
+	super initialize.
+	localRuntime := Runtime forLocalCuis! !
+
+!SmalltalkInterpreter methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:12:10'!
+isSpecial: selector 
+
+	^Underprimitives includes: selector! !
+
+!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:14:41'!
+visitLiteral: anSLiteral 
+	| handle |
+	anSLiteral value isInteger ifTrue: [ 
+		^self subjectOnInteger: anSLiteral value in: receiver _gate handle runtime ].
+	handle := localRuntime handleOn: anSLiteral value.
+	^ handle mirage! !
+
+!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:15:20'!
+visitPrimitive: primitive 
+	| gate new left right args rcvr runtime value class |
+	returned := true.
+	gate := receiver _gate.
+	runtime := gate handle runtime.
+	primitive = #Behavior
+		ifTrue: [ class := runtime bridge globalNamed: gate handle oid spec name.
+			^ returnValue := self subjectOn: (gate handleOn: class instanceBehavior)].
+	primitive = #UnderSize
+		ifTrue: [ ^ returnValue := self subjectOnInteger: gate handle size in: runtime ].
+	primitive = #Size
+		ifTrue: [ ^ returnValue := self
+				subjectOnInteger: gate handle arrayedSize
+				in: runtime ].
+	primitive = #At
+		ifTrue:
+			[ value := gate handle at: arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOn: value].
+	primitive = #AtPut
+		ifTrue:
+			[ value := arguments second.
+			gate handle at: arguments first _gate handle asLocalInteger put: value _gate handle oid.
+			^ returnValue := value].
+	primitive = #New
+		ifTrue: [ new := gate handle runtime new: gate handle oid.
+			^ returnValue := self subjectOn: new ].
+	primitive = #NewSized
+		ifTrue: [ new := gate handle runtime
+				new: gate handle oid
+				sized: arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOn: new ].
+	primitive = #Equal
+		ifTrue: [ left := receiver _gate handle oid.
+			right := arguments first _gate handle oid.
+			^ returnValue := self
+				subjectOnBoolean: left == right
+				in: localRuntime ].
+	primitive = #SMIPlus
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOnInteger: left + right in: runtime ].
+	primitive = #SMIMinus
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOnInteger: left - right in: runtime ].
+	primitive = #SMITimes
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOnInteger: left * right in: runtime ].
+	primitive = #SMIIntDiv
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOnInteger: left // right in: runtime ].
+	primitive = #SMIIntQuot
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self subjectOnInteger: left \\ right in: runtime ].
+	primitive = #SMIGreaterThan
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self
+				subjectOnBoolean: left > right
+				in: localRuntime ].
+	primitive = #SmallIntegerBitAnd
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self
+				subjectOnInteger: (left bitAnd: right)
+				in: runtime ].
+	primitive = #SMIGreaterEqualThan
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self
+				subjectOnBoolean: left >= right
+				in: localRuntime ].
+	primitive = #SMIEqual
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self
+				subjectOnBoolean: left = right
+				in: localRuntime ].
+	primitive = #SMINotEqual
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self
+				subjectOnBoolean: left !!= right
+				in: localRuntime ].
+	primitive = #ClosureValue
+		ifTrue: [ ^ self primitiveClosureValue ].
+	primitive = #ReplaceFromTo
+		ifTrue: [ rcvr := receiver _gate handle target.
+			args := arguments collect: [ :arg | arg _gate asLocalCollection ].
+			rcvr
+				perform: #replaceFrom:to:with:startingAt:
+				withArguments: args asArray.
+			^ returnValue := receiver ].
+	primitive = #PrimeFor
+		ifTrue: [ ^ self primitivePrimeFor ].
+	self assert: false! !
+
+!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:16:13'!
+visitPrimitiveOld: primitive 
+	| gate new left right args rcvr |
+	returned := true.
+	gate := receiver _gate.
+	primitive = #Size
+		ifTrue: [ ^ returnValue := self mirageOnInteger: gate mirror size ].
+	primitive = #New
+		ifTrue: [ new := gate handle runtime new: gate handle oid.
+			^ returnValue := self mirageOnObject: new ].
+	primitive = #NewSized
+		ifTrue: [ new := gate handle target new: arguments first _gate handle target.
+			^ returnValue := self mirageOnObject: new ].
+	primitive = #SmallIntegerMinus
+		ifTrue: [ left := receiver _gate handle target.
+			right := arguments first _gate handle target.
+			^ returnValue := self mirageOnInteger: left - right ].
+	primitive = #SmallIntegerPlus
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self mirageOnInteger: left + right ].
+	primitive = #SmallIntegerBitAnd
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self mirageOnInteger: (left bitAnd: right) ].
+	primitive = #SmallIntegerLessOrEqual
+		ifTrue: [ left := receiver _gate handle target.
+			right := arguments first _gate handle target.
+			^ returnValue := self mirageOnBoolean: left <= right ].
+	primitive = #SmallIntegerEqual
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self mirageOnBoolean: left = right ].
+	primitive = #SmallIntegerNotEqual
+		ifTrue: [ left := receiver _gate handle asLocalInteger.
+			right := arguments first _gate handle asLocalInteger.
+			^ returnValue := self mirageOnBoolean: left !!= right ].
+	primitive = #ClosureValue
+		ifTrue: [ ^ self primitiveClosureValue ].
+	primitive = #ReplaceFromTo
+		ifTrue: [ rcvr := receiver _gate handle target.
+			args := arguments collect: [ :arg | arg _gate asLocalCollection ].
+			rcvr
+				perform: #replaceFrom:to:with:startingAt:
+				withArguments: args asArray.
+			^ returnValue := receiver ].
+	self assert: false! !
+
+!SmalltalkInterpreter class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 08:07:13'!
+initialize 
+"
+	self initialize
+"
+	Underprimitives := 
+		     #(_basicAt: #_basicAt:put: 
+			_byteAt: #_byteAt:put: 
+			_smallSize _largeSize 
+			_isSmallInteger 
+			_basicHash _basicHash:)! !
 
 !Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:23'!
 handle 
@@ -18781,1216 +21139,6 @@ rintOn: aStream
 reflectsMethodDictionary 
 
 	^true! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:30:04'!
-bindingTypeOf: id 
-	
-	^bindingTypes at: id! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:07'!
-literalAt: anInteger 
-
-	^method at: anInteger! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:20'!
-method: aCompiledMethod 
-
-	method := aCompiledMethod! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:43'!
-next 
-
-	^stream next! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:54'!
-nextInteger 
-
-	^stream next! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:05'!
-nodeTypeOf: id 
-
-	^nodeTypes at: id! !
-
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:17'!
-stream: aStream 
-
-	stream := aStream! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:18'!
-decodeArgument 
-
-	^SArgumentBinding new
-		index: self nextInteger;
-		environment: self nextInteger! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:41'!
-decodeAssignment 
-	| assignment codes |
-	assignment := SAssignment new.
-	codes := stream upToEnd collect: [:elem | self decodeNode: elem].
-	assignment expression: codes last.
-	1 to: codes size - 1 do: [:i | | identifier |
-		identifier := codes at: i.
-		assignment assign: identifier].
-	^assignment! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:24'!
-decodeBlock 
-	| expression next block index |
-	expression := SBlock new.
-	next := stream peek.
-	next !!= 0
-		ifTrue: [ index := stream next. block := method at: index.
-			expression
-				compiledCode: block;
-				index: index;
-				capturedVariables: stream next ]
-		ifFalse: [ stream next.
-			expression inlinedArgs: stream next ].
-	expression statements: self decodeStatements.
-	^ expression! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:52'!
-decodeCascade 
-	| receiver messages prev |
-	receiver := self decodeNode: stream next.
-	prev := stream.
-	messages := stream upToEnd collect: [:elem | 
-		stream := elem readStream.
-		SCascadeMessage decodeUsing: self].
-	stream := prev.
-	^SCascade new receiver: receiver; messages: messages! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:14'!
-decodeCascadeMessage 
-	| index selector arguments |
-	index := stream next.
-	selector := index = 0 ifTrue: [stream next] ifFalse: [method at: index].
-	arguments := stream upToEnd collect: [:node | self decodeNode: node].
-	^SCascadeMessage new selector: selector; arguments: arguments! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:30'!
-decodeClassBinding 
-	| index assoc |
-		index := self nextInteger.
-
-	assoc := method at: index.
-	^ SClassBinding new index: index; association: assoc! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:45'!
-decodeClassVar 
-	| index assoc |
-	index := self nextInteger.
-	assoc := method at: index.
-	^ SClassVarBinding new index: index; association: assoc! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:08'!
-decodeConstantPoolVar 
-	| index assoc |
-	index := self nextInteger.
-	assoc := method at: index.
-	^ SConstantPoolBinding new
-		index: index;
-		association: assoc! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:31'!
-decodeGlobalBinding 
-	| index assoc |
-	index := self nextInteger.
-	assoc := method at: index.
-	^ SGlobalBinding new index: index; association: assoc! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:47'!
-decodeIdentifier 
-	| type binding |
-	type := self bindingTypeOf: self nextInteger.
-	binding := type decodeUsing: self.
-	^ SIdentifier new binding: binding! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:05'!
-decodeInlineNodes: anArray
-	| prev result type decoded |
-	anArray ifNil: [ ^ #() ].
-	prev _ stream.
-	result _ OrderedCollection new.
-	stream _ anArray readStream.
-	[ stream atEnd ] whileFalse: [
-		type _ self nodeTypeOf: stream next.
-		decoded _ type decodeUsing: self.
-		result add: decoded ].
-	stream _ prev.
-	^ result! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:26'!
-decodeInstVar 
-
-	^SInstVarBinding new index: self nextInteger! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:42'!
-decodeLiteral 
-	| index value |
-	index := self nextInteger.
-	value := index = 0
-		ifTrue: [ stream next ]
-		ifFalse: [ method at: index ].
-	^ SLiteral new index: index; value: value! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:10'!
-decodeMessage 
-	| index selector receiver arguments opcodes |
-	index := stream next.
-	selector := index = 0
-		ifTrue: [ stream next ]
-		ifFalse: [ method at: index ].
-	receiver := self decodeNode: stream next.
-	arguments := self decodeNodes: stream next.
-	stream atEnd
-		ifFalse: [ opcodes := stream peek = 0
-				ifTrue: [ stream next.
-					#inlined ]
-				ifFalse: [ self decodeInlineNodes: stream next ] ].
-	^ SMessage new
-		receiver: receiver;
-		selector: selector;
-		arguments: arguments;
-		opcodes: opcodes! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:41'!
-decodeMethod 
-	| type node next pragma |
-	type := stream next.
-	type !!= MethodId
-		ifTrue: [ self error: 'method astcode expected' ].
-	node := SMethod new.
-	next := stream peek.
-	(next = PragmaId)
-		ifTrue:
-			[ stream next.
-			pragma := SPragma new
-				name: stream next.
-			node pragma: pragma ].
-		 node
-			compiledCode: method;
-		statements: self decodeStatements.
-	^ node! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:06'!
-decodeNode: anArray 
-	| prev type result |
-	prev := stream.
-	stream := anArray readStream.
-	type := self nodeTypeOf: stream next.
-	result := type decodeUsing: self.
-	stream := prev.
-	^result
-! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:21'!
-decodeNodes: anArray 
-	anArray ifNil: [^#(  )].
-	^anArray collect: [:arg | self decodeNode: arg  ]! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:34'!
-decodePoolVar 
-	| index assoc |
-	index := self nextInteger.
-
-	assoc := method at: index.
-	^ SPoolVarBinding new index: index; association: assoc! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:54'!
-decodeReturn 
-	| expression local |
-	local := stream next.
-	expression := self decodeNode: stream next.
-	^SReturn new local: local; expression: expression! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:15'!
-decodeStatement: anArray 
-
-	^self decodeNode: anArray! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:29'!
-decodeStatements 
-
-	^stream upToEnd collect: [:statement | self decodeStatement: statement]! !
-
-!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:43'!
-decodeTemporary 
-
-	^STemporaryBinding new
-		index: self nextInteger;
-		environment: self nextInteger! !
-
-!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:39:27'!
-initialize 
-	nodeTypes := Dictionary new: 40.
-	bindingTypes := Dictionary new: 20.
-	nodeTypes
-		at: AssignmentId put: SAssignment;
-		at: BlockId put: SBlock;
-		at: CascadeId put: SCascade;
-		at: LiteralId put: SLiteral;
-		at: IdentifierId put: SIdentifier;
-		at: MessageId put: SMessage;
-		at: ReturnId put: SReturn;
-		at: LoadRwithSelfId put: LoadRwithSelf;
-		at: LoadAwithSelfId put: LoadAwithSelf;
-		at: LoadRwithNilId put: LoadRwithNil;
-		at: LoadAwithNilId put: LoadAwithNil;
-		at: LoadRwithFalseId put: LoadRwithFalse;
-		at: LoadAwithFalseId put: LoadAwithFalse;
-		at: LoadRwithTrueId put: LoadRwithTrue;
-		at: LoadAwithTrueId put: LoadAwithTrue;
-		at: LoadRwithArgumentId put: LoadRwithArgument;
-		at: LoadAwithArgumentId put: LoadAwithArgument;
-		at: LoadRwithTemporaryId put: LoadRwithTemporary;
-		at: LoadAwithTemporaryId put: LoadAwithTemporary;
-		at: LoadRwithInstVarId put: LoadRwithInstVar;
-		at: LoadAwithInstVarId put: LoadAwithInstVar;
-		at: LoadAwithGlobalId put: LoadAwithGlobal;
-		at: LoadAwithClassVarId put: LoadAwithClassVar;
-		at: LoadAwithPoolVarId put: LoadAwithPoolVar;
-		at: LoadAwithConstPoolId put: LoadAwithConstPoolVar;
-		at: LoadRvisitingReceiverId put: LoadRvisitingReceiver;
-		at: LoadAvisitingArgumentId put: LoadAvisitingArgument;
-		"		at: LoadRwithLiteralId put: LoadRwithLiteral;"
-			at: LoadAwithLiteralId put: LoadAwithLiteral;
-		at: EnsureRisSmallIntegerId put: EnsureRSmallInteger;
-		at: EnsureAisSmallIntegerId put: EnsureASmallInteger;
-		at: PushRid put: PushRopcode;
-		at: PopRid put: PopRopcode.
-	bindingTypes
-		at: NilId put: SNilBinding;
-		at: TrueId put: STrueBinding;
-		at: FalseId put: SFalseBinding;
-		at: ArgumentId put: SArgumentBinding;
-		at: TemporaryId put: STemporaryBinding;
-		at: SelfId put: SSelfBinding;
-		at: SuperId put: SSuperBinding;
-		at: InstVarId put: SInstVarBinding;
-		at: ClassVarId put: SClassVarBinding;
-		at: GlobalValueId put: SGlobalBinding;
-		at: GlobalClassId put: SClassBinding;
-		at: PoolVarId put: SPoolVarBinding;
-		at: ConstantPoolId put: SConstantPoolBinding! !
-
-!BinaryMessageOptimizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 12:51:15'!
-emitter: anAstcodeEmitter 
-
-	emitter := anAstcodeEmitter ! !
-
-!BinaryMessageOptimizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 12:53:25'!
-message: aMessageNode 
-
-	message := aMessageNode.
-	selector := aMessageNode selector value.
-	receiver := aMessageNode receiver.
-	argument := aMessageNode arguments first ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:50:49'!
-emitOpcodes 
-
-	(selector == #'==' or: [selector == #'!!==']) ifTrue: [^self loadOperands].
-	
-	(#(= + - !!= < > <= >= | & << >> * / // \\ bitOr: bitAnd: bitXor: bitShift:)
-		includes: selector)
-		ifTrue: [^self loadSmallIntegerOperands].
-		
-	self assert: false ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:28'!
-ensureAisSmallInteger 
-
-	emitter nextPut: EnsureAisSmallIntegerId ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:39'!
-ensureRisSmallInteger 
-
-	emitter nextPut: EnsureRisSmallIntegerId ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:49'!
-genericLoadArgument 
-
-	emitter nextPut: LoadAvisitingArgumentId ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:59'!
-genericLoadReceiver 
-
-	emitter nextPut: LoadRvisitingReceiverId ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:52:36'!
-loadOperands 
-	| strict push |
-	strict := message needsStrictEvaluationOrder.
-	strict
-		ifTrue: [
-			emitter encodeLoadRvisitingReceiver.
-			push := self hasImmediateArgument not.
-			push ifTrue: [emitter encodePushR].
-			self loadArgument.
-			push ifTrue: [emitter encodePopR]]
-		ifFalse: [
-			self loadArgument.
-			emitter encodeLoadRvisitingReceiver] ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:53:08'!
-loadSmallIntegerOperands 
-
-	self loadOperands.
-	self receiverIsSmallInteger ifFalse: [self ensureRisSmallInteger].
-	self argumentIsSmallInteger ifFalse: [self ensureAisSmallInteger] ! !
-
-!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:52:23'!
-oadArgument 
-
-	self hasImmediateArgument
-		ifTrue: [argument emitLoadAusing: emitter]
-		ifFalse: [self genericLoadArgument] ! !
-
-!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:50:06'!
-argumentIsSmallInteger 
-
-	^argument isLiteral and: [argument value isSmallInteger] ! !
-
-!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:50:27'!
-argumentOverwritesR 
-
-	argument isLiteral ifTrue: [^false].
-	argument isVariable ifTrue: [^false].
-	^true ! !
-
-!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:52:13'!
-hasImmediateArgument 
-
-	^argument isLiteral or: [argument isIdentifier] ! !
-
-!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:53:42'!
-receiverIsSmallInteger 
-
-	^receiver isLiteral and: [receiver value isSmallInteger] ! !
-
-!BinaryMessageOptimizer class methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:49:41'!
-optimizesMessage: selector 
-
-	^ #(== = < <= >= > + - * // \\ | & bitOr: bitAnd: bitXor:)
-		includes: selector! !
-
-!BinaryMessageOptimizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:49:06'!
-on: aMessageNode using: anAstcodeEmitter 
-
-	^self new emitter: anAstcodeEmitter; message: aMessageNode ! !
-
-!SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
-decodeUsing: anAstcodeDecoder 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:18:28'!
-assign: value within: evaluator 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:20:38'!
-valueWithin: evaluator 
-
-	^self subclassResponsibility! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:48'!
-isArgument 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:56'!
-isAssociation 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:03'!
-isClassBinding 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:09'!
-isClassVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:18'!
-isInstVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:26'!
-isLiteral 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:34'!
-isPoolVar 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:40'!
-isSelf 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:48'!
-isSuper 
-
-	^false! !
-
-!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:56'!
-isTemporary 
-
-	^false! !
-
-!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
-isLiteral 
-
-	^true! !
-
-!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
-value 
-
-	^true! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
-valueWithin: evaluator 
-
-	^evaluator trueLiteral! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
-value 
-	
-	^false! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
-valueWithin: evaluator 
-
-	^evaluator falseLiteral! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
-environment: anInteger 
-
-	environment := anInteger! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
-index 
-
-	^position! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
-index: anInteger 
-
-	^position := anInteger! !
-
-!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
-isInStack 
-
-	self assert: false.
-	^ environment = 0! !
-
-!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
-assign: value within: evaluator 
-
-	evaluator temporaryAt: position in: environment put: value! !
-
-!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
-valueWithin: evaluator 
-
-	^evaluator temporaryAt: position in: environment! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
-isInCurrentEnvironment 
-
-	^environment = 1! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
-isTemporary 
-
-	^true! !
-
-!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeTemporary! !
-
-!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
-assign: value within: evaluator 
-
-	self halt! !
-
-!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:16:08'!
-valueWithin: evaluator 
-
-	^evaluator argumentAt: position in: environment! !
-
-!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:20'!
-isArgument 
-
-	^true! !
-
-!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:30'!
-isInlined 
-
-	^ environment = -1! !
-
-!SArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:14:42'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeArgument! !
-
-!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
-valueWithin: evaluator 
-
-	^evaluator receiver! !
-
-!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
-isSelf 
-
-	^true! !
-
-!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
-isSelf 
-
-	^false! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
-isSuper 
-
-	^true! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
-association 
-
-	^association! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:33'!
-association: anAssociation 
-
-	association := anAssociation! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:51'!
-index 
-	
-	^ index! !
-
-!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:39:02'!
-index: anInteger 
-
-	 index := anInteger ! !
-
-!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:38:04'!
-assign: value within: evaluator 
-
-	^ evaluator associationValueAt: index put: value! !
-
-!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:39:38'!
-valueWithin: evaluator 
-
-	^evaluator associationValueAt: index! !
-
-!SAssociationBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:39:24'!
-isAssociation 
-
-	^true! !
-
-!SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
-value 
-
-	^association value! !
-
-!SPoolVarBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:42:01'!
-isPoolVar 
-
-	^true! !
-
-!SPoolVarBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:41:20'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodePoolVar! !
-
-!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:13'!
-value 
-
-	^association! !
-
-!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:23'!
-valueWithin: evaluator 
-
-	^ evaluator constPoolValueAt: index! !
-
-!SConstantPoolBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:43:43'!
-decodeUsing: anAstcodeDecoder 
-
-	^ anAstcodeDecoder decodeConstantPoolVar! !
-
-!SClassVarBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:23:42'!
-isClassVar 
-
-	^true! !
-
-!SClassVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:23:28'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeClassVar! !
-
-!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
-decodeUsing: anAstcodeDecoder 
-
-	^ anAstcodeDecoder decodeGlobalBinding! !
-
-!SClassBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:22:40'!
-isClassBinding 
-
-	^true! !
-
-!SClassBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:22:24'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeClassBinding! !
-
-!SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:27'!
-index 
-
-	^index! !
-
-!SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:44'!
-index: anInteger 
-
-	index := anInteger! !
-
-!SInstVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/13/2021 09:17:46'!
-assign: value within: evaluator 
-
-	evaluator instanceVarAt: index put: value! !
-
-!SInstVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/13/2021 09:19:39'!
-valueWithin: evaluator 
-
-	^evaluator instanceVarAt: index! !
-
-!SInstVarBinding methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:19:02'!
-isInstVar 
-
-	^true! !
-
-!SInstVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/13/2021 09:15:59'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeInstVar! !
-
-!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
-printOn: aStream indent: anInteger 
-
-	super printOn: aStream! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:04:54'!
-isAssignment 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:01'!
-isCascade 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:10'!
-isCascadeMessage 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:16'!
-isIdentifier 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:23'!
-isInstVar 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:32'!
-isLiteral 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:39'!
-isMessage 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:48'!
-isMethod 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:55'!
-isReturn 
-
-	^false! !
-
-!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:06:02'!
-isSuper 
-
-	^false! !
-
-!SExpression methodsFor: 'visiting' stamp: 'KenD 2/22/2021 13:04:25'!
-acceptVisitor: visitor 
-
-	^self subclassResponsibility! !
-
-!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
-acceptVisitor: visitor 
-
-	^visitor visitIdentifier: self! !
-
-!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{IdentifierId. ';
-		print: binding;
-		nextPutAll: '}'! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
-isArgument 
-
-	^binding isArgument! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
-isAssociation 
-
-	^binding isAssociation! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
-isIdentifier 
-
-	^true! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
-isInstVar 
-
-	^binding isInstVar! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
-isLiteral 
-
-	^binding isLiteral! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
-isSelf 
-	
-	^binding isSelf! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
-isSelfOrSuper 
-
-	^binding isSelf or: [binding isSuper]! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
-isSuper 
-
-	^binding isSuper! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
-isTemporary 
-
-	^binding isTemporary! !
-
-!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
-binding: aBinding 
-
-	binding := aBinding! !
-
-!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeIdentifier! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
-index 
-
-	^index! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
-index: anInteger 
-
-	index := anInteger! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
-value 
-
-	^value! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
-value: anObject 
-
-	value := anObject! !
-
-!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{LiteralId. ';
-		print: value;
-		nextPutAll: '}'! !
-
-!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
-isLiteral 
-
-	^true! !
-
-!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
-acceptVisitor: visitor 
-
-	^ visitor visitLiteral: self! !
-
-!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeLiteral! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
-arguments 
-
-	^arguments! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
-opcodes 
-
-	^opcodes! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
-opcodes: aCollection 
-
-	opcodes := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
-receiver 
-
-	^receiver! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
-receiver: anSExpression 
-
-	receiver := anSExpression! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
-selector 
-
-	^selector! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
-selector: aSelector 
-
-	selector := aSelector! !
-
-!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
-initialize 
-
-	super initialize.
-	arguments := #()! !
-
-!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
-	receiver printOn: aStream indent: anInteger + 1.
-	aStream nextPutAll: '.'; cr.
-	arguments
-		do: [:statement | statement printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '. '; cr].
-	aStream nextPutAll: '}'! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
-isInlined 
-
-	^opcodes = #inlined! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
-isMessage 
-
-	^true! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
-isOptimized 
-
-	^opcodes notNil! !
-
-!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
-acceptVisitor: visitor 
-
-	^visitor visitMessage: self! !
-
-!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeMessage! !
-
-!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:50'!
-assign: anSIdentifier 
-
-	assignees add: anSIdentifier! !
-
-!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:58'!
-assignees 
-
-	^assignees! !
-
-!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:07'!
-expression 
-
-	^expression! !
-
-!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:15'!
-expression: anSExpression 
-
-	expression := anSExpression! !
-
-!SAssignment methodsFor: 'initialization' stamp: 'KenD 4/12/2021 13:20:35'!
-initialize 
-
-	assignees := OrderedCollection new! !
-
-!SAssignment methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:21:14'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPutAll: '{AssignmentId.'.
-	assignees
-		do: [:identifier | 
-			aStream cr.
-			identifier printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '.'].
-	aStream nextPutAll: '.'; cr.
-	expression printOn: aStream indent: anInteger + 1.
-	aStream nextPutAll: '}'! !
-
-!SAssignment methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:20:51'!
-isAssignment 
-
-	^true! !
-
-!SAssignment methodsFor: 'visiting' stamp: 'KenD 4/12/2021 13:19:22'!
-acceptVisitor: visitor 
-
-	^visitor visitAssignment: self! !
-
-!SAssignment class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:19:02'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeAssignment! !
-
-!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:28'!
-messages 
-	
-	^messages! !
-
-!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:39'!
-messages: aCollection 
-
-	messages := aCollection! !
-
-!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:48'!
-receiver 
-
-	^receiver! !
-
-!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:58'!
-receiver: anSExpression 
-
-	receiver := anSExpression! !
-
-!SCascade methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:55:07'!
-isCascade 
-
-	^true! !
-
-!SCascade methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:54:55'!
-acceptVisitor: visitor 
-
-	^visitor visitCascade: self! !
-
-!SCascade class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:54:27'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeCascade! !
-
-!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:45'!
-arguments 
-
-	^arguments! !
-
-!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:54'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:22'!
-selector 
-
-	^selector! !
-
-!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:31'!
-selector: aSymbol 
-
-	selector := aSymbol! !
-
-!SCascadeMessage methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:14:13'!
-isCascadeMessage 
-
-	^true! !
-
-!SCascadeMessage methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:13:25'!
-acceptVisitor: visitor 
-
-	^ visitor visitCascadeMessage: self! !
-
-!SCascadeMessage class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:12:58'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeCascadeMessage! !
-
-!SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:13'!
-binding: aBinding 
-
-	binding := aBinding! !
-
-!SIdentifier methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:10:38'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{IdentifierId. ';
-		print: binding;
-		nextPutAll: '}'! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:31'!
-isArgument 
-
-	^binding isArgument! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:40'!
-isAssociation 
-
-	^binding isAssociation! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:48'!
-isIdentifier 
-
-	^true! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:58'!
-isInstVar 
-
-	^binding isInstVar! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:27'!
-isLiteral 
-
-	^binding isLiteral! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:37'!
-isSelf 
-
-	^binding isSelf! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:49'!
-isSelfOrSuper 
-
-	^binding isSelf or: [binding isSuper]! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:58'!
-isSuper 
-
-	^binding isSuper! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:10:07'!
-isTemporary 
-
-	^binding isTemporary! !
-
-!SIdentifier methodsFor: 'visiting' stamp: 'KenD 4/13/2021 08:58:51'!
-acceptVisitor: visitor 
-
-	^visitor visitIdentifier: self! !
-
-!SIdentifier class methodsFor: 'instance creation' stamp: 'KenD 4/13/2021 08:58:07'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeIdentifier! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
-argumentCount 
-
-	^compiledCode argumentCount! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:56'!
-compiledCode 
-
-	^compiledCode! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:05'!
-compiledCode: anObject 
-
-	compiledCode := anObject! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:45'!
-statements 
-
-	^statements! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:54'!
-statements: aCollection 
-
-	statements := aCollection! !
-
-!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:33:09'!
-tempCount 
-
-	^compiledCode tempCount! !
-
-!SScript methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:32:22'!
-initialize 
-
-	statements := #()! !
-
-!SScript methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:32:34'!
-printOn: aStream indent: anInteger 
-
-	statements
-		do: [:statement | statement printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '.'; cr]! !
-
-!SBlock methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:34:39'!
-acceptVisitor: visitor 
-
-	^visitor visitBlock: self! !
-
-!SBlock class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:34:18'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeBlock! !
 
 !BinaryMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:33:37'!
 inlineBitAnd 
@@ -23479,3613 +24627,2874 @@ selector: aSymbol
 
 	selector := aSymbol! !
 
-!Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
+printOn: aStream indent: anInteger 
+
+	self subclassResponsibility! !
+
+!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:15'!
+contents 
+
+	^contents! !
+
+!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:43:25'!
+keyFor: aString 
+
+	^self subclassResponsibility! !
+
+!IdentifierBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:42:51'!
+new 
+	^super new initialize! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:50:58'!
+at: aString 
+
+	^contents at: aString ifAbsent: nil! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:12'!
+at: aString ifAbsentPut: aBlock 
+
+	^contents at: aString ifAbsentPut: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:23'!
+at: aString put: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:36'!
+define: aString as: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:09'!
+select: aBlock 
+
+	^contents select: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:17'!
+values 
+
+	^contents values! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:52:21'!
+do: aBlock 
+
+	contents do: aBlock! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:53:31'!
+withIndexDo: aBlock 
+
+	contents withIndexDo: aBlock! !
+
+!StaticBinder methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:52:38'!
 initialize 
 
-	cache := IdentityDictionary new.
-	objects := Dictionary new! !
-
-!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:03:48'!
-globalNamed: aSymbol 
-
-	^objects at: aSymbol ifAbsentPut: [self findGlobalNamed: aSymbol]! !
-
-!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:02'!
-globalNamed: aSymbol ifAbsent: aBlock 
-
-	^objects at: aSymbol ifAbsent: aBlock! !
-
-!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:46'!
-mirrorOn: address 
-
-	^(runtime handleOn: address) mirror! !
-
-!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:04:59'!
-name: object as: name 
-
-	^objects at: name put: object! !
-
-!Bridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:05:12'!
-runtime: aRuntime 
-
-	runtime := aRuntime! !
-
-!Bridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:03:11'!
-new 
-
-	^self basicNew initialize! !
-
-!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:36'!
-setFalseObj: aFalse
-
-	falseObj := aFalse! !
-
-!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:15:47'!
-setNilObj: aNil
-
-	nilObj := aNil! !
-
-!SmalltalkBridge methodsFor: 'private' stamp: 'KenD 2/28/2021 13:16:14'!
-setTrueObj: aTrue
-
-	trueObj := aTrue! !
-
-!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:33'!
-false 
-
-	^falseObj! !
-
-!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:28'!
-findRootObjects 
-
-	self subclassResponsibility
-! !
-
-!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:44'!
-nil 
-
-	^nilObj! !
-
-!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:07:56'!
-smalltalk 
-
-	^self
-		globalNamed: #Smalltalk
-		ifAbsent: [self update; globalNamed: #Smalltalk]! !
-
-!SmalltalkBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:08:09'!
-true 
-
-	^trueObj! !
-
-!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:08:51'!
-update 
-
-	self findRootObjects! !
-
-!SmalltalkBridge class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:06:56'!
-new 
-
-	^self basicNew initialize! !
-
-!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:20:12'!
-findRootObjects 
-
-	super setNilObj: (ObjectHandle 
-						on: bootstrapper nilObject 
-						within: runtime).
-	super setTrueObj: (ObjectHandle 
-						on: bootstrapper trueObject 
-						within: runtime).
-	super setFalseObj: (ObjectHandle 
-						on: bootstrapper falseObject 
-						within: runtime)! !
-
-!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:09:50'!
-bootstrapper: aSmalltalkBootstrapper 
-
-	bootstrapper := aSmalltalkBootstrapper! !
-
-!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:10:07'!
-findNilObject 
-
-	^ nilObj := ObjectHandle
-		on: runtime storage nilObject
-		within: runtime! !
-
-!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:21:20'!
-updateGlobals 
-
-	bootstrapper globals 
-		keysAndValuesDo: [:name :obj | objects at: name put: obj ]! !
-
-!CuisBridge methodsFor: 'initialization' stamp: 'KenD 3/21/2021 13:27:20'!
-findRootObjects 
-
-	nilObj     := LocalHandle on: nil     within: runtime.
-	trueObj  := LocalHandle on: true  within: runtime.
-	falseObj := LocalHandle on: false within: runtime
-! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:40:38'!
-findFalseObject 
-	| s handle |
-	s := runtime storage.
-	handle := s class = VirtualSmalltalkImage
-		ifTrue: [ s false ]
-		ifFalse: [ self assert: false ].
-	^ falseObj := ObjectHandle on: handle within: runtime! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:40:52'!
-findGlobalNamed: name 
-	| globals array |
-	globals := self smalltalk slotOf: #SmalltalkSystem named: #globals.
-	array := globals slotOf: #Dictionary named: 'table'.
-	array do: [:slot | | assoc |
-		assoc :=  slot asAssociationMirror.
-		assoc reflectsNil
-			ifFalse: [assoc key asLocalString = name ifTrue: [^assoc value]]].
-	self error: 'global not found'! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:04'!
-findNilObject 
-
-	^ nilObj := ObjectHandle
-		on: ImageSegmentWriter nilOffset
-		within: runtime! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:14'!
-findRootClasses 
-	| object subclasses |
-	object := self globalNamed: 'Object'.
-	subclasses := object asSpeciesMirror subclasses.
-	1 to: subclasses size do: [:i | | subclass name |
-		subclass := (subclasses slotAt: i) asSpeciesMirror.
-		name := subclass name asLocalString.
-		self name: subclass as: name]! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:30'!
-findRootObjects 
-	| class |
-	nilObj := self findNilObject.
-	class := nilObj mirror reflectedClass.
-	[ class reflectsNil ]
-		whileFalse: [ | name |
-			name := class name asLocalString.
-			self name: class as: name.
-			class := class superclass ].
-	self findRootClasses
-	"; findSmalltalk"! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:41:59'!
-findSmalltalk 
-	| smalltalk |
-	smalltalk := self halt.
-	self name: smalltalk as: #Smalltalk.
-	^smalltalk! !
-
-!CuisStBridge methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:42:13'!
-findTrueObject 
-
-	self assert: false.
-	^ trueObj := ObjectHandle on: 0 within: runtime! !
-
-!Gate methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:51:59'!
-isLocal 
-
-	^handle isLocal! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:33'!
-asLocalCollection 
-
-	^handle asLocalCollection! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:45'!
-asLocalString 
-
-	^handle asLocalString! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:50:56'!
-dispatch: aMessage 
-
-	^self dispatch: aMessage from: nil! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:19'!
-handle 
-
-	^handle! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:27'!
-handle: anObjectHandle 
-
-	handle := anObjectHandle! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:51:40'!
-handleOn: objectHandle 
-
-	^handle handleOn: objectHandle! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:18'!
-maneuvererOn: objectHandle 
-
-	^DirectGate subjectOn: objectHandle! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:33'!
-mirageOn: objectHandle 
-
-	^MirageGate subjectOn: objectHandle! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:45'!
-mirror 
-
-	^handle mirror! !
-
-!Gate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:52:55'!
-subject 
-
-	^Subject new _gate: self! !
-
-!Gate class methodsFor: 'instance creation' stamp: 'KenD 3/2/2021 12:49:58'!
-on: handle 
-
-	^self new handle: handle! !
-
-!Gate class methodsFor: 'instance creation' stamp: 'KenD 3/2/2021 12:50:08'!
-subjectOn: handle 
-
-	^(self on: handle) subject! !
-
-!DirectGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:54:54'!
-dispatch: aMessage from: parentInterpreter 
-	| receiver method interpreter |
-	receiver := aMessage receiver.
-	method := handle runtime lookup: aMessage selector on: receiver.
-	method ifNil: [ self assert: false ].
-	interpreter := SmalltalkInterpreter
-		on: receiver
-		with: aMessage arguments
-		for: method.
-	^ interpreter
-		parent: parentInterpreter;
-		evaluate: method! !
-
-!DirectGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:55:24'!
-dispatchSuper: aMessage from: parentInterpreter 
-	| receiver method interpreter |
-	receiver := aMessage receiver.
-	method := handle runtime
-		lookupSuper: aMessage selector
-		on: receiver
-		from: parentInterpreter method classBinding superclass name.
-	method ifNil: [ self assert: false ].
-	interpreter := SmalltalkInterpreter
-		on: receiver
-		with: aMessage arguments
-		for: method.
-	^ interpreter
-		parent: parentInterpreter;
-		evaluate: method! !
-
-!DirectGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:55:42'!
-getInstVarNamed: name 
-	| index |
-	index := handle mirror reflectedClass indexOfSlot: name.
-	index = 0 ifTrue: [self error: 'instance variable not found'].
-	^self slotAt: index! !
-
-!DirectGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:55:55'!
-slotAt: index 
-	| slot |
-	slot := handle slotAt: index.
-	^self maneuvererOn: slot! !
-
-!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:58:46'!
-classBinding 
-
-	^class! !
-
-!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:30'!
-getInstVarNamed: name 
-	| index |
-	index := class indexOfSlot: name.
-	index = 0 ifTrue: [self error: 'instance variable not found'].
-	^self slotAt: index! !
-
-!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:42'!
-handle: anObjectHandle 
-
-	super handle: anObjectHandle.
-	class := handle isLocal
-		ifTrue: [ handle oid class ]
-		ifFalse: [ handle mirror reflectedClass localEquivalent ]! !
-
-!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:00:57'!
-lookup: selector 
-
-	^class methodNamed: selector! !
-
-!MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:01:24'!
-slotAt: index 
-	| slot |
-	slot := handle slotAt: index.
-	^self mirageOn: slot! !
-
-!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:58:59'!
-dispatch: aMessage 
-
-	^self dispatch: aMessage from: nil
-! !
-
-!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:59:11'!
-dispatch: aMessage from: parentInterpreter 
-	| receiver |
-	receiver := aMessage receiver.
-	^receiver _gate isLocal
-		ifTrue: [ self dispatchLocal: aMessage from: parentInterpreter ]
-		ifFalse: [ self dispatchRemote: aMessage from: parentInterpreter ]! !
-
-!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 12:59:29'!
-dispatchLocal: aMessage from: parentInterpreter 
-	| args receiver result hresult |
-	"args := aMessage arguments
-		collect: [ :arg | 
-			arg class == Subject
-				ifTrue: [ arg _gate handle oid ]
-				ifFalse: [ arg ] ]."
-	args := aMessage arguments.
-	receiver := aMessage receiver _gate handle.
-	result := receiver oid perform: aMessage selector withArguments: args.
-	result class == Subject
-		ifTrue: [ ^ result ].
-	hresult := LocalHandle on: result within: receiver runtime.
-	^ hresult mirage! !
-
-!MirageGate methodsFor: 'dispatch' stamp: 'KenD 3/2/2021 13:00:14'!
-dispatchRemote: aMessage from: parentInterpreter 
-	| method interpreter |
-	method := self lookup: aMessage selector.
-	method ifNil: [ self error: 'cannot interpet ' , aMessage selector ].
-	interpreter := SmalltalkInterpreter
-		on: aMessage receiver
-		with: aMessage arguments
-		for: method.
-	^ interpreter
-		parent: parentInterpreter;
-		evaluate: method! !
-
-!Handle methodsFor: 'testing' stamp: 'KenD 3/3/2021 13:12:02'!
-isLocal 
-
-	^runtime isLocal! !
-
-!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:38'!
-runtime 
-
-	^runtime! !
-
-!Handle methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:12:51'!
-runtime: aRuntime 
-	
-	runtime := aRuntime! !
-
-!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:11:38'!
-handleOn: objectId 
-
-	^self class on: objectId within: runtime! !
-
-!Handle methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 13:12:18'!
-objectHandleOn: objectId 
-
-	^ ObjectHandle on: objectId within: runtime! !
-
-!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
-currentIp 
-
-	^frame currentIp! !
-
-!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:27:59'!
-frame: aFrame 
-
-	frame := aFrame! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:28:35'!
-objectAtSlot: index 
-	| slot |
-	slot := frame slotAt: index.
-	^self objectHandleOn: slot! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:29:57'!
-slotAt: index 
-
-	^self objectAtSlot: index! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:30:10'!
-slotAtTop 
-
-	^frame slotAtTop! !
-
-!PstFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 3/27/2021 08:27:27'!
-on: frame within: runtime 
-
-	^self new frame: frame; runtime: runtime! !
-
-!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:23'!
-currentIp 
-
-	^frame currentIp! !
-
-!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:31'!
-frame: aFrame 
-
-	frame := aFrame! !
-
-!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:47'!
-objectAtSlot: index 
-	| slot |
-	slot := frame slotAt: index.
-	^self objectHandleOn: slot! !
-
-!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:45:33'!
-slotAt: index 
-
-	^self objectAtSlot: index! !
-
-!CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:45:42'!
-slotAtTop 
-
-	^frame slotAtTop! !
-
-!CuisStFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 10:44:01'!
-on: frame within: runtime 
-
-	^self new frame: frame; runtime: runtime! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:05'!
-handleOn: anObject 
-
-	^self class on: anObject within: runtime! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:17'!
-hash 
-
-	^oid hash! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:30'!
-indexOf: varname for: aMirror 
+	super initialize.
+	contents := OrderedDictionary new! !
+
+!StaticBinder methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:52:56'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPut: $<.
+	contents keys
+		do: [:name | name printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $>! !
+
+!StaticBinder methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:51:57'!
+defines: identifier 
+
+	^contents includesKey: identifier! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:41'!
+at: aString 
+	| key assoc |
+	key := self keyFor: aString.
+	key ifNil: [ ^nil ].
+	assoc := contents associationAt: key ifAbsent: [^nil].
+	^(type on: assoc) name: key! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:59'!
+at: aString ifPresent: aBlock 
+	| binding |
+	binding := self at: aString.
+	^binding notNil ifTrue: [aBlock value: binding]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:11'!
+at: aString put: anObject 
+	| key |
+	key := self keyFor: aString.
+	self assert: contents !!== Smalltalk.
+	contents at: key put: anObject! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:25'!
+contents: aDictionary 
+
+	contents := aDictionary! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:46:37'!
+keyFor: aString 
+
+	^type usesSymbols ifTrue: [aString existingSymbol] ifFalse: [aString]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:47:34'!
+poolNamed: aSymbol ifPresent: aBlock 
+	| pool |
+	pool := contents at: aSymbol ifAbsent: nil.
+	^pool notNil ifTrue: [aBlock evaluateWith: pool]! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:02:55'!
+type: aClass 
+
+	type := aClass! !
+
+!DynamicBinder methodsFor: 'initialization' stamp: 'KenD 3/3/2021 10:46:50'!
+on: aDictionary type: aClass 
+
+	contents := aDictionary.
+	type := aClass! !
+
+!DynamicBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:02:14'!
+printOn: aStream indent: anInteger 
+	aStream
+		tab: anInteger;
+		nextPutAll: 'binder for ';
+		nextPutAll: type name;
+		nextPutAll: ': '.
+	type == GlobalBinding
+		ifTrue: [aStream nextPut: $G] "??? … ???"
+		ifFalse: [contents keys asArray printOn: aStream]! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:44:52'!
+of: type 
+
+	^self new type: type! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:05'!
+on: aPoolDictionary 
 	| type |
-	type := self structureOf: aMirror structureType.
-	^type indexOf: varname! !
+	type := aPoolDictionary isConstant
+		ifTrue: [ConstantPoolBinding]
+		ifFalse: [PoolVarBinding].
+	^self new on: aPoolDictionary type: type! !
 
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:38:40'!
-indexOf: varname inStructureOf: type 
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 10:45:21'!
+on: aDictionary of: type 
 
-	^runtime indexOf: varname inStructureOf: type! !
+	^self new on: aDictionary type: type! !
 
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:12'!
-maneuverer 
+!LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:58:34'!
+isInlinedArgument 
 
-	^ DirectGate subjectOn: self! !
+	^false! !
 
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:23'!
-mirage 
-
-	^MirageGate subjectOn: self! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:34'!
-mirror 
-
-	^ObjectMirror on: self! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:45'!
-nilObject 
-
-	^runtime nil! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:40:57'!
-oid
-
-	^oid! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:07'!
-oid: objectId 
-
-	self assert: objectId !!== nil.
-	oid := objectId! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:41:58'!
-runtime 
-
-	^runtime! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:10'!
-runtime: aRuntime 
-
-	runtime := aRuntime! !
-
-!ObjectHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 11:42:22'!
-size 
-
-	^runtime objectFormat sizeOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:33:58'!
-arrayedSize 
-
-	^ runtime objectFormat arrayedSizeOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:35'!
-asLocalBoolean 
-
-	runtime false oid = oid ifTrue: [ ^false ].
-	runtime true oid = oid ifTrue: [ ^true ].
-	self assert: false.! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:34:51'!
-asLocalBytes 
-
-	^runtime objectFormat bytesOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:02'!
-asLocalCollection 
-
-	^self isBytes ifTrue: [runtime bytesOf: oid] ifFalse: [self assert: false]! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:16'!
-asLocalInteger 
-
-	^runtime integerOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:25'!
-asLocalString 
-
-	^runtime stringOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:35:35'!
-asLocalSymbol 
-
-	^runtime symbolOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:22'!
-basicFlags 
-
-	^runtime objectFormat flagsOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:34'!
-getBehavior 
-	| behavior |
-	behavior := runtime objectFormat behaviorOf: oid.
-	^self handleOn: behavior! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:37:47'!
-getClass 
-
-	^runtime objectFormat classOf: self.! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:39:57'!
-largeSize 
-
-	^runtime objectFormat largeSizeOf: oid! !
-
-!ObjectHandle methodsFor: 'meta accessing' stamp: 'KenD 3/11/2021 11:43:10'!
-structureOf: type 
-
-	^runtime structureOf: type! !
-
-!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:35:54'!
-at: index 
-	| slot |
-	slot := runtime arrayedSlotOf: oid at: index.
-	^ self handleOn: slot! !
-
-!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:36:42'!
-at: index put: anOid 
-
-	^ runtime arrayedSlotOf: oid at: index put: anOid! !
-
-!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:44'!
-slotAt: index 
-	| slot |
-	slot := runtime slotOf: oid at: index.
-	^self handleOn: slot! !
-
-!ObjectHandle methodsFor: 'services' stamp: 'KenD 3/11/2021 11:42:54'!
-slotAt: index put: anOid 
-
-	^runtime slotOf: oid at: index put: anOid! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 08:55:45'!
-= anObject 
-
-	^ anObject class = self class and: [ oid = anObject oid ]! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:38:55'!
-isArrayed 
-
-	^runtime objectFormat isArrayed: oid! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:24'!
-isInteger 
-
-	^runtime objectFormat isInteger: oid! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:33'!
-isLarge 
-
-	^self isSmall not! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:42'!
-isSmall 
-
-	^runtime objectFormat isSmall: oid! !
-
-!ObjectHandle class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 08:54:22'!
-on: anObject within: aRuntime 
-
-	^self new oid: anObject; runtime: aRuntime! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:27'!
-asLocalCollection 
-
-	^ oid! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:07:51'!
-asLocalInteger 
-
-	^ oid! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:01'!
-asLocalString 
-
-	^ oid asString! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:13'!
-getClass 
-	| handle |
-	handle := runtime handleOn: oid class.
-	^ handle mirror asSpeciesMirror! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:24'!
-indexOf: varname for: aMirror 
-
-	^ oid class indexOfSlot: varname asString! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:08:55'!
-nilObject 
-
-	^self handleOn: nil! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:08'!
-oid: objectId 
-
-	oid !!= nil ifTrue: [ self halt ].
-	objectId class = ByteString
-		ifTrue: [ self halt ].
-	oid := objectId! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:21'!
-size 
-
-	^ oid basicSize + oid class instSize! !
-
-!LocalHandle methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:09:33'!
-slotAt: index 
-	| slot |
-	slot := oid instVarAt: index.
-	^ self handleOn: slot! !
-
-!LocalHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:08:43'!
-isLocal 
+!StackEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:06:37'!
+isStack 
 
 	^true! !
 
-!MethodLookup methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 11:04:34'!
-lookup: aSymbol on: aSubject 
-
-	^self subclassResponsibility! !
-
-!CuisLookup methodsFor: 'meta accessing' stamp: 'KenD 3/21/2021 13:28:29'!
-lookup: aSymbol on: aSubject 
-
-	^ aSubject _gate handle oid class lookupSelector: aSymbol! !
-
-!EmulationLookup methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:34:32'!
-initialize 
-
-	cache := Dictionary new! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:06'!
-compiledMethodFor: anRGMethod 
-	| method |
-	cache at: anRGMethod ifPresent: [ :cm | ^ cm ].
-	method := self compile: anRGMethod.
-	^ cache at: anRGMethod put: method! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:19'!
-globals: aPoolDictionary 
-
-	globals := aPoolDictionary! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:45'!
-lookup: aSymbol on: aSubject 
-	| behavior classname |
-	classname := aSubject _gate handle oid classname.
-	behavior := spec at: classname.
-	^ self lookup: aSymbol startingAt: behavior! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:58'!
-lookup: aSymbol startingAt: aBehavior 
-	| next m c |
-	next := aBehavior.
-	[ m := next methodNamed: aSymbol.
-	m ifNotNil: [ ^ self compiledMethodFor: m ].
-	next := next superclass.
-	next notNil ] whileTrue.
-	^ aBehavior isMeta
-		ifTrue: [ c := aBehavior environment at: #Class.
-			self lookup: aSymbol startingAt: c ]! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:14'!
-lookupSuper: aSymbol on: aSubject from: classname 
-	| behavior |
-	cache at: classname -> aSymbol ifPresent: [ :cached | ^ cached ].
-	behavior := spec at: classname.
-	^ self lookup: aSymbol startingAt: behavior! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:25'!
-spec 
-
-	^spec! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:35:34'!
-spec: anRGEnvironment 
-
-	spec := anRGEnvironment! !
-
-!MirrorLookup methodsFor: 'meta accessing' stamp: 'KenD 3/20/2021 14:52:06'!
-lookup: aSymbol on: aSubject 
-
-	^aSubject _gate mirror lookup: aSymbol! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:13'!
-bytesOf: oid 
-	| size |
-	size := self sizeOf: oid.
-	^self bytesOf: oid count: size! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:30'!
-bytesOf: oid count: size 
-
-	^self subclassResponsibility! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:42'!
-runtime 
-
-	^ runtime! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:50'!
-runtime: aRuntime 
-
-	runtime := aRuntime! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:24:59'!
-sizeOf: oid 
-
-	^self subclassResponsibility! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:08'!
-storage 
-
-	^ storage! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:17'!
-storage: anObject 
-
-	storage := anObject! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:31'!
-stringOf: oid 
-	| size |
-	size := self sizeOf: oid.
-	^self stringOf: oid count: size - 1! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:42'!
-stringOf: oid count: size 
-
-	^self subclassResponsibility! !
-
-!ObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:25:55'!
-symbolOf: oid 
-	| size |
-	size := self sizeOf: oid.
-	^self stringOf: oid count: size! !
-
-!ObjectFormat class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 09:23:44'!
-on: storage 
-
-	^self new storage: storage! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:09'!
-arrayedSizeOf: oid 
-
-	^ oid arrayedSize! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:17'!
-arrayedSlotOf: oid at: index 
-
-	^ oid at: index! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:30'!
-arrayedSlotOf: oid at: index put: anotherOid 
-
-	^ oid at: index put: anotherOid! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:39'!
-behaviorOf: oid 
-
-	^oid behavior! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:56:50'!
-bytesOf: oid count: size 
-
-	^oid bytes copyFrom: 1 to: size! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:04'!
-classOf: anObjectHandle 
-	| oid behavior handle class |
-	oid := anObjectHandle oid.
-	(self isInteger: oid) ifTrue: [ 
-		class := storage classNamed: 'SmallInteger'.
-		^(anObjectHandle runtime handleOn: class) mirror asClassMirror].
-	behavior := self behaviorOf: oid.
-	handle := anObjectHandle runtime handleOn: behavior.
-	^handle mirror asBehaviorMirror instanceClass! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:57:55'!
-integerOf: oid 
-
-	self assert: oid isImmediate.
-	^ oid value! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:58:56'!
-labelFor: oid 
-	| c |
-	(self isInteger: oid) 
-		ifTrue: [ ^'SMI 0x', (self integerOf: oid) printString ].
-	(storage nameOf: oid) ifNotNil: [:name | ^name].
-	c := self classOf: (runtime handleOn: oid).
-	^c localName! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:59:22'!
-newInteger: anInteger 
-
-	^storage newSmallInteger: anInteger! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:13'!
-sizeOf: oid 
-
-	^oid size! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:31'!
-slotOf: oid at: index 
-
-	^ oid slotAt: index! !
-
-!BootstrapObjectFormat methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:00:42'!
-stringOf: oid count: size 
-
-	^(oid bytes copyFrom: 1 to: size) asString! !
-
-!BootstrapObjectFormat methodsFor: 'printing' stamp: 'KenD 2/28/2021 12:59:55'!
-print: oid on: aStream 
-	| label |
-	label := self labelFor: oid.
-	aStream
-		nextPut: $@;
-		nextPutAll: label;
-		nextPutAll: ' [size: 0x';
-		nextPutAll: (self sizeOf: oid) printStringHex;
-		nextPut: $]! !
-
-!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:07'!
-isBytes: oid 
-
-	^oid isBytes! !
-
-!BootstrapObjectFormat methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:58:40'!
-isInteger: oid 
-
-	^oid isImmediate! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:08'!
-behaviorOf: oid 
-
-	^self assert: false! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:21'!
-bytesOf: oid count: size 
-
-	^oid copyFrom: 1 to: size! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:31'!
-classOf: anObjectHandle 
-
-	^anObjectHandle oid class! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:30:42'!
-integerOf: oid 
-
-	self assert: oid isInteger.
-	^ oid! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:31:32'!
-labelFor: oid 
-	| label |
-	label := storage ifNotNil: [storage nameOf: oid].
-	^label ifNil: [ 'unknown' ]! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:17'!
-sizeOf: oid 
-
-	^oid basicSize + oid class instSize! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:33'!
-slotOf: oid at: index 
-
-	^ oid instVarAt: index! !
-
-!CuisObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/21/2021 13:32:43'!
-stringOf: oid count: size 
-
-	^(oid copyFrom: 1 to: size) asString! !
-
-!CuisObjectFormat methodsFor: 'printing' stamp: 'KenD 3/21/2021 13:32:04'!
-print: oid on: aStream 
-
-	aStream
-		nextPutAll: '@local {';
-		print: oid;
-		nextPut: $}! !
-
-!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:08'!
-isBytes: anObject 
-
-	^anObject class isBytes! !
-
-!CuisObjectFormat methodsFor: 'testing' stamp: 'KenD 3/21/2021 13:31:18'!
-isInteger: oid 
-
-	^oid isInteger! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:33:26'!
-behaviorOf: oid 
-
-	^ storage uint32of: oid atOffset: BehaviorOffset! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:33:48'!
-bytesOf: oid count: size 
-	
-	^ storage bytesAt: oid sized: size! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:01'!
-classOf: anObjectHandle 
-	| oid class behavior handle |
-	oid := anObjectHandle oid.
-	oid odd ifTrue: [ class := storage classNamed: 'SmallInteger'.
-			^ (anObjectHandle runtime handleOn: class) mirror asClassMirror ].
-	behavior := self behaviorOf: oid.
-	handle := anObjectHandle runtime handleOn: behavior.
-	^ handle mirror asBehaviorMirror instanceClass! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:16'!
-flagsOf: anObject 
-	^ storage uint8of: anObject atOffset: FlagsOffset! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:34:27'!
-integerOf: oid 
-	| shifted complement |
-	self assert: oid odd.
-	shifted := oid bitShift: -1. 
-	complement := 1 bitShift: storage wordSize * 8 - 1.
-	^ oid >= complement
-		ifTrue: [ shifted - complement ]
-		ifFalse: [ shifted ]! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:11'!
-sizeOf: oid 
-
-	^ (self isSmall: oid)
-		ifTrue: [ self smallSizeOf: oid ]
-		ifFalse: [ self largeSizeOf: oid ]! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:26'!
-slotOf: base at: index 
-
-	^ storage uint64atOffset: base + (8 * (index - 1))! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:42'!
-smallSizeOf: oid 
-
-	^ storage uint8of: oid atOffset: SizeOffset! !
-
-!DmrObjectFormat methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:38:54'!
-stringOf: oid count: anInteger 
-
-	^storage stringAt: oid sized: anInteger! !
-
-!DmrObjectFormat methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:37:05'!
-print: oid on: aStream 
-	| size |
-	aStream
-		nextPut: $@;
-		nextPutAll: oid hex;
-		nextPutAll: '[flags: 0x';
-		nextPutAll: (self flagsOf: oid) printStringHex.
-	self printFlagsOf: oid on: aStream.
-	size := self sizeOf: oid.
-	aStream
-		nextPutAll: ', size: 0x';
-		nextPutAll: size printStringHex;
-		nextPut: $]
-! !
-
-!DmrObjectFormat methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:37:40'!
-printFlagsOf: oid on: aStream 
-	| char |
-	aStream nextPut: $(.
-	char := (self isSmall: oid)
-		ifTrue: [ $S ]
-		ifFalse: [ $L ].
-	aStream
-		nextPut: char;
-		space.
-	char := (self isBytes: oid)
-		ifTrue: [ $B ]
-		ifFalse: [ $P ].
-	aStream
-		nextPut: char;
-		space.
-	char := (self isArrayed: oid)
-		ifTrue: [ $A ]
-		ifFalse: [ $F ].
-	aStream
-		nextPut: char;
-		nextPut: $)! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:01'!
-isArrayed: anObject 
-
-	^ (self flagsOf: anObject) anyMask: IsArrayed! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:16'!
-isBytes: anObject 
-
-	^ ((self flagsOf: anObject) anyMask: IsBytes)! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:25'!
-isInteger: oid 
-
-	^oid odd! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:34'!
-isLarge: anObject 
-
-	^(self isSmall: anObject) not! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:46'!
-isNamed: anObject 
-
-	^ (self flagsOf: anObject) anyMask: IsNamed! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:35:59'!
-isSmall: oid 
-
-	^ (self flagsOf: oid) anyMask: IsSmall! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:36:09'!
-labelFor: oid 
-
-	^oid hex! !
-
-!DmrObjectFormat methodsFor: 'testing' stamp: 'KenD 3/2/2021 13:36:19'!
-largeSizeOf: oid 
-
-	^ storage uint32of: oid atOffset: LargeSizeOffset! !
-
-!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:18'!
-initialize 
-
-	fields := Dictionary new! !
-
-!ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:52'!
-loadFrom: aClassDefinition 
-
-	name := aClassDefinition name asSymbol.
-	aClassDefinition allInstVarNames
-		withIndexDo: [:ivarName :i | self indexOf: ivarName be: i]! !
-
-!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:45'!
-indexOf: ivarName 
-	
-	^fields at: ivarName asString! !
-
-!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:57'!
-indexOf: ivarName be: i 
-
-	fields at: ivarName put: i! !
-
-!ObjectShape class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:21:32'!
-new 
-
-	^self basicNew initialize! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:47'!
-bridge 
-
-	^bridge! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:31:57'!
-bridge: aBridge 
-
-	bridge := aBridge.
-	bridge runtime: self! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:17'!
-false 
-
-	^ bridge false! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:32:27'!
-globalNamed: name 
-
-	^bridge globalNamed: name! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:35:06'!
-loadBridge 
-
-	bridge findRootObjects! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:01'!
-nil 
-
-	^bridge nil! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:09'!
-objectFormat 
-
-	^objectFormat! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:17'!
-objectFormat: anObjectFormat 
-
-	objectFormat := anObjectFormat.
-	anObjectFormat runtime: self! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:25'!
-objectModel 
-
-	^objectModel! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:38:43'!
-objectModel: aModuleSpec 
-
-	^objectModel := aModuleSpec! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:15'!
-storage 
-
-	^storage! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:23'!
-storage: anObject 
-
-	storage := anObject! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:39:33'!
-stringOf: oid 
-
-	^objectFormat stringOf: oid! !
-
-!Runtime methodsFor: 'accessing' stamp: 'KenD 4/12/2021 12:40:05'!
-true 
-
-	^ bridge true! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:33:46'!
-initialize 
-
-	shapeMap := ShapeMap new.
-	self useMirrorLookup! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:21'!
-loadShapesFrom: anRGEnvironment 
-
-	objectModel := anRGEnvironment.
-	anRGEnvironment allClasses do: [ :class | shapeMap load: class ]! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:35:38'!
-loadShapesFromImage 
-	| classes |
-	objectModel := Smalltalk.
-	classes := #(ClassDescription Class Metaclass) 
-				collect: [ :name | Smalltalk at: name ].
-	classes do: [ :class | shapeMap load: class ]! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:58'!
-useCuisLookup 
-
-	lookup := CuisLookup new! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:22'!
-useEmulationLookup: anRGEnvironment 
-	
-	lookup := EmulationLookup new spec: anRGEnvironment! !
-
-!Runtime methodsFor: 'initialization' stamp: 'KenD 4/12/2021 12:40:32'!
-useMirrorLookup 
-
-	lookup := MirrorLookup new! !
-
-!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:32:53'!
-handleOn: oid 
-
-	^ ObjectHandle on: oid within: self! !
-
-!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:33:01'!
-handleOnGlobal: aString 
-	| oid |
-	oid := self globalNamed: aString.
-	^self handleOn: oid! !
-
-!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:35:54'!
-lookup 
-
-	^ lookup! !
-
-!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:03'!
-lookup: aSymbol on: aSubject 
-
-	^lookup lookup: aSymbol on: aSubject! !
-
-!Runtime methodsFor: 'meta accessing' stamp: 'KenD 4/12/2021 12:36:13'!
-lookupSuper: aSymbol on: aSubject from: classname 
-
-	^ lookup lookupSuper: aSymbol on: aSubject from: classname! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:20'!
-integerHandle: anInteger 
-	| oid |
-	oid := objectFormat newInteger: anInteger.
-	^ self handleOn: oid! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:34:30'!
-integerOf: oid 
-
-	^objectFormat integerOf: oid! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:36:28'!
-new: oid 
-	| instance |
-	instance := storage new: oid.
-	^ self handleOn: instance! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:12'!
-new: oid sized: anInteger 
-	| instance |
-	instance := storage new: oid sized: anInteger.
-	^ self handleOn: instance! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:28'!
-newClosure: anObjectHandle 
-	| oid |
-	oid := storage newClosure: anObjectHandle.
-	"should put a thing that lives in remote runtime, not a PCompiledBlock"
-	oid block: anObjectHandle.
-	^ self handleOn: oid! !
-
-!Runtime methodsFor: 'object format' stamp: 'KenD 4/12/2021 12:37:44'!
-newClosureHandle: aPCompiledBlock 
-	| oid |
-	oid := storage newClosure: aPCompiledBlock.
-	"should put a thing that lives in remote runtime, not a PCompiledBlock"
-	oid block: aPCompiledBlock.
-	^ self handleOn: oid! !
-
-!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:33:26'!
-indexOf: varname inStructureOf: type 
-
-	^shapeMap indexOf: varname at: type! !
-
-!Runtime methodsFor: 'shapes' stamp: 'KenD 4/12/2021 12:39:44'!
-structureOf: type 
-
-	^shapeMap at: type! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:13'!
-arrayedSlotOf: object at: index 
-
-	^ objectFormat arrayedSlotOf: object at: index! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:31:23'!
-arrayedSlotOf: object at: index put: value 
-
-	^ storage arrayedSlotOf: object at: index put: value! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:32:08'!
-bytesOf: oid 
-
-	^objectFormat bytesOf: oid! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:38:55'!
-slotOf: object at: index 
-
-	^objectFormat slotOf: object at: index! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:03'!
-slotOf: object at: index put: value 
-
-	^ storage slotOf: object at: index put: value! !
-
-!Runtime methodsFor: 'storage' stamp: 'KenD 4/12/2021 12:39:54'!
-symbolOf: oid 
-
-	^objectFormat symbolOf: oid! !
-
-!Runtime methodsFor: 'testing' stamp: 'KenD 4/12/2021 12:34:50'!
-isLocal 
-
-	^objectModel == Smalltalk.! !
-
-!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:26:17'!
-forBootstrappingCuisSt: aSmalltalkBootstrapper spec: anRGEnvironment 
-
-	^ self new
-		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
-		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
-		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
-		useEmulationLookup: anRGEnvironment! !
-
-!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:29:12'!
-forEmulatingCuisSt: aSmalltalkBootstrapper 
-
-	^ self new
-		bridge: (BootstrappedCuisStBridge new bootstrapper: aSmalltalkBootstrapper);
-		objectFormat: (BootstrapObjectFormat on: aSmalltalkBootstrapper);
-		storage: (BootstrapStorage on: aSmalltalkBootstrapper);
-		loadBridge! !
-
-!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:02'!
-forLocalCuis
-	^ self new
-		bridge: CuisBridge new;
-		objectFormat: CuisObjectFormat new;
-		useCuisLookup;
-		loadBridge;
-		loadShapesFromImage! !
-
-!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:32'!
-forSimulating: aModuleSpec memory: aByteArray 
-	| adapter |
-	adapter := ByteArrayAdapter on: aByteArray.
-	^ self new
-		bridge: CuisStBridge new;
-		objectFormat: (DmrObjectFormat on: adapter);
-		storage: adapter;
-		loadShapesFrom: aModuleSpec;
-		loadBridge! !
-
-!Runtime class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 12:30:46'!
-new 
-
-	^self basicNew initialize! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
-isitReturn: anSReturn 
-
-	returnValue := anSReturn expression acceptVisitor: self.
-	returned := true.
-	^returnValue! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:17'!
-visitArgument: anSIdentifier 
-
-	^arguments at: anSIdentifier binding index! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:32'!
-visitAssignment: anSAssignment 
-	| result |
-	result := anSAssignment expression acceptVisitor: self.
-	anSAssignment assignees
-		do: [ :identifier | identifier binding assign: result within: self ].
-	^result! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:48'!
-visitBlock: anSBlock 
-	| closure handle |
-	closure := anSBlock isInlined
-		           ifTrue: [ SCompiledBlock new newClosure home: self ]
-		           ifFalse: [ self captureClosure: anSBlock ].
-	blockAstcodes at: closure block put: anSBlock.
-	self halt.
-	"	handle := LocalHandle on: closure within: localRuntime."
-	^ handle mirage! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:24'!
-visitIdentifier: anSIdentifier 
-
-	^anSIdentifier binding valueWithin: self! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:37'!
-visitMessage: anSMessage 
-	| msgReceiver msgArguments selector message |
-	msgReceiver := anSMessage receiver acceptVisitor: self.
-	msgArguments := anSMessage arguments
-		collect: [ :code | code acceptVisitor: self ].
-	selector := anSMessage selector.
-	message := MessageSend
-		receiver: msgReceiver
-		selector: selector
-		arguments: msgArguments.
-	 (self isSpecial: selector)
-		ifTrue: [ ^self dispatchSpecial: message ].
-	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
-	^self dispatch: message to: msgReceiver! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:10'!
-visitMethod: anSMethod 
-	| primitive value |
-	primitive := anSMethod primitive.
-	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
-	environment := Array new: method environmentCount.
-	value := self visitScript: anSMethod.
-	^returned ifTrue: [ value ] ifFalse: [ receiver ]! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:57'!
-visitScript: anSScript 
-	| result |
-	anSScript statements do: [:node | 
-		result := node acceptVisitor: self.
-		returned ifTrue: [^returnValue]
-	].
-	^result! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:11:12'!
-visitTemporary: anSIdentifier 
-
-	^temporaries at: anSIdentifier binding index! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:00:53'!
-instVarAt: anInteger 
-
-	^receiver _gate slotAt: anInteger! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:18'!
-instVarAt: index put: aValue 
-
-	^ receiver _gate handle slotAt: index put: aValue _gate handle oid! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:43'!
+!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:06:18'!
+index 
+
+	^nil! !
+
+!ArgumentEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:07:51'!
+environmentType 
+
+	^LocalArgument! !
+
+!InlinedArgEnvironment methodsFor: 'testing' stamp: 'KenD 3/7/2021 08:17:09'!
+isInlinedArgument 
+
+	^true! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:43'!
+isCurrent 
+
+	^index isNil! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:52'!
+isIndirect 
+
+	^self isCurrent not! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:12:05'!
+isStack 
+
+	^false! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:07'!
+environmentType 
+
+	^EnvironmentValue! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:19'!
+index 
+
+	^index! !
+
+!ArrayEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:11:26'!
+index: anInteger 
+
+	index := anInteger! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:04'!
+inlineConditional 
+	| arguments |
+	arguments := message arguments.
+	arguments size >= 1 ifFalse: [^self].
+	arguments do: [:arg | arg isEvaluable ifFalse: [^self]].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:33'!
+inlineIfNilIfNotNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments first isEvaluable ifFalse: [^self].
+	arg := arguments second.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:52'!
+inlineIfNotNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 1 ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arg isBlockNode ifTrue: [arg beInlined]! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:07'!
+inlineIfNotNilIfNil 
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments second isEvaluable ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:16'!
+inlineRepeat 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments isEmpty
+		ifFalse: [ ^ self ].
+	receiver isBlockNode
+		ifFalse: [ ^ self ].
+	message beInlined.
+	receiver beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:35'!
+inlineToByDo 
+	| arguments arg step |
+	arguments := message arguments.
+	arguments size = 3 ifFalse: [^self].
+	arg := arguments at: 3.
+	arg isBlockNode ifFalse: [^self].
+	arg arguments size = 1 ifFalse: [^self].
+	step := arguments at: 2.
+	(step isNumberNode and: [step value isSmallInteger]) ifFalse: [^self].
+	message beInlined.
+	arg beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:48:46'!
+inlineToDo 
+	| arguments last |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	last := arguments at: 2.
+	last isBlockNode ifFalse: [^self].
+	last arguments size = 1 ifFalse: [^self].
+	message beInlined.
+	last beInlined! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:49:15'!
+inlineWhile 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments size = 1
+		ifFalse: [ ^ self ].
+	arguments last isNullary
+		ifFalse: [ ^ self ].
+	self inlineConditional.
+	receiver isBlockNode
+		ifTrue: [ receiver beInlined ]! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:46:20'!
+inline: aMessageNode 
+	| s keywords |
+	message := aMessageNode.
+	message receiver isSuper
+		ifTrue: [ ^ self ].
+	(message isCascadeMessage and: [ message receiver isBlockNode ])
+		ifTrue: [ ^ self ].
+	s := message selector value.
+	s == #ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #or:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #and:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #timesRepeat:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifTrue:ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #andNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #orNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNil:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNotNil:
+		ifTrue: [ ^ self inlineIfNotNil ].
+	s == #ifNil:ifNotNil:
+		ifTrue: [ ^ self inlineIfNilIfNotNil ].
+	s == #ifNotNil:ifNil:
+		ifTrue: [ ^ self inlineIfNotNilIfNil ].
+	s == #whileTrue:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileFalse:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileTrue
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #whileFalse
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #repeat
+		ifTrue: [ ^ self inlineRepeat ].
+	s == #to:do:
+		ifTrue: [ ^ self inlineToDo ].
+	s == #to:by:do:
+		ifTrue: [ ^ self inlineToByDo ].
+	keywords := $: split: s.
+	keywords last = '' ifTrue: [ keywords := keywords allButLast ].
+	(keywords conform: [ :k | k = 'and' ])
+		ifTrue: [ ^ self inlineConditional ].
+	(keywords conform: [ :k | k = 'or' ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'and' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'or' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ self inlineConditional ]! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/19/2021 16:49:02'!
+inlineUnitaryWhile 
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable ifFalse: [^self].
+	arguments := message arguments.
+	arguments size = 0 ifFalse: [^self].
+	self inlineConditional.
+	receiver isBlockNode ifTrue: [
+		message beInlined.
+		receiver beInlined]! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:43'!
+ast 
+
+	^ast! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:47:53'!
+ast: aParseNode 
+
+	ast := aParseNode! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:48:32'!
+compiler: aSmalltalkCompiler 
+
+	compiler := aSmalltalkCompiler! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:49:27'!
 method 
 
 	^method! !
 
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:03'!
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:49:38'!
 method: aCompiledMethod 
 
-	method := aCompiledMethod.
-	temporaries := Array new: aCompiledMethod tempCount! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:25'!
-mirageOnBoolean: aBoolean 
-	| runtime handle |
-	runtime := receiver _gate handle runtime.
-	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
-	^ handle mirage
-! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:37'!
-mirageOnInteger: anInteger 
-	| runtime handle |
-	runtime := receiver _gate handle runtime.
-	handle := runtime integerHandle: anInteger.
-	^ handle mirage! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:52'!
-mirageOnObject: anObject 
-
-	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
-	self assert: false! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:16'!
-parent 
-
-	^parent! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:26'!
-parent: anInterpreter 
-
-	parent := anInterpreter! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:16'!
-receiver 
-
-	^receiver! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:26'!
-receiver: anObject 
-
-	receiver := anObject.
-	returnValue := anObject! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:11'!
-temporaryAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^ temporaries at: index ].
-	env := self environmentFor: anInteger.
-	^ env at: index! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:46'!
-temporaryAt: index in: anInteger put: aValue 
-	| env |
-	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
-	env := self environmentFor: anInteger.
-	^ env at: index put: aValue! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:56:58'!
-argumentAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^arguments at: index ].
-	env := self environmentFor: anInteger.
-	^env at: index.! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:13'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:30'!
-captureClosure: anSBlock 
-	| closure s i type env arg |
-	closure := anSBlock compiledCode newClosure home: self.
-	s := anSBlock capturedVariables readStream.
-	i := 1.
-	[ s atEnd ]
-		whileFalse: [ type := s next.
-			type = Self
-				ifTrue: [ closure at: i put: receiver ].
-			type = Environment
-				ifTrue: [ closure at: i put: environment].
-			type = EnvironmentValue
-				ifTrue: [ env := environment at: s next.
-					closure at: i put: env ].
-			type = LocalArgument
-				ifTrue: [ arg := arguments at: s next.
-					closure at: i put: arg ].
-			i := i + 1 ].
-	^ closure! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:12'!
-dispatch: message to: msgReceiver 
-
-	^ self subclassResponsibility! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:23'!
-dispatchSpecial: message 
-
-		^self subclassResponsibility ! !
+	method := aCompiledMethod! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:36'!
-environmentFor: anInteger 
-	"
-	-1: inlined argument.
-	 0: current env.
- 	>0: index of env in current env. "
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:48:21'!
+beSuccessful 
 
-	anInteger = 0
-		ifTrue: [ ^ environment ].
-	anInteger = -1
-		ifTrue: [ ^ temporaries ].
-	^ environment at: anInteger! !
+	error := nil! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:57'!
-evaluate: anSCompiledMethod 
-
-	method := anSCompiledMethod.
-	^ self visitMethod: anSCompiledMethod sexpressions! !
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:48:58'!
+error 
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:13'!
-evaluateClosure: aPClosure 
+	^error! !
 
-	^self evaluateClosure: aPClosure withArgs: {}! !
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 4/7/2021 13:49:10'!
+error: aCompilationError 
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:25'!
-evaluateClosure: aPClosure with: anObject 
+	error := aCompilationError! !
 
-	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:37'!
-evaluateClosure: aPClosure with: anObject with: anotherObject 
-
-	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:58'!
-evaluateClosure: aPClosure withArgs: anArray 
-	| oldArgs oldTemps oldEnv block sblock result |
-	block := aPClosure block.
-	sblock := blockAstcodes at: block.
-	sblock isInlined ifTrue: [
-			 anArray with: sblock inlinedArgs do: [:arg :i | temporaries at: i put: arg].
-			^ self visitScript: sblock ].
-	oldArgs := arguments.
-	oldTemps := temporaries.
-	oldEnv := environment.
-	arguments := anArray.
-	temporaries := Array new: block tempCount.
-	environment := aPClosure.
-	result := self visitScript: sblock.
-	environment := oldEnv.
-	temporaries := oldTemps.
-	arguments := oldArgs.
-	^ result! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:04:48'!
-subjectOn: anObjectHandle 
-
-	^ anObjectHandle maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:19'!
-subjectOnBoolean: aBoolean in: aRuntime 
-	| t f |
-	^ aBoolean
-		ifTrue: [ t := aRuntime true. 
-			(t oid = true) ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] 
-		]
-		ifFalse: [ f := aRuntime false. 
-			(f oid = false) ifTrue: [ f mirage ] ifFalse: [ f maneuverer]
-		] ! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:42'!
-subjectOnObject: anObjectHandle 
-
-	^ anObjectHandle maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:54'!
-subjectOnObjectOk: anObjectHandle 
-
-	^ self maneuvererOn: anObjectHandle! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:32'!
-ubjectOnInteger: anInteger in: aRuntime 
-
-	^ (aRuntime integerHandle: anInteger) maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:00:30'!
-initialize 
-
-	returned := false.
-	blockAstcodes := IdentityDictionary new! !
-
-!SExpressionInterpreter methodsFor: 'testing' stamp: 'KenD 2/27/2021 16:01:33'!
-isSpecial: aSelectorMirror 
-
-	^ self subclassResponsibility ! !
-
-!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:13'!
-new 
-
-	^self basicNew initialize! !
-
-!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:31'!
-on: receiverMirror with: arguments for: method 
-
-	^self new
-		receiver: receiverMirror;
-		arguments: arguments;
-		method: method! !
-
-!SmalltalkInterpreter methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:14:04'!
-primitivePrimeFor 
-	| num result  |
-	num := arguments first _gate handle asLocalInteger.
-	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
-		detect: [ :i | i >= num ].
-	^ self subjectOnInteger: result in: receiver _gate handle runtime! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:08:27'!
-dispatch: message to: msgReceiver 
-
-	^ msgReceiver _gate dispatch: message from: self! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:09:26'!
-dispatchSpecial: message 
-	| selector mirror gate |
-	selector := message selector.
-	gate := message receiver _gate.
-	mirror := gate mirror.
-	selector == #_isSmallInteger
-		ifTrue: [ ^ self subjectOnBoolean: gate handle isInteger in: gate handle runtime].
-	selector == #_isLarge
-		ifTrue: [ ^ self subjectOnBoolean: mirror reflectsLargeObject in: gate handle runtime].
-	selector == #_smallSize
-		ifTrue: [ ^ self subjectOnInteger: mirror  smallSize in: gate handle runtime ].
-	selector == #_largeSize
-		ifTrue: [ ^ self subjectOnInteger: mirror largeSize in: gate handle runtime ].
-	selector == #_basicFlags
-		ifTrue: [ ^ self subjectOnInteger: mirror basicFlags in: gate handle runtime ].
-	selector == #_basicHash
-		ifTrue: [ ^ self subjectOnInteger: 0 in: gate handle runtime ].
-	selector == #_basicHash:
-		ifTrue: [ ^ message receiver ].
-	self assert: false
-! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:13'!
-dispatchSuper: message to: msgReceiver 
-
-	^ msgReceiver _gate dispatchSuper: message from: self! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:24'!
-falseLiteral 
-
-	^receiver _gate handle runtime false maneuverer.! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:10:35'!
-gateOnBlock: aPCompiledBlock 
-	| runtime closure handle |
-	runtime := receiver _gate handle runtime.
-	closure := aPCompiledBlock newClosure home: self.
-	handle := LocalHandle on: closure within: localRuntime.
-	^ closure mirage! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:22'!
-literal: anObject 
-	| handle |
-	handle := receiver _gate handleOn: anObject.
-	^ self subjectOn: handle! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:33'!
-mirageOnBlock: aPCompiledBlock 
-	| runtime handle |
-	runtime := receiver _gate handle runtime.
-	handle := runtime newClosureHandle: aPCompiledBlock.
-	^ handle mirage! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:12:49'!
-nilLiteral 
-
-	^receiver _gate handle runtime nil maneuverer! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:13:07'!
-primitiveClosureValue 
-	| closure block sblock prev result interpreter next |
-	closure := receiver _gate handle.
-	block := closure mirror asClosureMirror block handle oid.
-	interpreter := self.
-	[ next := interpreter blocks. next includesKey: block] whileFalse: [ interpreter := interpreter parent ].
-	sblock := next at: block.
-	prev := environment.
-	environment := closure.
-	result := interpreter visitScript: sblock.
-	environment := prev.
-	^result! !
-
-!SmalltalkInterpreter methodsFor: 'evaluation' stamp: 'KenD 4/8/2021 08:14:16'!
-trueLiteral 
-
-	^receiver _gate handle runtime true maneuverer.! !
-
-!SmalltalkInterpreter methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:11:33'!
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:54:45'!
+argumentCount 
+
+	^format bitsAt: ArgCount! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:54:57'!
+argumentCount: anInteger 
+
+	format := format bitsAt: ArgCount put: anInteger! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:55:32'!
+capturesHome 
+
+	^ format anyMask: CapturesHome! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:55:46'!
+capturesHome: aBoolean 
+
+	format := aBoolean
+		          ifTrue: [ format bitOr: CapturesHome ]
+		          ifFalse: [ format bitClear: CapturesHome ]! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:07'!
+capturesSelf 
+
+	^format anyMask: CapturesSelf! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:34'!
+capturesSelf: aBoolean 
+
+	format := aBoolean
+		ifTrue: [ format bitOr: CapturesSelf ]
+		ifFalse: [ format bitClear: CapturesSelf ]! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:56:52'!
+environmentCount 
+
+	^ format bitsAt: EnvCount! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:02'!
+environmentCount: anInteger 
+
+	format := format bitsAt: EnvCount put: anInteger! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:22'!
+id 
+
+	^format bitsAt: Id! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:31'!
+id: anInteger 
+
+	format := format bitsAt: Id put: anInteger! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:04:52'!
+method 
+
+	^method! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:02'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:21'!
+nativeCode 
+
+	^nativeCode! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:32'!
+nativeCode: code 
+
+	nativeCode := code! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:05:57'!
+newClosure 
+	| closure |
+	closure := SClosure new: self environmentCount.
+	^ closure block: self! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:17'!
+tempCount 
+
+	^format bitsAt: TempCount! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:27'!
+tempCount: anInteger 
+
+	format := format bitsAt: TempCount put: anInteger! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:06:47'!
+value 
+
+	self halt
+"	<primitive: BlockValue>
+	^ self primitiveFailed" ! !
+
+!SCompiledBlock methodsFor: 'initialization' stamp: 'KenD 4/7/2021 13:58:07'!
 initialize 
 
 	super initialize.
-	localRuntime := Runtime forLocalCuis! !
+	format := 0! !
 
-!SmalltalkInterpreter methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:12:10'!
-isSpecial: selector 
+!SCompiledBlock methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:04:41'!
+isBlock 
 
-	^Underprimitives includes: selector! !
+	^true! !
 
-!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:14:41'!
-visitLiteral: anSLiteral 
-	| handle |
-	anSLiteral value isInteger ifTrue: [ 
-		^self subjectOnInteger: anSLiteral value in: receiver _gate handle runtime ].
-	handle := localRuntime handleOn: anSLiteral value.
-	^ handle mirage! !
+!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:08:19'!
+argumentDescriptors 
+	| parent |
+	parent := node parent.
+	^scope capturedArguments
+		collect: [:arg | self descriptorForArgument: arg parent: parent]! !
 
-!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:15:20'!
-visitPrimitive: primitive 
-	| gate new left right args rcvr runtime value class |
-	returned := true.
-	gate := receiver _gate.
-	runtime := gate handle runtime.
-	primitive = #Behavior
-		ifTrue: [ class := runtime bridge globalNamed: gate handle oid spec name.
-			^ returnValue := self subjectOn: (gate handleOn: class instanceBehavior)].
-	primitive = #UnderSize
-		ifTrue: [ ^ returnValue := self subjectOnInteger: gate handle size in: runtime ].
-	primitive = #Size
-		ifTrue: [ ^ returnValue := self
-				subjectOnInteger: gate handle arrayedSize
-				in: runtime ].
-	primitive = #At
-		ifTrue:
-			[ value := gate handle at: arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOn: value].
-	primitive = #AtPut
-		ifTrue:
-			[ value := arguments second.
-			gate handle at: arguments first _gate handle asLocalInteger put: value _gate handle oid.
-			^ returnValue := value].
-	primitive = #New
-		ifTrue: [ new := gate handle runtime new: gate handle oid.
-			^ returnValue := self subjectOn: new ].
-	primitive = #NewSized
-		ifTrue: [ new := gate handle runtime
-				new: gate handle oid
-				sized: arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOn: new ].
-	primitive = #Equal
-		ifTrue: [ left := receiver _gate handle oid.
-			right := arguments first _gate handle oid.
-			^ returnValue := self
-				subjectOnBoolean: left == right
-				in: localRuntime ].
-	primitive = #SMIPlus
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOnInteger: left + right in: runtime ].
-	primitive = #SMIMinus
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOnInteger: left - right in: runtime ].
-	primitive = #SMITimes
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOnInteger: left * right in: runtime ].
-	primitive = #SMIIntDiv
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOnInteger: left // right in: runtime ].
-	primitive = #SMIIntQuot
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self subjectOnInteger: left \\ right in: runtime ].
-	primitive = #SMIGreaterThan
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self
-				subjectOnBoolean: left > right
-				in: localRuntime ].
-	primitive = #SmallIntegerBitAnd
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self
-				subjectOnInteger: (left bitAnd: right)
-				in: runtime ].
-	primitive = #SMIGreaterEqualThan
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self
-				subjectOnBoolean: left >= right
-				in: localRuntime ].
-	primitive = #SMIEqual
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self
-				subjectOnBoolean: left = right
-				in: localRuntime ].
-	primitive = #SMINotEqual
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self
-				subjectOnBoolean: left !!= right
-				in: localRuntime ].
-	primitive = #ClosureValue
-		ifTrue: [ ^ self primitiveClosureValue ].
-	primitive = #ReplaceFromTo
-		ifTrue: [ rcvr := receiver _gate handle target.
-			args := arguments collect: [ :arg | arg _gate asLocalCollection ].
-			rcvr
-				perform: #replaceFrom:to:with:startingAt:
-				withArguments: args asArray.
-			^ returnValue := receiver ].
-	primitive = #PrimeFor
-		ifTrue: [ ^ self primitivePrimeFor ].
-	self assert: false! !
+!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:45'!
+node
 
-!SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:16:13'!
-visitPrimitiveOld: primitive 
-	| gate new left right args rcvr |
-	returned := true.
-	gate := receiver _gate.
-	primitive = #Size
-		ifTrue: [ ^ returnValue := self mirageOnInteger: gate mirror size ].
-	primitive = #New
-		ifTrue: [ new := gate handle runtime new: gate handle oid.
-			^ returnValue := self mirageOnObject: new ].
-	primitive = #NewSized
-		ifTrue: [ new := gate handle target new: arguments first _gate handle target.
-			^ returnValue := self mirageOnObject: new ].
-	primitive = #SmallIntegerMinus
-		ifTrue: [ left := receiver _gate handle target.
-			right := arguments first _gate handle target.
-			^ returnValue := self mirageOnInteger: left - right ].
-	primitive = #SmallIntegerPlus
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self mirageOnInteger: left + right ].
-	primitive = #SmallIntegerBitAnd
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self mirageOnInteger: (left bitAnd: right) ].
-	primitive = #SmallIntegerLessOrEqual
-		ifTrue: [ left := receiver _gate handle target.
-			right := arguments first _gate handle target.
-			^ returnValue := self mirageOnBoolean: left <= right ].
-	primitive = #SmallIntegerEqual
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self mirageOnBoolean: left = right ].
-	primitive = #SmallIntegerNotEqual
-		ifTrue: [ left := receiver _gate handle asLocalInteger.
-			right := arguments first _gate handle asLocalInteger.
-			^ returnValue := self mirageOnBoolean: left !!= right ].
-	primitive = #ClosureValue
-		ifTrue: [ ^ self primitiveClosureValue ].
-	primitive = #ReplaceFromTo
-		ifTrue: [ rcvr := receiver _gate handle target.
-			args := arguments collect: [ :arg | arg _gate asLocalCollection ].
-			rcvr
-				perform: #replaceFrom:to:with:startingAt:
-				withArguments: args asArray.
-			^ returnValue := receiver ].
-	self assert: false! !
+	^node! !
 
-!SmalltalkInterpreter class methodsFor: 'class initialization' stamp: 'KenD 4/8/2021 08:07:13'!
-initialize 
-"
-	self initialize
-"
-	Underprimitives := 
-		     #(_basicAt: #_basicAt:put: 
-			_byteAt: #_byteAt:put: 
-			_smallSize _largeSize 
-			_isSmallInteger 
-			_basicHash _basicHash:)! !
+!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:35'!
+node: aNode
 
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:13:30'!
-classSpecs 
+	node :=  aNode! !
 
-	^ self spec allClasses! !
+!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:08:45'!
+scope
 
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:15:39'!
-classes 
+	^scope! !
 
-	^classes! !
+!SCompiledBlockBuilder methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:09:02'!
+scope: aScope
 
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:20:03'!
-image 
+	scope := aScope! !
 
-	^ image! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:26'!
-module 
-
-	^ module! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:04'!
-newSymbol: aSymbol 
-
-	^runtime newSymbol: aSymbol! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:25:22'!
-runtime 
-
-	^ runtime! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:12:24'!
-specAt: aSymbol 
-
-	^ self spec at: aSymbol! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:29:54'!
-writer 
-
-	^ ImageSegmentWriter new roots:
-		objects;
-		module: module;
-		wordSize: image wordSize;
-		yourself! !
-
-!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:04'!
-nativizeForDMR 
-
-	DMRBootstrapper new
-		image: image;
-		builder: self;
-		nativize;
-		initializeKernelModule! !
-
-!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:38'!
-newCallback: aNativeCode bytesFrom: aByteArray 
-	| code original behavior class |
-	code := image newBytesFrom: aByteArray.
-	original := code behavior.
-	behavior := image newSlots: 'CallbackBehavior'.
-	class := original slotNamed: 'class'.
-	behavior
-		slotNamed: 'class' put: class;
-		methods: original methods;
-		next: image nil;
-		nativeCode: aNativeCode.
-	code behavior: behavior.
-	^ code! !
-
-!ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:24:45'!
-newMethod: anAstcode 
-selector: aSymbol 
-in: classname 
-format: anInteger 
-literals: anArray 
-	| method astcodes class selector format |
-	method := image newSlots: 'CompiledMethod'.
-	astcodes := self transferAstcodesFrom: anAstcode.
-	class := image classNamed: classname.
-	selector := image newSymbol: aSymbol.
-	format := image newInteger: anInteger.
-	method
-		nativeCode: image nil;
-		astcodes: astcodes;
-		class: class;
-		selector: selector;
-		format: format;
-		source: image nil.
-	^ method! !
-
-!ImageSegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:20:38'!
-initialize 
-
-	index := OrderedDictionary new.
-	classes := OrderedDictionary new.
-	methods := OrderedDictionary new.
-	globals := VirtualDictionary new.
-	objects := OrderedCollection new! !
-
-!ImageSegmentBuilder methodsFor: 'printing' stamp: 'KenD 3/4/2021 08:22:07'!
-log: aString 
-
-	Transcript
-		show: aString;
-		cr! !
-
-!ImageSegmentBuilder methodsFor: 'validating' stamp: 'KenD 3/4/2021 08:29:04'!
-validate 
-
-	objects do:[:obj | obj validate]! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:12:46'!
-addObjectDeep: anObject 
-
-	self assert: (anObject isKindOf: ObjectMap).
-	anObject isImport
-		ifTrue: [ ^ self addImport: anObject ].
-	anObject isImmediate
-		ifTrue: [ ^ self ].
-	(objects includes: anObject)
-		ifTrue: [ ^ self ].
-	objects add: anObject.
-	anObject slotsDo: [ :s | self addObjectDeep: s ].
-	^ anObject! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:13:04'!
-bootstrapModule 
-
-	runtime send: #bootstrap to: module! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:16:19'!
-createLoadAction 
-
-	^ image nil! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:33'!
-createMethodDictionary: species sized: anInteger 
-	| behavior md size dictionary |
-	behavior := species instanceBehavior.
-	md := image classNamed: #MethodDictionary.
-	size := image newInteger: anInteger.
-	dictionary := runtime send: #new: to: md with: {size}.
-	behavior methods: dictionary.
-	^dictionary! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:17:48'!
-export: anObject as: aSymbol 
-
-	runtime globals at: aSymbol put: anObject! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:01'!
-fillClasses 
-	| class meta |
-	self classSpecs
-		do: [ :def | 
-			self log: 'filling ' , def name , '...'.
-			class := image classFor: def.
-			meta := class behavior slotNamed: #class.
-			self
-				fillSpecies: meta with: def metaclass;
-				fillSpecies: class with: def ]! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:18:59'!
-fillSpecies: species with: classDefinition 
-	| dictionary smethod transferred |
-	dictionary := self
-		createMethodDictionary: species
-		sized: classDefinition methods size.
-	classDefinition methods
-		do: [ :methodDefinition | 
-			smethod := runtime compile: methodDefinition.
-			methods at: methodDefinition put: smethod.
-			transferred := self transferMethod: smethod in: species.
-			runtime
-				send: #basicAt:put:
-				to: dictionary
-				with:
-					{transferred selector.
-					transferred} ]! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:19:27'!
-generateModule 
-	| class dictionary exports array assocs |
-	class := image classNamed: self moduleName.
-	dictionary := image classNamed: #Dictionary.
-	module := runtime send: #basicNew to: class.
-	exports := runtime send: #new to: dictionary.
-	array := runtime send: #declaredGlobals to: module.
-	assocs := runtime declareGlobals: array.
-	assocs := image newArray: assocs.
-	runtime send: #addAll: to: exports with: {assocs}.
-	module exports: exports.
-	"self classes
-		do: [ :c | | args |
-			args := Array with: c name with: c.
-			runtime send: #at:put: to: exports with: args ]."
-! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:06'!
-initialize32BitImage 
-
-	image := VirtualSmalltalkImage fromSpec
-		wordSize: 4;
-		genesis.
-	runtime := VirtualSmalltalkRuntime new image: image; initializeClassPools
-! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:21:30'!
-initialize64BitImage 
-
-	image := VirtualSmalltalkImage fromSpec
-		wordSize: 8;
-		genesis.
-	runtime := VirtualSmalltalkRuntime new
-		image: image;
-		initializeClassPools! !
-
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:23:57'!
-newClassVarDictionary: anArray 
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:35'!
+addPool: aPoolDictionary 
 	| dict |
-	dict := runtime newDictionary.
-	anArray do: [ :assoc | runtime send: #add: to: dict with: {assoc} ]! !
+	dict := DynamicBinder on: aPoolDictionary.
+	pools add: dict! !
 
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:37'!
-transferArrayDeep: anArray 
-	| copy transferred |
-	copy := image newSlots: 'Array' sized: anArray size.
-	anArray
-		withIndexDo: [ :elem :i | 
-			transferred := elem isInteger
-				ifTrue: [ image newInteger: elem ]
-				ifFalse: [ self transferArrayDeep: elem ].
-			copy at: i put: transferred ].
-	^ copy! !
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:31:52'!
+addPool: aDictionary of: type 
+	| dict |
+	dict := DynamicBinder on: aDictionary of: type.
+	pools add: dict! !
 
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:25:53'!
-transferAstcodesFrom: anArray 
-	| copy transferred |
-	copy := image newSlots: 'Array' sized: anArray size.
-	anArray
-		withIndexDo: [ :elem :i | 
-			transferred := elem isInteger
-				ifTrue: [ image newInteger: elem ]
-				ifFalse: [ self transferAstcodesFrom: elem ].
-			copy at: i put: transferred ].
-	^ copy! !
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:32:34'!
+classBinding: aSpecies 
+	| instance |
+	class := aSpecies.
+	instance := aSpecies instanceSide.
+	(instance respondsTo: #configureCompiler)
+		ifTrue: [instance configureCompiler: self]! !
 
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:21'!
-transferMethod: anSCompiledMethod in: species 
-	| size classname transferred astcodes selector format literal tliteral |
-	(image includes: anSCompiledMethod)
-		ifTrue: [ self assert: false ].
-	size := anSCompiledMethod size.
-	classname := anSCompiledMethod isCallback
-		ifTrue: [ 'CallbackMethod' ]
-		ifFalse: [ 'CompiledMethod' ].
-	transferred := image newSlots: classname sized: size.
-	image map: anSCompiledMethod to: transferred.
-	astcodes := image transferLiteralDeep: anSCompiledMethod astcodes.
-	selector := image newSymbol: anSCompiledMethod selector.
-	format := image newInteger: anSCompiledMethod format.
-	transferred
-		astcodes: astcodes;
-		class: species;
-		selector: selector;
-		format: format;
-		source: image nil.
-	1 to: size do: [ :i | 
-		literal := anSCompiledMethod at: i.
-		tliteral := image transferLiteralDeep: literal.
-		transferred at: i put: tliteral ].
-	^ transferred! !
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:03'!
+namespace: aDictionary 
 
-!ImageSegmentBuilder methodsFor: 'services' stamp: 'KenD 3/4/2021 08:28:46'!
-transferSimpleLiterals: method 
-	"fixme: to be used by emulator only"
-	| literal class |
-	1 to: method size do: [ :i | 
-		literal := method at: i.
-		class := literal class.
-		((class inheritsFrom: ObjectMap)
-			or: [ class = SCompiledBlock ])
-			ifFalse: [ method at: i put: (self transferLiteralDeep: literal) ] ].
-	^ method! !
+	namespace := aDictionary! !
 
-!ImageSegmentBuilder methodsFor: 'visiting' stamp: 'KenD 3/4/2021 08:25:12'!
-visitTemporary: anSIdentifier 
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:34:51'!
+peekForIdentifier: aStream 
+	| char next |
+	char := aStream peek.
+	(self canBeInIdentifier: char) ifTrue: [
+		aStream skip: 1.
+		^true].
+	char = $. ifFalse: [^false].
+	aStream prev isLetter ifFalse: [
+		aStream skip: 1.
+		^false].
+	next := aStream skip: 2; peek.
+	next isNil ifTrue: [
+		aStream skip: -1.
+		^false].
+	^next isLetter ifFalse: [aStream skip: -1]; yourself! !
 
-	^temporaries at: anSIdentifier binding index! !
+!SCompiler methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:35:04'!
+protect: aBlock 
 
-!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:32'!
-moduleName 
+	^aBlock value! !
 
-	^'Kernel'! !
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:32'!
+forClass: aClass 
+	| c |
+	c := aClass ifNil: [UndefinedObject].
+	self classBinding: c! !
 
-!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:17:53'!
-spec 
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:33:45'!
+initialize: aDictionary 
 
-	^image kernel! !
+	namespace := aDictionary.
+	class := aDictionary at: #UndefinedObject ifAbsent: nil.
+	pools := OrderedCollection new! !
 
-!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:08'!
-undermethods 
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:17'!
+newScope 
 
-	^ (self => #ProtoObject) methods
-		select: [ :m | m category = 'header access' ]! !
+	^MethodScope new
+		namespace: namespace;
+		species: class;
+		addPoolBinders: pools! !
 
-!KernelSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:18:19'!
-writer 
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:35'!
+parse: aString 
 
-	^ super writer space: smalltalk value memory edenSpace! !
+	result := self smalltalkCompiler parseMethod: aString.
+	^result ast! !
 
-!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:02'!
-addGenesisObjects 
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:15'!
+smalltalkCompiler 
 
-	objects
-		add: image nil;
-		add: image false;
-		add: image true;
-		add: module.
-	globals valuesDo: [ :obj | objects add: obj ].
-	smalltalk ifNotNil: [ objects add: smalltalk value ]! !
+	^ SSmalltalkCompiler new frontend: self! !
 
-!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:33'!
-generateModule 
-	| wordsize lasthash |
-	super generateModule.
-	smalltalk := runtime globals associationAt: #Smalltalk.
-	wordsize := runtime globals associationAt: #WordSize.
-	lasthash := runtime globals associationAt: #LastHash.
-	runtime send: #add: to: module exports with: {wordsize}.
-	runtime send: #add: to: module exports with: {lasthash}! !
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:33'!
+smalltalkParser 
 
-!KernelSegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:15:59'!
-methodSubset: aDictionary 
-	| all species m |
-	all := aDictionary
-		flatCollect: [ :assoc | 
-			species := self => assoc key.
-			assoc value
-				collect: [ :sel | 
-					m := species >> sel.
-					self assert: m notNil.
-					m ] ].
-	^ all asOrderedCollection! !
+	^ self smalltalkCompiler parser! !
 
-!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:19'!
-spec 
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:35:43'!
+smalltalkScanner 
 
-	^ spec! !
+	^ self smalltalkCompiler scanner! !
 
-!LibrarySegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/9/2021 07:48:31'!
-spec: anRGEnvironment 
+!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:11'!
+anBeInIdentifier: aCharacter 
 
-	spec := anRGEnvironment! !
+	^aCharacter isLetter or: [aCharacter isDigit] or: [aCharacter = $_]! !
 
-!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:42'!
-addClasses
+!SCompiler methodsFor: 'testing' stamp: 'KenD 4/7/2021 14:32:21'!
+canStartIdentifier: aCharacter 
 
-	self notYetImplemented ! !
+	^aCharacter isLetter or: [aCharacter = $_]! !
 
-!LibrarySegmentBuilder methodsFor: 'building' stamp: 'KenD 3/9/2021 07:47:56'!
-importKernelObjects 
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:29:55'!
+forClass: aClass 
 
-	self addImport: image nil; addImport: image true; addImport: image false! !
+	^self new forClass: aClass! !
 
-!LibrarySegmentBuilder methodsFor: 'initialization' stamp: 'KenD 3/9/2021 07:47:05'!
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:19'!
+namespace: aDictionary 
+
+	^self basicNew initialize: aDictionary! !
+
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 4/7/2021 14:30:36'!
+new 
+
+	^self namespace: Smalltalk globals! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:29:33'!
+compile: aString in: aClass 
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler compile: aString! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 4/7/2021 14:30:52'!
+parse: aString in: aClass 
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler parse: aString! !
+
+!ScriptScope methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:03:15'!
+script: aScriptNode 
+
+	script := aScriptNode! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:57:31'!
+defineArgument: identifier 
+	| binding |
+	(self resolves: identifier) ifTrue: [self redefinitionError: identifier].
+	binding := ArgumentBinding new name: identifier.
+	arguments define: identifier as: binding.
+	^binding! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:58:03'!
+defineTemporary: identifier 
+	| binding |
+	(temporaries defines: identifier)
+		ifTrue: [self redefinitionError: identifier].
+	binding := TemporaryBinding new name: identifier.
+	temporaries define: identifier as: binding.
+	^binding! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 12:58:20'!
+defines: aString 
+
+	^(temporaries defines: aString) or: [arguments defines: aString]! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:00:33'!
+localBindings 
+
+	^arguments values , temporaries values! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:02:23'!
+resolveLocal: aString 
+
+	(temporaries at: aString) ifNotNil: [:binding | ^binding].
+	^arguments at: aString! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 2/27/2021 13:02:40'!
+resolves: aString 
+
+	^(self resolve: aString) isUnresolved not! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:57:03'!
+capturesSelf 
+
+	^ captureSelf! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:58:36'!
+describe: identifier 
+	| binding type |
+	binding := self resolve: identifier.
+	type := self class name asLowercase allButLast: 'scope' size.
+	^binding description , ' of ' , type! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 12:59:13'!
+environmentSize 
+
+	^envSize! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 13:02:54'!
+scopeOf: aString 
+	| s |
+	s := self scriptDefining: aString.
+	^s notNil ifTrue: [s scope]! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 2/27/2021 13:03:29'!
+stackSize 
+
+	^stackSize! !
+
+!ScriptScope methodsFor: 'initialization' stamp: 'KenD 2/27/2021 13:00:10'!
 initialize 
 
 	super initialize.
-	kernelBuilder := KernelSegmentBuilder new.! !
+	arguments := StaticBinder new.
+	temporaries := StaticBinder new.
+	stackSize := envSize := 0.
+		captureSelf := false.! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:34:29'!
-addClosure 
-	| remaining obj b |
-	remaining := OrderedCollection withAll: roots.
-	remaining do: [ :s | offsets at: s put: nil ].
-	[ remaining isEmpty ]
-		whileFalse: [ obj := remaining removeFirst.
-			objects add: obj.
-			b := obj behavior.
-			(offsets includesKey: b)
-				ifFalse: [ offsets at: b put: nil. remaining add: b ].
-			obj
-				slotsDo: [ :s | 
-					(s isImmediate or: [ offsets includesKey: s ])
-						ifFalse: [ offsets at: s put: nil.
-							remaining add: s ] ] ]! !
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 12:59:39'!
+growEnvironment 
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:09'!
-base 
-"
-	Return preferred base address for this segment
-"
-	^ base! !
+	^envSize := envSize + 1! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:35:32'!
-base: anInteger 
-"
-	 Set the preferred base address for this segment. 
-	 This is a hint only, loaders may load a segment
-	 at a different address but then they must relocate.
-"
-	base := anInteger! !
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 12:59:50'!
+growStack 
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:36:59'!
-image 
+	^stackSize := stackSize + 1! !
 
-	^stream contents! !
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:00:48'!
+positionDefinedArguments 
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:00'!
-module: aSlotObjectMap 
+	arguments withIndexDo: [:binding :index | binding index: index]! !
 
-	module := aSlotObjectMap! !
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:00:59'!
+positionDefinedLocals 
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:11'!
-nextHash 
-	|  result |
-	result := nextHash.
-	nextHash := nextHash linearFeedbackShiftRandom: 16rB9C8.
-	^result! !
+	self positionDefinedTemporariesIn: self; positionDefinedArguments! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:35'!
-objects 
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:15'!
+positionDefinedTemporariesIn: aScriptScope 
 
-	^ objects! !
+	temporaries do: [:binding | | position |
+		position := binding isInStack
+			ifTrue: [aScriptScope growStack]
+			ifFalse: [aScriptScope growEnvironment].
+		binding index: position]! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:44'!
-objectsOffset 
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:30'!
+positionLocals 
 
-	^self class objectsOffset! !
+	self positionDefinedLocals! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:38:52'!
-offsetOf: anObjectMap 
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:41'!
+realScope 
 
-	^ offsets at: anObjectMap! !
+	^script realScript scope! !
 
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:00'!
-roots: aCollection 
+!ScriptScope methodsFor: 'private' stamp: 'KenD 2/27/2021 13:01:59'!
+redefinitionError: name 
+	| scope description |
+	scope := self scopeOf: name.
+	description := scope describe: name.
+	script compiler
+		warning: name , ' already declared as ' , description
+		at: script stretch! !
 
-	roots := aCollection! !
-
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:15'!
-space: aGCSpace 
-
-	space := aGCSpace! !
-
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:38'!
-stream: aWriteStream 
-
-	stream := aWriteStream! !
-
-!ImageSegmentWriter methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:39:52'!
-wordSize: anInteger 
-
-	wordSize := anInteger! !
-
-!ImageSegmentWriter methodsFor: 'encoding' stamp: 'KenD 3/4/2021 08:36:46'!
-encodedReferenceTo: anObject 
-	| offset |
-	anObject isImmediate
-		ifTrue: [ ^ anObject value * 2 + 1 ].
-	offset := offsets at: anObject.
-	^base + offset! !
-
-!ImageSegmentWriter methodsFor: 'initialization' stamp: 'KenD 3/4/2021 08:37:20'!
-initialize 
-
-	offsets := IdentityDictionary new.
-	objects := OrderedCollection new.
-	stream := #[] writeStream.
-	nextHash := 1.
-	base := 0! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:36:00'!
-configureSpace 
-	| basemap free limit |
-	basemap := SmallintObjectMap new value: base // 2.
-	free := SmallintObjectMap new value: (base + size) // 2.
-	limit := SmallintObjectMap new value: (base + size + 16r20000 // 2).
-	space
-		base: basemap;
-		nextFree: free;
-		softLimit: limit;
-		commitedLimit: limit;
-		reservedLimit: limit! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:37:40'!
-layoutObjects 
-	| offset oop |
-	offset := self objectsOffset.
-	objects
-		do: [ :obj | 
-			oop := offset + obj headerSizeInBytes.
-			offsets at: obj put: oop.
-			offset := oop + obj bodySizeInBytes ].
-	size := offset! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:14'!
-write 
-
-	self
-		addClosure;
-		layoutObjects;
-		configureSpace;
-		writeSignature;
-		writeHeader;
-		writeObjects! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:35'!
-writeHeader 
-	"See ImageSegment.h for structure of a segment header"
-	| reserved |
-	reserved := (space reservedLimit value - space base value) * 2.
-	stream uint64le: base; uint64le: size; uint64le: reserved.
-	self writeReferenceTo: module! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:40:54'!
-writeObjectBody: obj 
-	obj isBytes
-		ifTrue: [ self writeObjectBytes: obj ]
-		ifFalse: [ self writeObjectSlots: obj ]! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:08'!
-writeObjectBytes: obj 
-	| current aligned |
-	stream nextBytesPutAll: obj bytes.
-	current := stream position.
-	aligned := current alignedTo: wordSize.
-	aligned - current timesRepeat: [ stream nextPut: 0 ]! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:22'!
-writeObjectHeader: obj 
-	| behavior |
-	obj isSmall
-		ifFalse: [ stream
-				uint32le: obj size;
-				uint32le: 0 ].
-	behavior := self encodedReferenceTo: obj behavior.
-	stream
-		uint16le: obj headerHash;
-		nextPut: obj headerSmallSize;
-		nextPut: obj headerFlags;
-		uint32le: behavior.
-	self assert: stream position == (self offsetOf: obj)! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:41'!
-writeObjectSlots: obj 
-
-	obj slots do: [ :slot | self writeReferenceTo: slot ]! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:41:53'!
-writeObjects 
-	self assert: stream position == self objectsOffset.
-	objects
-		do: [ :obj | 
-			self
-				writeObjectHeader: obj;
-				writeObjectBody: obj ]! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:03'!
-writeReferenceTo: slot 
-	| encoded |
-	encoded := self encodedReferenceTo: slot.
-	wordSize = 8
-		ifFalse: [ self assert: false ].
-	stream uint64le: encoded! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:15'!
-writeSignature 
-
-	stream
-		nextBytesPutAll: 'P_IM_S';
-		nextPut: Character lf asInteger;
-		nextPut: 0! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:27'!
-writeTo: aStream 
-
-	self stream: aStream.
-	self write.
-! !
-
-!ImageSegmentWriter methodsFor: 'services' stamp: 'KenD 3/4/2021 08:42:39'!
-writeToFile: filename 
-	filename asFileReference binaryWriteStreamDo: [ :fileStream |
-		| bytes |
-		
-		"Bit stupid - we write into internal ByteArray backed stream and
-      then write it to real file. That's because WriteStream and ZnWriteStream
-      are not polymorphic. Sigh"
-		bytes := ByteArray streamContents:[:byteStream | self writeTo: byteStream ].
-		fileStream nextPutAll: bytes.
-	]! !
-
-!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:06'!
-behaviorOffset 
-"
-	The offset at which the behavior is from the oop (negated)
-	[Oop is pointer to 1st slot, behavior is slot preceeding].
-"
-
-	^ -4! !
-
-!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:26'!
-nilOffset 
-
-	^self objectsOffset + 8! !
-
-!ImageSegmentWriter class methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:33:57'!
-objectsOffset 
-"
-	The offset at which header terminates and objects are stored.
-	See ImageSegment.h for structure of a segment header
-"
-	^40! !
-
-!LookupNativizer methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:17:05'!
-nativizeMethods 
-	| environment | 
-	methods := self closureMethods collect: [:m | bootstrapper compile: m ].
-	environment := self newNativizationEnvironment.
-	methods do: [:m | environment nativize: m]! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:22'!
-bootstrapper: aSmalltalkBootstrapper 
-
-	bootstrapper := aSmalltalkBootstrapper! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:33'!
-closureMethods 
-
-	^ self selectorLookupMethods , self globalLookupMethods
-		, self otherLookupMethods , bootstrapper undermethods
-		, self sendSiteMethods! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:13:54'!
-findSymbol: aSymbol 
-
-	^bootstrapper spec at: aSymbol! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:56'!
-globalLookupMethods 
-	| result out global |
-	result := OrderedCollection new.
-	result
-		add: (self >> #ProtoObject) >> #_cachedLookup:;
-		add: (self >> #ProtoObject) >> #_cachedLookup:in:;
-		add: (self >> #Thread) metaclass >> #currentGlobalLookup;
-		add: (self >> #GlobalDispatchCache) metaclass >> #current.
-	out := #(initialize flushAll: #flush:forSpecies: #flush:for: #flush:for:startingAt:).
-	global := (self >> #GlobalDispatchCache) methods
-		reject: [ :m | out includes: m selector ].
-	^ result
-		addAll: global;
-		yourself! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:30'!
-methodFor: selector 
-
-	^methods detect: [:m | m selector == selector]! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:19:53'!
-otherLookupMethods 
-
-	^ OrderedCollection new
-		add: self >> #ProtoObject >> #objectAtValid:put:;
-		add: self >> #ProtoObject >> #behavior;
-		add: self >> #CompiledMethod >> #prepareForExecution;
-		add: self >> #CompiledMethod >> #isNativized;
-		add: self >> #CompiledMethod >> #validNativeCodeAddress;
-		add: self >> #CompiledMethod >> #nativeCode;
-		add: self >> #CompiledMethod >> #selector;
-		add: self >> #NativeCode >> #code;
-		add: self >> #NativeCode >> #compiledCode;
-		add: self >> #Species >> #instanceBehavior;
-		add: self >> #Process >> #wantsToStepInto;
-		yourself! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:06'!
-selectorLookupMethods 
-
-	^ OrderedCollection new
-		add: (self >> #ProtoObject) >> #_lookup:;
-		add: (self >> #ProtoObject) >> #_lookup:in:;
-		add: (self >> #ProtoObject) >> #_lookup:inDictionary:;
-		yourself! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:20:17'!
-sendSiteMethods 
-	| sendsite |
-	sendsite := self >> #SendSite.
-	^ #(_dispatchOn: _dispatchOn:startingAt: _dispatchDebuggableOn: _dispatchDebuggableOn:startingAt: sentSelector when:use: beInvoke:using: bePolymorphic isStaticSend monomorphicMap:to: polymorphicMap:to: maxSize reset takeNextFreeMIC takeNextFreePIC)
-		collect: [ :s | sendsite >> s ]! !
-
-!LookupNativizer methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 13:19:21'!
-newNativizationEnvironment 
-	| environment ignored lookup invoke |
-	environment := NativizationEnvironment new
-		globals: bootstrapper nativizer globals;
-		optimizedMethods: bootstrapper nativizer optimizedMethods.
-	ignored := HaltingSend new
-		filter: #(< <= = > + - * // bitAnd: bitOr: bitXor:).
-	lookup := LookupLinker new initializeFrom: environment.
-	lookup
-		filter:
-			#(debuggableCopy acquireReferences nativize refreshBlocks doesNotUnderstandSelector: mustBeBoolean class allocateMoreCaches).
-	invoke := InvokeLinker new
-		invoker: environment invokeStub;
-		addMethods: methods.
-	^ environment
-		addLinker: invoke;
-		addLinker: ignored;
-		addLinker: lookup;
-		completeInitialization
-! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
-isImmediate 
-
-	^ false! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:14'!
-isSmall 
-
-	^self size < 256! !
-
-!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:31:21'!
-initializeAs: anRGBehavior sized: size 
-
-	self subclassResponsibility! !
-
-!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:33'!
-nilAll: nilObject! !
-
-!ObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:32:41'!
-nilWith: nilObject ! !
-
-!ObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:35:51'!
-slotsDo: aBlock
-
-	self notYetImplemented ! !
-
-!ObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:38:23'!
-validate 
-	
-	self assert: behavior notNil! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:28:54'!
-arrayedSize 
-
-	^self size! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:11'!
-at: index 
-
-	"Return indexed value at given index, starting with 1. This CANNOT be 
-	 used for accessing named slots (aka, instance variables), to access 
-	 them use #instVarAt:"
-	
-	self subclassResponsibility  ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:24'!
-at: index put: value 
-
-	"Set indexed value at given `index` to `value`. This CANNOT be used for 
-	 setting named slots (aka, instance variables), to access them use 
-	 #instVarAt:put:"
-	
-	self subclassResponsibility  ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:36'!
-behavior 
-
-	^behavior! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:29:49'!
-behavior: anObjectMap 
-
-	behavior := anObjectMap! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:03'!
-bodySizeInBytes 
-
-	"Return the size of object body(s) in bytes,
-	 padded if a byte object"
-	^ self subclassResponsibility ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:14'!
-classname 
-
-	^spec name! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:30:30'!
-headerSizeInBytes 
-	"
-		Return the size of object header in bytes, 
-		including both small and large part (if any).
-	"
-	
-	^ self isSmall ifTrue: [ 8 ] ifFalse: [ 16 ]! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:31:00'!
-headerSmallSize 
-
-	"Return value of 'size' field of small header"
-	 | size |	
- 	size := self size.
-  	^ size < 256 ifTrue: [ size ] ifFalse: [ 0 ]! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:29'!
-size 
-
-	"Return the size if this object, that this, the value of
-	 size field in object header. 
-	
-	 For slot (pointer) objects, this is a number of slots. 
-	 For byte objects, this is a number of bytes. "
-	
-	self subclassResponsibility ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:33:43'!
-sizeInBytes 
-
-	"Return the size of object in bytes without padding"
-	^ self subclassResponsibility ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:03'!
-slotAt: index 
-
-	"Get named slot at given `index`, starting with 1. This CANNOT be used 
-	 for accessing indexed slots  (i.e., variable part of array-like objects), 
-   to set them use #at:"
-	
-	self subclassResponsibility  ! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:26'!
-slotAt: index put: value 
-
-	"Set named slot at given `index` to `value`. This CANNOT be used 
-	 for setting indexed slots  (i.e., variable part of array-like objects), 
-   to set them use #at:put:"
-	
-	self subclassResponsibility! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:34:47'!
-slotNamed: name 
-
-	"Get a named slot with given `name`"
-
-	| index |
-	index := self allInstVarNames indexOf: name.
-	index == 0
-		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
-	^ self slotAt: index! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:35:02'!
-slotNamed: name put: value 
-
-	"Set a named slot with given `name` to `value`"
-
-	| index |
-	index := self allInstVarNames indexOf: name.
-	index == 0
-		ifTrue: [ ^ self error: 'No slot named "' , name , '"' ].
-	^ self slotAt: index put: value! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:35'!
-spec 
-
-	^ spec! !
-
-!ObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:37:51'!
-wordSize 
-
-	"Return the size in bytes of the word (i.e, a reference to an object)"
-	
-	^ 8 "For now, 64bit only!!"! !
-
-!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:26:08'!
-classFor: anRGBehavior 
-
-	anRGBehavior name == #SmallInteger ifTrue: [^SmallintObjectMap].
-	^anRGBehavior isBytes
-		ifTrue: [ ByteObjectMap ]
-		ifFalse: [ SlotObjectMap ]! !
-
-!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:00'!
-new: anRGBehavior 
-	
-	^self new: anRGBehavior size: 0! !
-
-!ObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:28:19'!
-new: anRGBehavior size: size 
-
-	| class |
-	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
-	class := self classFor: anRGBehavior.
-	^ class new initializeAs: anRGBehavior sized: size! !
-
-!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:04'!
-initialize 
-
-	hash := 0! !
-
-!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:50:18'!
-initializeAs: anRGBehavior sized: size 
-
-	self assert: anRGBehavior notNil.
-	self assert: anRGBehavior isPointers.
-	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
-	spec := anRGBehavior.
-	slots := Array new: self instSize + size! !
-
-!SlotObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 13:53:24'!
-validate 
-
-	super validate.
-	slots withIndexDo:[:value :index | self assert: value notNil ]! !
-
-!SlotObjectMap methodsFor: 'iterating' stamp: 'KenD 2/22/2021 13:52:58'!
-slotsDo: aBlock 
-
-	slots do: aBlock! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:45'!
-arrayedSize 
-
-	"
-	 Return the size of the arrayed part of this object, that this,
-	 the value of size field in object header minus the instSize. 
-	"
-
-	^ self size - self instSize! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:22'!
-asBoolean 
-	spec name = #True ifTrue: [ ^true ].	spec name = #False ifTrue: [ ^false ].
-	self assert: false! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:40'!
-at: index 
-	"Return indexed value at given index, starting with 1. This CANNOT be 
-	 used for accessing named slots (aka, instance variables), to access 
-	 them use #instVarAt:"
-	
-	self assert: (index between: 1 and: slots size - self instSize).
-	^slots at: self instSize + index! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:46:52'!
-at: index put: value 
-	"Set indexed value at given `index` to `value`. This CANNOT be used for 
-	 setting named slots (aka, instance variables), to access them use 
-	 #instVarAt:put:"
-	self assert: spec isVariable.
-	self assert: (index between: 1 and: slots size - self instSize).
-	self assert: (value isKindOf: ObjectMap).
-	^slots at: self instSize + index put: value! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:07'!
-atAllPut: value 
-
-	slots atAllPut: value! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:18'!
-basicAt: index 
-	"Return indexed value at given raw index, starting with 1"
-
-	self assert: (index between: 1 and: slots size).
-	^ slots at: index! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:47:32'!
-bodySizeInBytes 
-	
-	^ self sizeInBytes! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:48:52'!
-doesNotUnderstand: aMessage 
-	"Assume setter or accessor and try to do the right thing"
-	| sel ivars |
-	sel := aMessage selector.
-	ivars := self allInstVarNames.
-	sel isUnary
-		ifTrue: [ (ivars includes: sel)
-				ifTrue: [ ^ self slotNamed: sel ] ].
-	(sel isKeyword and: [ sel numArgs == 1 ])
-		ifTrue: [ sel := sel allButLast.
-			(ivars includes: sel)
-				ifTrue: [ ^ self slotNamed: sel put: aMessage arguments first ] ].
-	^ super doesNotUnderstand: aMessage! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:20'!
-headerFlags 
-
-	| variable named small |
-	variable := spec isVariable ifTrue: [2] ifFalse: [0].
-	named := spec instSize == 0 ifTrue: [0] ifFalse: [4].
-	small := self isSmall ifTrue: [16r80] ifFalse: [0].
-	^ variable | named | small! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:31'!
-headerHash 
-
-	^hash! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:49:43'!
-headerHash: anInteger 
-
-	hash := anInteger! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:28'!
-size 
-	"Return the size if this object, that this, the value of
-	 size field in object header. 
-	
-	 For slot (pointer) objects, this is a number of slots. 
-	 For byte objects, this is a number of bytes. "
-	
-	^ slots size! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:56'!
-sizeInBytes 
-
-	^ self size * self wordSize! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:09'!
-slotAt: index 
-	"Get named slot at given `index`, starting with 1. This CANNOT be used 
-	 for accessing indexed slots  (i.e., variable part of array-like objects), 
-   to set them use #at:"
-	
-	self assert: (index between: 1 and: self instSize).
-	^slots at: index! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:24'!
-slotAt: index put: value 
-	"Set named slot at given `index` to `value`. This CANNOT be used 
-	 for setting indexed slots  (i.e., variable part of array-like objects), 
-   to set them use #at:put:"
-	
-	self assert: (index between: 1 and: self instSize).
-	self assert: (value isKindOf: ObjectMap).
-	^slots at: index put: value! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:52:35'!
-slots 
-
-	^slots! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:54:19'!
-value 
-
-	| message |
-	(self allInstVarNames includes: #value) ifFalse: [ ^super value ].
-	message := Message selector: #value.
-	^ self doesNotUnderstand: message! !
-
-!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:44:48'!
-new: anRGBehavior size: size withAll: value 
-
-	| obj |
-	obj := self new: anRGBehavior size: size.
-	^obj atAllPut: value; yourself! !
-
-!SmallintObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:58:25'!
-isImmediate 
-
-	^ true! !
-
-!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:39'!
-initializeAs: anRGBehavior sized: size 
-
-	self shouldNotImplement! !
-
-!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:57:49'!
-initializeAs: anRGBehavior valued: anInteger 
-
-	self assert: anRGBehavior name == #SmallInteger.
-	self assert: anInteger isInteger.
-	spec := anRGBehavior.
-	value := anInteger! !
-
-!SmallintObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2021 14:02:57'!
-validate 
-
-	super validate.
-"	self assert: value isSmallInteger "
-	self assert: value class == SmallInteger! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:56:49'!
-at: index 
-
-	self errorNotIndexable! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:06'!
-at: index put: anObject 
-
-	self errorNotIndexable! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:57:21'!
-hash 
-
-	^ value hash! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:21'!
-size 
-	"I have zero object slots"
-	^ 0! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:32'!
-slotAt: index 
-
-	self errorNotIndexable! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:59:42'!
-slotAt: index put: anObject 
-
-	self errorNotIndexable! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:00:55'!
-value 
-
-	^value! !
-
-!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:01:10'!
-value: aSmallInteger 
-
-	value := aSmallInteger! !
-
-!SmallintObjectMap methodsFor: 'comparing' stamp: 'KenD 2/22/2021 13:56:26'!
-= anObject 
-
-	anObject class == self class
-		ifFalse: [ ^ false ].
-	^value == anObject value! !
-
-!SmallintObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:55:55'!
-new: anRGBehavior valued: anInteger 
-
-	^self new initializeAs: anRGBehavior valued: anInteger! !
-
-!ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
-initialize 
-
-	shapes := Dictionary new! !
-
-!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:41'!
-at: type 
-
-	^shapes at: type! !
-
-!ShapeMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:18:06'!
-indexInCurrentOf: varname at: type 
-
-	| species slot |
-	species := Smalltalk at: type asSymbol.
-	slot := species slotNamed: varname.
-	slot isNil
-		ifTrue: [ self error: 'inst var ' , varname , ' not found' ].
-	^ slot index! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:16:44'!
-add: structure 
-
-	shapes at: structure name put: structure! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:47'!
-indexOf: varname at: type 
-
-	| shape |
-	shape := shapes at: type ifAbsent: [
-		^self indexInCurrentOf: varname at: type].
-	^shape indexOf: varname! !
-
-!ShapeMap methodsFor: 'adding' stamp: 'KenD 2/22/2021 13:17:29'!
-load: aClassDefinition 
-
-	| shape |
-	shape := ObjectShape new loadFrom: aClassDefinition.
-	self add: shape! !
-
-!ShapeMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 13:16:01'!
-new 
-
-	^self basicNew initialize! !
-
-!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
-initialize 
-
-	hash := 0! !
-
-!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:38'!
-initializeAs: anRGBehavior sized: size 
-
-	self assert: anRGBehavior notNil.
-"	self assert: anRGBehavior isBytes.
-	self assert: anRGBehavior isVariable.
-"	
-	spec := anRGBehavior.
-	bytes := ByteArray new: size! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:32'!
-at: index 
-	"Return indexed value at given index, starting with 1. This CANNOT be 
-	 used for accessing named slots (aka, instance variables), to access 
-	 them use #instVarAt:"
-	
-	self assert: (index between: 1 and: bytes size).
-	^bytes at: index! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:47'!
-at: index put: anObjectMap 
-	"Set indexed value at given `index` to `value`. This CANNOT be used for 
-	 setting named slots (aka, instance variables), to access them use 
-	 #instVarAt:put:"
-
-	| value |
-	self assert: (index between: 1 and: bytes size).
-	self assert: anObjectMap isImmediate.
-	value := anObjectMap value.
-	self assert: (value between: 0 and: 255).
-	bytes at: index put: value.
-	^anObjectMap! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:13'!
-bodySizeInBytes 
-	"Return the size of object body(s) in bytes, padded"
-	
-	^ self size alignedTo: self wordSize! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:26'!
-bytes 
-
-	^ bytes! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:11'!
-contentsString 
-
-	spec name == #String
-		ifTrue: [ ^bytes allButLast asString storeString ].
-	spec name == #Symbol
-		ifTrue: [ ^bytes allButLast asString asSymbol storeString ].
-	spec name == #ByteArray
-		ifTrue: [ ^bytes storeString ].
-	^spec name withArticle, ': ', bytes printString! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:27'!
-fillFrom: anObject 
-
-	self assert: anObject size == bytes size.
-	bytes replaceFrom: 1 to: bytes size with: anObject startingAt: 1! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:38'!
-headerFlags 
-
-	| byte variable small |
-	byte := 1.
-	variable := 2.
-	small := self isSmall ifTrue: [ 16r80 ] ifFalse: [ 0 ].
-	^ byte | variable | small! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:57'!
-headerHash 
-
-	^ hash! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:11:08'!
-headerHash: anInteger 
-
-	hash := anInteger! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:12:42'!
-size 
-	"Return the size if this object, that this, the value of
-	 size field in object header. 
-	
-	 For slot (pointer) objects, this is a number of slots. 
-	 For byte objects, this is a number of bytes. "
-	
-	^ bytes size! !
-
-!ByteObjectMap methodsFor: 'converting' stamp: 'KenD 2/22/2021 14:08:13'!
-asString 
-
-	^ bytes allButLast asString! !
-
-!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:05:48'!
-new: anRGBehavior size: anInteger 
-
-	^ self new
-		initializeAs: anRGBehavior sized: anInteger! !
-
-!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:06:08'!
-new: anRGBehavior valued: bytes 
-	"self assert: anRGBehavior isBytes."
-	
-	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
-
-!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:00'!
-contents 
-
-	^contents contents! !
-
-!ISAInstructionPartReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:28:08'!
-from: aStream 
-
-	contents := #[] writeStream! !
-
-!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:40'!
-contents 
-
-	^contents! !
-
-!ISAModRMReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:36:54'!
-from: aStream 
-
-	contents := aStream atEnd ifFalse: [ModRM new on: aStream next]! !
-
-!ISAOpcodeReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:38:12'!
-from: aStream 
-	| byte octets |
-	super from: aStream.
-	byte := aStream next.
-	contents nextPut: byte.
-	byte = 16rF ifTrue: [
-		octets := (#[16r66 16rF2 16rF3] includes: contents contents first)
-			ifTrue: [aStream next: 2]
-			ifFalse: [{aStream next}].
-		contents nextPutAll: octets]! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:15'!
-printLegacyOn: aStream 
-
-	legacy contents
-		do: [:p | aStream nextPutAll: p asString]
-		separatedBy: [aStream space]! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:02'!
-printRexOn: aStream 
-
-	rex isNil ifTrue: [^self].
-	aStream nextPutAll: REXPrefix rex asString.
-	(rex isOnBit: REXPrefix w value) ifTrue: [aStream nextPutAll: '.W'].
-	(rex isOnBit: REXPrefix r value) ifTrue: [aStream nextPutAll: '.R'].
-	(rex isOnBit: 1) ifTrue: [aStream nextPutAll: '.B'].
-	(rex isOnBit: 2) ifTrue: [aStream nextPutAll: '.X']! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:29'!
-printVex2On: aStream 
-
-	self printVexVvvvLpp: vex second on: aStream! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:42'!
-printVex3On: aStream 
-	| byte x b mmmmm w |
-	byte := vex second.
-	x := (byte bitAnd: 2r1000000) > 0 ifTrue: [$1] ifFalse: [$0].
-	aStream nextPut: x; nextPut: $..
-	b := (byte bitAnd: 2r100000) > 0 ifTrue: [$1] ifFalse: [$0].
-	aStream nextPut: b; nextPut: $..
-	mmmmm := byte bitAnd: 2r11111.
-	aStream
-		nextPutAll: (mmmmm bin: 5);
-		nextPut: $|.
-	byte := vex third.
-	w := byte >= 16r80 ifTrue: [$1] ifFalse: [$0].
-	aStream nextPut: w; nextPut: $..
-	self printVexVvvvLpp: byte on: aStream! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:02'!
-printVexOn: aStream 
-	| byte r |
-	vex isNil ifTrue: [^self].
-	aStream nextPutAll: vex first hex; nextPut: $|.
-	byte := vex second.
-	r := byte // 16r80 > 0 ifTrue: [$1] ifFalse: [$0].
-	aStream nextPut: r; nextPut: $..
-	vex size = 2
-		ifTrue: [self printVex2On: aStream]
-		ifFalse: [self printVex3On: aStream]! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:45:15'!
-printVexVvvvLpp: byte on: aStream 
-	| vvvv l pp |
-	vvvv := (byte bitShift: -3) bitAnd: 2r1111.
-	aStream
-		nextPutAll: (vvvv bin: 4);
-		nextPut: $..
-	l := (byte bitAnd: 2r100) > 0 ifTrue: [$1] ifFalse: [$0].
-	aStream nextPut: l; nextPut: $..
-	pp := byte bitAnd: 2r11.
-	aStream nextPutAll: (pp bin: 2)! !
-
-!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:30'!
-from: aStream 
-
-	super from: aStream.
-	self
-		legacyFrom: aStream;
-		rexFrom: aStream;
-		vexFrom: aStream! !
-
-!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:42:44'!
-legacyFrom: aStream 
-	| prefix |
-	legacy := #() writeStream.
-	[
-		prefix := LegacyPrefix withValue: aStream peek.
-		prefix isNil]
-		whileFalse: [
-			legacy nextPut: prefix.
-			contents nextPut: aStream next]! !
-
-!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:33'!
-rexFrom: aStream 
-
-	(aStream peek bitAnd: 16rF0) = REXPrefix rex value ifTrue: [
-		rex := aStream next.
-		contents nextPut: rex]! !
-
-!ISAPrefixReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:45:45'!
-vexFrom: aStream 
-	| byte |
-	byte := aStream peek.
-	vex := byte = 16rC4 ifTrue: [aStream next: 3] ifFalse: [
-		byte = 16rC5 ifFalse: [^self].
-		aStream next: 2].
-	contents nextPutAll: vex! !
-
-!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:44'!
-contents 
-
-	^contents! !
-
-!ISASibReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:47:52'!
-from: aStream 
-
-	contents := SIB new on: aStream next! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:43'!
-displacementFrom: aStream
-
-	self notYetImplemented ! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:57'!
-from: aStream 
-
-	self
-		prefixesFrom: aStream;
-		opcodeFrom: aStream;
-		modrmFrom: aStream;
-		sibFrom: aStream;
-		displacementFrom: aStream;
-		immediateFrom: aStream! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:40'!
-immediateFrom: aStream 
-
-	immediate := aStream upToEnd! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:31:53'!
-modrmFrom: aStream 
-
-	modrm := ISAModRMReader new from: aStream; contents! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:07'!
-opcodeFrom: aStream 
-
-	opcode := ISAOpcodeReader new from: aStream; asString! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:32:25'!
-prefixesFrom: aStream 
-
-	prefixes := ISAPrefixReader new from: aStream; asString! !
-
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:33:26'!
-sibFrom: aStream 
-
-	self hasSib ifFalse: [^self].
-	aStream atEnd ifTrue: [^self].
-	sib := ISASibReader new from: aStream; contents! !
-
-!ISAInstructionReader methodsFor: 'testing' stamp: 'KenD 3/8/2021 11:31:24'!
-hasSib 
-
-	^modrm notNil and: [modrm mod = 0]! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:10'!
-hi 
-
-	^byte bitShift: -6! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:22'!
-hi: anInteger 
-	| bits |
-	self assert: anInteger < 4.
-	bits := anInteger bitShift: 6.
-	byte := (byte bitAnd: 2r111111) bitOr: bits! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:38'!
-lo 
-
-	^byte bitAnd: 7! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:48'!
-lo: anInteger 
-
-	self assert: anInteger < 8.
-	byte := (byte bitAnd: 2r11111000) bitOr: anInteger! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:59'!
-mid 
-
-	^(byte bitShift: -3) bitAnd: 7! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:09'!
-mid: anInteger 
-	| bits |
-	self assert: anInteger < 8.
-	bits := anInteger bitShift: 3.
-	byte := (byte bitAnd: 2r11000111) bitOr: bits! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:01:26'!
-on: anInteger 
-
-	byte := anInteger! !
-
-!OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:02:13'!
-value 
-
-	^byte! !
-
-!OctalStructure class methodsFor: 'instance creation' stamp: 'KenD 3/20/2021 14:59:45'!
+!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:56:01'!
 new 
 
 	^super new initialize! !
 
-!ModRM methodsFor: 'initialization' stamp: 'KenD 3/20/2021 15:03:27'!
+!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:56:15'!
+on: aScriptNode 
+
+	^self new script: aScriptNode! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:43:41'!
+capturedEnvironmentIndexOf: aScriptNode 
+	| index |
+	aScriptNode realScript == script realScript
+		ifTrue: [ ^ nil ].
+	index := environments indexOf: aScriptNode ifAbsent: nil.
+	self assert: index notNil.
+	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:44:16'!
+capturedEnvironments 
+
+	^environments! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:45:57'!
+environmentIndexOf: aScriptNode 
+	"
+	temporal compatibility
+	"
+	(aScriptNode isKindOf: SScriptNode)
+		ifFalse: [ self assert: false. ^nil ].
+	^self capturedEnvironmentIndexOf: aScriptNode! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:17'!
+environmentSizeUpToCapturedArguments 
+
+	^self environmentSizeUpToEnvironments + self capturedArguments size! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:29'!
+environmentSizeUpToEnvironments 
+	| receiver |
+	receiver := self capturesSelf ifTrue: [ 1 ] ifFalse: [ 0 ].
+	^receiver + environments size! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:46:47'!
+environments 
+	"
+	compatibility, removes the home environment
+	"
+	| first |
+	environments isEmpty ifTrue: [^#()].
+	first := environments first.
+	^first isMethod ifTrue: [environments allButFirst] ifFalse: [environments]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:21'!
+home 
+	| first |
+	environments isEmpty ifTrue: [^nil].
+	first := environments first.
+	^first isMethod ifTrue: [first]! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:47:59'!
+localBindings 
+
+	^super localBindings , captured values! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:48:26'!
+parent 
+
+	^script parent scope! !
+
+!BlockScope methodsFor: 'accessing' stamp: 'KenD 2/28/2021 12:53:17'!
+scriptDefining: aString 
+
+	(self defines: aString) ifTrue: [^script].
+	^self parent scriptDefining: aString! !
+
+!BlockScope methodsFor: 'initialization' stamp: 'KenD 2/28/2021 12:47:45'!
 initialize 
 
-	byte := 0! !
+	super initialize.
+	captured := StaticBinder new.
+	environments := OrderedCollection new! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:12'!
-beRR 
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:48:57'!
+positionCapturedArgument: anArgumentBinding 
 
-	self mod: 2r11! !
+	anArgumentBinding index: self growEnvironment! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:41'!
-mod 
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:09'!
+positionCapturedLocals 
 
-	^self hi
+	script isInlined ifTrue: [^self].
+	envSize := self environmentSizeUpToEnvironments.
+	captured do: [:binding | 
+		binding isArgument
+			ifTrue: [self positionCapturedArgument: binding]
+			ifFalse: [self positionCapturedTemporary: binding]]! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:49:30'!
+positionCapturedTemporary: aTemporaryBinding 
+	| outest index declaration |
+	outest := self scriptDefining: aTemporaryBinding name.
+	index := self capturedEnvironmentIndexOf: outest realScript.
+	aTemporaryBinding environmentIndex: index.
+	declaration := outest scope resolve: aTemporaryBinding name.
+	self assert: declaration index isInteger.
+	aTemporaryBinding index: declaration index! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:50:56'!
+positionDefinedArgumentsIn: aScriptScope 
+
+	arguments do: [:binding | | index |
+		index := binding isInArray
+			ifTrue: [aScriptScope growEnvironment]
+			ifFalse: [aScriptScope growStack].
+		binding index: index]! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:51:14'!
+positionLocals 
+
+	self positionCapturedLocals.
+	super positionLocals! !
+
+!BlockScope methodsFor: 'positioning' stamp: 'KenD 2/28/2021 12:53:34'!
+transferLocal: name 
+	| binding copy |
+	(self resolveLocal: name) ifNotNil: [:b | ^b].
+	binding := self parent transferLocal: name.
+	copy := self copyLocal: binding.
+	captured at: name put: copy.
+	^copy! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:41:40'!
+captureArgument: anArgumentBinding 
+	| name |
+	name := anArgumentBinding name.
+	^captured at: name ifAbsentPut: [| transferred copy |
+		transferred := self parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
+			ifTrue: [anArgumentBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:19'!
+captureEnvironment: aScriptNode 
+
+	script == aScriptNode ifTrue: [^self].
+	(environments identityIncludes: aScriptNode) ifTrue: [^self].
+	self realParent captureEnvironment: aScriptNode.
+	aScriptNode isMethod
+		ifTrue: [environments addFirst: aScriptNode]
+		ifFalse: [environments addLast: aScriptNode]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:37'!
+captureLocal: aLocalBinding 
+
+	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
+	^aLocalBinding isTemporary
+		ifTrue: [self captureTemporary: aLocalBinding]
+		ifFalse: [self captureArgument: aLocalBinding]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:42:52'!
+captureSelf 
+
+	captureSelf ifTrue: [^self].
+	captureSelf := true.
+	self parent captureSelf! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:07'!
+captureTemporary: aTemporaryBinding 
+	| name |
+	name := aTemporaryBinding name.
+	(self defines: name) ifTrue: [^aTemporaryBinding].
+	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
+		parent := self parent.
+		declaration := parent scriptDefining: name.
+		self realScope captureEnvironment: declaration realScript.
+		transferred := parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		copy isInArray ifTrue: [aTemporaryBinding beInArray].
+		copy declaration: transferred declaration]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:43:27'!
+capturedArguments 
+
+	^captured select: [:b | b isArgument]! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:51:56'!
+resolve: aString 
+
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self parent resolve: aString! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 2/28/2021 12:53:01'!
+resolveLocal: aString 
+
+	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^captured at: aString! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:44:37'!
+capturesHome 
+
+	^self home notNil! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:45:06'!
+capturesSelf 
+
+	^captureSelf! !
+
+!BlockScope methodsFor: 'testing' stamp: 'KenD 2/28/2021 12:47:01'!
+hasMultipleBindingsFor: aString 
+	"
+	temporal compatibility
+	"
+	^self parent hasMultipleBindingsFor: aString! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:45:42'!
+copyLocal: binding 
+
+	^script isInlined ifTrue: [binding] ifFalse: [binding copy beInArray]! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 2/28/2021 12:51:31'!
+realParent 
+
+	^script realParent scope! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:11'!
+addPool: aPoolDictionary 
+	| binder |
+	binder := DynamicBinder on: aPoolDictionary .
+	pools add: binder! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:22'!
+addPool: aDictionary of: type 
+	| dict |
+	dict := DynamicBinder on: aDictionary of: type.
+	pools add: dict! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:35'!
+addPoolBinders: aCollection 
+
+	pools addAll: aCollection
 ! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:03:51'!
-mod: anInteger 
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:33:54'!
+captureEnvironment: aScriptNode 
 
-	self hi: anInteger! !
+	self assert: aScriptNode == script! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:01'!
-opcode 
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:34:18'!
+captureLocal: aLocalBinding 
 
-	^self reg! !
+	self assert: (self resolveLocal: aLocalBinding name) notNil.
+	^aLocalBinding! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:09'!
-opcode: anInteger 
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:39:13'!
+captureSelf 
 
-	self reg: anInteger! !
+	captureSelf := true! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:19'!
-reg 
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:06'!
+resolve: aString 
 
-	^self mid! !
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self resolveShared: aString! !
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:29'!
-reg: aRegister 
-	| mid |
-	mid := aRegister isInteger
-		ifTrue: [aRegister]
-		ifFalse: [aRegister index \\ 8].
-	self mid: mid! !
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:21'!
+resolveShared: aString 
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:39'!
-rm 
+	(pseudo at: aString) ifNotNil: [:binding | ^binding].
+	(ivars at: aString) ifNotNil: [:binding | ^binding].
+	cvars do: [:binder | binder at: aString ifPresent: [:binding | ^binding]].
+	pools do: [:pool | pool at: aString ifPresent: [:binding | ^binding]].
+	^(globals at: aString) ifNil: [UnresolvedBinding new name: aString]! !
 
-	^self lo! !
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/20/2021 14:46:36'!
+scriptDefining: aString 
 
-!ModRM methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:04:51'!
-rm: anInteger 
+	(self resolveLocal: aString) ifNotNil: [^script].
+	(self resolveShared: aString) ifNotNil: [^script].
+	self assert: false.
+	^nil! !
 
-	self lo: anInteger! !
+!MethodScope methodsFor: 'testing' stamp: 'KenD 3/20/2021 14:41:14'!
+hasMultipleBindingsFor: aString 
+"
+	temporal compatibility
+"
+	| count |
+	count := 0.
+	cvars
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	pools
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	^count > 1! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:54:49'!
-base 
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:39:37'!
+classBinding 
 
-	^self lo! !
+	^species! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:54:58'!
-base: anInteger 
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:40:39'!
+environmentIndexOf: aScriptNode 
 
-	self lo: anInteger! !
+	self assert: aScriptNode == script.
+	^nil! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:22'!
-baseRegister: aRegister 
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:30'!
+namespace 
 
-	self base: aRegister index! !
+	^globals! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:32'!
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:39'!
+namespace: aDictionary 
+
+	globals contents: aDictionary! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:45:53'!
+poolFor: aString 
+
+	cvars do: [:binder | binder at: aString ifPresent: [:b | ^binder contents]].
+	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
+	self error: 'not found'! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:46:58'!
+species: aSpecies 
+
+	species ifNotNil: [^self].
+	species := aSpecies.
+	self initializeInstVars; initializeClassVars; initializePoolVars.
+	species superclass isNil ifTrue: [^self].
+	pseudo at: 'super' put: SuperBinding new! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:47:12'!
+transferLocal: name 
+
+	^self resolveLocal: name! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:41:32'!
+initialize 
+
+	super initialize.
+	globals := DynamicBinder on: Dictionary new of: GlobalBinding.
+	ivars := StaticBinder new.
+	cvars := OrderedCollection new. 
+	pools := OrderedCollection new.
+	self initializePseudoVars! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:43:54'!
+initializeClassVars 
+"
+	fixme: bootstrapping should be properly abstracted
+	and not checked with isKindOf:
+"
+	| vars |
+	species instanceSide withAllSuperclasses
+		do: [ :class | 
+			| binder |
+			vars := class classPool.
+			binder := DynamicBinder on: vars of: ClassVarBinding.
+			cvars add: binder ]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:07'!
+initializeInstVars 
+
+	species allInstVarNames withIndexDo: [:name :i | | binding |
+		binding := InstVarBinding new name: name; index: i.
+		ivars at: name put: binding]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:44:19'!
+initializePoolVars 
+	| instance |
+	instance := species instanceSide.
+	(instance allSharedPoolsUsing: globals)
+		do:
+			[ :pool | self addPool: pool ] .
+	instance withAllSuperclasses
+		do: [ :class | class localPools do: [ :pool | self addPool: pool ] ]! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/20/2021 14:45:00'!
+initializePseudoVars 
+
+	pseudo := StaticBinder new.
+	pseudo
+		at: 'nil' put: NilBinding new;
+		at: 'true' put: TrueBinding new;
+		at: 'false' put: FalseBinding new;
+		at: 'self' put: SelfBinding new! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:07:26'!
+declaration 
+
+	^self! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:18'!
+literal
+
+	^nil! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:52'!
+name: aString 
+
+	name := aString! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:06:52'!
+canBeAssigned 
+
+	^true! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:20'!
+isArgument 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:30'!
+isClassBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:38'!
+isClassVariable 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:11:52'!
+isConstantBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:13'!
+isGlobal 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:20'!
+isInStack 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:28'!
+isInstVar 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:38'!
+isLiteral 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:51'!
+isLocal 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:12:59'!
+isPoolVariableBinding 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:07'!
+isSelf 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:43'!
+isSelfOrSuper 
+
+	^self isSelf or: [self isSuper]! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:23'!
+isSuper 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:33'!
+isTemporary 
+
+	^false! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:13:56'!
+isUnresolved 
+
+	^false! !
+
+!Binding methodsFor: 'actions' stamp: 'KenD 2/24/2021 11:05:41'!
+beReferencedFrom: aScriptNode
+
+	self notYetImplemented ! !
+
+!Binding methodsFor: 'codeGeneration' stamp: 'KenD 2/24/2021 11:09:17'!
+encodeUsing: anAstcodeEncoder 
+
+	self assert: false! !
+
+!UnresolvedBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:39:05'!
+isUnresolved 
+
+	^true! !
+
+!UnresolvedBinding class methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:38:42'!
+default 
+
+	^Default ifNil: [Default := self new name: '<unresolved>']! !
+
+!AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
+usesSymbols 
+
+	^false! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:30'!
+association 
+
+	^association! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:41'!
+association: anAssociation 
+
+	association := anAssociation.
+	name := anAssociation key! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:25:02'!
+literal 
+
+	^association! !
+
+!AssociationBinding class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:23:29'!
+on: anAssociation 
+
+	^self new association: anAssociation! !
+
+!ClassVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:25:20'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithClassVar: association! !
+
+!ClassVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:25:32'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeClassVar: association! !
+
+!ClassVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:25:44'!
+isClassVariable 
+
+	^true! !
+
+!GlobalBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:43:12'!
+isGlobal 
+
+	^true! !
+
+!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:39:02'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithGlobal: association! !
+
+!GlobalBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:42:54'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeGlobalVar: association! !
+
+!GlobalBinding class methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:37:51'!
+usesSymbols 
+
+	^true! !
+
+!GlobalBinding class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:37:20'!
+on: anAssociation 
+	| v class |
+	v := anAssociation value.
+	class := (v isSpecies or: [ v class == SlotObjectMap and: [v spec isMeta]])
+		ifTrue: [ ClassBinding ]
+		ifFalse: [ GlobalBinding ].
+	^ class new association: anAssociation! !
+
+!ClassBinding methodsFor: 'testing' stamp: 'KenD 2/28/2021 13:44:11'!
+isClassBinding 
+
+	^true! !
+
+!ClassBinding methodsFor: 'codeGeneration' stamp: 'KenD 2/28/2021 13:44:25'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeClassBinding: association! !
+
+!PoolVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:07'!
+isPoolVariableBinding 
+
+	^true! !
+
+!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:39'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithPoolVar: association! !
+
+!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:50'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodePoolVar: self literal! !
+
+!ConstantPoolBinding methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:45:49'!
+literal 
+
+	^association value! !
+
+!ConstantPoolBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:45:10'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithConstPoolVar: association value! !
+
+!ConstantPoolBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:45:20'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodePoolConst: self literal! !
+
+!ConstantPoolBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:51'!
+canBeAssigned 
+
+	^false! !
+
+!ConstantPoolBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:45:32'!
+isConstantBinding 
+
+	^true! !
+
+!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:41'!
 index 
 
-	^self mid! !
+	^index! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:42'!
+!InstVarBinding methodsFor: 'accessing' stamp: 'KenD 3/8/2021 07:53:51'!
+index: aNumber 
+
+	index := aNumber! !
+
+!InstVarBinding methodsFor: 'actions' stamp: 'KenD 3/8/2021 07:52:56'!
+beReferencedFrom: aScriptNode 
+
+	aScriptNode useSelf! !
+
+!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:13'!
+emitLoadAusing: anSExpressionNativizer 
+
+	anSExpressionNativizer encodeLoadAwithInstVar: index! !
+
+!InstVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/8/2021 07:53:25'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeInstVar: index! !
+
+!InstVarBinding methodsFor: 'testing' stamp: 'KenD 3/8/2021 07:54:09'!
+isInstVar 
+
+	^true! !
+
+!LiteralBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:53:29'!
+isLiteral
+
+	^true! !
+
+!TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeTrue! !
+
+!TrueBinding methodsFor: 'evalutaing' stamp: 'KenD 4/8/2021 12:37:35'!
+value 
+
+	^true! !
+
+!FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 13:07:44'!
+value 
+
+	^false! !
+
+!FalseBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/3/2021 13:07:22'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeFalse! !
+
+!LocalBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:55:22'!
+beInArray 
+
+	environment := ArrayEnvironment new! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:13'!
+isInStack 
+
+	^environment isStack! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:32'!
+isLocal 
+
+	^true! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:57:03'!
+sInArray 
+
+	^self isInStack not! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:35'!
+declaration 
+
+	^declaration! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:43'!
+declaration: anIdentifierNode 
+
+	declaration := anIdentifierNode! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:04'!
+environmentIndex 
+
+	^environment index! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:17'!
+environmentIndex: anInteger 
+
+	environment index: anInteger! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:27'!
+environmentObject 
+
+	^environment! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:38'!
+index
+
+	^index! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:47'!
+index: aNumber 
+
+	index := aNumber! !
+
+!TemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:34:23'!
+description 
+
+	^'temporary ' , name! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:35'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithTemp: index env: environment! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:53'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeTemporary: index env: environment! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:35:10'!
+initialize 
+
+	super initialize.
+	environment := StackEnvironment new! !
+
+!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:35:25'!
+isTemporary 
+
+	^true! !
+
+!ArgumentBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:00:20'!
+description 
+
+	^'argument ' , name! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 12:59:46'!
+beInlined 
+
+	environment := InlinedArgEnvironment new! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/25/2021 13:01:28'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeArgument: index env: environment! !
+
+!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:02:17'!
+initialize 
+
+	super initialize.
+	environment := ArgumentEnvironment new! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:00:00'!
+canBeAssigned 
+
+	^false! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:01:53'!
+index: aNumber 
+
+	index := aNumber! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:34'!
+isArgument 
+
+	^true! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:02:55'!
+isInlined 
+
+	^environment isInlinedArgument! !
+
+!ArgumentBinding methodsFor: 'private' stamp: 'KenD 2/25/2021 13:01:12'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithArg: index env: environment! !
+
+!SelfBinding methodsFor: 'actions' stamp: 'KenD 2/27/2021 13:23:18'!
+beReferencedFrom: aScriptNode 
+
+	aScriptNode useSelf! !
+
+!SelfBinding methodsFor: 'emitCode' stamp: 'KenD 2/27/2021 13:24:08'!
+emitLoadAusing: anSExpressionNativizer 
+
+	anSExpressionNativizer encodeLoadAwithSelf! !
+
+!SelfBinding methodsFor: 'emitCode' stamp: 'KenD 2/27/2021 13:24:20'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeSelf! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/27/2021 13:23:33'!
+canBeAssigned 
+
+	^false! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/27/2021 13:24:34'!
+isSelf 
+
+	^true! !
+
+!SuperBinding methodsFor: 'emitCode' stamp: 'KenD 4/8/2021 12:32:04'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeSuper! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:14'!
+isSelf 
+
+	^false! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:32:25'!
+isSuper 
+
+	^true
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:30:04'!
+bindingTypeOf: id 
+	
+	^bindingTypes at: id! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:07'!
+literalAt: anInteger 
+
+	^method at: anInteger! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:20'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:43'!
+next 
+
+	^stream next! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:41:54'!
+nextInteger 
+
+	^stream next! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:05'!
+nodeTypeOf: id 
+
+	^nodeTypes at: id! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:42:17'!
+stream: aStream 
+
+	stream := aStream! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:18'!
+decodeArgument 
+
+	^SArgumentBinding new
+		index: self nextInteger;
+		environment: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:30:41'!
+decodeAssignment 
+	| assignment codes |
+	assignment := SAssignment new.
+	codes := stream upToEnd collect: [:elem | self decodeNode: elem].
+	assignment expression: codes last.
+	1 to: codes size - 1 do: [:i | | identifier |
+		identifier := codes at: i.
+		assignment assign: identifier].
+	^assignment! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:24'!
+decodeBlock 
+	| expression next block index |
+	expression := SBlock new.
+	next := stream peek.
+	next !!= 0
+		ifTrue: [ index := stream next. block := method at: index.
+			expression
+				compiledCode: block;
+				index: index;
+				capturedVariables: stream next ]
+		ifFalse: [ stream next.
+			expression inlinedArgs: stream next ].
+	expression statements: self decodeStatements.
+	^ expression! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:31:52'!
+decodeCascade 
+	| receiver messages prev |
+	receiver := self decodeNode: stream next.
+	prev := stream.
+	messages := stream upToEnd collect: [:elem | 
+		stream := elem readStream.
+		SCascadeMessage decodeUsing: self].
+	stream := prev.
+	^SCascade new receiver: receiver; messages: messages! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:14'!
+decodeCascadeMessage 
+	| index selector arguments |
+	index := stream next.
+	selector := index = 0 ifTrue: [stream next] ifFalse: [method at: index].
+	arguments := stream upToEnd collect: [:node | self decodeNode: node].
+	^SCascadeMessage new selector: selector; arguments: arguments! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:30'!
+decodeClassBinding 
+	| index assoc |
+		index := self nextInteger.
+
+	assoc := method at: index.
+	^ SClassBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:45'!
+decodeClassVar 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SClassVarBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:08'!
+decodeConstantPoolVar 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SConstantPoolBinding new
+		index: index;
+		association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:31'!
+decodeGlobalBinding 
+	| index assoc |
+	index := self nextInteger.
+	assoc := method at: index.
+	^ SGlobalBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:33:47'!
+decodeIdentifier 
+	| type binding |
+	type := self bindingTypeOf: self nextInteger.
+	binding := type decodeUsing: self.
+	^ SIdentifier new binding: binding! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:05'!
+decodeInlineNodes: anArray
+	| prev result type decoded |
+	anArray ifNil: [ ^ #() ].
+	prev _ stream.
+	result _ OrderedCollection new.
+	stream _ anArray readStream.
+	[ stream atEnd ] whileFalse: [
+		type _ self nodeTypeOf: stream next.
+		decoded _ type decodeUsing: self.
+		result add: decoded ].
+	stream _ prev.
+	^ result! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:26'!
+decodeInstVar 
+
+	^SInstVarBinding new index: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:35:42'!
+decodeLiteral 
+	| index value |
+	index := self nextInteger.
+	value := index = 0
+		ifTrue: [ stream next ]
+		ifFalse: [ method at: index ].
+	^ SLiteral new index: index; value: value! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:10'!
+decodeMessage 
+	| index selector receiver arguments opcodes |
+	index := stream next.
+	selector := index = 0
+		ifTrue: [ stream next ]
+		ifFalse: [ method at: index ].
+	receiver := self decodeNode: stream next.
+	arguments := self decodeNodes: stream next.
+	stream atEnd
+		ifFalse: [ opcodes := stream peek = 0
+				ifTrue: [ stream next.
+					#inlined ]
+				ifFalse: [ self decodeInlineNodes: stream next ] ].
+	^ SMessage new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		opcodes: opcodes! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:36:41'!
+decodeMethod 
+	| type node next pragma |
+	type := stream next.
+	type !!= MethodId
+		ifTrue: [ self error: 'method astcode expected' ].
+	node := SMethod new.
+	next := stream peek.
+	(next = PragmaId)
+		ifTrue:
+			[ stream next.
+			pragma := SPragma new
+				name: stream next.
+			node pragma: pragma ].
+		 node
+			compiledCode: method;
+		statements: self decodeStatements.
+	^ node! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:06'!
+decodeNode: anArray 
+	| prev type result |
+	prev := stream.
+	stream := anArray readStream.
+	type := self nodeTypeOf: stream next.
+	result := type decodeUsing: self.
+	stream := prev.
+	^result
+! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:21'!
+decodeNodes: anArray 
+	anArray ifNil: [^#(  )].
+	^anArray collect: [:arg | self decodeNode: arg  ]! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:34'!
+decodePoolVar 
+	| index assoc |
+	index := self nextInteger.
+
+	assoc := method at: index.
+	^ SPoolVarBinding new index: index; association: assoc! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:37:54'!
+decodeReturn 
+	| expression local |
+	local := stream next.
+	expression := self decodeNode: stream next.
+	^SReturn new local: local; expression: expression! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:15'!
+decodeStatement: anArray 
+
+	^self decodeNode: anArray! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:29'!
+decodeStatements 
+
+	^stream upToEnd collect: [:statement | self decodeStatement: statement]! !
+
+!AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:38:43'!
+decodeTemporary 
+
+	^STemporaryBinding new
+		index: self nextInteger;
+		environment: self nextInteger! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:39:27'!
+initialize 
+	nodeTypes := Dictionary new: 40.
+	bindingTypes := Dictionary new: 20.
+	nodeTypes
+		at: AssignmentId put: SAssignment;
+		at: BlockId put: SBlock;
+		at: CascadeId put: SCascade;
+		at: LiteralId put: SLiteral;
+		at: IdentifierId put: SIdentifier;
+		at: MessageId put: SMessage;
+		at: ReturnId put: SReturn;
+		at: LoadRwithSelfId put: LoadRwithSelf;
+		at: LoadAwithSelfId put: LoadAwithSelf;
+		at: LoadRwithNilId put: LoadRwithNil;
+		at: LoadAwithNilId put: LoadAwithNil;
+		at: LoadRwithFalseId put: LoadRwithFalse;
+		at: LoadAwithFalseId put: LoadAwithFalse;
+		at: LoadRwithTrueId put: LoadRwithTrue;
+		at: LoadAwithTrueId put: LoadAwithTrue;
+		at: LoadRwithArgumentId put: LoadRwithArgument;
+		at: LoadAwithArgumentId put: LoadAwithArgument;
+		at: LoadRwithTemporaryId put: LoadRwithTemporary;
+		at: LoadAwithTemporaryId put: LoadAwithTemporary;
+		at: LoadRwithInstVarId put: LoadRwithInstVar;
+		at: LoadAwithInstVarId put: LoadAwithInstVar;
+		at: LoadAwithGlobalId put: LoadAwithGlobal;
+		at: LoadAwithClassVarId put: LoadAwithClassVar;
+		at: LoadAwithPoolVarId put: LoadAwithPoolVar;
+		at: LoadAwithConstPoolId put: LoadAwithConstPoolVar;
+		at: LoadRvisitingReceiverId put: LoadRvisitingReceiver;
+		at: LoadAvisitingArgumentId put: LoadAvisitingArgument;
+		"		at: LoadRwithLiteralId put: LoadRwithLiteral;"
+			at: LoadAwithLiteralId put: LoadAwithLiteral;
+		at: EnsureRisSmallIntegerId put: EnsureRSmallInteger;
+		at: EnsureAisSmallIntegerId put: EnsureASmallInteger;
+		at: PushRid put: PushRopcode;
+		at: PopRid put: PopRopcode.
+	bindingTypes
+		at: NilId put: SNilBinding;
+		at: TrueId put: STrueBinding;
+		at: FalseId put: SFalseBinding;
+		at: ArgumentId put: SArgumentBinding;
+		at: TemporaryId put: STemporaryBinding;
+		at: SelfId put: SSelfBinding;
+		at: SuperId put: SSuperBinding;
+		at: InstVarId put: SInstVarBinding;
+		at: ClassVarId put: SClassVarBinding;
+		at: GlobalValueId put: SGlobalBinding;
+		at: GlobalClassId put: SClassBinding;
+		at: PoolVarId put: SPoolVarBinding;
+		at: ConstantPoolId put: SConstantPoolBinding! !
+
+!BinaryMessageOptimizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 12:51:15'!
+emitter: anAstcodeEmitter 
+
+	emitter := anAstcodeEmitter ! !
+
+!BinaryMessageOptimizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 12:53:25'!
+message: aMessageNode 
+
+	message := aMessageNode.
+	selector := aMessageNode selector value.
+	receiver := aMessageNode receiver.
+	argument := aMessageNode arguments first ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:50:49'!
+emitOpcodes 
+
+	(selector == #'==' or: [selector == #'!!==']) ifTrue: [^self loadOperands].
+	
+	(#(= + - !!= < > <= >= | & << >> * / // \\ bitOr: bitAnd: bitXor: bitShift:)
+		includes: selector)
+		ifTrue: [^self loadSmallIntegerOperands].
+		
+	self assert: false ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:28'!
+ensureAisSmallInteger 
+
+	emitter nextPut: EnsureAisSmallIntegerId ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:39'!
+ensureRisSmallInteger 
+
+	emitter nextPut: EnsureRisSmallIntegerId ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:49'!
+genericLoadArgument 
+
+	emitter nextPut: LoadAvisitingArgumentId ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:51:59'!
+genericLoadReceiver 
+
+	emitter nextPut: LoadRvisitingReceiverId ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:52:36'!
+loadOperands 
+	| strict push |
+	strict := message needsStrictEvaluationOrder.
+	strict
+		ifTrue: [
+			emitter encodeLoadRvisitingReceiver.
+			push := self hasImmediateArgument not.
+			push ifTrue: [emitter encodePushR].
+			self loadArgument.
+			push ifTrue: [emitter encodePopR]]
+		ifFalse: [
+			self loadArgument.
+			emitter encodeLoadRvisitingReceiver] ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:53:08'!
+loadSmallIntegerOperands 
+
+	self loadOperands.
+	self receiverIsSmallInteger ifFalse: [self ensureRisSmallInteger].
+	self argumentIsSmallInteger ifFalse: [self ensureAisSmallInteger] ! !
+
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:52:23'!
+oadArgument 
+
+	self hasImmediateArgument
+		ifTrue: [argument emitLoadAusing: emitter]
+		ifFalse: [self genericLoadArgument] ! !
+
+!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:50:06'!
+argumentIsSmallInteger 
+
+	^argument isLiteral and: [argument value isSmallInteger] ! !
+
+!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:50:27'!
+argumentOverwritesR 
+
+	argument isLiteral ifTrue: [^false].
+	argument isVariable ifTrue: [^false].
+	^true ! !
+
+!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:52:13'!
+hasImmediateArgument 
+
+	^argument isLiteral or: [argument isIdentifier] ! !
+
+!BinaryMessageOptimizer methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:53:42'!
+receiverIsSmallInteger 
+
+	^receiver isLiteral and: [receiver value isSmallInteger] ! !
+
+!BinaryMessageOptimizer class methodsFor: 'testing' stamp: 'KenD 2/27/2021 12:49:41'!
+optimizesMessage: selector 
+
+	^ #(== = < <= >= > + - * // \\ | & bitOr: bitAnd: bitXor:)
+		includes: selector! !
+
+!BinaryMessageOptimizer class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 12:49:06'!
+on: aMessageNode using: anAstcodeEmitter 
+
+	^self new emitter: anAstcodeEmitter; message: aMessageNode ! !
+
+!SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
+decodeUsing: anAstcodeDecoder 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:18:28'!
+assign: value within: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:20:38'!
+valueWithin: evaluator 
+
+	^self subclassResponsibility! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:48'!
+isArgument 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:18:56'!
+isAssociation 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:03'!
+isClassBinding 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:09'!
+isClassVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:18'!
+isInstVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:26'!
+isLiteral 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:34'!
+isPoolVar 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:40'!
+isSelf 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:48'!
+isSuper 
+
+	^false! !
+
+!SBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:19:56'!
+isTemporary 
+
+	^false! !
+
+!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
+isLiteral 
+
+	^true! !
+
+!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
+value 
+
+	^true! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
+valueWithin: evaluator 
+
+	^evaluator trueLiteral! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
+value 
+	
+	^false! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
+valueWithin: evaluator 
+
+	^evaluator falseLiteral! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
+index 
+
+	^position! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
 index: anInteger 
 
-	self mid: anInteger! !
+	^position := anInteger! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:55:55'!
-indexRegister: aRegister 
+!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
+isInStack 
 
-	self index: aRegister index! !
+	self assert: false.
+	^ environment = 0! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:03'!
-scale 
+!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
+assign: value within: evaluator 
 
-	^self hi! !
+	evaluator temporaryAt: position in: environment put: value! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:14'!
-scale: anInteger 
+!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
+valueWithin: evaluator 
 
-	self hi: anInteger! !
+	^evaluator temporaryAt: position in: environment! !
 
-!SIB methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:56:31'!
-scaleFactor: s 
-	| index |
-	index := #[1 2 4 8] indexOf: s.
-	self scale: index - 1! !
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
+isInCurrentEnvironment 
+
+	^environment = 1! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
+isTemporary 
+
+	^true! !
+
+!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeTemporary! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
+assign: value within: evaluator 
+
+	self halt! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:16:08'!
+valueWithin: evaluator 
+
+	^evaluator argumentAt: position in: environment! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:20'!
+isArgument 
+
+	^true! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:30'!
+isInlined 
+
+	^ environment = -1! !
+
+!SArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:14:42'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeArgument! !
+
+!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
+valueWithin: evaluator 
+
+	^evaluator receiver! !
+
+!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
+isSelf 
+
+	^true! !
+
+!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
+isSelf 
+
+	^false! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
+isSuper 
+
+	^true! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
+association 
+
+	^association! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:33'!
+association: anAssociation 
+
+	association := anAssociation! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:51'!
+index 
+	
+	^ index! !
+
+!SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:39:02'!
+index: anInteger 
+
+	 index := anInteger ! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:38:04'!
+assign: value within: evaluator 
+
+	^ evaluator associationValueAt: index put: value! !
+
+!SAssociationBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:39:38'!
+valueWithin: evaluator 
+
+	^evaluator associationValueAt: index! !
+
+!SAssociationBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:39:24'!
+isAssociation 
+
+	^true! !
+
+!SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
+value 
+
+	^association value! !
+
+!SPoolVarBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:42:01'!
+isPoolVar 
+
+	^true! !
+
+!SPoolVarBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:41:20'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodePoolVar! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:13'!
+value 
+
+	^association! !
+
+!SConstantPoolBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:44:23'!
+valueWithin: evaluator 
+
+	^ evaluator constPoolValueAt: index! !
+
+!SConstantPoolBinding class methodsFor: 'services' stamp: 'KenD 4/8/2021 07:43:43'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeConstantPoolVar! !
+
+!SClassVarBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:23:42'!
+isClassVar 
+
+	^true! !
+
+!SClassVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:23:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassVar! !
+
+!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeGlobalBinding! !
+
+!SClassBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:22:40'!
+isClassBinding 
+
+	^true! !
+
+!SClassBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:22:24'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassBinding! !
+
+!SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:27'!
+index 
+
+	^index! !
+
+!SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:44'!
+index: anInteger 
+
+	index := anInteger! !
+
+!SInstVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/13/2021 09:17:46'!
+assign: value within: evaluator 
+
+	evaluator instanceVarAt: index put: value! !
+
+!SInstVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/13/2021 09:19:39'!
+valueWithin: evaluator 
+
+	^evaluator instanceVarAt: index! !
+
+!SInstVarBinding methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:19:02'!
+isInstVar 
+
+	^true! !
+
+!SInstVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/13/2021 09:15:59'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeInstVar! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
+printOn: aStream indent: anInteger 
+
+	super printOn: aStream! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:04:54'!
+isAssignment 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:01'!
+isCascade 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:10'!
+isCascadeMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:16'!
+isIdentifier 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:23'!
+isInstVar 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:32'!
+isLiteral 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:39'!
+isMessage 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:48'!
+isMethod 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:05:55'!
+isReturn 
+
+	^false! !
+
+!SExpression methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:06:02'!
+isSuper 
+
+	^false! !
+
+!SExpression methodsFor: 'visiting' stamp: 'KenD 2/22/2021 13:04:25'!
+acceptVisitor: visitor 
+
+	^self subclassResponsibility! !
+
+!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self! !
+
+!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{IdentifierId. ';
+		print: binding;
+		nextPutAll: '}'! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
+isArgument 
+
+	^binding isArgument! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
+isAssociation 
+
+	^binding isAssociation! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
+isIdentifier 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
+isInstVar 
+
+	^binding isInstVar! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
+isLiteral 
+
+	^binding isLiteral! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
+isSelf 
+	
+	^binding isSelf! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
+isSelfOrSuper 
+
+	^binding isSelf or: [binding isSuper]! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
+isSuper 
+
+	^binding isSuper! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
+isTemporary 
+
+	^binding isTemporary! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeIdentifier! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
+index 
+
+	^index! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
+index: anInteger 
+
+	index := anInteger! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
+value 
+
+	^value! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{LiteralId. ';
+		print: value;
+		nextPutAll: '}'! !
+
+!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
+isLiteral 
+
+	^true! !
+
+!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
+acceptVisitor: visitor 
+
+	^ visitor visitLiteral: self! !
+
+!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeLiteral! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
+arguments 
+
+	^arguments! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
+opcodes 
+
+	^opcodes! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
+opcodes: aCollection 
+
+	opcodes := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
+receiver 
+
+	^receiver! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
+receiver: anSExpression 
+
+	receiver := anSExpression! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
+selector 
+
+	^selector! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
+selector: aSelector 
+
+	selector := aSelector! !
+
+!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
+initialize 
+
+	super initialize.
+	arguments := #()! !
+
+!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
+	receiver printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '.'; cr.
+	arguments
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '. '; cr].
+	aStream nextPutAll: '}'! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
+isInlined 
+
+	^opcodes = #inlined! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
+isMessage 
+
+	^true! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
+isOptimized 
+
+	^opcodes notNil! !
+
+!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
+acceptVisitor: visitor 
+
+	^visitor visitMessage: self! !
+
+!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeMessage! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:50'!
+assign: anSIdentifier 
+
+	assignees add: anSIdentifier! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:58'!
+assignees 
+
+	^assignees! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:07'!
+expression 
+
+	^expression! !
+
+!SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:20:15'!
+expression: anSExpression 
+
+	expression := anSExpression! !
+
+!SAssignment methodsFor: 'initialization' stamp: 'KenD 4/12/2021 13:20:35'!
+initialize 
+
+	assignees := OrderedCollection new! !
+
+!SAssignment methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:21:14'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{AssignmentId.'.
+	assignees
+		do: [:identifier | 
+			aStream cr.
+			identifier printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '.'].
+	aStream nextPutAll: '.'; cr.
+	expression printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '}'! !
+
+!SAssignment methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:20:51'!
+isAssignment 
+
+	^true! !
+
+!SAssignment methodsFor: 'visiting' stamp: 'KenD 4/12/2021 13:19:22'!
+acceptVisitor: visitor 
+
+	^visitor visitAssignment: self! !
+
+!SAssignment class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:19:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeAssignment! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:28'!
+messages 
+	
+	^messages! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:39'!
+messages: aCollection 
+
+	messages := aCollection! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:48'!
+receiver 
+
+	^receiver! !
+
+!SCascade methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:55:58'!
+receiver: anSExpression 
+
+	receiver := anSExpression! !
+
+!SCascade methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:55:07'!
+isCascade 
+
+	^true! !
+
+!SCascade methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:54:55'!
+acceptVisitor: visitor 
+
+	^visitor visitCascade: self! !
+
+!SCascade class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:54:27'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeCascade! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:45'!
+arguments 
+
+	^arguments! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:13:54'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:22'!
+selector 
+
+	^selector! !
+
+!SCascadeMessage methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:14:31'!
+selector: aSymbol 
+
+	selector := aSymbol! !
+
+!SCascadeMessage methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:14:13'!
+isCascadeMessage 
+
+	^true! !
+
+!SCascadeMessage methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:13:25'!
+acceptVisitor: visitor 
+
+	^ visitor visitCascadeMessage: self! !
+
+!SCascadeMessage class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:12:58'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeCascadeMessage! !
+
+!SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:13'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdentifier methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:10:38'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{IdentifierId. ';
+		print: binding;
+		nextPutAll: '}'! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:31'!
+isArgument 
+
+	^binding isArgument! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:40'!
+isAssociation 
+
+	^binding isAssociation! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:48'!
+isIdentifier 
+
+	^true! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 08:59:58'!
+isInstVar 
+
+	^binding isInstVar! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:27'!
+isLiteral 
+
+	^binding isLiteral! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:37'!
+isSelf 
+
+	^binding isSelf! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:49'!
+isSelfOrSuper 
+
+	^binding isSelf or: [binding isSuper]! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:09:58'!
+isSuper 
+
+	^binding isSuper! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:10:07'!
+isTemporary 
+
+	^binding isTemporary! !
+
+!SIdentifier methodsFor: 'visiting' stamp: 'KenD 4/13/2021 08:58:51'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self! !
+
+!SIdentifier class methodsFor: 'instance creation' stamp: 'KenD 4/13/2021 08:58:07'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeIdentifier! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
+argumentCount 
+
+	^compiledCode argumentCount! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:56'!
+compiledCode 
+
+	^compiledCode! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:05'!
+compiledCode: anObject 
+
+	compiledCode := anObject! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:45'!
+statements 
+
+	^statements! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:32:54'!
+statements: aCollection 
+
+	statements := aCollection! !
+
+!SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:33:09'!
+tempCount 
+
+	^compiledCode tempCount! !
+
+!SScript methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:32:22'!
+initialize 
+
+	statements := #()! !
+
+!SScript methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:32:34'!
+printOn: aStream indent: anInteger 
+
+	statements
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '.'; cr]! !
+
+!SBlock methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:34:39'!
+acceptVisitor: visitor 
+
+	^visitor visitBlock: self! !
+
+!SBlock class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 14:34:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeBlock! !
 
 !Subject methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:24:29'!
 _gate 
@@ -27157,27 +27566,27 @@ thru: anInteger
 
 	^Stretch from: self thru: anInteger! !
 SFFIDescriptor initialize!
-CharacterConstants initialize!
-SpeciesFormatMasks initialize!
-OperandTypeFlags initialize!
-Prefixes initialize!
-Registers initialize!
-SCompiledMethodFlags initialize!
-AstBindingTypes initialize!
-AstNodeTypes initialize!
-ClosureElementTypes initialize!
-SExpressionTypes initialize!
-InlineMessageLinkerFlags initialize!
-SendSiteFlags initialize!
-ObjectHeaderMasks initialize!
-ObjectHeaderOffsets initialize!
-SCompiledBlockFlags initialize!
-MethodEvaluator initialize!
-VirtualSmalltalkRuntime initialize!
 Register initialize!
 InstructionEncoder initialize!
 InstructionSpec initialize!
 Assembler64 initialize!
 JITAssembler64 initialize!
+MethodEvaluator initialize!
+VirtualSmalltalkRuntime initialize!
 SmalltalkInterpreter initialize!
+CharacterConstants initialize!
+SpeciesFormatMasks initialize!
+OperandTypeFlags initialize!
+Prefixes initialize!
+Registers initialize!
+ObjectHeaderMasks initialize!
+ObjectHeaderOffsets initialize!
+InlineMessageLinkerFlags initialize!
+SendSiteFlags initialize!
+SCompiledMethodFlags initialize!
+AstBindingTypes initialize!
+AstNodeTypes initialize!
+ClosureElementTypes initialize!
+SExpressionTypes initialize!
+SCompiledBlockFlags initialize!
 Subject initialize!
