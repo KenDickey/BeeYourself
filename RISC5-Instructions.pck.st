@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 1 May 2021 at 3:44:03 pm'!
+'From Cuis 5.0 [latest update: #4579] on 1 May 2021 at 4:14:14 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 6!
+!provides: 'RISC5-Instructions' 1 7!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -205,6 +205,17 @@ opcode
 
 	self subclassResponsibility ! !
 
+!RV64R methodsFor: 'accessing' stamp: 'KenD 5/1/2021 16:11:57'!
+instruction
+	
+	^self class
+		assembleFunc7: self class func7 
+		r2: regB
+		r1: regA
+		func3: self class func3 
+		rd: destReg 
+		op: self class opcode! !
+
 !RV64R methodsFor: 'initialization' stamp: 'KenD 5/1/2021 08:48:48'!
 destReg: regDest regA: reg1 regB: reg2
 
@@ -212,34 +223,20 @@ destReg: regDest regA: reg1 regB: reg2
 	regA := reg1.
 	regB := reg2! !
 
-!RV64R class methodsFor: 'accessing' stamp: 'KenD 5/1/2021 09:21:51'!
+!RV64R class methodsFor: 'accessing' stamp: 'KenD 5/1/2021 16:10:11'!
+opcode
+	"Opcode for all R-type instructions"
+	^2r0110011! !
+
+!RV64R class methodsFor: 'instance creation' stamp: 'KenD 5/1/2021 16:07:42'!
+regDest: destReg regA: reg1 regB: reg2
+
+	^self new destReg: destReg regA: reg1 regB: reg2! !
+
+!RV64R class methodsFor: 'instruction assembly' stamp: 'KenD 5/1/2021 09:21:51'!
 assembleFunc7: f7 r2: reg2 r1: reg1 func3: f3 rd: destReg op: opcode
 	"[func7 31:25][rs2 24:20][rs1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
 	^(f7 << 25) + (reg2 << 20) + (reg1 << 15) + (f3 << 12) + (destReg << 7) + opcode! !
-
-!RV64R class methodsFor: 'accessing' stamp: 'KenD 5/1/2021 08:45:36'!
-opcode
-
-	^Opcode! !
-
-!RV64R class methodsFor: 'class initialization' stamp: 'KenD 5/1/2021 12:09:33'!
-initialize
-"
-	self initialize.
-"
-	"Opcode for all R-type instructions"
-	Opcode := 2r0110011! !
-
-!RV64ADD methodsFor: 'accessing' stamp: 'KenD 5/1/2021 09:24:33'!
-instruction
-	
-	^super class
-		assembleFunc7: self class func7 
-		r2: regB
-		r1: regA
-		func3: self class func3 
-		rd: destReg 
-		op: self class opcode! !
 
 !RV64ADD class methodsFor: 'accessing' stamp: 'KenD 5/1/2021 15:34:10'!
 func3
@@ -251,22 +248,6 @@ func7
 
 	^16r00! !
 
-!RV64ADD class methodsFor: 'instance creation' stamp: 'KenD 5/1/2021 12:05:58'!
-regDest: destReg regA: reg1 regB: reg2
-
-	^self new destReg: destReg regA: reg1 regB: reg2! !
-
-!RV64SUB methodsFor: 'accessing' stamp: 'KenD 5/1/2021 15:32:02'!
-instruction
-	
-	^super class
-		assembleFunc7: self class func7 
-		r2: regB
-		r1: regA
-		func3: self class func3 
-		rd: destReg 
-		op: self class opcode! !
-
 !RV64SUB class methodsFor: 'accessing' stamp: 'KenD 5/1/2021 15:34:22'!
 func3
 
@@ -277,11 +258,6 @@ func7
 
 	^16r20! !
 
-!RV64SUB class methodsFor: 'instance creation' stamp: 'KenD 5/1/2021 15:32:43'!
-regDest: destReg regA: reg1 regB: reg2
-
-	^self new destReg: destReg regA: reg1 regB: reg2! !
-
 !RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/1/2021 15:43:36'!
 testRV64I
 
@@ -291,5 +267,4 @@ testRV64I
 		= 2r1000000001000001000000110110011.
 		
 	! !
-RV64R initialize!
 RISC5Regs initialize!
