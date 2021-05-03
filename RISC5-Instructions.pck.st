@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 2:16:07 pm'!
+'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 2:34:07 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 8!
+!provides: 'RISC5-Instructions' 1 9!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -94,6 +94,56 @@ RV64R subclass: #RV64OR
 RV64OR class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64SLL category: #'RISC5-Instructions'!
+RV64R subclass: #RV64SLL
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLL class' category: #'RISC5-Instructions'!
+RV64SLL class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SLT category: #'RISC5-Instructions'!
+RV64R subclass: #RV64SLT
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLT class' category: #'RISC5-Instructions'!
+RV64SLT class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SLTU category: #'RISC5-Instructions'!
+RV64R subclass: #RV64SLTU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTU class' category: #'RISC5-Instructions'!
+RV64SLTU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SRA category: #'RISC5-Instructions'!
+RV64R subclass: #RV64SRA
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRA class' category: #'RISC5-Instructions'!
+RV64SRA class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SRL category: #'RISC5-Instructions'!
+RV64R subclass: #RV64SRL
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRL class' category: #'RISC5-Instructions'!
+RV64SRL class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64SUB category: #'RISC5-Instructions'!
 RV64R subclass: #RV64SUB
 	instanceVariableNames: ''
@@ -155,6 +205,24 @@ Instruction Pattern:
 
 !RV64OR commentStamp: '<historical>' prior: 0!
 Inclusive OR {distinguish XOR)!
+
+!RV64SLL commentStamp: '<historical>' prior: 0!
+Shift Left Logical -- destReg := regA << regB
+!
+
+!RV64SLT commentStamp: '<historical>' prior: 0!
+Set if Less Than (Signed): 
+  if regA < regB then destReg := 1 else destReg := 0!
+
+!RV64SLTU commentStamp: '<historical>' prior: 0!
+Set if Less Than (Unsigned): 
+  if regA < regB then destReg := 1 else destReg := 0!
+
+!RV64SRA commentStamp: '<historical>' prior: 0!
+Shift Right Arithmatic -- destReg := regA >> regB; most significant bit duplicated!
+
+!RV64SRL commentStamp: '<historical>' prior: 0!
+Shift Right Arithmatic -- destReg := regA >> regB!
 
 !RV64XOR commentStamp: '<historical>' prior: 0!
 eXclusive OR {distinguish OR)!
@@ -377,6 +445,81 @@ func7
 opName
 	" 'ior' ?"
 	^'or'! !
+
+!RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:20:55'!
+func3
+
+	^16r1! !
+
+!RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:21:10'!
+func7
+
+	^16r00! !
+
+!RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:20:22'!
+opName
+
+	^'sll'! !
+
+!RV64SLT methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:30:02'!
+func3
+
+	^16r2! !
+
+!RV64SLT methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:29:48'!
+func7
+
+	^16r00! !
+
+!RV64SLT methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:29:27'!
+opName
+
+	^'slt'! !
+
+!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:44'!
+func3
+
+	^16r2! !
+
+!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:32'!
+func7
+
+	^16r00! !
+
+!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:15'!
+opName
+
+	^'sltu'! !
+
+!RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:26:54'!
+func3
+
+	^16r5! !
+
+!RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:26:36'!
+func7
+
+	^16r20! !
+
+!RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:26:19'!
+opName
+
+	^'sra'! !
+
+!RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:23:23'!
+func3
+
+	^16r5! !
+
+!RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:23:03'!
+func7
+
+	^16r00! !
+
+!RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:22:40'!
+opName
+
+	^'srl'! !
 
 !RV64SUB methodsFor: 'accessing' stamp: 'KenD 5/3/2021 12:12:07'!
 func3
