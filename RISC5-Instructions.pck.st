@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 3:25:21 pm'!
+'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 4:29:15 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 10!
+!provides: 'RISC5-Instructions' 1 11!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -52,6 +52,86 @@ RV64I subclass: #RV64ADDI
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64ADDI class' category: #'RISC5-Instructions'!
 RV64ADDI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64ANDI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64ANDI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ANDI class' category: #'RISC5-Instructions'!
+RV64ANDI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64ORI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64ORI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ORI class' category: #'RISC5-Instructions'!
+RV64ORI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SLLI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64SLLI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLLI class' category: #'RISC5-Instructions'!
+RV64SLLI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SLTI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64SLTI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTI class' category: #'RISC5-Instructions'!
+RV64SLTI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SLTIU category: #'RISC5-Instructions'!
+RV64I subclass: #RV64SLTIU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTIU class' category: #'RISC5-Instructions'!
+RV64SLTIU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SRAI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64SRAI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRAI class' category: #'RISC5-Instructions'!
+RV64SRAI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SRLI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64SRLI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRLI class' category: #'RISC5-Instructions'!
+RV64SRLI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64XORI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64XORI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64XORI class' category: #'RISC5-Instructions'!
+RV64XORI class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64J category: #'RISC5-Instructions'!
@@ -219,6 +299,9 @@ Add Immediate
 
 Instruction Pattern:
   [immed12][sourceReg][func3][destReg][opcode]!
+
+!RV64SRAI commentStamp: '<historical>' prior: 0!
+Shift Right Arithmatic Immediate!
 
 !RV64R commentStamp: '<historical>' prior: 0!
 R => 3 Register opcode; Register to Register
@@ -423,6 +506,86 @@ opName
 
 	^'addI'! !
 
+!RV64ANDI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:15:29'!
+func3
+
+	^16r7! !
+
+!RV64ANDI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:15:46'!
+opName
+
+	^'andI'! !
+
+!RV64ORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:14:06'!
+func3
+
+	^16r6! !
+
+!RV64ORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:14:21'!
+opName
+
+	^'orI'! !
+
+!RV64SLLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:16:42'!
+func3
+
+	^16r1! !
+
+!RV64SLLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:17:02'!
+opName
+
+	^'slLI'! !
+
+!RV64SLTI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:21:15'!
+func3
+
+	^16r2! !
+
+!RV64SLTI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:21:41'!
+opName
+
+	^'sltI'! !
+
+!RV64SLTIU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:28:07'!
+func3
+
+	^16r3! !
+
+!RV64SLTIU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:28:52'!
+opName
+
+	^'sltIU'! !
+
+!RV64SRAI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:19:48'!
+func3
+
+	^16r5! !
+
+!RV64SRAI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:20:07'!
+opName
+
+	^'srAI'! !
+
+!RV64SRLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:18:17'!
+func3
+
+	^16r5! !
+
+!RV64SRLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:17:49'!
+opName
+
+	^'srLI'! !
+
+!RV64XORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:12:13'!
+func3
+
+	^16r4! !
+
+!RV64XORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:12:39'!
+opName
+
+	^'XorI'! !
+
 !RV64R methodsFor: 'printing' stamp: 'KenD 5/3/2021 12:00:09'!
 printString
 	"E.g.: 'add  rd,r1,r2' "
@@ -554,10 +717,10 @@ opName
 
 	^'slt'! !
 
-!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:44'!
+!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:28:20'!
 func3
 
-	^16r2! !
+	^16r3! !
 
 !RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:32'!
 func7
