@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 2:34:07 pm'!
+'From Cuis 5.0 [latest update: #4579] on 3 May 2021 at 3:25:21 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 9!
+!provides: 'RISC5-Instructions' 1 10!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -36,12 +36,22 @@ RV64B class
 
 !classDefinition: #RV64I category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64I
-	instanceVariableNames: ''
+	instanceVariableNames: 'sourceReg immediate12'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64I class' category: #'RISC5-Instructions'!
 RV64I class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64ADDI category: #'RISC5-Instructions'!
+RV64I subclass: #RV64ADDI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ADDI class' category: #'RISC5-Instructions'!
+RV64ADDI class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64J category: #'RISC5-Instructions'!
@@ -195,6 +205,21 @@ RISC5InstructionsTests class
 	instanceVariableNames: ''!
 
 
+!RV64I commentStamp: '<historical>' prior: 0!
+Immediate instructions
+
+	destReg := regA OP immed12
+	
+Instruction Pattern:
+  [immed12][regA][func3][destReg][opcode]!
+
+!RV64ADDI commentStamp: '<historical>' prior: 0!
+Add Immediate
+	destReg := sourceReg OP immediate12
+
+Instruction Pattern:
+  [immed12][sourceReg][func3][destReg][opcode]!
+
 !RV64R commentStamp: '<historical>' prior: 0!
 R => 3 Register opcode; Register to Register
 
@@ -345,6 +370,59 @@ initialize
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
 
+!RV64I methodsFor: 'initialization' stamp: 'KenD 5/3/2021 15:16:54'!
+destReg: regDest regSource: reg1 imm12: immediateInt12
+
+	super destReg: regDest .
+	sourceReg := reg1.
+	immediate12 := immediateInt12 ! !
+
+!RV64I methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:16:54'!
+instruction
+	
+	^self class
+		assembleImmediate: immediate12 
+		rSource: sourceReg 
+		func3: self func3
+		rDest: destReg 
+		op: self class opcode! !
+
+!RV64I methodsFor: 'printing' stamp: 'KenD 5/3/2021 15:18:24'!
+printString
+	"E.g.: 'addi  rd,r1s,36' "
+	^ self opName, '  ',
+		(self class regName: destReg), ', ', 
+		(self class regName: sourceReg), ', ', 
+		'16r', (immediate12 printStringBase: 16).  "FIXME: 0x??"! !
+
+!RV64I class methodsFor: 'instance creation' stamp: 'KenD 5/3/2021 15:25:13'!
+regDest: destReg regSource: reg1 imm12: immediate12
+
+	(immediate12 bitAnd: 16rFFF) = immediate12 
+		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
+		
+	^self new destReg: destReg regSource: reg1  imm12: immediate12 ! !
+
+!RV64I class methodsFor: 'instruction assembly' stamp: 'KenD 5/3/2021 14:45:55'!
+assembleImmediate: immed12  rSource: reg1 func3: f3 rDest: destReg op: opcode
+	"[immed12 31:20][rSource1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
+	^(immed12 << 20) + (reg1 << 15) + (f3 << 12) + (destReg << 7) + opcode! !
+
+!RV64I class methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:41:42'!
+opcode
+	"Opcode for all I-type instructions"
+	^2r0010011! !
+
+!RV64ADDI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:02:11'!
+func3
+
+	^16r0! !
+
+!RV64ADDI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:00:07'!
+opName
+
+	^'addI'! !
+
 !RV64R methodsFor: 'printing' stamp: 'KenD 5/3/2021 12:00:09'!
 printString
 	"E.g.: 'add  rd,r1,r2' "
@@ -456,10 +534,10 @@ func7
 
 	^16r00! !
 
-!RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:20:22'!
+!RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:01:27'!
 opName
 
-	^'sll'! !
+	^'slL'! !
 
 !RV64SLT methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:30:02'!
 func3
@@ -486,10 +564,10 @@ func7
 
 	^16r00! !
 
-!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:33:15'!
+!RV64SLTU methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:01:12'!
 opName
 
-	^'sltu'! !
+	^'sltU'! !
 
 !RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:26:54'!
 func3
@@ -501,10 +579,10 @@ func7
 
 	^16r20! !
 
-!RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:26:19'!
+!RV64SRA methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:01:00'!
 opName
 
-	^'sra'! !
+	^'srA'! !
 
 !RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:23:23'!
 func3
@@ -516,10 +594,10 @@ func7
 
 	^16r00! !
 
-!RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:22:40'!
+!RV64SRL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:00:52'!
 opName
 
-	^'srl'! !
+	^'srL'! !
 
 !RV64SUB methodsFor: 'accessing' stamp: 'KenD 5/3/2021 12:12:07'!
 func3
@@ -546,10 +624,10 @@ func7
 
 	^16r00! !
 
-!RV64XOR methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:09:45'!
+!RV64XOR methodsFor: 'accessing' stamp: 'KenD 5/3/2021 15:00:33'!
 opName
 
-	^'xor'! !
+	^'Xor'! !
 
 !RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/3/2021 12:09:47'!
 testRV64I
