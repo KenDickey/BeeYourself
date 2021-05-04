@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4570] on 26 April 2021 at 3:00:03 pm'!
-'Description '!
-!provides: 'PowerLang' 1 2!
+'From Cuis 5.0 [latest update: #4570] on 4 May 2021 at 8:01:24 am'!
+'Description Port of code from https://github.com/powerlang'!
+!provides: 'PowerLang' 1 4!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2122,6 +2122,16 @@ Object subclass: #SendSite
 SendSite class
 	instanceVariableNames: ''!
 
+!classDefinition: #OBasicBlock category: #'Powerlang-Core-OCompiler-IR'!
+Object subclass: #OBasicBlock
+	instanceVariableNames: 'firstInstruction lastInstruction predecessors'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBasicBlock class' category: #'Powerlang-Core-OCompiler-IR'!
+OBasicBlock class
+	instanceVariableNames: ''!
+
 !classDefinition: #OLiveRange category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OLiveRange
 	instanceVariableNames: ''
@@ -3601,6 +3611,18 @@ printOn: aStream
 		nextPutAll:
 			'a CMMirror ('
 			; nextPutAll: signature; nextPut: $)! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
+name 
+
+	^'#' , self hash printString! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:47'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<=== ' , self name , String cr , firstInstruction asString
+			, '===>'! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
@@ -25962,6 +25984,807 @@ isSuperSend
 selector: aSymbol 
 
 	selector := aSymbol! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:13:42'!
+activationRecord 
+
+	^self firstInstruction! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:13:59'!
+add: instruction 
+
+	^lastInstruction beforeInsert: instruction! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:14:10'!
+addFront: instruction 
+
+	^firstInstruction afterInsert: instruction! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:14:21'!
+addPredecessor: aBasicBlock 
+
+	predecessors add: aBasicBlock! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:16:27'!
+asArray 
+
+	^self asReversePostOrderInstructionsCollection asArray! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:16:40'!
+asReversePostOrderInstructionsCollection 
+	| collection |
+	collection := OrderedCollection new.
+	self
+		instructionsWithReversePostOrderSuccessorsDo: [:inst | collection
+			add: inst].
+	^collection! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:16:56'!
+cleanPredecessors 
+
+	predecessors := OrderedCollection new! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:37:47'!
+firstInstruction 
+
+	^firstInstruction next! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:37:57'!
+firstNonPhi 
+
+	^self firstInstruction firstNonPhi! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:38:28'!
+fullyRemovePredecessor: predecessor 
+	self
+		removePredecessor: predecessor;
+		phisDo: [:phi | phi removeBlock: predecessor].
+	predecessors isEmpty
+		ifTrue: [self successors do: [:succ | succ fullyRemovePredecessor: self]]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:39:02'!
+ifHasExplicitSuccesor: explicitBlock ifHasImplicitSuccesor: implicitBlock 
+	| last |
+	last := self lastInstruction.
+	last isJump ifFalse: [^self].
+	explicitBlock value: last target.
+	last isConditionalJump ifTrue: [implicitBlock value: last implicitTarget]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:39:35'!
+incorporatePhisFrom: predecessor 
+	| index |
+	predecessors size = 1 ifTrue: [^predecessor movePhisTo: self].
+	self phisDo: [:phi | | source parents vars |
+		index := phi blocks indexOf: predecessor.
+		source := phi variables at: index.
+		parents := predecessor predecessors.
+		vars := (predecessor phis includes: source)
+			ifTrue: [source variables copy]
+			ifFalse: [OrderedCollection new: parents size withAll: source].
+		vars withIndexDo: [:var :i | | pred |
+			pred := parents at: i.
+			phi addVariable: var from: pred].
+		phi removeVariable: source at: index]
+! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:39:51'!
+indexOf: anInstruction 
+	| current |
+	current := 1.
+	self instructionsDo: [:instruction | 
+		instruction == anInstruction ifTrue: [^current].
+		current := current + 1].
+	self error: 'instruction not found'! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:40:51'!
+inline: inlined replacing: aMessageSend 
+	| returned return join last |
+	last := inlined lastBlock.
+	return := last lastValue.
+	returned := return source.
+	aMessageSend replaceAllUsesWith: returned.
+	return dissolve.
+	inlined successors isEmpty ifFalse: [
+		join := self splitAfter: aMessageSend.
+		join addPredecessor: last.
+		last endWithJumpTo: join].
+	aMessageSend dissolveReplacingWithAll: inlined firstInstruction.
+	self replaceAsPredecessor: inlined.
+	^join ifNil: [self]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:41:05'!
+insertPhiOf: block1 and: block2 replacing: operation 
+	| value1 value2 |
+	value1 := block1 lastValue.
+	value2 := block2 lastValue.
+	(value1 == nil or: [value2 == nil]) ifTrue: [^operation dissolve].
+	self
+		insertPhiOf: value1
+		at: block1
+		and: value2
+		at: block2
+		replacing: operation! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:41:29'!
+insertPhiOf: value1
+at: block1
+and: value2
+at: block2
+replacing: operation 
+	| phi |
+	phi := OPhi with: value1 from: block1 with: value2 from: block2.
+	self firstInstruction beforeInsert: phi.
+	operation replaceAllUsesWith: phi; dissolve! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:41:47'!
+insertPhiOf: value1
+at: block1
+and: block2
+replacing: operation 
+	| value2 |
+	value2 := block2 lastValue.
+	value2 == nil ifTrue: [^operation dissolve].
+	self
+		insertPhiOf: value1
+		at: block1
+		and: value2
+		at: block2
+		replacing: operation! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:42:02'!
+instructionsAfter: first withReversePostOrderSuccessorsDo: aBlock 
+
+	first do: aBlock.
+	self withSuccessorsPostOrder
+		removeLast;
+		reverseDo: [:block | block instructionsDo: aBlock]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:45:43'!
+iteratedDominanceFrontiersOf: blocks using: frontiers 
+	| result changed |
+	result := (blocks gather: [:block | frontiers at: block]) asSet.
+	changed := true.
+	[changed] whileTrue: [| size more |
+		size := result size.
+		more := result gather: [:block | frontiers at: block].
+		result addAll: more.
+		changed := size !!= result size].
+	^result! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:45:55'!
+lastInstruction 
+
+	^lastInstruction prev! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:07'!
+lastPhi 
+
+	^self firstInstruction lastPhi
+! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:18'!
+lastValue 
+	| last |
+	last := lastInstruction lastValue.
+	^last = firstInstruction
+		ifTrue: [predecessors size = 1 ifTrue: [predecessors first lastValue]]
+		ifFalse: [last]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:28'!
+length 
+	| current |
+	current := 0.
+	self instructionsDo: [:instruction | current := current + 1].
+	^current! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:43'!
+movePhisTo: otherBlock 
+	| inst dest |
+	inst := self firstInstruction.
+	dest := otherBlock firstInstruction prev.
+	[inst isPhi] whileTrue: [| next |
+		next := inst next.
+		dest afterInsert: inst.
+		dest := inst.
+		inst := next]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:47:28'!
+phiWithArgument: instruction 
+
+	self phisDo: [:phi | (phi variables includes: instruction) ifTrue: [^phi]].
+	self error: 'not found'! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:52:49'!
+predecessors 
+
+	^predecessors! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:54:46'!
+removePredecessor: aBasicBlock 
+
+	predecessors remove: aBasicBlock! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:54:57'!
+replaceAsPredecessor: old 
+
+	self successors do: [:succ | succ replacePredecessor: old with: self]! !
+
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:55:10'!
+replacePredecessor: old with: new 
+
+	self phisDo: [:phi | phi replaceBlock: old with: new].
+	predecessors replaceAll: old with: new! !
+
+!OBasicBlock methodsFor: 'code generation' stamp: 'KenD 5/4/2021 07:37:27'!
+export 
+	| map name result instructions inst names ops |
+	map := IdentityDictionary new.
+	self
+		instructionsWithReversePostOrderSuccessorsDo: [ :i | 
+			name := i primitivePrintString.
+			[ names := map values collect: [ :d | d at: 'name' ].
+			names includes: name ] whileTrue: [ name := name , '_' ].
+			inst := Dictionary new
+				at: 'name' put: name asSymbol;
+				yourself.
+			map at: i put: inst ].
+	result := OrderedDictionary new.
+	self
+		reversePostOrderDo: [ :b | 
+			instructions := OrderedCollection new.
+			b
+				instructionsDo: [ :i | 
+					inst := (map at: i).
+					instructions add: inst.
+					ops := OrderedCollection new.
+					inst at: 'ops' put: ops.
+					i operandsDo: [ :op | ops add: (map at: op) ]
+					 ].
+			result at: b name put: instructions ].
+	^ result! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:15:23'!
+allDominators 
+	| result all changed |
+	result := Dictionary new.
+	all := self withSuccessorsPostOrder.
+	all do: [:block | result at: block put: (Set with: block)].
+	changed := true.
+	[changed] whileTrue: [| current |
+		changed := false.
+		all reverseDo: [:block | | incoming |
+			incoming := block predecessors collect: [:pred | result at: pred].
+			current := incoming isEmpty ifTrue: [Set new] ifFalse: [
+				incoming
+					inject: incoming first
+					into: [:intersection :doms | doms intersection: intersection]].
+			current add: block.
+			current size !!= (result at: block) size ifTrue: [
+				result at: block put: current.
+				changed := true]]].
+	^result! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:15:56'!
+allLoopHeads 
+	| loops doms |
+	loops := Dictionary new.
+	doms := self allDominators.
+	self withSuccessorsPostOrder do: [:block | 
+		block successors
+			do: [:succ | ((doms at: block) includes: succ)
+				ifTrue: [loops add: succ -> block]]].
+	^loops! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:16:10'!
+allLoops 
+	| result |
+	result := Dictionary new.
+	self allLoopHeads
+		keysAndValuesDo: [:head :tail | result
+			at: head
+			put: (tail withPredecessorsUntil: head)].
+	^result! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:33:33'!
+dominanceFrontiers 
+	| idoms |
+	idoms := self dominatorTree allImmediateDominators.
+	^self dominanceFrontiersUsing: idoms! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:33:54'!
+dominanceFrontiersUsing: idoms 
+	| blocks result |
+	blocks := self withSuccessorsPostOrder.
+	result := Dictionary new.
+	blocks do: [:block | result at: block put: OrderedCollection new].
+	blocks do: [:block | 
+		block predecessors size > 1 ifTrue: [
+			block predecessors do: [:predecessor | | runner end |
+				runner := predecessor.
+				end := idoms at: block.
+				[runner !!= end] whileTrue: [| frontiers |
+					frontiers := result at: runner.
+					(frontiers includes: block) ifFalse: [frontiers add: block].
+					runner := idoms at: runner]]]].
+	^result! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:34:12'!
+dominatorTree 
+	| all root idoms indices intersect changed |
+	all := self updatePredecessors withSuccessorsPostOrder reversed.
+	idoms := Array new: all size.
+	idoms at: 1 put: 1.
+	root := all first.
+	indices := Dictionary new.
+	all withIndexDo: [ :block :index | indices at: block put: index ].
+	intersect := [ :index1 :index2 | 
+	| finger1 finger2 |
+	finger1 := index1.
+	finger2 := index2.
+	[ finger1 !!= finger2 ]
+		whileTrue: [ finger1 > finger2
+				ifTrue: [ finger1 := idoms at: finger1 ]
+				ifFalse: [ finger2 := idoms at: finger2 ] ].
+	finger1 ].
+	changed := true.
+	[ changed ]
+		whileTrue: [ changed := false.
+			(all beeCopyFrom: 2)
+				withIndexDo: [ :block :index | 
+					| processed initial intersection |
+					processed := block predecessors
+						select: [ :predecessor | 
+							| i |
+							i := indices at: predecessor.
+							(idoms at: i) notNil ].
+					initial := indices at: processed first.
+					intersection := processed
+						inject: initial
+						into: [ :actual :predecessor | 
+							| candidate |
+							candidate := indices at: predecessor.
+							intersect value: actual value: candidate ].
+					intersection !!= (idoms at: index + 1)
+						ifTrue: [ idoms at: index + 1 put: intersection.
+							changed := true ] ] ].
+	^ ODominatorTree from: root with: all dominators: idoms! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:42:18'!
+instructionsAsCollection 
+	| collection |
+	collection := OrderedCollection new.
+	self instructionsDo: [:inst | collection add: inst].
+	^collection! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:47:11'!
+phiValuesComingFrom: block 
+
+	^self phis collect: [:phi | phi atOperand: block]! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:47:54'!
+phis 
+	| result |
+	result := OrderedCollection new.
+	self
+		instructionsDo: [:instr | instr isPhi
+			ifTrue: [result add: instr]
+			ifFalse: [^result]]! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:58:19'!
+successors 
+
+	^lastInstruction prev targets! !
+
+!OBasicBlock methodsFor: 'collecting' stamp: 'KenD 5/4/2021 07:58:33'!
+successorsPostOrder 
+	| seen result |
+	seen := Set new.
+	result := OrderedCollection new: 10.
+	self
+		ifHasExplicitSuccesor: [:next | (seen includes: next)
+			ifFalse: [next postOrder: result seen: seen]]
+		ifHasImplicitSuccesor: [:next | (seen includes: next)
+			ifFalse: [next postOrder: result seen: seen]].
+	^result! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:42:49'!
+instructionsDo: aBlock 
+
+	^firstInstruction do: aBlock! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:43:05'!
+instructionsSelect: condition thenDo: aBlock 
+
+	^firstInstruction
+		do: [:next | (condition value: next) ifTrue: [aBlock value: next]]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:43:16'!
+instructionsWithPostOrderSuccessorsDo: aBlock 
+
+	self postOrderDo: [:block | block instructionsDo: aBlock]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:43:30'!
+instructionsWithReversePostOrderSuccessorsDo: aBlock 
+
+	self reversePostOrderDo: [:block | block instructionsDo: aBlock]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:43:54'!
+instructionsWithSuccessorsDo: aBlock 
+
+	self withSuccessorsDo: [:block | block instructionsDo: aBlock]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:48:14'!
+phisDo: aBlock 
+	self
+		instructionsDo: [:instr | instr isPhi
+			ifTrue: [aBlock value: instr]
+			ifFalse: [^self]]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:52:22'!
+postOrder: result seen: seen 
+	seen add: self.
+	self
+		ifHasExplicitSuccesor: [:next | (seen includes: next)
+			ifFalse: [next postOrder: result seen: seen]]
+		ifHasImplicitSuccesor: [:next | (seen includes: next)
+			ifFalse: [next postOrder: result seen: seen]].
+	result add: self! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:52:34'!
+postOrderDo: aBlock 
+
+	self withSuccessorsPostOrder do: [:block | aBlock value: block]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:54:32'!
+realInstructionsDo: aBlock 
+	| current |
+	current := self firstInstruction.
+	[current isPhi] whileTrue: [current := current next].
+	current do: aBlock! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 07:55:27'!
+reversePostOrderDo: aBlock 
+
+	self withSuccessorsPostOrder reverseDo: [:block | aBlock value: block]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 08:00:43'!
+withPredecessors 
+	| result incoming |
+	result := OrderedCollection new.
+	incoming := OrderedCollection with: self.
+	[
+		result addAll: incoming.
+		incoming := incoming gather: #predecessors.
+		incoming removeAllSuchThat: [:pred | result includes: pred].
+		incoming isEmpty] whileFalse.
+	^result! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 08:00:56'!
+withPredecessorsUntil: block 
+	| result incoming |
+	result := OrderedCollection new.
+	incoming := OrderedCollection with: self.
+	[
+		result addAll: incoming.
+		incoming := incoming gather: #predecessors.
+		incoming
+			removeAllSuchThat: [:pred | pred == block or: [result includes: pred]].
+		incoming isEmpty] whileFalse.
+	^result! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 08:01:07'!
+withSuccessorsDo: aBlock 
+	| done remaining |
+	done := Set new.
+	remaining := OrderedCollection new: 10.
+	remaining add: self.
+	[remaining notEmpty] whileTrue: [| block more |
+		block := remaining removeFirst.
+		aBlock value: block.
+		done add: block.
+		more := block successors
+			reject: [:succesor | (done includes: succesor)
+				or: [remaining includes: succesor]].
+		remaining addAll: more]! !
+
+!OBasicBlock methodsFor: 'enumerating' stamp: 'KenD 5/4/2021 08:01:18'!
+withSuccessorsPostOrder 
+	| seen result |
+	seen := Set new.
+	result := OrderedCollection new: 10.
+	self postOrder: result seen: seen.
+	^result! !
+
+!OBasicBlock methodsFor: 'initialization' stamp: 'KenD 5/4/2021 07:40:15'!
+initialize 
+
+	firstInstruction := OInstruction empty.
+	lastInstruction := firstInstruction next.
+	predecessors := OrderedCollection new! !
+
+!OBasicBlock methodsFor: 'initialization' stamp: 'KenD 5/4/2021 07:40:27'!
+initializeWith: anInstruction 
+
+	firstInstruction := anInstruction cutPrevious.
+	lastInstruction := firstInstruction last next.
+	predecessors := OrderedCollection new! !
+
+!OBasicBlock methodsFor: 'jump targets' stamp: 'KenD 5/4/2021 07:35:06'!
+endWith: jumpType
+to: target
+skipping: skipped
+if: compare 
+	| jump |
+	jump := jumpType variable: compare target: target implicitTarget: skipped.
+	compare addUse: jump at: #variable.
+	self lastInstruction afterInsert: jump! !
+
+!OBasicBlock methodsFor: 'jump targets' stamp: 'KenD 5/4/2021 07:35:19'!
+endWithJumpFalseTo: target skipping: skipped if: condition 
+
+	self endWith: OJumpFalse to: target skipping: skipped if: condition! !
+
+!OBasicBlock methodsFor: 'jump targets' stamp: 'KenD 5/4/2021 07:35:33'!
+endWithJumpTo: target 
+	| jump |
+	jump := OJump to: target.
+	self lastInstruction afterInsert: jump! !
+
+!OBasicBlock methodsFor: 'jump targets' stamp: 'KenD 5/4/2021 07:36:41'!
+endWithJumpTrueTo: target skipping: skipped if: condition 
+
+	self endWith: OJumpTrue to: target skipping: skipped if: condition! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:22'!
+printAll 
+	| stream |
+	stream := '' writeStream.
+	self reversePostOrderDo: [:block | 
+		block printOn: stream.
+		stream cr].
+	^stream contents! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:34'!
+printAllNamed 
+	| stream names vars blocks |
+	stream := '' writeStream.
+	names := Dictionary new.
+	vars := 0.
+	blocks := 0.
+	self reversePostOrderDo: [:block | 
+		block instructionsDo: [:inst | 
+			names at: inst put: 'v' , vars printString.
+			vars := vars + 1].
+		names at: block put: 'B' , blocks printString.
+		blocks := blocks + 1].
+	self reversePostOrderDo: [:block | 
+		block printOn: stream using: names.
+		stream cr].
+	^stream contents! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:58'!
+printOn: aStream using: names 
+	| string |
+	string := names at: self.
+	aStream nextPutAll: '<=== ' , string , ' [' , self hash printString , '] \'.
+	predecessors size > 0 ifTrue: [
+		predecessors allButLast
+			do: [:pred | aStream
+				nextPutAll: (names at: pred ifAbsent: 'missing') , ' | '].
+		aStream nextPutAll: (names at: predecessors last ifAbsent: 'missing')].
+	aStream
+		nextPutAll: '/' , String cr , (firstInstruction printStringUsing: names)
+			, '===>'! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:32:50'!
+computeLiveOutInto: liveOut andLiveInInto: liveIn 
+	| blocks changed |
+	blocks := self withSuccessorsPostOrder.
+	blocks reverseDo: [:block | | in out |
+		in := OrderedCollection new.
+		out := OrderedCollection new.
+		liveOut at: block put: out.
+		liveIn at: block put: in].
+	changed := true.
+	[changed] whileTrue: [
+		changed := false.
+		blocks reverseDo: [:block | | live out size |
+			live := block successors gather: [:succ | liveIn at: succ].
+			out := liveOut at: block.
+			size := out size.
+			out := out addAll: live; withoutDuplicates.
+			changed := changed or: [out size !!= size].
+			block lastInstruction reverseDo: [:instruction | 
+				instruction operandsDo: [:argument | 
+					live addIfAbsent: argument.
+					live removeIfPresent: instruction].
+				liveIn at: block put: live]]]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:33:15'!
+dissolveIfUnreachable 
+	| value |
+	predecessors isEmpty 
+		ifTrue: [	[value := self lastValue. value notNil] whileTrue: [value dissolveDeep] ]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:55:54'!
+sortPhiVariables 
+
+	self phisDo: [:phi | phi sortAfter: predecessors]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:58:50'!
+unifyReturns 
+	| all last extra ret prev end jump phi |
+	all := self withSuccessorsPostOrder.
+	last := all removeFirst.
+	extra := OrderedCollection new.
+	all do: [:block | | potential |
+		potential := block lastInstruction prev.
+		potential class = OReturn ifTrue: [extra add: potential -> block]].
+	extra size = 0 ifTrue: [^self].
+	ret := last lastInstruction.
+	prev := ret prev.
+	(prev isPhi and: prev = last firstInstruction)
+		ifTrue: [
+			end := last.
+			phi := prev]
+		ifFalse: [
+			end := last splitAfter: prev.
+			end addPredecessor: last.
+			jump := OJump to: end.
+			prev afterInsert: jump.
+			phi := OPhi new.
+			phi
+				addVariable: ret source from: last;
+				addUse: ret at: #source.
+			ret source removeUse: ret at: #source.
+			ret source: phi; beforeInsert: phi].
+	extra do: [:assoc | | tail block |
+		tail := assoc key.
+		block := assoc value.
+		phi addVariable: tail source from: block.
+		end addPredecessor: block.
+		jump := tail next.
+		jump target removePredecessor: block.
+		jump target: end.
+		tail dissolve]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:59:14'!
+updatePredecessors 
+	self
+		postOrderDo: [:block | block cleanPredecessors];
+		postOrderDo: [:block | block successors
+			do: [:successor | successor addPredecessor: block]];
+		postOrderDo: [:block | block sortPhiVariables]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 08:00:11'!
+verifyAllInstructionsSanity 
+
+	self withSuccessorsDo: [:block | | forward current backwards |
+		forward := OrderedCollection new.
+		current := block instVarNamed: #firstInstruction.
+		[current == nil] whileFalse: [
+			forward add: current.
+			current := current next].
+		backwards := OrderedCollection new.
+		current := forward last.
+		[current == nil] whileFalse: [
+			backwards add: current.
+			current := current prev].
+		self assert: forward = backwards reversed]! !
+
+!OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 08:00:27'!
+verifyAllPredecessorsSanity 
+
+	self withSuccessorsDo: [:block | 
+		block successors
+			do: [:successor | self assert: (successor predecessors includes: block)].
+		block predecessors
+			do: [:predecessor | self assert: (predecessor successors includes: block)]]! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:56:51'!
+split 
+
+	^self class new! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:57:01'!
+splitAfter: anInstruction 
+	| next |
+	next := self class newStartingWith: anInstruction next.
+	lastInstruction := anInstruction cutFollowing.
+	next replaceAsPredecessor: self.
+	^next! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:57:11'!
+splitAllCriticalEdges 
+
+	self withSuccessorsPostOrder
+		do: [:block | block splitIncomingCriticalEdges]! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:57:23'!
+splitBefore: anInstruction 
+
+	^self splitAfter: anInstruction prev! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:57:33'!
+splitEdgeIfCriticalTo: succ 
+
+	^(self successors size > 1 and: [succ predecessors size > 1])
+		ifTrue: [self splitEdgeTo: succ]
+		ifFalse: [succ]! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:57:46'!
+splitEdgeTo: block 
+	| middle jump branch |
+	middle := self class new.
+	jump := OJump to: block.
+	middle add: jump.
+	branch := self lastInstruction.
+	branch target = block
+		ifTrue: [branch target: middle]
+		ifFalse: [branch implicitTarget: middle].
+	middle addPredecessor: self.
+	block replacePredecessor: self with: middle.
+	^middle! !
+
+!OBasicBlock methodsFor: 'splitting' stamp: 'KenD 5/4/2021 07:58:01'!
+splitIncomingCriticalEdges 
+
+	predecessors size > 1 ifTrue: [
+		predecessors
+			do: [:pred | pred successors size > 1 ifTrue: [pred splitEdgeTo: self]]]! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:44:18'!
+isEmptyBranch 
+
+	self instructionsDo: [:instruction | ^instruction isConditionalJump]! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:44:27'!
+isEmptyJump 
+
+	self instructionsDo: [:instruction | ^instruction isUnconditionalJump]! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:44:39'!
+isEmptyPhiBranch 
+
+	self instructionsDo: [:instruction | | empty |
+		empty := instruction isPhi and: [| next |
+			next := instruction next.
+			next isConditionalJump
+				and: [next variable == instruction and: [instruction isUsedJustOnce]]].
+		^empty]! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:44:50'!
+isOnlyPhiBranch 
+	| last |
+	last := self lastInstruction.
+	last isConditionalJump ifFalse: [^false].
+	self instructionsDo: [:instruction | 
+		instruction = last ifTrue: [^true].
+		instruction isPhi ifFalse: [^false]]! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:45:03'!
+isPhiArgument: instruction 
+
+	self phisDo: [:phi | (phi variables includes: instruction) ifTrue: [^true]].
+	^false! !
+
+!OBasicBlock methodsFor: 'testing' stamp: 'KenD 5/4/2021 07:59:56'!
+usesResultOf: anInstruction 
+
+	firstInstruction
+		detect: [:instruction | instruction usesResultOf: anInstruction]
+		ifNone: [^false].
+	^true! !
+
+!OBasicBlock class methodsFor: 'instance creation' stamp: 'KenD 5/4/2021 07:12:34'!
+new 
+
+	^self basicNew initialize! !
+
+!OBasicBlock class methodsFor: 'instance creation' stamp: 'KenD 5/4/2021 07:13:10'!
+newStartingWith: anInstruction 
+
+	^self basicNew initializeWith: anInstruction! !
 
 !OLiveRange methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:50:23'!
 isUsedBy: anInstruction 
