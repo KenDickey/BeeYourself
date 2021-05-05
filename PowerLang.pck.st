@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4570] on 4 May 2021 at 8:01:24 am'!
+'From Cuis 5.0 [latest update: #4587] on 5 May 2021 at 4:46:28 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 4!
+!provides: 'PowerLang' 1 5!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -372,6 +372,16 @@ OInstruction subclass: #OBeginInstruction
 OBeginInstruction class
 	instanceVariableNames: ''!
 
+!classDefinition: #OBlockClosure category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OBlockClosure
+	instanceVariableNames: 'firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
+OBlockClosure class
+	instanceVariableNames: ''!
+
 !classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OEndInstruction
 	instanceVariableNames: ''
@@ -450,6 +460,36 @@ OInstruction subclass: #OPrimitiveOperation
 	category: 'Powerlang-Core-OCompiler-IR'!
 !classDefinition: 'OPrimitiveOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+OPrimitiveOperation subclass: #OBinaryOperation
+	instanceVariableNames: 'left right'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryConstantOperation category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation subclass: #OBinaryConstantOperation
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryConstantOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryConstantOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryVariableOperation category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation subclass: #OBinaryVariableOperation
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryVariableOperation class
 	instanceVariableNames: ''!
 
 !classDefinition: #OptimizingNativizer category: #'Powerlang-Core'!
@@ -2142,6 +2182,16 @@ Object subclass: #OLiveRange
 OLiveRange class
 	instanceVariableNames: ''!
 
+!classDefinition: #OComposedLiveRange category: #'Powerlang-Core-OCompiler-IR'!
+OLiveRange subclass: #OComposedLiveRange
+	instanceVariableNames: 'ranges'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OComposedLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
+OComposedLiveRange class
+	instanceVariableNames: ''!
+
 !classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
 Object subclass: #IdentifierBinder
 	instanceVariableNames: 'contents'
@@ -2849,6 +2899,14 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
 !OPrimitiveOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OBinaryConstantOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OBinaryVariableOperation commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
@@ -3623,6 +3681,12 @@ printOn: aStream
 	aStream
 		nextPutAll: '<=== ' , self name , String cr , firstInstruction asString
 			, '===>'! !
+
+!OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:45:49'!
+printOn: aStream 
+	| rangesStrings |
+	rangesStrings := (ranges collect: #printString) gather: [:x | x , String cr].
+	aStream nextPutAll: 'CLR: ' , String cr , rangesStrings! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
@@ -5575,6 +5639,34 @@ usesResultOf: anInstruction
 !OBeginInstruction methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:33:08'!
 basicAcceptVisitor: aVisitor! !
 
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:02'!
+firstBlock 
+
+	^firstBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:13'!
+firstBlock: basicBlock 
+
+	firstBlock := basicBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:27'!
+lastBlock 
+
+	^firstBlock lastBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:37'!
+lastValue 
+
+	^firstBlock lastBlock lastValue! !
+
+!OBlockClosure methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:39:52'!
+operandsDo: aBlock! !
+
+!OBlockClosure class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 16:38:18'!
+containing: initialBlock 
+
+	^self new firstBlock: initialBlock! !
+
 !OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
 addLast: anInstruction 
 
@@ -5982,6 +6074,140 @@ printStringUsing: names
 isPrimitiveOperation 
 
 	^true! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:41'!
+atOperand: named 
+
+	^named == #left ifTrue: [left] ifFalse: [right]! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:57'!
+atOperand: operandName put: instruction 
+
+	operandName = #left
+		ifTrue: [left := instruction]
+		ifFalse: [right := instruction]! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:26:56'!
+left 
+
+	^left! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:08'!
+left: anInstruction 
+
+	left := anInstruction! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:32'!
+right 
+
+	^right! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:41'!
+right: anInstruction 
+
+	right := anInstruction! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:28:02'!
+swapOperands 
+	| temp |
+	left removeUse: self.
+	right removeUse: self.
+	temp := left.
+	left := right.
+	right := temp.
+	left addUse: self at: #left.
+	right addUse: self at: #right! !
+
+!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 07:59:26'!
+canHaveSideEffects 
+
+	^false! !
+
+!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:28:16'!
+usesResultOf: anInstruction 
+
+	^left == anInstruction or: [right == anInstruction]! !
+
+!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:26:27'!
+invertOperation 
+
+	name == #'<' ifTrue: [^name := #'>'].
+	name == #'<=' ifTrue: [^name := #'>='].
+	name == #'>' ifTrue: [^name := #'<'].
+	name == #'>=' ifTrue: [^name := #'<='].
+	name == #'==' ifTrue: [^name].
+	self halt! !
+
+!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:27:20'!
+negateOperation 
+
+	name == #'<' ifTrue: [^name := #'>='].
+	name == #'<=' ifTrue: [^name := #'>'].
+	name == #'>' ifTrue: [^name := #'<='].
+	name == #'>=' ifTrue: [name := #'<']! !
+
+!OBinaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 07:18:09'!
+left: left right: right name: selector 
+
+	^self new
+		left: left;
+		right: right;
+		name: selector! !
+
+!OBinaryConstantOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:30:41'!
+operandsDo: aBlock 
+
+	aBlock value: left! !
+
+!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:02'!
+basicPrintString 
+
+	^'[' , left primitivePrintString , ' ' , name , ' '
+		, right primitivePrintString
+		, ']'! !
+
+!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:55'!
+printStringUsing: names 
+
+	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , right printString! !
+
+!OBinaryConstantOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:30:20'!
+isBinaryConstantOperation 
+
+	^true! !
+
+!OBinaryConstantOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:29:45'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitBinaryWithConstant: self! !
+
+!OBinaryVariableOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:33:16'!
+operandsDo: aBlock 
+
+	aBlock value: left.
+	aBlock value: right! !
+
+!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:32:47'!
+basicPrintString 
+
+	^'[' , left primitivePrintString , ' ' , name , ' '
+		, right primitivePrintString
+		, ']'! !
+
+!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:33:29'!
+printStringUsing: names 
+
+	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , (names at: right)! !
+
+!OBinaryVariableOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:32:57'!
+isBinaryVariableOperation 
+
+	^true! !
+
+!OBinaryVariableOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:32:30'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitBinaryWithVariable: self! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
@@ -26797,6 +27023,90 @@ new
 
 	^self basicNew initialize! !
 
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:42:41'!
+add: range 
+
+	ranges add: range! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:42:59'!
+addAll: range 
+
+	ranges addAll: range! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:43:11'!
+allDefinitions 
+
+	^ranges gather: #allDefinitions! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:43:20'!
+allUses 
+
+	^ranges gather: #allUses! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:43:34'!
+anyDefinition 
+	
+	^ranges last anyDefinition! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:44:40'!
+expirationPoints 
+	| definitions uses |
+	definitions := self allDefinitions.
+	uses := ranges gather: #usesWithBlocks.
+	^uses
+		select: [:use | definitions
+			noneSatisfy: [:def | def livesAfter: use key orOutOf: use value]]
+		thenCollect: #key! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:46:01'!
+simpleRanges 
+
+	^ranges! !
+
+!OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:46:10'!
+startsAt: operation 
+
+	^ranges anySatisfy: [:range | range startsAt: operation]! !
+
+!OComposedLiveRange methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:44:05'!
+definitionsWithBlocksDo: aBlock 
+
+	^ranges do: [:range | range definitionsWithBlocksDo: aBlock]
+! !
+
+!OComposedLiveRange methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:46:21'!
+usesWithBlocksDo: aBlock 
+
+	^ranges do: [:range | range usesWithBlocksDo: aBlock]! !
+
+!OComposedLiveRange methodsFor: 'initialization' stamp: 'KenD 5/5/2021 16:45:00'!
+initialize 
+
+	ranges := OrderedCollection new! !
+
+!OComposedLiveRange methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:44:26'!
+endsAt: operation 
+
+	^false! !
+
+!OComposedLiveRange methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:45:11'!
+isLiveAt: aBlock 
+
+	^self allDefinitions
+		anySatisfy: [:def | def
+			livesAfter: aBlock firstInstruction prev
+			orOutOf: aBlock]! !
+
+!OComposedLiveRange methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:45:25'!
+isSpilled 
+
+	^ranges anySatisfy: #isSpilled! !
+
+!OComposedLiveRange class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 16:41:08'!
+new 
+
+	^self basicNew initialize! !
+
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
 
@@ -29730,6 +30040,11 @@ shouldBePrintedAsLiteral
 initialize 
 
 	Counts := IdentityDictionary new! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 5/5/2021 16:34:39'!
+isInstruction 
+
+	^false! !
 
 !String methodsFor: '*powerlang' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
 includesString: subString
