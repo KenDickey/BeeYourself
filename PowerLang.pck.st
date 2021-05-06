@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 6 May 2021 at 7:37:48 am'!
+'From Cuis 5.0 [latest update: #4587] on 6 May 2021 at 12:21:38 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 6!
+!provides: 'PowerLang' 1 7!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2222,6 +2222,16 @@ OLiveRange subclass: #OComposedLiveRange
 OComposedLiveRange class
 	instanceVariableNames: ''!
 
+!classDefinition: #OLoadConstant category: #'Powerlang-Core-OCompiler-IR'!
+OLiveRange subclass: #OLoadConstant
+	instanceVariableNames: 'constant'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadConstant class' category: #'Powerlang-Core-OCompiler-IR'!
+OLoadConstant class
+	instanceVariableNames: ''!
+
 !classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
 Object subclass: #IdentifierBinder
 	instanceVariableNames: 'contents'
@@ -3091,6 +3101,10 @@ Copyright (c) 2020 Aucerna.
 !
 
 !OLiveRange commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OLoadConstant commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
@@ -27284,6 +27298,69 @@ isSpilled
 new 
 
 	^self basicNew initialize! !
+
+!OLoadConstant methodsFor: 'accessing' stamp: 'KenD 5/6/2021 12:21:21'!
+value 
+
+	^constant! !
+
+!OLoadConstant methodsFor: 'accessing' stamp: 'KenD 5/6/2021 12:21:33'!
+value: value 
+
+	constant := value. constant class = SmallintObjectMap
+		ifTrue: [ constant := constant value ]! !
+
+!OLoadConstant methodsFor: 'copying' stamp: 'KenD 5/6/2021 12:20:05'!
+newCopy 
+
+	^self class valued: constant! !
+
+!OLoadConstant methodsFor: 'enumerating' stamp: 'KenD 5/6/2021 12:20:32'!
+operandsDo: aBlock 
+
+	constant isInstruction ifTrue: [
+		self halt.
+		aBlock value: constant]! !
+
+!OLoadConstant methodsFor: 'printing' stamp: 'KenD 5/6/2021 12:19:03'!
+basicPrintString 
+
+	^'[load cst ' , constant printString , ']'! !
+
+!OLoadConstant methodsFor: 'printing' stamp: 'KenD 5/6/2021 12:20:48'!
+primitivePrintString 
+
+	^'{' , constant printString , '}'! !
+
+!OLoadConstant methodsFor: 'printing' stamp: 'KenD 5/6/2021 12:20:58'!
+printStringUsing: names 
+
+	^'load cst ' , constant printString! !
+
+!OLoadConstant methodsFor: 'testing' stamp: 'KenD 5/6/2021 12:19:15'!
+canHaveSideEffects 
+
+	^false! !
+
+!OLoadConstant methodsFor: 'testing' stamp: 'KenD 5/6/2021 12:19:25'!
+isConstant 
+
+	^true! !
+
+!OLoadConstant methodsFor: 'testing' stamp: 'KenD 5/6/2021 12:21:10'!
+usesResultOf: anInstruction 
+
+	^false! !
+
+!OLoadConstant methodsFor: 'visiting' stamp: 'KenD 5/6/2021 12:18:47'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitLoadConstant: self! !
+
+!OLoadConstant class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 12:17:24'!
+valued: value 
+
+	^self new value: value! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
