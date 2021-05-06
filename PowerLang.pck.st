@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 5 May 2021 at 4:46:28 pm'!
+'From Cuis 5.0 [latest update: #4587] on 6 May 2021 at 7:37:48 am'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 5!
+!provides: 'PowerLang' 1 6!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -352,6 +352,16 @@ Object subclass: #OValue
 OValue class
 	instanceVariableNames: ''!
 
+!classDefinition: #OConstant category: #'Powerlang-Core-OCompiler-IR'!
+OValue subclass: #OConstant
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OConstant class' category: #'Powerlang-Core-OCompiler-IR'!
+OConstant class
+	instanceVariableNames: ''!
+
 !classDefinition: #OInstruction category: #'Powerlang-Core-OCompiler-IR'!
 OValue subclass: #OInstruction
 	instanceVariableNames: 'prev next firstUse'
@@ -380,6 +390,16 @@ OInstruction subclass: #OBlockClosure
 	category: 'Powerlang-Core-OCompiler-IR'!
 !classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
 OBlockClosure class
+	instanceVariableNames: ''!
+
+!classDefinition: #ODefineArgument category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #ODefineArgument
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODefineArgument class' category: #'Powerlang-Core-OCompiler-IR'!
+ODefineArgument class
 	instanceVariableNames: ''!
 
 !classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
@@ -2172,6 +2192,16 @@ Object subclass: #OBasicBlock
 OBasicBlock class
 	instanceVariableNames: ''!
 
+!classDefinition: #ODominatorTree category: #'Powerlang-Core-OCompiler-IR'!
+Object subclass: #ODominatorTree
+	instanceVariableNames: 'block dominators dominated'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODominatorTree class' category: #'Powerlang-Core-OCompiler-IR'!
+ODominatorTree class
+	instanceVariableNames: ''!
+
 !classDefinition: #OLiveRange category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OLiveRange
 	instanceVariableNames: ''
@@ -2874,6 +2904,11 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
 
+!ODefineArgument commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !OJump commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -3050,6 +3085,11 @@ My subclasses implement those different semantics:
    of the behavior of the remote object.
 !
 
+!ODominatorTree commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !OLiveRange commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -3106,6 +3146,11 @@ printOn: aStream
 
 	aStream nextPutAll: '[' , self hash printString , '] '.
 	next printForwardOn: aStream! !
+
+!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:27'!
+name 
+
+	^name! !
 
 !OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:37'!
 printOn: aStream 
@@ -3681,6 +3726,11 @@ printOn: aStream
 	aStream
 		nextPutAll: '<=== ' , self name , String cr , firstInstruction asString
 			, '===>'! !
+
+!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:43'!
+printOn: aStream 
+
+	self printAtLevel: 1 on: aStream! !
 
 !OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:45:49'!
 printOn: aStream 
@@ -5666,6 +5716,44 @@ operandsDo: aBlock! !
 containing: initialBlock 
 
 	^self new firstBlock: initialBlock! !
+
+!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:37'!
+name: aSymbol 
+
+	name := aSymbol! !
+
+!ODefineArgument methodsFor: 'enumerating' stamp: 'KenD 5/6/2021 07:30:57'!
+operandsDo: aBlock! !
+
+!ODefineArgument methodsFor: 'testing' stamp: 'KenD 5/6/2021 07:30:14'!
+isDefineArgument 
+
+	^true! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:30:03'!
+basicPrintString 
+
+	^'[define arg ' , name , ']'! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:09'!
+primitivePrintString 
+
+	^'{' , name , '}'! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:19'!
+printStringUsing: names 
+
+	^'define arg ' , name! !
+
+!ODefineArgument methodsFor: 'visiting' stamp: 'KenD 5/6/2021 07:29:50'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitDefineArgument: self! !
+
+!ODefineArgument class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 07:29:05'!
+named: aSymbol 
+
+	^self new name: aSymbol! !
 
 !OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
 addLast: anInstruction 
@@ -27011,6 +27099,96 @@ new
 newStartingWith: anInstruction 
 
 	^self basicNew initializeWith: anInstruction! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:33:35'!
+addDominated: aTree 
+
+	dominated add: aTree! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:33:47'!
+allImmediateDominators 
+	| result remaining |
+	result := Dictionary new.
+	remaining := OrderedCollection with: self.
+	[remaining isEmpty] whileFalse: [| current |
+		current := remaining removeLast.
+		current dominated do: [:child | result at: child block put: current block].
+		remaining addAll: current dominated].
+	^result! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:34:03'!
+block 
+
+	^block! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:34:14'!
+block: aBasicBlock 
+
+	block := aBasicBlock! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:34:23'!
+dominated 
+
+	^dominated! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:34:56'!
+dominators 
+
+	^dominators
+
+! !
+
+!ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:35:50'!
+dominators: aTreeCollection 
+
+	dominators := aTreeCollection
+! !
+
+!ODominatorTree methodsFor: 'initialization' stamp: 'KenD 5/6/2021 07:36:10'!
+initialize 
+
+	dominated := OrderedCollection new! !
+
+!ODominatorTree methodsFor: 'operations' stamp: 'KenD 5/6/2021 07:37:00'!
+noticeDominators 
+
+	dominators
+		select: [:tree | tree isImmediateDominatorOf: self]
+		thenDo: [:dominator | dominator addDominated: self]! !
+
+!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:30'!
+printAtLevel: level on: aStream 
+
+	level > 8 ifTrue: [self halt].
+	level timesRepeat: [aStream nextPutAll: '--'].
+	aStream nextPutAll: block name , String cr.
+	dominated
+		reject: [:tree | tree == self]
+		thenDo: [:tree | tree printAtLevel: level + 1 on: aStream]
+! !
+
+!ODominatorTree methodsFor: 'testing' stamp: 'KenD 5/6/2021 07:36:30'!
+isImmediateDominatorOf: aBasicBlock 
+
+	^block == self or: [block successors includes: aBasicBlock]! !
+
+!ODominatorTree class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 07:32:52'!
+from: root with: aBlocksCollection dominators: dominators 
+	| trees |
+	trees := Array
+		withAll: (aBlocksCollection collect: [ :block | self new block: block ]).
+	(dominators beeCopyFrom: 2)
+		withIndexDo: [ :dominator :correspondingIndex | 
+			| imm child |
+			imm := trees at: dominator.
+			child := trees at: correspondingIndex + 1.
+			imm addDominated: child ].
+	^ trees first! !
+
+!ODominatorTree class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 07:33:08'!
+new 
+
+	^self basicNew initialize! !
 
 !OLiveRange methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:50:23'!
 isUsedBy: anInstruction 
