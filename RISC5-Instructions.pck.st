@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 4 May 2021 at 12:59:45 pm'!
+'From Cuis 5.0 [latest update: #4579] on 7 May 2021 at 4:14:02 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 12!
+!provides: 'RISC5-Instructions' 1 13!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -146,7 +146,7 @@ RV64J class
 
 !classDefinition: #RV64L category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64L
-	instanceVariableNames: 'immHi immLo baseReg'
+	instanceVariableNames: 'immedOffset baseReg'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
@@ -336,12 +336,52 @@ RV64XOR class
 
 !classDefinition: #RV64S category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64S
-	instanceVariableNames: ''
+	instanceVariableNames: 'baseReg immLo immHi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64S class' category: #'RISC5-Instructions'!
 RV64S class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SB category: #'RISC5-Instructions'!
+RV64S subclass: #RV64SB
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SB class' category: #'RISC5-Instructions'!
+RV64SB class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SD category: #'RISC5-Instructions'!
+RV64S subclass: #RV64SD
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SD class' category: #'RISC5-Instructions'!
+RV64SD class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SH category: #'RISC5-Instructions'!
+RV64S subclass: #RV64SH
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SH class' category: #'RISC5-Instructions'!
+RV64SH class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SW category: #'RISC5-Instructions'!
+RV64S subclass: #RV64SW
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SW class' category: #'RISC5-Instructions'!
+RV64SW class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64U category: #'RISC5-Instructions'!
@@ -371,7 +411,7 @@ Immediate instructions
 	destReg := regA OP immed12
 	
 Instruction Pattern:
-  [immed12][regA][func3][destReg][opcode]!
+  [immed12][sourceReg][func3][destReg][opcode]!
 
 !RV64ADDI commentStamp: '<historical>' prior: 0!
 Add Immediate
@@ -446,6 +486,26 @@ Shift Right Arithmatic -- destReg := regA >> regB!
 
 !RV64XOR commentStamp: '<historical>' prior: 0!
 eXclusive OR {distinguish OR)!
+
+!RV64S commentStamp: '<historical>' prior: 0!
+Store  -- "NB: 'destReg' used for 'sourceReg"
+
+ mem(size)At: [baseReg + immedOffset] := regSource(size) 
+
+Instruction Pattern:
+  [immedHi][regSource][regBase][func3][immLo][opcode]!
+
+!RV64SB commentStamp: '<historical>' prior: 0!
+Store Byte!
+
+!RV64SD commentStamp: '<historical>' prior: 0!
+Store (8 Byte) Doubleword!
+
+!RV64SH commentStamp: '<historical>' prior: 0!
+Store (2 Byte) Halfword!
+
+!RV64SW commentStamp: '<historical>' prior: 0!
+Store (4 byte) Word !
 
 !RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 5/3/2021 12:07:36'!
 initialize
@@ -712,21 +772,20 @@ func7
 
 	self shouldNotImplement ! !
 
-!RV64L methodsFor: 'accessing' stamp: 'KenD 5/4/2021 12:33:58'!
+!RV64L methodsFor: 'accessing' stamp: 'KenD 5/7/2021 16:11:51'!
 instruction
-" [immHi 25:31][baseReg 20:24][destReg 15:19][func3 12:14][immLo 7:11][opcode 6:0]"
-	^(immHi << 25) 
-	 + (baseReg << 20) 
-	 + (destReg << 15) 
+" [immOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
+	^ (immedOffset << 20) 
+	 + (baseReg << 15) 
 	 + (self func3 << 12) 
-	 + (immLo << 7) 
+	 + (destReg << 7) 
 	 + self opcode! !
 
-!RV64L methodsFor: 'accessing' stamp: 'KenD 5/4/2021 11:41:51'!
+!RV64L methodsFor: 'accessing' stamp: 'KenD 5/7/2021 16:09:37'!
 offset
 
 	"Answer assembled immediate"
-	^ (immHi << 5) + immLo ! !
+	^immedOffset ! !
 
 !RV64L methodsFor: 'accessing' stamp: 'KenD 5/4/2021 08:07:03'!
 opName
@@ -738,13 +797,12 @@ opcode
 	"Opcode for all L-type instructions"
 	^2r0000011! !
 
-!RV64L methodsFor: 'initialization' stamp: 'KenD 5/4/2021 11:45:11'!
-destReg: regDest baseReg: reg1 immLo: low5 immHi: high7
+!RV64L methodsFor: 'initialization' stamp: 'KenD 5/7/2021 16:07:32'!
+destReg: regDest baseReg: reg1 immedOffset: immed12
 
 	super destReg: regDest .
 	baseReg := reg1.
-	immLo := low5.
-	immHi := high7 ! !
+	immedOffset := immed12 ! !
 
 !RV64L methodsFor: 'printing' stamp: 'KenD 5/4/2021 12:06:15'!
 printString
@@ -754,7 +812,7 @@ printString
 		(self class regName: baseReg ), ', 16r', 
 		(self offset printStringBase: 16)! !
 
-!RV64L class methodsFor: 'instance creation' stamp: 'KenD 5/4/2021 12:10:31'!
+!RV64L class methodsFor: 'instance creation' stamp: 'KenD 5/7/2021 16:05:43'!
 regDest: rd regBase: rb immediateOffset: immediate12
 	
 	(immediate12 bitAnd: 16rFFF) = immediate12 
@@ -763,8 +821,7 @@ regDest: rd regBase: rb immediateOffset: immediate12
 	^self new 
 			destReg: rd 
 			baseReg: rb 
-			immLo: (immediate12 bitAnd: 2r000000011111) 
-			immHi: ((immediate12 bitAnd: 2r111111100000) >> 5)! !
+			immedOffset: immediate12 ! !
 
 !RV64LB methodsFor: 'accessing' stamp: 'KenD 5/4/2021 11:59:59'!
 func3
@@ -1042,7 +1099,111 @@ opName
 
 	^'Xor'! !
 
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/4/2021 12:53:27'!
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:40:20'!
+func3
+
+	self subclassResponsibility ! !
+
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:40:12'!
+func7
+
+	self shouldNotImplement ! !
+
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 16:04:11'!
+instruction
+" [immHi 25:31][baseReg 20:24][destReg 15:19][func3 12:14][immLo 7:11][opcode 6:0]"
+	^(immHi << 25) 
+	 + (destReg << 20) "NB: really Source Reg"
+	 + (baseReg << 15) 
+	 + (self func3 << 12) 
+	 + (immLo << 7) 
+	 + self opcode! !
+
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:40:54'!
+offset
+
+	"Answer assembled immediate"
+	^ (immHi << 5) + immLo ! !
+
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:41:02'!
+opName
+
+	self subclassResponsibility ! !
+
+!RV64S methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:41:26'!
+opcode
+	"Opcode for all S-type instructions"
+	^2r0100011! !
+
+!RV64S methodsFor: 'initialization' stamp: 'KenD 5/7/2021 15:58:53'!
+srcReg: rs baseReg: rb  immLo: lo mmHi: hi
+
+	super destReg: rs.
+	baseReg := rb.
+	immLo := lo.
+	immHi := hi! !
+
+!RV64S methodsFor: 'printing' stamp: 'KenD 5/7/2021 15:42:32'!
+printString
+	"E.g.: 'lb  rd,rBase,offset' "
+	^ self opName, '  ',
+		(self class regName: destReg), ', ',  "NB: 'destReg' used for 'sourceReg"
+		(self class regName: baseReg ), ', 16r', 
+		(self offset printStringBase: 16)! !
+
+!RV64S class methodsFor: 'instance creation' stamp: 'KenD 5/7/2021 15:38:48'!
+regSource: rs regBase: rb immediateOffset: immediate12
+	
+	(immediate12 bitAnd: 16rFFF) = immediate12 
+		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
+
+	^self new 
+			srcReg: rs
+			baseReg: rb 
+			immLo: (immediate12 bitAnd: 2r000000011111) 
+			immHi: ((immediate12 bitAnd: 2r111111100000) >> 5)! !
+
+!RV64SB methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:50:00'!
+func3
+
+	^16r0! !
+
+!RV64SB methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:50:22'!
+opName
+	"StoreByte"
+	^'sb'! !
+
+!RV64SD methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:56:08'!
+func3
+
+	^16r3! !
+
+!RV64SD methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:55:58'!
+opName
+	"StoreDouble"
+	^'sd'! !
+
+!RV64SH methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:51:58'!
+func3
+
+	^16r1! !
+
+!RV64SH methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:51:43'!
+opName
+	"StoreHalfword"
+	^'sh'! !
+
+!RV64SW methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:53:33'!
+func3
+
+	^16r2! !
+
+!RV64SW methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:54:06'!
+opName
+	"StoreWord"
+	^'sw'! !
+
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/7/2021 16:13:31'!
 testRV64I
 
 	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
@@ -1055,9 +1216,9 @@ testRV64I
 	self assert: 
 	  (RV64LD regDest: 1 regBase: 3 immediateOffset: 16rFFF) 
 		instruction 
-		= 2r11111110001100001011111110000011.
+		= 2r11111111111100011011000010000011.
 		    "10987654321098765432109876543210"
-		     "immHi|  base|    dest| f3|immLo|Opcode"
+	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
 	self assert: ((RV64LB regDest: 10 regBase: 12 immediateOffset: 16rFFF) 
 				offset printStringBase: 16)
 				= 'FFF'.
