@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 7 May 2021 at 4:14:02 pm'!
+'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 7:24:46 am'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 13!
+!provides: 'RISC5-Instructions' 1 15!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -26,12 +26,72 @@ RISC5Instructions class
 
 !classDefinition: #RV64B category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64B
-	instanceVariableNames: ''
+	instanceVariableNames: 'regA regB immHi immLo'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64B class' category: #'RISC5-Instructions'!
 RV64B class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BEQ category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BEQ
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BEQ class' category: #'RISC5-Instructions'!
+RV64BEQ class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BGE category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BGE
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BGE class' category: #'RISC5-Instructions'!
+RV64BGE class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BGEU category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BGEU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BGEU class' category: #'RISC5-Instructions'!
+RV64BGEU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BLT category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BLT
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BLT class' category: #'RISC5-Instructions'!
+RV64BLT class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BLTU category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BLTU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BLTU class' category: #'RISC5-Instructions'!
+RV64BLTU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64BNE category: #'RISC5-Instructions'!
+RV64B subclass: #RV64BNE
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BNE class' category: #'RISC5-Instructions'!
+RV64BNE class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64I category: #'RISC5-Instructions'!
@@ -405,6 +465,32 @@ RISC5InstructionsTests class
 	instanceVariableNames: ''!
 
 
+!RV64B commentStamp: '<historical>' prior: 0!
+Branch 
+
+if (regA OP regB) branch to (PC+immed12)
+
+Instruction Pattern:
+  [immedHi][regB][regA][func3][immLo][opcode] "regDest unused"!
+
+!RV64BEQ commentStamp: '<historical>' prior: 0!
+Branch on equal!
+
+!RV64BGE commentStamp: '<historical>' prior: 0!
+Branch if Greater or Equal (i.e. not LT)  Signed!
+
+!RV64BGEU commentStamp: '<historical>' prior: 0!
+Branch if Greater or Equal (i.e. not LT) UNSIGNED!
+
+!RV64BLT commentStamp: '<historical>' prior: 0!
+Branch if Less Than -- Signed!
+
+!RV64BLTU commentStamp: '<historical>' prior: 0!
+Branch if Less Than -- UNSIGNED!
+
+!RV64BNE commentStamp: '<historical>' prior: 0!
+Branch if Not Equal!
+
 !RV64I commentStamp: '<historical>' prior: 0!
 Immediate instructions
 
@@ -624,6 +710,132 @@ initialize
 		  FArg2 FArg3 FArg4 FArg5 FArg6 FArg7 
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
+func3
+
+	self subclassResponsibility ! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:55'!
+func7
+
+	self shouldNotImplement ! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:12:58'!
+instruction
+" [immHi 25:31][baseReg 20:24][destReg 15:19][func3 12:14][immLo 7:11][opcode 6:0]"
+	^(immHi << 25) 
+	 + (regB << 20) "NB: really Source Reg"
+	 + (regA << 15) 
+	 + (self func3 << 12) 
+	 + (immLo << 7) 
+	 + self opcode! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:36'!
+offset
+
+	"Answer assembled immediate"
+	^ (immHi << 5) + immLo ! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:48'!
+opName
+
+	self subclassResponsibility ! !
+
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:47'!
+opcode
+	"Opcode for all S-type instructions"
+	^2r1100011! !
+
+!RV64B methodsFor: 'initialization' stamp: 'KenD 5/8/2021 07:08:15'!
+regA: reg1 regB: reg2 immLo: lo mmHi: hi
+
+	regA := reg1.
+	regB := reg2.
+	immLo := lo.
+	immHi := hi
+! !
+
+!RV64B methodsFor: 'printing' stamp: 'KenD 5/8/2021 07:10:02'!
+printString
+	"E.g.: 'beq  r1,r2,offset' "
+	^ self opName, '  ',
+		(self class regName: regA), ', ',  "NB: 'destReg'  unused"
+		(self class regName: regB ), ', 16r', 
+		(self offset printStringBase: 16)! !
+
+!RV64B class methodsFor: 'instance creation' stamp: 'KenD 5/8/2021 07:05:59'!
+regA: reg1 regB: reg2 immediateOffset: immediate12
+	
+	(immediate12 bitAnd: 16rFFF) = immediate12 
+		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
+
+	^self new 
+			regA: reg1
+			regB: reg2
+			immLo: (immediate12 bitAnd: 2r000000011111) 
+			immHi: ((immediate12 bitAnd: 2r111111100000) >> 5)! !
+
+!RV64BEQ methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:15:03'!
+func3
+
+	^16r0! !
+
+!RV64BEQ methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:14:45'!
+opName
+
+	"Branch if Equal"
+	^'beq'! !
+
+!RV64BGE methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:21:15'!
+func3
+
+	^16r5! !
+
+!RV64BGE methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:21:09'!
+opName
+
+	^'bge'! !
+
+!RV64BGEU methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:24:32'!
+func3
+
+	^16r7! !
+
+!RV64BGEU methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:22:35'!
+opName
+
+	^'bgeU'! !
+
+!RV64BLT methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:19:58'!
+func3
+
+	^16r4! !
+
+!RV64BLT methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:19:33'!
+opName
+
+	^'blt'! !
+
+!RV64BLTU methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:24:02'!
+func3
+
+	^16r4! !
+
+!RV64BLTU methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:24:15'!
+opName
+
+	^'bltU'! !
+
+!RV64BNE methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:17:07'!
+func3
+
+	^16r1! !
+
+!RV64BNE methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:16:51'!
+opName
+
+	^'bne'! !
 
 !RV64I methodsFor: 'initialization' stamp: 'KenD 5/3/2021 15:16:54'!
 destReg: regDest regSource: reg1 imm12: immediateInt12
