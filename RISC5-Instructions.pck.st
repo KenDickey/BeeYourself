@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 7:32:41 am'!
+'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 1:23:19 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 16!
+!provides: 'RISC5-Instructions' 1 18!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -194,14 +194,24 @@ RV64I subclass: #RV64XORI
 RV64XORI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64J category: #'RISC5-Instructions'!
-RISC5Instructions subclass: #RV64J
-	instanceVariableNames: ''
+!classDefinition: #RV64JAL category: #'RISC5-Instructions'!
+RISC5Instructions subclass: #RV64JAL
+	instanceVariableNames: 'bit31 bits21to30 bit20 bits12to19'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64J class' category: #'RISC5-Instructions'!
-RV64J class
+!classDefinition: 'RV64JAL class' category: #'RISC5-Instructions'!
+RV64JAL class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64JALR category: #'RISC5-Instructions'!
+RISC5Instructions subclass: #RV64JALR
+	instanceVariableNames: 'regBase immediate12'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64JALR class' category: #'RISC5-Instructions'!
+RV64JALR class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64L category: #'RISC5-Instructions'!
@@ -508,6 +518,22 @@ Instruction Pattern:
 
 !RV64SRAI commentStamp: '<historical>' prior: 0!
 Shift Right Arithmatic Immediate!
+
+!RV64JAL commentStamp: '<historical>' prior: 0!
+Jump and Link; immediate
+
+ regDest := PC+4; PC += (sign extended immediate20)
+
+Instruction Pattern:
+  [immed20][destReg][opcode]!
+
+!RV64JALR commentStamp: '<historical>' prior: 0!
+Jump and Link; Register
+
+ regDest := PC+4; PC := regBase + immediate
+
+Instruction Pattern:
+  [immed12][baseReg][destReg][opcode]!
 
 !RV64L commentStamp: '<historical>' prior: 0!
 Load
@@ -977,6 +1003,42 @@ func3
 opName
 
 	^'XorI'! !
+
+!RV64JAL methodsFor: 'initialization' stamp: 'KenD 5/8/2021 13:07:33'!
+destReg: rd  bit31:  bit20s bits21to30: bits1to10s bit20: bit11s bits12to19:  bits12to19s
+
+	"Stash immediate20 parts swizzle 
+	  'bit*s' ==> Source bits"
+	super destReg: rd.
+	bit31 := bit20s.
+	bits21to30 := bits1to10s.
+	bit20 := bit11s.
+	bits12to19 :=  bits12to19s! !
+
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/8/2021 13:22:58'!
+offset
+
+	"Answer assembled immediate, unswizzled; 
+	  bit0 set to zero"
+	^  (bit31 << 19) "source bit 20"
+	  + (bits12to19 << 10) "source bits 12:19"
+	  + (bit20 << 11) "source bit 11"
+	  + (1 bitXor: bits21to30) "source bits 1:10"
+! !
+
+!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 5/8/2021 13:17:19'!
+regDest: destReg offset: immediate20
+
+	"Hmmm.. could be signed
+	   (immediate20 bitAnd: 16rFFFFF) = immediate20 
+		ifFalse: [DomainError signal: 'too big for 20 bit immediate']."
+	"Bit 0 is set to zero"
+	^self new 
+		destReg: destReg 
+		bit31:           (immediate20 bitAnd: 2r10000000000000000000) "source bit 20"
+		bits21to30: (immediate20 bitAnd: 2r00000000001111111111) "source bits 1:10"
+		bit20:           (immediate20 bitAnd: 2r00000000010000000000) "source bit 11"
+		bits12to19: (immediate20 bitAnd: 2r01111111100000000000) "source bits 12:19"! !
 
 !RV64L methodsFor: 'accessing' stamp: 'KenD 5/4/2021 08:06:50'!
 func3
