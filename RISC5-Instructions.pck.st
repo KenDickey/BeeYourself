@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 7:24:46 am'!
+'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 7:32:41 am'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 15!
+!provides: 'RISC5-Instructions' 1 16!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -468,7 +468,7 @@ RISC5InstructionsTests class
 !RV64B commentStamp: '<historical>' prior: 0!
 Branch 
 
-if (regA OP regB) branch to (PC+immed12)
+if (regA OP regB) branch to (PC+(immed12 << 1))
 
 Instruction Pattern:
   [immedHi][regB][regA][func3][immLo][opcode] "regDest unused"!
@@ -731,11 +731,12 @@ instruction
 	 + (immLo << 7) 
 	 + self opcode! !
 
-!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:36'!
+!RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:30:47'!
 offset
 
-	"Answer assembled immediate"
-	^ (immHi << 5) + immLo ! !
+	"Answer assembled immediate
+	  Nota Bene: immed12 multiplied by 2"
+	^ ((immHi << 5) + immLo) << 1 ! !
 
 !RV64B methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:48'!
 opName
@@ -764,8 +765,11 @@ printString
 		(self class regName: regB ), ', 16r', 
 		(self offset printStringBase: 16)! !
 
-!RV64B class methodsFor: 'instance creation' stamp: 'KenD 5/8/2021 07:05:59'!
+!RV64B class methodsFor: 'instance creation' stamp: 'KenD 5/8/2021 07:32:18'!
 regA: reg1 regB: reg2 immediateOffset: immediate12
+
+	"NB: immediate12 will be multiplied by 2 (<< 1)
+	 when instruction executed and branch is taken"
 	
 	(immediate12 bitAnd: 16rFFF) = immediate12 
 		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
