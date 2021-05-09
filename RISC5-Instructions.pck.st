@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 8 May 2021 at 1:23:19 pm'!
+'From Cuis 5.0 [latest update: #4579] on 9 May 2021 at 4:05:24 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 18!
+!provides: 'RISC5-Instructions' 1 19!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -206,7 +206,7 @@ RV64JAL class
 
 !classDefinition: #RV64JALR category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64JALR
-	instanceVariableNames: 'regBase immediate12'
+	instanceVariableNames: 'baseReg immedOffset'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
@@ -1004,6 +1004,37 @@ opName
 
 	^'XorI'! !
 
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:04:46'!
+instruction
+" [immOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
+	^ (bit31 << 31) 
+	 + (bits21to30 << 21) 
+	 + (bit20 << 20) 
+	 + (bits12to19 << 12)
+	 + (destReg << 7) 
+	 + self opcode! !
+
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:22:24'!
+offset
+
+	"Answer assembled immediate, unswizzled; 
+	  bit0 set to zero"
+	^  (bit31 << 19) "source bit 20"
+	  + (bits12to19 << 11) "source bits 12:19"
+	  + (bit20 << 10) "source bit 11"
+	  + (1 bitXor: bits21to30) "source bits 1:10"
+! !
+
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:00:05'!
+opName
+	"Jump And Link -- immediate"
+	^'jal'! !
+
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:59:44'!
+opcode
+	"Opcode for JAL instruction"
+	^2r1101111! !
+
 !RV64JAL methodsFor: 'initialization' stamp: 'KenD 5/8/2021 13:07:33'!
 destReg: rd  bit31:  bit20s bits21to30: bits1to10s bit20: bit11s bits12to19:  bits12to19s
 
@@ -1015,30 +1046,88 @@ destReg: rd  bit31:  bit20s bits21to30: bits1to10s bit20: bit11s bits12to19:  bi
 	bit20 := bit11s.
 	bits12to19 :=  bits12to19s! !
 
-!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/8/2021 13:22:58'!
-offset
+!RV64JAL methodsFor: 'printing' stamp: 'KenD 5/9/2021 14:59:33'!
+printString
+	"E.g.: ''jal rd, offset'"
+	^ self opName, '  ',
+		(self class regName: destReg), ', ', 
+		'16r', (self offset printStringBase: 16).  "FIXME: 0x??"! !
 
-	"Answer assembled immediate, unswizzled; 
-	  bit0 set to zero"
-	^  (bit31 << 19) "source bit 20"
-	  + (bits12to19 << 10) "source bits 12:19"
-	  + (bit20 << 11) "source bit 11"
-	  + (1 bitXor: bits21to30) "source bits 1:10"
-! !
-
-!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 5/8/2021 13:17:19'!
+!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:52:46'!
 regDest: destReg offset: immediate20
 
-	"Hmmm.. could be signed
+	"Hmmm.. could be signed"
 	   (immediate20 bitAnd: 16rFFFFF) = immediate20 
-		ifFalse: [DomainError signal: 'too big for 20 bit immediate']."
+		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
 	"Bit 0 is set to zero"
 	^self new 
 		destReg: destReg 
-		bit31:           (immediate20 bitAnd: 2r10000000000000000000) "source bit 20"
+		bit31:           (immediate20 bitAnd: 2r10000000000000000000)  >> 19 "source bit 20"
 		bits21to30: (immediate20 bitAnd: 2r00000000001111111111) "source bits 1:10"
-		bit20:           (immediate20 bitAnd: 2r00000000010000000000) "source bit 11"
-		bits12to19: (immediate20 bitAnd: 2r01111111100000000000) "source bits 12:19"! !
+		bit20:           (immediate20 bitAnd: 2r00000000010000000000) >> 10"source bit 11"
+		bits12to19: (immediate20 bitAnd: 2r01111111100000000000) >> 11 "source bits 12:19"! !
+
+!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 16:03:52'!
+instruction
+	"[immed12][baseReg][srcReg]000[opcode]"
+	^(immedOffset << 20)
+	 + (baseReg << 15) 
+	 "+ (self func3 << 12)  == zero"
+	 + (destReg << 7) 
+	 + self opcode! !
+
+!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:58:50'!
+offset
+
+	"Answer assembled immediate"
+	^immedOffset ! !
+
+!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:59:21'!
+opName
+	"Jump And Link -- Register"
+	^'jalR'! !
+
+!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 16:00:13'!
+opcode
+	"Opcode for JALR instruction"
+	^2r1100111! !
+
+!RV64JALR methodsFor: 'initialization' stamp: 'KenD 5/9/2021 15:56:34'!
+destReg: regDest baseReg: reg1 immedOffset: immed12
+
+	super destReg: regDest .
+	baseReg := reg1.
+	immedOffset := immed12 ! !
+
+!RV64JALR methodsFor: 'printing' stamp: 'KenD 5/9/2021 16:05:06'!
+printString
+	"E.g.: ''jal rDest, rBase, offset'"
+	^ self opName, '  ',
+		(self class regName: destReg), ', ', 
+		(self class regName: baseReg), ', ', 
+		'16r', (self offset printStringBase: 16).  ! !
+
+!RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:56:56'!
+regDest: rd regBase: rb immediateOffset: immediate12
+
+	(immediate12 bitAnd: 16rFFF) = immediate12 
+		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
+		
+	^self new 
+			destReg: rd 
+			baseReg: rb 
+			immedOffset: immediate12 	! !
+
+!RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:53:56'!
+regDest: rd regBase: rb offset: immediate12
+
+	(immediate12 bitAnd: 16rFFF) = immediate12 
+		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
+		
+	^self new 
+			destReg: rd 
+			baseReg: rb 
+			immedOffset: immediate12 	! !
 
 !RV64L methodsFor: 'accessing' stamp: 'KenD 5/4/2021 08:06:50'!
 func3
@@ -1082,9 +1171,9 @@ destReg: regDest baseReg: reg1 immedOffset: immed12
 	baseReg := reg1.
 	immedOffset := immed12 ! !
 
-!RV64L methodsFor: 'printing' stamp: 'KenD 5/4/2021 12:06:15'!
+!RV64L methodsFor: 'printing' stamp: 'KenD 5/9/2021 16:04:53'!
 printString
-	"E.g.: 'lb  rd,rBase,offset' "
+	"E.g.: 'lb  rDest,rBase,offset' "
 	^ self opName, '  ',
 		(self class regName: destReg), ', ', 
 		(self class regName: baseReg ), ', 16r', 
@@ -1481,7 +1570,7 @@ opName
 	"StoreWord"
 	^'sw'! !
 
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/7/2021 16:13:31'!
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/9/2021 15:48:27'!
 testRV64I
 
 	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
@@ -1503,8 +1592,17 @@ testRV64I
 	self assert: 
 		((RV64LB regDest: 10 regBase: 12 immediateOffset: 16rA5A) 
 			printString )
-			=  'lb  Arg0, Arg2, 16rA5A' 
+			=  'lb  Arg0, Arg2, 16rA5A' .
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001) instruction
+		= 2r11000000001110000001000011101111.
 		
-	! !
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
+		= 2r11000000111000000010.
+	
+	self assert: 
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
+		= 'jal  ReturnAddr, 16rC0E00' .! !
 RISC5Instructions initialize!
 RISC5Regs initialize!
