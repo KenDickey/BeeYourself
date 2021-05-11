@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 9 May 2021 at 4:05:24 pm'!
+'From Cuis 5.0 [latest update: #4579] on 11 May 2021 at 8:52:15 am'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 19!
+!provides: 'RISC5-Instructions' 1 21!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -464,6 +464,16 @@ RISC5Instructions subclass: #RV64U
 RV64U class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64LUI category: #'RISC5-Instructions'!
+RV64U subclass: #RV64LUI
+	instanceVariableNames: 'immediate20'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LUI class' category: #'RISC5-Instructions'!
+RV64LUI class
+	instanceVariableNames: ''!
+
 !classDefinition: #RISC5InstructionsTests category: #'RISC5-Instructions'!
 TestCase subclass: #RISC5InstructionsTests
 	instanceVariableNames: ''
@@ -618,6 +628,14 @@ Store (2 Byte) Halfword!
 
 !RV64SW commentStamp: '<historical>' prior: 0!
 Store (4 byte) Word !
+
+!RV64LUI commentStamp: '<historical>' prior: 0!
+Load Upper Immediate
+
+  regDest := immediate20 << 12
+
+Instruction Pattern:
+  [immed20][regDest][opcode]!
 
 !RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 5/3/2021 12:07:36'!
 initialize
@@ -1014,16 +1032,16 @@ instruction
 	 + (destReg << 7) 
 	 + self opcode! !
 
-!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:22:24'!
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/10/2021 11:17:46'!
 offset
 
 	"Answer assembled immediate, unswizzled; 
 	  bit0 set to zero"
-	^  (bit31 << 19) "source bit 20"
+	^  ((bit31 << 19) "source bit 20"
 	  + (bits12to19 << 11) "source bits 12:19"
 	  + (bit20 << 10) "source bit 11"
-	  + (1 bitXor: bits21to30) "source bits 1:10"
-! !
+	  + bits21to30 "source bits 1:10"
+	    ) << 1! !
 
 !RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:00:05'!
 opName
@@ -1053,13 +1071,13 @@ printString
 		(self class regName: destReg), ', ', 
 		'16r', (self offset printStringBase: 16).  "FIXME: 0x??"! !
 
-!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:52:46'!
+!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 08:51:49'!
 regDest: destReg offset: immediate20
 
 	"Hmmm.. could be signed"
 	   (immediate20 bitAnd: 16rFFFFF) = immediate20 
 		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
-	"Bit 0 is set to zero"
+	"Bit 0 will be zero"
 	^self new 
 		destReg: destReg 
 		bit31:           (immediate20 bitAnd: 2r10000000000000000000)  >> 19 "source bit 20"
@@ -1076,11 +1094,11 @@ instruction
 	 + (destReg << 7) 
 	 + self opcode! !
 
-!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:58:50'!
+!RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/10/2021 11:18:02'!
 offset
 
 	"Answer assembled immediate"
-	^immedOffset ! !
+	^immedOffset << 1! !
 
 !RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:59:21'!
 opName
@@ -1099,9 +1117,9 @@ destReg: regDest baseReg: reg1 immedOffset: immed12
 	baseReg := reg1.
 	immedOffset := immed12 ! !
 
-!RV64JALR methodsFor: 'printing' stamp: 'KenD 5/9/2021 16:05:06'!
+!RV64JALR methodsFor: 'printing' stamp: 'KenD 5/10/2021 11:16:04'!
 printString
-	"E.g.: ''jal rDest, rBase, offset'"
+	"E.g.: ''jalR rDest, rBase, offset'"
 	^ self opName, '  ',
 		(self class regName: destReg), ', ', 
 		(self class regName: baseReg), ', ', 
@@ -1570,7 +1588,48 @@ opName
 	"StoreWord"
 	^'sw'! !
 
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/9/2021 15:48:27'!
+!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:46:59'!
+instruction
+" [imm20 12:31][destReg 7:11][opcode 6:0]"
+	^ (immediate20 << 12) 
+	 + (destReg << 7) 
+	 + self opcode! !
+
+!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:45:20'!
+opName
+
+	"Load Upper Immediate"
+	^'luI'! !
+
+!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:46:05'!
+opcode
+	"Opcode for LUI"
+	^2r0110111! !
+
+!RV64LUI methodsFor: 'initialization' stamp: 'KenD 5/11/2021 08:44:11'!
+destReg: rd immediate: imm20
+
+	super destReg: rd.
+	immediate20 := imm20 ! !
+
+!RV64LUI methodsFor: 'printing' stamp: 'KenD 5/11/2021 08:48:33'!
+printString
+	"E.g.: 'lui  rDest,immediate "
+	^ self opName, '  ',
+		(self class regName: destReg), ',  16r', 
+		(immediate20 printStringBase: 16)! !
+
+!RV64LUI class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 08:51:23'!
+regDest: rd immediate: imm20
+
+ 	(imm20 bitAnd: 16rFFFFF) = imm20 
+		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
+		
+	^self new
+		destReg: rd immediate: imm20
+! !
+
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/10/2021 11:23:49'!
 testRV64I
 
 	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
@@ -1599,10 +1658,10 @@ testRV64I
 		
 	self assert:
 		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
-		= 2r11000000111000000010.
+		= 2r110000001110000000110.
 	
 	self assert: 
 		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
-		= 'jal  ReturnAddr, 16rC0E00' .! !
+		= 'jal  ReturnAddr, 16r181C02' .! !
 RISC5Instructions initialize!
 RISC5Regs initialize!
