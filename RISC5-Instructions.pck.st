@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 11 May 2021 at 8:52:15 am'!
+'From Cuis 5.0 [latest update: #4579] on 11 May 2021 at 9:07:59 am'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 21!
+!provides: 'RISC5-Instructions' 1 22!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -456,7 +456,7 @@ RV64SW class
 
 !classDefinition: #RV64U category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64U
-	instanceVariableNames: ''
+	instanceVariableNames: 'immediate20'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
@@ -464,9 +464,19 @@ RISC5Instructions subclass: #RV64U
 RV64U class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64AUIPC category: #'RISC5-Instructions'!
+RV64U subclass: #RV64AUIPC
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AUIPC class' category: #'RISC5-Instructions'!
+RV64AUIPC class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64LUI category: #'RISC5-Instructions'!
 RV64U subclass: #RV64LUI
-	instanceVariableNames: 'immediate20'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
@@ -628,6 +638,14 @@ Store (2 Byte) Halfword!
 
 !RV64SW commentStamp: '<historical>' prior: 0!
 Store (4 byte) Word !
+
+!RV64AUIPC commentStamp: '<historical>' prior: 0!
+Add Upper Immediate to PC
+
+  regDest := PC + (immediate20 << 12)
+
+Instruction Pattern:
+  [immed20][regDest][opcode]!
 
 !RV64LUI commentStamp: '<historical>' prior: 0!
 Load Upper Immediate
@@ -1588,14 +1606,58 @@ opName
 	"StoreWord"
 	^'sw'! !
 
-!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:46:59'!
+!RV64U methodsFor: 'initialization' stamp: 'KenD 5/11/2021 09:03:52'!
+destReg: rd immediate: imm20
+
+	super destReg: rd.
+	immediate20 := imm20 ! !
+
+!RV64U methodsFor: 'accessing' stamp: 'KenD 5/11/2021 09:06:44'!
 instruction
 " [imm20 12:31][destReg 7:11][opcode 6:0]"
 	^ (immediate20 << 12) 
 	 + (destReg << 7) 
 	 + self opcode! !
 
-!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:45:20'!
+!RV64U methodsFor: 'accessing' stamp: 'KenD 5/11/2021 09:07:40'!
+opCode
+
+	self subclassResponsibility ! !
+
+!RV64U methodsFor: 'accessing' stamp: 'KenD 5/11/2021 09:06:19'!
+upperBits
+" [imm20 12:31][destReg 7:11][opcode 6:0]"
+	^ (immediate20 << 12) ! !
+
+!RV64U methodsFor: 'printing' stamp: 'KenD 5/11/2021 09:06:29'!
+printString
+	"E.g.: 'lui  rDest,immediate "
+	^ self opName, '  ',
+		(self class regName: destReg), ',  16r', 
+		(immediate20 printStringBase: 16)! !
+
+!RV64U class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 09:04:20'!
+regDest: rd immediate: imm20
+
+ 	(imm20 bitAnd: 16rFFFFF) = imm20 
+		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
+		
+	^self new
+		destReg: rd immediate: imm20
+! !
+
+!RV64AUIPC class methodsFor: 'accessing' stamp: 'KenD 5/11/2021 09:05:29'!
+opName
+
+	"Add Upper Immediate to PC"
+	^'auIpc'! !
+
+!RV64AUIPC class methodsFor: 'accessing' stamp: 'KenD 5/11/2021 09:05:56'!
+opcode
+	"Opcode for AUIPC"
+	^2r0010111! !
+
+!RV64LUI methodsFor: 'accessing' stamp: 'KenD 5/11/2021 08:56:27'!
 opName
 
 	"Load Upper Immediate"
@@ -1606,30 +1668,7 @@ opcode
 	"Opcode for LUI"
 	^2r0110111! !
 
-!RV64LUI methodsFor: 'initialization' stamp: 'KenD 5/11/2021 08:44:11'!
-destReg: rd immediate: imm20
-
-	super destReg: rd.
-	immediate20 := imm20 ! !
-
-!RV64LUI methodsFor: 'printing' stamp: 'KenD 5/11/2021 08:48:33'!
-printString
-	"E.g.: 'lui  rDest,immediate "
-	^ self opName, '  ',
-		(self class regName: destReg), ',  16r', 
-		(immediate20 printStringBase: 16)! !
-
-!RV64LUI class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 08:51:23'!
-regDest: rd immediate: imm20
-
- 	(imm20 bitAnd: 16rFFFFF) = imm20 
-		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
-		
-	^self new
-		destReg: rd immediate: imm20
-! !
-
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/10/2021 11:23:49'!
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 5/11/2021 08:57:57'!
 testRV64I
 
 	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
@@ -1662,6 +1701,10 @@ testRV64I
 	
 	self assert: 
 		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
-		= 'jal  ReturnAddr, 16r181C02' .! !
+		= 'jal  ReturnAddr, 16r181C02' .
+	self assert:
+		(RV64LUI regDest: 1 immediate: 16rC0E03)  printString 
+		 = 'luI  ReturnAddr,  16rC0E03' 
+		! !
 RISC5Instructions initialize!
 RISC5Regs initialize!
