@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 6 May 2021 at 12:21:38 pm'!
+'From Cuis 5.0 [latest update: #4587] on 11 May 2021 at 2:44:50 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 7!
+!provides: 'PowerLang' 1 8!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -472,6 +472,16 @@ OLoadImplicit subclass: #OActivationContext
 OActivationContext class
 	instanceVariableNames: ''!
 
+!classDefinition: #OMessageSend category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OMessageSend
+	instanceVariableNames: 'receiver selector arguments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
+OMessageSend class
+	instanceVariableNames: ''!
+
 !classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OPrimitiveOperation
 	instanceVariableNames: 'name'
@@ -780,6 +790,16 @@ SmalltalkBootstrapper subclass: #DMRBootstrapper
 	category: 'Powerlang-Core-Building'!
 !classDefinition: 'DMRBootstrapper class' category: #'Powerlang-Core-Building'!
 DMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #OMRBootstrapper category: #'Powerlang-Core-Building'!
+SmalltalkBootstrapper subclass: #OMRBootstrapper
+	instanceVariableNames: 'nativizer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'OMRBootstrapper class' category: #'Powerlang-Core-Building'!
+OMRBootstrapper class
 	instanceVariableNames: ''!
 
 !classDefinition: #StackFrameCursor category: #'Powerlang-Core'!
@@ -2940,6 +2960,10 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
 !OActivationContext commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OMessageSend commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
@@ -6151,6 +6175,113 @@ temporaries: aNumber
 new 
 
 	^self basicNew initialize! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:38'!
+arguments 
+
+	^arguments! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:48'!
+arguments: operands 
+
+	arguments := operands! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:01'!
+atOperand: named 
+
+	^named == #receiver ifTrue: [receiver] ifFalse: [arguments at: named]! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:13'!
+atOperand: name put: instruction 
+
+	name = #receiver
+		ifTrue: [receiver := instruction]
+		ifFalse: [arguments at: name put: instruction]! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:14'!
+receiver 
+
+	^receiver! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:24'!
+receiver: operand 
+
+	receiver := operand! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:37'!
+selector 
+
+	^selector
+! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:45'!
+selector: aSymbol 
+
+	selector := aSymbol! !
+
+!OMessageSend methodsFor: 'enumerating' stamp: 'KenD 5/11/2021 14:38:36'!
+operandsDo: aBlock 
+
+	aBlock value: receiver.
+	arguments do: aBlock! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:37:56'!
+basicPrintString 
+	| string |
+	string := arguments size > 0
+		ifTrue: [' with: '
+			, (arguments gather: [:arg | arg primitivePrintString , ' '])]
+		ifFalse: [''].
+	^'[send #' , selector , ' to ' , receiver primitivePrintString
+		, string trim
+		, ']'! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:38:51'!
+primitivePrintString 
+
+	^'{#' , selector , '}'! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:39:38'!
+printStringUsing: names 
+	| string |
+	string := arguments size > 0
+		ifTrue: [' with: '
+			, (arguments gather: [:arg | (names at: arg ifAbsent: ['missing']) , ' '])]
+		ifFalse: [''].
+	^'send #' , selector , ' to ' , (names at: receiver ifAbsent: ['missing'])
+		, string withoutTrailingBlanks! !
+
+!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:38:14'!
+isMessageSend 
+
+	^true! !
+
+!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:41:02'!
+usesResultOf: anInstruction 
+
+	^receiver == anInstruction
+		or: [arguments anySatisfy: [:argument | argument == anInstruction]]
+! !
+
+!OMessageSend methodsFor: 'visiting' stamp: 'KenD 5/11/2021 14:37:33'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitMessageSend: self
+! !
+
+!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:35:36'!
+receiver: receiver selector: selector arguments: arguments 
+
+	^self new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		yourself! !
+
+!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:36:22'!
+selector: selector 
+
+	^self new selector: selector! !
 
 !OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:38:05'!
 name: selector 
