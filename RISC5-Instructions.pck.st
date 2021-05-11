@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4579] on 11 May 2021 at 9:07:59 am'!
+'From Cuis 5.0 [latest update: #4579] on 11 May 2021 at 2:26:36 pm'!
 'Description RISC-V Instruction opcodes for RV64G'!
-!provides: 'RISC5-Instructions' 1 22!
+!provides: 'RISC5-Instructions' 1 23!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
@@ -122,6 +122,26 @@ RV64I subclass: #RV64ANDI
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64ANDI class' category: #'RISC5-Instructions'!
 RV64ANDI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64EBREAK category: #'RISC5-Instructions'!
+RV64I subclass: #RV64EBREAK
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64EBREAK class' category: #'RISC5-Instructions'!
+RV64EBREAK class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64ECALL category: #'RISC5-Instructions'!
+RV64I subclass: #RV64ECALL
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ECALL class' category: #'RISC5-Instructions'!
+RV64ECALL class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64ORI category: #'RISC5-Instructions'!
@@ -536,6 +556,12 @@ Add Immediate
 Instruction Pattern:
   [immed12][sourceReg][func3][destReg][opcode]!
 
+!RV64EBREAK commentStamp: '<historical>' prior: 0!
+Environment Break -- Transfer control to debugger!
+
+!RV64ECALL commentStamp: '<historical>' prior: 0!
+Environment Call -- transfer control to OS!
+
 !RV64SRAI commentStamp: '<historical>' prior: 0!
 Shift Right Arithmatic Immediate!
 
@@ -920,7 +946,7 @@ func7
 
 	self subclassResponsibility ! !
 
-!RV64I methodsFor: 'accessing' stamp: 'KenD 5/4/2021 11:37:11'!
+!RV64I methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:15:19'!
 instruction
 	"[immed12 31:20][rSource1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
 	^(immediate12 << 20) 
@@ -969,6 +995,83 @@ func3
 opName
 
 	^'andI'! !
+
+!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:01:07'!
+func3
+
+	^16r0! !
+
+!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:17:32'!
+instruction
+	"[1 :20][000zeros000][opcode 6:0]"
+	^(1 << 20) 
+	 + self opcode! !
+
+!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:01:41'!
+opName
+
+	^'ebreak'! !
+
+!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:02:03'!
+opcode
+	"Opcode for ecall&ebreak"
+	^2r1110011! !
+
+!RV64EBREAK methodsFor: 'initialization' stamp: 'KenD 5/11/2021 14:24:33'!
+initialize
+
+	super destReg: 0.
+	sourceReg := 0.
+	immediate12 := 1
+! !
+
+!RV64EBREAK methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:03'!
+printString
+
+	^self opName ! !
+
+!RV64EBREAK class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:18:58'!
+regDest: destReg regSource: reg1 imm12: immediate12
+		
+	^self new destReg: 0 regSource: 0  imm12: 1 ! !
+
+!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 13:58:49'!
+func3
+
+	^16r0! !
+
+!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:16:03'!
+instruction
+	"[000][opcode 6:0]"
+	^self opcode! !
+
+!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 13:57:41'!
+opName
+
+	^'ecall'! !
+
+!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:02:10'!
+opcode
+	"Opcode for ecall&ebreak"
+	^2r1110011! !
+
+!RV64ECALL methodsFor: 'initialization' stamp: 'KenD 5/11/2021 14:24:10'!
+initialize
+
+	super destReg: 0.
+	sourceReg := 0.
+	immediate12 := 0
+! !
+
+!RV64ECALL methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:22'!
+printString
+
+	^self opName ! !
+
+!RV64ECALL class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:19:39'!
+regDest: destReg regSource: reg1 imm12: immediate12
+		
+	^self new destReg: 0 regSource: 0  imm12: 0! !
 
 !RV64ORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:14:06'!
 func3
