@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 11 May 2021 at 2:44:50 pm'!
+'From Cuis 5.0 [latest update: #4587] on 13 May 2021 at 7:23:42 am'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 8!
+!provides: 'PowerLang' 1 9!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -480,6 +480,16 @@ OInstruction subclass: #OMessageSend
 	category: 'Powerlang-Core-OCompiler-IR'!
 !classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
 OMessageSend class
+	instanceVariableNames: ''!
+
+!classDefinition: #OPhi category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OPhi
+	instanceVariableNames: 'variables blocks'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPhi class' category: #'Powerlang-Core-OCompiler-IR'!
+OPhi class
 	instanceVariableNames: ''!
 
 !classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
@@ -6282,6 +6292,186 @@ receiver: receiver selector: selector arguments: arguments
 selector: selector 
 
 	^self new selector: selector! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:19'!
+addVariable: value from: block 
+
+	self deny: (blocks includes: block).
+	variables add: value.
+	blocks add: block.
+	value addUse: self at: block! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:35'!
+atOperand: name 
+
+	| index |
+	index := blocks indexOf: name.
+	^variables at: index! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:17:00'!
+atOperand: name put: instruction 
+	| index |
+	index := blocks indexOf: name.
+	variables at: index put: instruction! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:25'!
+blocks 
+
+	^blocks! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:49'!
+blocks: aCollection 
+
+	blocks := aCollection! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:14'!
+removeBlock: removed 
+	| index variable |
+	index := blocks indexOf: removed.
+	variable := variables at: index.
+	variable removeUse: self at: removed.
+	variables removeIndex: index.
+	blocks removeIndex: index.
+	variables size = 1 ifTrue: [
+		self replaceAllUsesWith: variables first; dissolve.
+		^variables first].
+	^self! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:34'!
+removeVariable: removed at: index 
+	| block |
+	block := blocks at: index.
+	removed removeUse: self at: block.
+	variables removeIndex: index.
+	blocks removeIndex: index.
+	variables size = 1
+		ifTrue: [self replaceAllUsesWith: variables first; dissolve]! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:54'!
+replaceBlock: original with: new 
+
+	blocks withIndexDo: [:block :i | | source |
+		block == original ifTrue: [
+			source := variables at: i.
+			source updateUser: self named: original with: new.
+			blocks at: i put: new]]! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:07'!
+variables 
+
+	^variables! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:19'!
+variables: aCollection 
+
+	variables := aCollection! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:20:08'!
+operandsDo: aBlock 
+
+	variables do: aBlock! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:21:01'!
+realReverseDo: aBlock
+
+	self notYetImplemented ! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:23:37'!
+variablesWithBlocksDo: aBlock 
+
+	variables with: blocks do: aBlock! !
+
+!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:15'!
+clearVariables 
+
+	variables := OrderedCollection new.
+	blocks := OrderedCollection new! !
+
+!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:43'!
+initialize
+	
+	self clearVariables ! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:18:03'!
+basicPrintString 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [
+			(variables
+				with: blocks
+				collect: [:var :block | block name , '->' , var primitivePrintString])
+				gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'[phi(' , (sources allButLast: 2) , ')]'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:20'!
+primitivePrintString 
+
+	^'{#phi}'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:34'!
+printStringUsing: names 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [
+			(variables
+				with: blocks
+				collect: [:var :block | (names at: block ifAbsent: ['missing']) , '->'
+					, (names at: var ifAbsent: ['missing'])])
+				gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'phi(' , (sources allButLast: 2) , ')'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:22:09'!
+shortPrintString 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [(variables collect: #primitivePrintString) gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'[phi(' , (sources allButLast: 2) , ')]'! !
+
+!OPhi methodsFor: 'sorting' stamp: 'KenD 5/13/2021 07:22:36'!
+sortAfter: predecessors 
+	| indices |
+	indices := predecessors collect: [:pred | blocks indexOf: pred].
+	variables := indices collect: [:index | variables at: index].
+	blocks := predecessors copy! !
+
+!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:19:56'!
+isPhi 
+
+	^true! !
+
+!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:22:55'!
+usesResultOf: anInstruction 
+
+	^variables includes: anInstruction! !
+
+!OPhi methodsFor: 'visiting' stamp: 'KenD 5/13/2021 07:17:43'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitPhi: self! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:30'!
+new 
+
+	^self basicNew initialize
+! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:51'!
+with: operation1
+from: block1
+with: operation2
+from: block2 
+
+	^self new
+		addVariable: operation1 from: block1;
+		addVariable: operation2 from: block2! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:57:08'!
+withAll: operations in: blocks 
+
+	^self new variables: operations; blocks: blocks copy! !
 
 !OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:38:05'!
 name: selector 
