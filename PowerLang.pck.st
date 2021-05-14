@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 13 May 2021 at 7:23:42 am'!
+'From Cuis 5.0 [latest update: #4587] on 14 May 2021 at 7:55:58 am'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 9!
+!provides: 'PowerLang' 1 11!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -20,6 +20,7 @@ SystemOrganization addCategory: #'Powerlang-Core-SCompiler'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
+SystemOrganization addCategory: 'Powerlang-Core-OCompiler'!
 
 
 !classDefinition: #CharacterConstants category: #'Powerlang-Core'!
@@ -2892,6 +2893,26 @@ SScript subclass: #SBlock
 SBlock class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingBlockInliner category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingBlockInliner
+	instanceVariableNames: 'firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBlockInliner class' category: 'Powerlang-Core-OCompiler'!
+OptimizingBlockInliner class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingBraunAllocator category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingBraunAllocator
+	instanceVariableNames: 'firstBlock currentBlock loops liveness allocationEntry allocationExit distancesExit spillExit currentlyAvailable currentlySpilled temporaries amountOfRegisters scheduledSpills scheduledReloads blocksDone deferredCouplings'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBraunAllocator class' category: 'Powerlang-Core-OCompiler'!
+OptimizingBraunAllocator class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3145,6 +3166,14 @@ Copyright (c) 2020 Aucerna.
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
+
+!OptimizingBlockInliner commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OptimizingBraunAllocator commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
 format 
@@ -30551,6 +30580,587 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeBlock! !
+
+!OptimizingBlockInliner methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:28:13'!
+on: block 
+
+	firstBlock := block! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:25:07'!
+doInline 
+
+	self inlineInnerBlocksOf: firstBlock! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:25:22'!
+inline: aMessageSend in: block 
+
+	^self performInlinerFor: aMessageSend in: block! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:25:36'!
+inlineAnd: message in: block 
+	| closure firstSkipped lastSkipped join |
+	closure := message arguments first.
+	firstSkipped := closure firstBlock.
+	self inlineInnerBlocksOf: firstSkipped.
+	lastSkipped := firstSkipped lastBlock.
+	join := block splitAfter: message.
+	join
+		insertPhiOf: message receiver
+		at: block
+		and: lastSkipped
+		replacing: message.
+	block endWithJumpFalseTo: join skipping: firstSkipped if: message receiver.
+	lastSkipped endWithJumpTo: join.
+	firstSkipped addPredecessor: block.
+	join addPredecessor: block; addPredecessor: lastSkipped.
+	^join! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:25:59'!
+inlineIfFalse: message in: block 
+	| closure firstSkipped lastSkipped join |
+	closure := message arguments first.
+	firstSkipped := closure firstBlock.
+	self inlineInnerBlocksOf: firstSkipped.
+	lastSkipped := firstSkipped lastBlock.
+	join := block splitAfter: message.
+	block endWithJumpTrueTo: join skipping: firstSkipped if: message receiver.
+	lastSkipped endWithJumpTo: join.
+	firstSkipped addPredecessor: block.
+	join addPredecessor: lastSkipped; addPredecessor: block.
+	message dissolve.
+	^join! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:26:11'!
+inlineIfTrue: message in: block 
+	| closure firstSkipped lastSkipped join |
+	closure := message arguments first.
+	firstSkipped := closure firstBlock.
+	self inlineInnerBlocksOf: firstSkipped.
+	lastSkipped := firstSkipped lastBlock.
+	join := block splitAfter: message.
+	block endWithJumpFalseTo: join skipping: firstSkipped if: message receiver.
+	lastSkipped endWithJumpTo: join.
+	firstSkipped addPredecessor: block.
+	join addPredecessor: lastSkipped; addPredecessor: block.
+	message dissolve.
+	^join! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:26:24'!
+inlineIfTrueifFalse: message in: block 
+	| positive negative firstTrue firstFalse lastTrue lastFalse join |
+	positive := message arguments first.
+	negative := message arguments second.
+	firstTrue := positive firstBlock.
+	firstFalse := negative firstBlock.
+	self inlineInnerBlocksOf: firstTrue and: firstFalse.
+	lastTrue := firstTrue lastBlock.
+	lastFalse := firstFalse lastBlock.
+	join := block splitAfter: message.
+	join insertPhiOf: lastTrue and: lastFalse replacing: message.
+	block
+		endWithJumpFalseTo: firstFalse
+		skipping: firstTrue
+		if: message receiver.
+	lastTrue endWithJumpTo: join.
+	lastFalse endWithJumpTo: join.
+	firstTrue addPredecessor: block.
+	firstFalse addPredecessor: block.
+	join addPredecessor: lastTrue; addPredecessor: lastFalse.
+	^join
+! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:26:41'!
+inlineInnerBlocksOf: basicBlock 
+	| currentBlock |
+	currentBlock := basicBlock.
+	basicBlock instructionsDo: [:instruction | 
+		(self shouldInline: instruction)
+			ifTrue: [currentBlock := self inline: instruction in: currentBlock]]! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:26:53'!
+inlineInnerBlocksOf: basicBlock1 and: basicBlock2 
+
+	self inlineInnerBlocksOf: basicBlock1; inlineInnerBlocksOf: basicBlock2! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:27:07'!
+inlineInnerBlocksOf: basicBlock1 and: basicBlock2 and: basicBlock3 
+
+	self
+		inlineInnerBlocksOf: basicBlock1;
+		inlineInnerBlocksOf: basicBlock2;
+		inlineInnerBlocksOf: basicBlock3! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:27:21'!
+inlineOr: message in: block 
+	| closure firstSkipped lastSkipped join |
+	closure := message arguments first.
+	firstSkipped := closure firstBlock.
+	self inlineInnerBlocksOf: firstSkipped.
+	lastSkipped := firstSkipped lastBlock.
+	join := block splitAfter: message.
+	join
+		insertPhiOf: message receiver
+		at: block
+		and: lastSkipped
+		replacing: message.
+	block endWithJumpTrueTo: join skipping: firstSkipped if: message receiver.
+	lastSkipped endWithJumpTo: join.
+	firstSkipped addPredecessor: block.
+	join addPredecessor: block; addPredecessor: lastSkipped.
+	^join! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:27:38'!
+inlineWhileTrue: message in: block 
+	| antecedent consequent firstAntecedent firstConsequent lastAntecedent lastConsequent join |
+	antecedent := message receiver.
+	consequent := message arguments first.
+	firstAntecedent := antecedent firstBlock.
+	firstConsequent := consequent firstBlock.
+	self inlineInnerBlocksOf: firstAntecedent and: firstConsequent.
+	lastAntecedent := firstAntecedent lastBlock.
+	lastConsequent := firstConsequent lastBlock.
+	join := block splitAfter: message.
+	block endWithJumpTo: firstAntecedent.
+	lastAntecedent
+		endWithJumpFalseTo: join
+		skipping: firstConsequent
+		if: lastAntecedent lastValue.
+	lastConsequent endWithJumpTo: firstAntecedent.
+	message dissolve.
+	firstAntecedent addPredecessor: block; addPredecessor: lastConsequent.
+	firstConsequent addPredecessor: lastAntecedent.
+	join addPredecessor: lastAntecedent.
+	^join! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:27:54'!
+inliners 
+
+	^#(ifTrue: ifFalse: ifTrue:ifFalse: ifFalse:ifTrue: and: or: to:do: whileTrue:)! !
+
+!OptimizingBlockInliner methodsFor: 'inlining' stamp: 'KenD 5/14/2021 07:28:33'!
+performInlinerFor: messageSend in: block 
+	| selector inliner |
+	selector := messageSend selector asString copyWithout: $:.
+	inliner := #inline , selector capitalized , ':in:'.
+	^self perform: inliner asSymbol with: messageSend with: block
+! !
+
+!OptimizingBlockInliner methodsFor: 'testing' stamp: 'KenD 5/14/2021 07:28:48'!
+shouldInline: anInstruction 
+
+	^anInstruction isMessageSend
+		and: [self inliners includes: anInstruction selector]! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:43:36'!
+activationRecord 
+
+	^firstBlock firstInstruction! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:43:46'!
+allocationEntry 
+
+	^allocationEntry! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:43:55'!
+amountOfRegisters 
+
+	^amountOfRegisters! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:44:04'!
+amountOfRegisters: amount 
+
+	amountOfRegisters := amount! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:47:13'!
+couple: block withPredecessor: predecessor 
+	| predecessors wentry oldSentry predWexit predSexit newSentry difference |
+	predecessors := block predecessors intersection: blocksDone.
+	predecessors removeIfPresent: block.
+	wentry := allocationEntry at: block.
+	oldSentry := (predecessors gather: [:pred | spillExit at: pred])
+		intersection: wentry.
+	predWexit := allocationExit at: predecessor.
+	predSexit := spillExit at: predecessor.
+	newSentry := (oldSentry , predSexit) withoutDuplicates intersection: wentry.
+	(wentry rejectAll: predWexit) do: [:value | 
+		(block phis includes: value)
+			ifFalse: [self scheduleReload: value before: predecessor lastInstruction]].
+	(newSentry rejectAll: predSexit) do: [:value | self scheduleSpillFor: value].
+	difference := newSentry rejectAll: oldSentry.
+	predecessors do: [:pred | | sexit |
+		sexit := spillExit at: pred.
+		(difference rejectAll: sexit) do: [:value | self scheduleSpillFor: value]]! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:47:31'!
+coupleWithPredecessors: block 
+	| predecessors |
+	predecessors := block predecessors intersection: blocksDone.
+	currentlySpilled := (predecessors gather: [:pred | spillExit at: pred])
+		intersection: currentlyAvailable.
+	predecessors do: [:pred | | wexit sexit |
+		wexit := allocationExit at: pred.
+		(currentlyAvailable rejectAll: wexit) do: [:value | 
+			(block phis includes: value)
+				ifFalse: [self scheduleReload: value before: pred lastInstruction]].
+		sexit := spillExit at: pred.
+		(currentlySpilled rejectAll: sexit)
+			do: [:value | self scheduleSpillFor: value]]! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:47:43'!
+deferCouplingOf: block 
+
+	deferredCouplings add: block! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:48:33'!
+firstBlock 
+
+	^firstBlock! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:48:42'!
+firstBlock: aBlock 
+
+	firstBlock := aBlock! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:50:20'!
+insertReloadOf: value before: user 
+	| stack index reload |
+	stack := self activationRecord.
+	index := self temporaryIndexOf: value.
+	reload := OBinaryConstantOperation
+		left: stack
+		right: index
+		name: #_basicAt:.
+	stack addUse: reload at: #left.
+	user
+		beforeInsert: reload;
+		replaceUsesOf: value with: reload.
+	^reload! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:50:38'!
+insertSpillOf: value 
+	| stack index store |
+	stack := self activationRecord.
+	index := self temporaryIndexOf: value.
+	store := OTernaryOperation
+		receiver: stack
+		left: index
+		right: value
+		name: #_basicAt:put:.
+	stack addUse: store at: #receiver.
+	value addUse: store at: #right.
+	value lastPhi afterInsert: store.
+	liveness kill: store at: store! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:51:21'!
+insertSpillsAndReloads 
+	| redefinitions |
+	scheduledSpills do: [:value | self insertSpillOf: value].
+	redefinitions := Dictionary new.
+	scheduledReloads do: [:association | | value user reload collection |
+		value := association key.
+		user := association value.
+		reload := self insertReloadOf: value before: user.
+		collection := redefinitions at: value ifAbsentPut: [OrderedCollection new].
+		collection add: reload].
+	^redefinitions! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:52:07'!
+limitAt: inst to: limit 
+	| stack |
+	self sortByUseDistance: currentlyAvailable in: inst.
+	stack := self activationRecord.
+	(currentlyAvailable includes: stack)
+		ifTrue: [currentlyAvailable remove: stack; addFirst: stack].
+	currentlyAvailable from: limit + 1 to: currentlyAvailable size do: [:value | 
+		((currentlySpilled includes: value) not
+			and: [(self useDistanceFrom: inst to: value) !!= Number infinity])
+			ifTrue: [self scheduleSpillFor: value].
+		currentlySpilled removeIfPresent: value].
+	currentlyAvailable := currentlyAvailable truncateTo: limit! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:52:20'!
+liveInOf: block 
+
+	^liveness liveInOf: block! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:52:31'!
+liveness 
+
+	^liveness! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:52:40'!
+maxPressureIn: loop 
+
+	^liveness maxPressureIn: loop! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:54:18'!
+selectAliveIn: collection at: instruction 
+
+	^collection select: [:value | self is: value liveAt: instruction]! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:55:15'!
+subsetOf: available usedIn: loop 
+	"
+	todo
+	"
+	^available! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:55:27'!
+temporaryIndexOf: value 
+
+	^-1 - (temporaries at: value)! !
+
+!OptimizingBraunAllocator methodsFor: 'accessing' stamp: 'KenD 5/14/2021 07:55:54'!
+useDistanceFrom: inst to: anotherInst 
+	| near distances |
+	near := inst useDistanceTo: anotherInst.
+	^near = Number infinity
+		ifTrue: [
+			distances := distancesExit at: currentBlock.
+			distances at: anotherInst ifAbsent: [Number infinity]]
+		ifFalse: [near]! !
+
+!OptimizingBraunAllocator methodsFor: 'allocation' stamp: 'KenD 5/14/2021 07:48:15'!
+doAllocation 
+	| redefinitions |
+	self computeLoops; computeLiveness; computeUseDistances.
+	firstBlock withSuccessorsPostOrder reverseDo: [:block | 
+		currentBlock := block.
+		self
+			computeEntryRegistersOf: block;
+			coupleWithPredecessors: block;
+			spillAsBeladyIn: block.
+		blocksDone add: block.
+		block successors
+			do: [:succ | (blocksDone includes: succ)
+				ifTrue: [self couple: succ withPredecessor: block]]].
+	redefinitions := self computeTemporaryIndexes; insertSpillsAndReloads.
+	self reconstructSSA: redefinitions! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:45:09'!
+computeEntryRegistersOf: block 
+
+	(self isLoopHead: block)
+		ifTrue: [self initLoopHeader: block]
+		ifFalse: [self initUsual: block]! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:45:26'!
+computeLiveness 
+
+	liveness := OptimizingLivenessAnalysis new
+		firstBlock: firstBlock;
+		loops: loops;
+		analyzeLiveness! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:45:47'!
+computeLoops 
+
+	loops := firstBlock allLoops! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:46:00'!
+computeTemporaryIndexes 
+	| index |
+	index := 1.
+	scheduledSpills do: [:value | 
+		temporaries at: value put: index.
+		index := index + 1].
+	self activationRecord temporaries: index - 1! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:46:16'!
+computeUseDistanceOf: instruction number: index using: distances 
+
+	instruction operandsDo: [:operand | distances at: operand put: index].
+	distances removeKey: instruction ifAbsent: []! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:46:28'!
+computeUseDistances 
+	| distancesEntry changed |
+	distancesEntry := IdentityDictionary new.
+	changed := true.
+	[changed] whileTrue: [
+		changed := false.
+		firstBlock withSuccessorsPostOrder
+			do: [:block | changed := (self
+				computeUseDistancesOf: block
+				using: distancesEntry)
+				or: changed]]! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:46:47'!
+computeUseDistancesOf: block using: distancesEntry 
+	| distances index length |
+	distances := IdentityDictionary new.
+	length := block length.
+	block successors do: [:succ | | incoming |
+		incoming := distancesEntry at: succ ifAbsent: [Dictionary new].
+		incoming keysAndValuesDo: [:operand :distance | | previous |
+			previous := distances at: operand ifAbsent: Number infinity.
+			distances at: operand put: (previous min: distance + length)].
+		succ phisDo: [:phi | | operand previous |
+			operand := phi atOperand: block.
+			previous := distances at: operand ifAbsent: Number infinity.
+			distances at: operand put: (previous min: length)]].
+	distancesExit
+		at: block
+		ifPresent: [:last | (self areEqual: last and: distances) ifTrue: [^false]].
+	distancesExit at: block put: distances copy.
+	index := block indexOf: block lastInstruction.
+	block lastInstruction realReverseDo: [:instruction | 
+		self computeUseDistanceOf: instruction number: index using: distances.
+		index := index - 1].
+	distancesEntry at: block put: distances.
+	^true! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:53:10'!
+reconstructSSA: reloads 
+	| reconstructor |
+	reconstructor := OptimizingSSAReconstructor new firstBlock: firstBlock.
+	reloads
+		keysAndValuesDo: [:variable :redefinitions | reconstructor
+			setupFor: variable with: redefinitions;
+			reconstructSSA]! !
+
+!OptimizingBraunAllocator methodsFor: 'analysis' stamp: 'KenD 5/14/2021 07:54:36'!
+sortByUseDistance: candidates in: inst 
+	| stack |
+	candidates
+		sortBy: [:a :b | (self useDistanceFrom: inst to: a)
+			< (self useDistanceFrom: inst to: b)].
+	stack := self activationRecord.
+	(candidates includes: stack)
+		ifTrue: [candidates remove: stack; addFirst: stack]! !
+
+!OptimizingBraunAllocator methodsFor: 'initialization' stamp: 'KenD 5/14/2021 07:49:01'!
+initLoopHeader: block 
+	| loop available candidates liveThrough pressure freeLoop extra |
+	loop := loops at: block.
+	available := (block phis , (self liveInOf: block)) withoutDuplicates.
+	candidates := self subsetOf: available usedIn: loop.
+	liveThrough := available rejectAll: candidates.
+	candidates size < self amountOfRegisters
+		ifTrue: [
+			pressure := self maxPressureIn: loop.
+			freeLoop := self amountOfRegisters - pressure + liveThrough size.
+			self sortByUseDistance: liveThrough in: block firstInstruction.
+			extra := liveThrough copyTo: freeLoop]
+		ifFalse: [
+			self sortByUseDistance: candidates in: block firstInstruction.
+			candidates := candidates copyTo: self amountOfRegisters.
+			extra := OrderedCollection new].
+	currentlyAvailable := (candidates , extra) withoutDuplicates.
+	allocationEntry at: block put: currentlyAvailable copy! !
+
+!OptimizingBraunAllocator methodsFor: 'initialization' stamp: 'KenD 5/14/2021 07:49:36'!
+initUsual: block 
+	| frequencies take max chosen candidates |
+	frequencies := Dictionary new.
+	take := OrderedCollection new.
+	candidates := OrderedCollection new.
+	max := block predecessors size.
+	block predecessors do: [:pred | | wend |
+		wend := allocationExit at: pred.
+		wend do: [:value | | previous var |
+			var := (block isPhiArgument: value)
+				ifTrue: [
+					(self is: value liveAt: block firstNonPhi) ifTrue: [
+						previous := frequencies at: value ifAbsent: [0].
+						frequencies at: value put: previous + 1.
+						candidates addIfAbsent: value.
+						(frequencies at: value) = max ifTrue: [
+							candidates removeIfPresent: value.
+							take addIfAbsent: value]].
+					block phiWithArgument: value]
+				ifFalse: [value].
+			previous := frequencies at: var ifAbsent: [0].
+			frequencies at: var put: previous + 1.
+			candidates addIfAbsent: var.
+			(frequencies at: var) = max ifTrue: [
+				candidates removeIfPresent: var.
+				take addIfAbsent: var]]].
+	candidates := self selectAliveIn: candidates at: block firstInstruction.
+	self sortByUseDistance: candidates in: block firstInstruction.
+	take := self selectAliveIn: take at: block firstInstruction.
+	chosen := candidates truncateTo: self amountOfRegisters - take size.
+	take addAll: chosen.
+	currentlyAvailable := take withoutDuplicates.
+	allocationEntry at: block put: currentlyAvailable copy! !
+
+!OptimizingBraunAllocator methodsFor: 'initialization' stamp: 'KenD 5/14/2021 07:50:01'!
+initialize 
+
+	currentlyAvailable := OrderedCollection new.
+	currentlySpilled := OrderedCollection new.
+	amountOfRegisters := 5.
+	scheduledReloads := OrderedCollection new.
+	scheduledSpills := OrderedCollection new.
+	blocksDone := Set new.
+	allocationEntry := Dictionary new.
+	allocationExit := Dictionary new.
+	distancesExit := IdentityDictionary new.
+	spillExit := Dictionary new.
+	temporaries := Dictionary new.
+	deferredCouplings := Set new! !
+
+!OptimizingBraunAllocator methodsFor: 'scheduling' stamp: 'KenD 5/14/2021 07:53:46'!
+scheduleReload: value before: user 
+
+	self haltWhen: value printString = '[send #classField to {#_basicAt:}]'.
+	scheduledReloads add: value -> user
+! !
+
+!OptimizingBraunAllocator methodsFor: 'scheduling' stamp: 'KenD 5/14/2021 07:54:05'!
+scheduleSpillFor: value 
+
+	scheduledSpills addIfAbsent: value! !
+
+!OptimizingBraunAllocator methodsFor: 'scheduling' stamp: 'KenD 5/14/2021 07:54:54'!
+spillAsBeladyIn: block 
+	| k |
+	k := self amountOfRegisters.
+	block realInstructionsDo: [:inst | | missing |
+		missing := (inst operands rejectAll: currentlyAvailable)
+			select: [:arg | self clobbersOneRegister: arg].
+		missing do: [:use | 
+			currentlyAvailable addIfAbsent: use.
+			currentlySpilled addIfAbsent: use].
+		self limitAt: inst to: k.
+		inst isMessageSend ifTrue: [self limitAt: inst to: 1].
+		(self clobbersOneRegister: inst) ifTrue: [
+			self limitAt: inst next to: k - 1.
+			currentlyAvailable add: inst].
+		missing do: [:value | self scheduleReload: value before: inst]].
+	allocationExit at: block put: currentlyAvailable copy.
+	spillExit at: block put: currentlySpilled copy! !
+
+!OptimizingBraunAllocator methodsFor: 'testing' stamp: 'KenD 5/14/2021 07:44:25'!
+areEqual: last and: distances 
+
+	last size = distances size ifFalse: [^false].
+	last keysAndValuesDo: [:key :value | | other |
+		other := distances at: key ifAbsent: [^false].
+		other = value ifFalse: [^false]].
+	^true! !
+
+!OptimizingBraunAllocator methodsFor: 'testing' stamp: 'KenD 5/14/2021 07:44:38'!
+clobbersOneRegister: inst 
+
+	^((inst isJump or: [inst isUnaryOperation and: [inst name == #push]])
+		or: [inst isTernaryOperation and: [inst name = #_basicAt:put:]]) not! !
+
+!OptimizingBraunAllocator methodsFor: 'testing' stamp: 'KenD 5/14/2021 07:51:36'!
+is: value liveAt: instruction 
+
+	^(self useDistanceFrom: instruction to: value) !!= Number infinity! !
+
+!OptimizingBraunAllocator methodsFor: 'testing' stamp: 'KenD 5/14/2021 07:51:52'!
+isLoopHead: block 
+
+	^loops includesKey: block
+! !
+
+!OptimizingBraunAllocator class methodsFor: 'instance creation' stamp: 'KenD 5/14/2021 07:42:59'!
+new 
+
+	^self basicNew initialize! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
