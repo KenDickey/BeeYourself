@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 14 May 2021 at 2:16:05 pm'!
+'From Cuis 5.0 [latest update: #4587] on 14 May 2021 at 2:52:10 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 13!
+!provides: 'PowerLang' 1 14!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2933,6 +2933,16 @@ Object subclass: #OptimizingCFGSimplifier
 OptimizingCFGSimplifier class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingCodeEmitter category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingCodeEmitter
+	instanceVariableNames: 'allocation assembler abi jumpDestinations assemblers method firstBlock currentBlockIndex blocks messageLinker'
+	classVariableNames: ''
+	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCodeEmitter class' category: 'Powerlang-Core-OCompiler'!
+OptimizingCodeEmitter class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3202,6 +3212,9 @@ Copyright (c) 2020 Aucerna.
 !OptimizingCFGSimplifier commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
+
+!OptimizingCodeEmitter commentStamp: '<historical>' prior: 0!
+Code Generator!
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
 format 
@@ -31599,6 +31612,871 @@ tryRemovingEmptyBlock: block
 			following addPredecessor: predecessor].
 		^true].
 	^false! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:20:00'!
+abi: anAbi 
+
+	abi := anAbi.
+	assembler wordSize: anAbi wordSize! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:20:13'!
+activationRecord 
+
+	^firstBlock firstInstruction! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:20:23'!
+allocation: anAllocation 
+
+	allocation := anAllocation! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:45:58'!
+currentBlock 
+
+	^blocks at: currentBlockIndex! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:48:17'!
+messageLinker: aMessageLinker 
+
+	messageLinker := aMessageLinker! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:48:27'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:48:39'!
+nextBlock 
+
+	^blocks at: currentBlockIndex + 1 ifAbsent: [nil]! !
+
+!OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:49:10'!
+selectorFor: instruction 
+
+	^assemblers at: instruction name! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:21:04'!
+assembleAsNative: asNativeSend 
+	| src dst |
+	src := allocation at: asNativeSend receiver.
+	dst := allocation at: asNativeSend.
+	self assert: src == dst.
+	assembler convertToNativeInteger: src! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:21:35'!
+assembleAsObject: asNativeSend 
+	| src dst |
+	src := allocation at: asNativeSend receiver.
+	dst := allocation at: asNativeSend.
+	self assert: src == dst.
+	assembler clearIntegerBit: src! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:21:51'!
+assembleAsPointer: asNativeSend 
+	| src dst oop |
+	src := allocation at: asNativeSend receiver.
+	dst := allocation at: asNativeSend.
+	self assert: src == dst.
+	oop := assembler newLabel.
+	assembler
+		testIntegerBit: src;
+		jumpIfZeroTo: oop;
+		convertToNativeInteger: src;
+		@ oop;
+		setIntegerBit: src! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:22:34'!
+assembleAsSmallInteger: asNativeSend 
+	| src dst |
+	src := allocation at: asNativeSend receiver.
+	dst := allocation at: asNativeSend.
+	self assert: src == dst.
+	assembler convertToSmallInteger: src! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:22:51'!
+assembleBasicAt: instruction 
+	| base index result |
+	base := allocation at: instruction left.
+	index := allocation at: instruction right.
+	result := allocation at: instruction.
+	assembler
+		convertToNativeInteger: index;
+		load: result from: base atIndexAt: index.
+	result !!= index ifTrue: [assembler convertToSmallInteger: index]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:23:03'!
+assembleBasicAtConstant: instruction 
+	| src dst index |
+	src := allocation at: instruction left.
+	dst := allocation at: instruction ifAbsent: [^self].
+	index := instruction right.
+	assembler load: dst from: src atIndex: index! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:23:16'!
+assembleBasicAtPut: instruction 
+	| base value index |
+	index := instruction left value.
+	index isInteger ifTrue: [^self assembleBasicAtPutConstant: instruction].
+	base := allocation at: instruction receiver.
+	value := allocation at: instruction right.
+	index := allocation at: index.
+	assembler
+		convertToNativeInteger: index;
+		store: value in: base indexAt: index;
+		convertToSmallInteger: index! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:23:33'!
+assembleBasicAtPutConstant: instruction 
+	| base value position |
+	base := allocation at: instruction receiver.
+	value := allocation at: instruction right.
+	position := instruction left value.
+	assembler store: value in: base index: position! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:23:46'!
+assembleBasicFlags: basicFlagsSend 
+	| base dst |
+	base := allocation at: basicFlagsSend receiver.
+	dst := allocation at: basicFlagsSend.
+	assembler
+		loadZeroExtendByte: dst from: base atOffset: FlagsOffset;
+		convertToSmallInteger: dst! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:23:58'!
+assembleBasicFlagsPut: basicFlagsPut 
+
+	self assembleByteAtOffset: FlagsOffset put: basicFlagsPut! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:24:12'!
+assembleBasicSize: basicSizeSend 
+	| base dst |
+	base := allocation at: basicSizeSend receiver.
+	dst := allocation at: basicSizeSend.
+	assembler
+		loadZeroExtendByte: dst from: base atOffset: SizeOffset;
+		convertToSmallInteger: dst! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:32:30'!
+assembleBasicSizePut: basicSizePut 
+
+	self assembleByteAtOffset: SizeOffset put: basicSizePut! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:33:07'!
+assembleBasicSizePutConstant: basicFlagsPutSend 
+	| base value |
+	base := allocation at: basicFlagsPutSend left.
+	value := basicFlagsPutSend right.
+	assembler storeByte: value in: base offset: SizeOffset! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:33:24'!
+assembleBasicULongAt: instruction 
+	| base index result |
+	base := allocation at: instruction left.
+	index := allocation at: instruction right.
+	result := allocation at: instruction.
+	assembler
+		convertToNativeInteger: index;
+		load: result e from: base atIndexAt: index.
+	result !!= index ifTrue: [assembler convertToSmallInteger: index]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:33:39'!
+assembleBasicULongAtConstant: instruction 
+	| src dst index |
+	src := allocation at: instruction left.
+	dst := allocation at: instruction ifAbsent: [^self].
+	index := instruction right.
+	assembler load: dst e from: src atIndex: index! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:33:49'!
+assembleBasicULongAtPut: instruction 
+	| base value index |
+	index := instruction left value.
+	index isInteger
+		ifTrue: [^self assembleBasicULongAtPutConstant: instruction].
+	base := allocation at: instruction receiver.
+	value := allocation at: instruction right.
+	index := allocation at: index.
+	assembler
+		convertToNativeInteger: index;
+		store: value e in: base indexAt: index;
+		convertToSmallInteger: index! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:34:04'!
+assembleBasicULongAtPutConstant: instruction 
+	| base value position |
+	base := allocation at: instruction receiver.
+	value := allocation at: instruction right.
+	position := instruction left value.
+	assembler store: value e in: base index: position! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:34:17'!
+assembleBitAnd: instruction 
+	| left right |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	assembler and: left with: right! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:34:32'!
+assembleBitAndConstant: instruction 
+	| left value |
+	left := allocation at: instruction.
+	value := instruction right * 2 + 1.
+	assembler and: left withImm: value! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:34:53'!
+assembleBitOr: instruction 
+	| left right |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	assembler or: left with: right! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:35:04'!
+assembleBitOrConstant: instruction 
+	| left value |
+	left := allocation at: instruction.
+	value := instruction right * 2 + 1.
+	assembler or: left with: value! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:35:18'!
+assembleBitShift: instruction 
+	| src offset |
+	src := allocation at: instruction left.
+	instruction right isConstant
+		ifTrue: [self assembleBitShift: src by: instruction right value]
+		ifFalse: [
+			offset := allocation at: instruction right.
+			offset halt]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:35:34'!
+assembleBitShift: src by: amount 
+
+	amount > 0
+		ifTrue: [
+			assembler
+				convertToNativeInteger: src;
+				shiftLeft: src by: amount + 1;
+				convertToSmallInteger: src]
+		ifFalse: [
+			assembler
+				shiftRight: src by: 0 - amount;
+				setIntegerBit: src]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:35:50'!
+assembleBitShiftConstant: instruction 
+	| src amount |
+	src := allocation at: instruction left.
+	amount := instruction right.
+	self assembleBitShift: src by: amount! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:36:01'!
+assembleByteAt: instruction 
+	| base index dst |
+	base := allocation at: instruction left.
+	index := allocation at: instruction right.
+	dst := allocation at: instruction.
+	assembler
+		convertToNativeInteger: index;
+		loadZeroExtendByte: dst from: base atIndexAt: index;
+		convertToSmallInteger: dst.
+	index !!= dst ifTrue: [assembler convertToSmallInteger: index]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:36:11'!
+assembleByteAt: index put: instruction 
+
+	self assembleByteAtOffset: index - 1 put: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:36:25'!
+assembleByteAtConstant: instruction 
+	| base index dst |
+	base := allocation at: instruction left.
+	index := instruction right.
+	dst := allocation at: instruction.
+	assembler
+		loadZeroExtendByte: dst from: base atIndex: index;
+		convertToSmallInteger: dst! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:36:38'!
+assembleByteAtOffset: offset put: instruction 
+	| base value |
+	base := allocation at: instruction left.
+	value := allocation at: instruction right.
+	assembler
+		convertToNativeInteger: value;
+		renameByteRegisterIfNeeded: value
+		preserving: base
+		during: [:final | assembler storeByte: final byte in: base offset: offset];
+		convertToSmallInteger: value! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:36:50'!
+assembleByteAtPut: instruction 
+	| index base value |
+	base := allocation at: instruction receiver.
+	index := allocation at: instruction left.
+	value := allocation at: instruction right.
+	assembler
+		convertToNativeInteger: index;
+		convertToNativeInteger: value;
+		renameByteRegisterIfNeeded: value
+		preserving: base
+		preserving: index
+		during: [:final | assembler store: final byte in: base indexAt: index];
+		convertToSmallInteger: value;
+		convertToSmallInteger: index! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:37:14'!
+assembleCompare: instruction 
+	| left right |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	assembler compare: left with: right! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:37:28'!
+assembleCompareConstant: instruction jumpTrue: trueBlock jumpFalse: falseBlock 
+	| left |
+	left := allocation at: instruction left.
+	self assembleCompareConstant: left with: instruction right;
+	assembleJumpTrue: trueBlock orJumpFalse: falseBlock in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:37:55'!
+assembleCompareConstant: left with: right 
+	
+	right isSmallInteger
+		ifTrue: [ ^ assembler compare: left with: right * 2 + 1 ].
+	right ifNil: [ ^ assembler compareWithNil: left ].
+	right = false
+		ifTrue: [ ^ assembler compareWithFalse: left ].
+	right = true
+		ifTrue: [ ^ assembler compareWithTrue: left ].
+	assembler compare: left withLiteral: right! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:38:17'!
+assembleCopy: instruction 
+	| source target |
+	target := allocation at: instruction.
+	source := allocation at: instruction receiver.
+	self assembleCopyIfNeeded: source to: target! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:38:31'!
+assembleCopyIfNeeded: source to: dest 
+
+	source = dest ifTrue: [^self].
+	assembler move: source to: dest! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:38:42'!
+assembleCopyResult: instruction 
+	| dest |
+	dest := allocation at: instruction ifAbsent: [^self].
+	self assembleCopyIfNeeded: abi regR to: dest! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:38:54'!
+assembleEquals: instruction 
+
+	self
+		assembleCompare: instruction;
+		assembleJumpTrue: [:label | assembler jumpIfEqualTo: label]
+		orJumpFalse: [:label | assembler jumpIfNotEqualTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:39:09'!
+assembleEqualsConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfEqualTo: label]
+		jumpFalse: [:label | assembler jumpIfNotEqualTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:39:23'!
+assembleExtendedSize: extendedSizeSend 
+	| base dst index |
+	base := allocation at: extendedSizeSend receiver.
+	dst := allocation at: extendedSizeSend.
+	index := LargeSizeOffset // 4 + 1.
+	assembler
+	
+		load: dst e from: base atIndex: index;
+		convertToSmallInteger: dst! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:39:36'!
+assembleExtendedSizePut: extendedSizeSend 
+	| base  index value |
+	base := allocation at: extendedSizeSend left.
+	value := allocation at: extendedSizeSend right.
+	index := LargeSizeOffset // 4 + 1.
+	assembler
+		convertToNativeInteger: value e;
+		store: value e in: base index: index;
+		convertToSmallInteger: value e! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:39:47'!
+assembleFrom: aBasicBlock 
+	| code |
+	assembler reset.
+	firstBlock := aBasicBlock.
+	blocks := firstBlock withSuccessorsPostOrder reversed.
+	self doAssemble.
+	code := assembler nativeCode compiledCode: method.
+	^method nativeCode: code! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:40:01'!
+assembleGenericMessageSend: instruction 
+
+	self assembleLookup: instruction selector! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:40:14'!
+assembleGreater: instruction 
+
+	self
+		assembleCompare: instruction;
+		assembleJumpTrue: [:label | assembler jumpIfGreaterSignedTo: label]
+		orJumpFalse: [:label | assembler jumpIfLessOrEqualSignedTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:40:27'!
+assembleGreaterConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfGreaterSignedTo: label]
+		jumpFalse: [:label | assembler jumpIfLessOrEqualSignedTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:40:37'!
+assembleGreaterEqual: instruction 
+
+	self
+		assembleCompare: instruction;
+		assembleJumpTrue: [:label | assembler jumpIfGreaterOrEqualSignedTo: label]
+		orJumpFalse: [:label | assembler jumpIfLessSignedTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:40:47'!
+assembleGreaterEqualConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfGreaterOrEqualSignedTo: label]
+		jumpFalse: [:label | assembler jumpIfLessSignedTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:41:00'!
+assembleIsSmallInteger: instruction 
+	| src |
+	src := allocation at: instruction receiver.
+	assembler testIntegerBit: src.
+	self
+		assembleJumpTrue: [:label | assembler jumpIfNotZeroTo: label]
+		orJumpFalse: [:label | assembler jumpIfZeroTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:41:18'!
+assembleJumpIfEqualTo: target 
+	| label |
+	label := jumpDestinations at: target.
+	assembler jumpIfEqualTo: label! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:41:28'!
+assembleJumpTo: target 
+	| label index |
+	label := jumpDestinations at: target.
+	index := blocks indexOf: target.
+	^((index - currentBlockIndex) abs > 18 or: true)
+		ifTrue: [assembler jumpTo: label]
+		ifFalse: [assembler shortJumpTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:41:44'!
+assembleJumpTrue: blockJumpTrue orJumpFalse: blockJumpFalse in: instruction 
+	| next end result label loadFalse |
+	next := instruction next.
+	(next isConditionalJump and: [instruction allUses size = 1])
+		ifTrue: [
+			label := jumpDestinations at: next target.
+			next isJumpTrue
+				ifTrue: [blockJumpTrue value: label]
+				ifFalse: [blockJumpFalse value: label].
+			self nextBlock !!= next implicitTarget
+				ifTrue: [self assembleJumpTo: next implicitTarget]]
+		ifFalse: [
+			result := allocation at: instruction.
+			loadFalse := assembler newLabel.
+			end := assembler newLabel.
+			blockJumpFalse value: loadFalse.
+			self assembleLoadConstant: true to: result.
+			assembler shortJumpTo: end; @ loadFalse.
+			self assembleLoadConstant: false to: result.
+			assembler @ end]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:42:02'!
+assembleLoadConstant: value to: register 
+	| constant |
+	value isSmallInteger
+		ifTrue: [ constant := value * 2 + 1.
+			^ assembler load: register withImmediate: constant ].
+	value ifNil: [ ^ assembler loadWithNil: register ].
+	value = false
+		ifTrue: [ ^ assembler loadWithFalse: register ].
+	value = true
+		ifTrue: [ ^ assembler loadWithTrue: register ].
+	assembler load: register withLiteral: value! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:42:16'!
+assembleLookup: selector 
+
+	self haltIf: selector = #'&'.
+	messageLinker emitSend: selector using: assembler! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:42:31'!
+assembleLower: instruction 
+
+	self
+		assembleCompare: instruction;
+		assembleJumpTrue: [:label | assembler jumpIfLessSignedTo: label]
+		orJumpFalse: [:label | assembler jumpIfGreaterOrEqualSignedTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:42:42'!
+assembleLowerConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfLessSignedTo: label]
+		jumpFalse: [:label | assembler jumpIfGreaterOrEqualSignedTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:42:53'!
+assembleLowerEqual: instruction 
+
+	self
+		assembleCompare: instruction;
+		assembleJumpTrue: [:label | assembler jumpIfLessOrEqualSignedTo: label]
+		orJumpFalse: [:label | assembler jumpIfGreaterSignedTo: label]
+		in: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:43:05'!
+assembleLowerEqualConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfLessOrEqualSignedTo: label]
+		jumpFalse: [:label | assembler jumpIfGreaterSignedTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:43:14'!
+assembleMinus: instruction 
+	| left right |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	assembler
+		add: 1 to: left;
+		subtract: right from: left! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:43:25'!
+assembleMinusConstant: instruction 
+	| left value |
+	left := allocation at: instruction left.
+	value := instruction right * 2.
+	assembler subtract: value from: left! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:43:35'!
+assembleNegate: instruction 
+	| src dst |
+	src := allocation at: instruction receiver.
+	dst := allocation at: instruction.
+	self assert: dst = src.
+	assembler
+		negate: src;
+		add: 2 to: dst! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:43:53'!
+assembleNotEqualConstant: instruction 
+
+	self
+		assembleCompareConstant: instruction
+		jumpTrue: [:label | assembler jumpIfNotEqualTo: label]
+		jumpFalse: [:label | assembler jumpIfEqualTo: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:44:12'!
+assembleObjectAtOffsetPut: instruction 
+	| base value offset |
+	base := allocation at: instruction receiver.
+	value := allocation at: instruction right.
+	offset := instruction left value.
+	assembler storePointer: value in: base offset: offset! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:44:23'!
+assemblePlus: instruction 
+	| left right |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	assembler
+		clearIntegerBit: left;
+		add: right to: left! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:44:33'!
+assemblePlusConstant: instruction 
+	| left value |
+	left := allocation at: instruction left.
+	value := instruction right * 2.
+	assembler add: value to: left! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:44:45'!
+assemblePop: instruction 
+	| register |
+	register := allocation at: instruction.
+	assembler pop: register
+! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:44:57'!
+assemblePush: instruction 
+	| register |
+	register := allocation at: instruction receiver.
+	assembler push: register! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:45:08'!
+assembleRestorePreviousContext: instruction 
+
+	assembler restoreCallerFrame! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:45:25'!
+assembleTimesConstant: instruction 
+	| left value shift |
+	left := allocation at: instruction left.
+	value := instruction right.
+	self assert: (value == 4 or: [value == 8 or: [value == 2]]).
+	shift := value == 4 ifTrue: [2] ifFalse: [value == 8 ifTrue: [3] ifFalse: [1]].
+	assembler
+		clearIntegerBit: left;
+		shiftLeft: left by: shift;
+		setIntegerBit: left! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:45:42'!
+assembleTransferControlTo: instruction 
+	| code receiver activation |
+	receiver := allocation at: instruction left.
+	code := allocation at: instruction right.
+	receiver == assembler regA
+		ifTrue: [ code == assembler regT
+				ifTrue: [ assembler move: assembler regA to: assembler regR.
+					receiver := assembler regR ]
+				ifFalse: [ assembler move: assembler regA to: assembler regT.
+					receiver := assembler regT ] ].
+	self assembleCopyIfNeeded: code to: assembler regM.
+	self assembleCopyIfNeeded: receiver to: assembler regR.
+	activation := self activationRecord.
+	(activation savesPreviousSelf and: [activation hasFrame])
+		ifTrue: [assembler popS].
+	assembler restoreCallerFrame; jumpToMindex: 1! !
+
+!OptimizingCodeEmitter methodsFor: 'codeGeneration' stamp: 'KenD 5/14/2021 14:46:12'!
+doAssemble 
+
+	self labelBlocks.
+	blocks withIndexDo: [:block :index | | label |
+		currentBlockIndex := index.
+		label := jumpDestinations at: block.
+		assembler @ label.
+		block firstInstruction acceptVisitor: self].
+	assembler applyFixups! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:46:33'!
+initialize 
+
+	jumpDestinations := Dictionary new.
+	self initializeLowLevelAssembler; initializeAssemblers! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:46:53'!
+initializeAssemblers 
+	assemblers := Dictionary new
+		at: #'+' put: #Plus;
+		at: #'-' put: #Minus;
+		at: #'*' put: #Times;
+		at: #'=' put: #Equals;
+		at: #'==' put: #Equals;
+		at: #'~=' put: #NotEqual;
+		at: #'!!=' put: #NotEqual;
+		at: #'<' put: #Lower;
+		at: #'<=' put: #LowerEqual;
+		at: #'>=' put: #GreaterEqual;
+		at: #'>' put: #Greater;
+		at: #'&' put: #BitAnd;
+		at: #bitAnd: put: #BitAnd;
+		at: #bitOr: put: #BitOr;
+		at: #bitShift: put: #BitShift;
+		at: #_asNative put: #AsNative;
+		at: #_asObject put: #AsObject;
+		at: #_asPointer put: #AsPointer;
+		at: #_asSmallInteger put: #AsSmallInteger;
+		at: #_byteAt: put: #ByteAt;
+		at: #_basicAt: put: #BasicAt;
+		at: #_basicULongAt: put: #BasicULongAt;
+		at: #_byteAt:put: put: #ByteAtPut;
+		at: #_basicAt:put: put: #BasicAtPut;
+		at: #_basicULongAt:put: put: #BasicULongAtPut;
+		at: #_objectAtOffset:put: put: #ObjectAtOffsetPut;
+		at: #_basicFlags put: #BasicFlags;
+		at: #_basicFlags: put: #BasicFlagsPut;
+		at: #_smallSize put: #BasicSize;
+		at: #_smallSize: put: #BasicSizePut;
+		at: #_largeSize put: #ExtendedSize;
+		at: #_largeSize: put: #ExtendedSizePut;
+		at: #_isSmallInteger put: #IsSmallInteger;
+		at: #_transferControlTo: put: #TransferControlTo;
+		at: #negate put: #Negate;
+		at: #push put: #Push;
+		at: #pop put: #Pop;
+		at: #copy put: #Copy;
+		at: #copyResult put: #CopyResult;
+		yourself! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:47:04'!
+initializeLowLevelAssembler 
+
+	assembler := TemplateAssembler64 new! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:47:19'!
+jumpWasAssembledInComparison: aConditionalJump 
+	| prev |
+	prev := aConditionalJump prev.
+	prev == aConditionalJump variable ifFalse: [^false].
+	prev allUses size !!= 1 ifTrue: [^false].
+	prev class == OMessageSend ifTrue: [^false].
+	prev class == OPhi ifTrue: [^false].
+	(prev isKindOf: OBinaryOperation) ifTrue: [
+		(#(< <= = == !!= >= >) includes: prev name) ifTrue: [^true].
+		(#(_basicAt:) includes: prev name) ifTrue: [^false]].
+	prev class == OUnaryOperation ifTrue: [
+		(#(_isSmallInteger) includes: prev name) ifTrue: [^true].
+		(#(copy) includes: prev name) ifTrue: [^false]].
+	self halt! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:47:36'!
+labelBlocks 
+
+	blocks do: [:block | | label |
+		label := assembler newLabel.
+		jumpDestinations at: block put: label]! !
+
+!OptimizingCodeEmitter methodsFor: 'initialization' stamp: 'KenD 5/14/2021 14:47:57'!
+loadMifNeeded 
+
+		method selector == #_dispatchOn:
+			ifTrue: [^assembler loadMwithGlobal: #Lookup].
+		method selector == #_dispatchOn:startingAt:
+			ifTrue: [^assembler loadMwithGlobal: #LookupSuper].
+		method selector == #_dispatchDebuggableOn:
+			ifTrue: [^assembler loadMwithGlobal: #DebuggableLookup].
+		method selector == #_dispatchDebuggableOn:startingAt:
+			ifTrue: [^assembler loadMwithGlobal: #DebuggableLookupSuper].! !
+
+!OptimizingCodeEmitter methodsFor: 'testing' stamp: 'KenD 5/14/2021 14:48:56'!
+savesPreviousSelf 
+
+	^self activationRecord savesPreviousSelf! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:49:36'!
+visitBinaryWithConstant: instruction 
+	| selector |
+	selector := #assemble , (self selectorFor: instruction) , #Constant:.
+	self perform: selector asSymbol with: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:49:48'!
+visitBinaryWithVariable: instruction 
+	| selector |
+	selector := #assemble , (self selectorFor: instruction) , #':'.
+	self perform: selector asSymbol with: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:50:02'!
+visitBranch: branch comparing: aBoolean 
+	| reg |
+	(self jumpWasAssembledInComparison: branch) ifTrue: [^self].
+	reg := allocation at: branch variable.
+	assembler compare: reg withBoolean: aBoolean.
+	self assembleJumpIfEqualTo: branch target.
+	branch implicitTarget !!= self nextBlock
+		ifTrue: [self assembleJumpTo: branch implicitTarget]! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:50:14'!
+visitJump: aJump 
+
+	aJump target == self nextBlock ifTrue: [^self].
+	self assembleJumpTo: aJump target! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:50:25'!
+visitJumpFalse: aJumpFalse 
+
+	self visitBranch: aJumpFalse comparing: false! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:50:34'!
+visitJumpTrue: aJumpTrue 
+
+	self visitBranch: aJumpTrue comparing: true! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:50:45'!
+visitLoadConstant: aLoadConstant 
+	| register value |
+	register := allocation
+		at: aLoadConstant
+		ifAbsent: [aLoadConstant isUsed ifTrue: [self halt] ifFalse: [^self]].
+	value := aLoadConstant value.
+	self assembleLoadConstant: value to: register! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:00'!
+visitLoadImplicit: instruction 
+	| frame |
+	instruction name == #activationRecord
+		ifTrue: [ assembler buildFrame.
+			^ self loadMifNeeded ].
+	instruction name == #self
+		ifFalse: [ ^ self ].
+	frame := instruction prev.
+	frame hasFrame
+		ifFalse: [ ^ self ].
+	assembler
+		reserveStackSlots: frame temporaries + 2;
+		store: assembler regR in: assembler regFP index: 0;
+		store: assembler regM in: assembler regFP index: -1.
+	self savesPreviousSelf
+		ifTrue: [ assembler pushS; pushM; loadMwithA ]
+! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:12'!
+visitMessageSend: aMessageSend 
+
+	self assembleGenericMessageSend: aMessageSend.
+	firstBlock activationRecord haveFrame! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:22'!
+visitNullary: instruction 
+	| selector |
+	selector := #assemble , (self selectorFor: instruction) , #':'.
+	self perform: selector asSymbol with: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:31'!
+visitPhi: phiInstruction! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:43'!
+visitReturn: aReturnInstruction 
+	| source |
+	source := allocation at: aReturnInstruction source.
+	self assembleCopyIfNeeded: source to: assembler regR.
+	self savesPreviousSelf
+		ifTrue: [ assembler
+				popM; popS; restoreCallerFrame ]
+		ifFalse: [ assembler
+				restoreCallerFrame;
+				load: assembler regS from: assembler regFP atIndex: 0; restoreCallerM ].
+	assembler return! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:51:54'!
+visitTernary: instruction 
+	| selector |
+	selector := #assemble , (self selectorFor: instruction) , #':'.
+	self perform: selector asSymbol with: instruction! !
+
+!OptimizingCodeEmitter methodsFor: 'visiting' stamp: 'KenD 5/14/2021 14:52:03'!
+visitUnary: instruction 
+	| selector |
+	selector := #assemble , (self selectorFor: instruction) , #':'.
+	self perform: selector asSymbol with: instruction! !
+
+!OptimizingCodeEmitter class methodsFor: 'instance creation' stamp: 'KenD 5/14/2021 14:19:27'!
+new 
+
+	^self basicNew initialize! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
