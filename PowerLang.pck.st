@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 14 May 2021 at 2:52:10 pm'!
+'From Cuis 5.0 [latest update: #4587] on 19 May 2021 at 4:11:36 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 14!
+!provides: 'PowerLang' 1 15!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2933,6 +2933,16 @@ Object subclass: #OptimizingCFGSimplifier
 OptimizingCFGSimplifier class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingCSSATransformer category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingCSSATransformer
+	instanceVariableNames: 'firstBlock liveness'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCSSATransformer class' category: 'Powerlang-Core-OCompiler'!
+OptimizingCSSATransformer class
+	instanceVariableNames: ''!
+
 !classDefinition: #OptimizingCodeEmitter category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCodeEmitter
 	instanceVariableNames: 'allocation assembler abi jumpDestinations assemblers method firstBlock currentBlockIndex blocks messageLinker'
@@ -3213,7 +3223,14 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!OptimizingCSSATransformer commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
 !OptimizingCodeEmitter commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
 Code Generator!
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
@@ -31612,6 +31629,38 @@ tryRemovingEmptyBlock: block
 			following addPredecessor: predecessor].
 		^true].
 	^false! !
+
+!OptimizingCSSATransformer methodsFor: 'accessing' stamp: 'KenD 5/19/2021 16:09:55'!
+firstBlock: block 
+
+	firstBlock := block! !
+
+!OptimizingCSSATransformer methodsFor: 'analysis' stamp: 'KenD 5/19/2021 16:09:27'!
+applyTransformation 
+
+	self splitPhis; coalescePhis! !
+
+!OptimizingCSSATransformer methodsFor: 'analysis' stamp: 'KenD 5/19/2021 16:09:43'!
+coalescePhis 
+	"
+	to do
+	"
+	! !
+
+!OptimizingCSSATransformer methodsFor: 'analysis' stamp: 'KenD 5/19/2021 16:10:14'!
+liftPhisIn: block 
+
+	block phisDo: [:phi | 
+		phi variablesWithBlocksDo: [:var :pred | | copy |
+			copy := var insertCopyBefore: pred lastInstruction.
+			phi atOperand: pred put: copy.
+			var removeUse: phi at: pred; dissolveIfUnused.
+			copy addUse: phi at: pred]]! !
+
+!OptimizingCSSATransformer methodsFor: 'analysis' stamp: 'KenD 5/19/2021 16:10:27'!
+splitPhis 
+
+	firstBlock withSuccessorsPostOrder do: [:block | self liftPhisIn: block]! !
 
 !OptimizingCodeEmitter methodsFor: 'accessing' stamp: 'KenD 5/14/2021 14:20:00'!
 abi: anAbi 
