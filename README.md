@@ -42,8 +42,8 @@ Machine <<==Smalltalk==>> Presentation
 
 Stack <<=========>> Linked Contexts
 
-Regs+Mem <<======>> Objects+ivars/slots
+Regs+Mem <<=====>> Objects+ivars/slots
 
-Instructions <<==>> Operations/[Macro]Opcodes
+Instructions <<=====>> Operations/[Macro]Opcodes
 
 
