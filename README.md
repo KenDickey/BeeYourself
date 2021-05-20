@@ -14,3 +14,33 @@ Background:
 - https://www.youtube.com/watch?v=ZWPMBSvYrs8 [Smalltalk VM Hackathon]
 
 ![Bee Yourself](BeeGraphic.png)
+
+## Scattered Thoughts
+
+We explain the world through stories.
+
+- In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime.
+- In particular the Debug Context needs to be improved.
+- We need to present runtime services as telling _stories_, stories written in Smalltalk.
+- Compiler optimization by program transformation is optimization by stories with measurement to see what pays for itself. [Efficient => apt metaphor]
+- Smalltalk is a self-presenting mediator between hardware and software.
+
+Where does this lead us?
+
+Thread as VCPU (Virtual CPU), when running is assigned to real CPU (core). VCPU object follows Bee pattern: OOP points just past header to register/CPU-state save area, followed by Thread Local Storage (e.g. per-thread dynamic context).
+
+When a Debug Thread is running, the debugged thread is not, so VCPU registers are directly inspectable as instance variables.
+
+The natural model is to think of the runtime like a RTOS (Real Time OS) Kernel.  Starting an image is spawning a Primordial/Home/Mother thread which spawns worker threads (including UI, debugger(s), ?timer?, ?gc?).  HW interrupt reflected through Mother Thread to events.
+
+Smalltalk is the mediator between raw HW and its SW presentation.
+
+The stories written in Smalltalk explain the computational world view.
+
+Machine <<==Smalltalk==>> Presentation
+-------
+Stack <<=========>> Linked Contexts
+Regs+Mem <<======>> Objects+ivars/slots
+Instructions <<==>> Operations/[Macro]Opcodes
+
+
