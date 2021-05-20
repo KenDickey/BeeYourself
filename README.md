@@ -35,6 +35,8 @@ The natural model is to think of the runtime like a RTOS (Real Time OS) Kernel. 
 
 Smalltalk is the mediator between raw HW and its SW presentation.
 
+Smalltalk is a system that knows itself.**
+
 The stories written in Smalltalk explain the computational world view.
 
 ## Machine <<==Smalltalk==>> Presentation
@@ -46,6 +48,9 @@ Regs+Mem <<=====>> Objects+ivars/slots
 Instructions <<=====>> Operations/[Macro]Opcodes
 
 
-## Learn Smalltalk == Learn all of Computer Science
+## Learn Smalltalk = Learn all of Computer Science
 
 
+--
+
+** "What is a System?  Simply a set of things that are interconnected in ways that produce distinct patterns of behavior." _Doughnut Economics_, Kate Raworth.
