@@ -37,13 +37,15 @@ Smalltalk is the mediator between raw HW and its SW presentation.
 
 The stories written in Smalltalk explain the computational world view.
 
-Machine <<==Smalltalk==>> Presentation
--------
+## Machine <<==Smalltalk==>> Presentation
 
 Stack <<=========>> Linked Contexts
 
 Regs+Mem <<=====>> Objects+ivars/slots
 
 Instructions <<=====>> Operations/[Macro]Opcodes
+
+
+## Learn Smalltalk == Learn all of Computer Science
 
 
