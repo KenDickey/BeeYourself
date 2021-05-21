@@ -48,8 +48,38 @@ Regs+Mem <<=====>> Objects+ivars/slots
 Instructions <<=====>> Operations/[Macro]Opcodes
 
 
+## Visualize & Explain Runtime Structures & Strategies
+
+- Hash & Cache
+  - PICs
+  - Symbol interning
+  - Dictionaries
+- Constat Propagation
+- Object Layouts
+- Horizontal (bitstring) vs Vertical (index) Encoding
+- Control flow
+  - Interrupts; exceptions
+- GC
+  - Storage allocation
+  - Pinned objects
+  - When is it stable?
+
+## Find Still/Save Points
+
+- Don't change the code for a method while the method is being executed
+[ e.g. during message-send ]
+
+- Don't add/remove elements of a collection as it is being traversed
+- Don't move (gc) objects while they are being referenced
+- Note live-update rubrics; atomics; lock-free/wait-free
+
 ## Learn Smalltalk = Learn all of Computer Science
 
+- Recursion
+- Color
+- Time(r)
+- Emergent Properties
+- Compile
 
 --
 
