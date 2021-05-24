@@ -12,6 +12,7 @@ Background:
 - https://powerlang.readthedocs.io/en/latest/index.html
 - https://github.com/powerlang
 - https://www.youtube.com/watch?v=ZWPMBSvYrs8 [Smalltalk VM Hackathon]
+- http://www.smalltalksystems.com/publications/avmarch.pdf [A Smalltalk Virtual Machine Architectural Model]
 
 ![Bee Yourself](BeeGraphic.png)
 
@@ -19,7 +20,7 @@ Background:
 
 We explain the world through stories.
 
-- In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime.
+- In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime. ["Stories all the way down"].
 - In particular the Debug Context needs to be improved.
 - We need to present runtime services as telling _stories_, stories written in Smalltalk.
 - Compiler optimization by program transformation is optimization by stories with measurement to see what pays for itself. [Efficient => apt metaphor]
@@ -29,9 +30,9 @@ Where does this lead us?
 
 Thread as VCPU (Virtual CPU), when running is assigned to real CPU (core). VCPU object follows Bee pattern: OOP points just past header to register/CPU-state save area, followed by Thread Local Storage (e.g. per-thread dynamic context).
 
-When a Debug Thread is running, the debugged thread is not, so VCPU registers are directly inspectable as instance variables.
+When a Debug Thread is running, the debugged thread is not, so VCPU registers are directly inspectable as VCPU instance variables.
 
-The natural model is to think of the runtime like a RTOS (Real Time OS) Kernel.  Starting an image is spawning a Primordial/Home/Mother thread which spawns worker threads (including UI, debugger(s), ?timer?, ?gc?).  HW interrupt reflected through Mother Thread to events.
+The natural model is to think of the runtime like a RTOS (Real Time OS) Kernel.  Starting an image is spawning a Primordial/Home/Mother thread which spawns worker threads (including UI, debugger(s), ?timer?, ?gc?).  HW interrupt reflected through Mother Thread to events. Mother thread spawns and cares for workers.
 
 Smalltalk is the mediator between raw HW and its SW presentation.
 
@@ -60,15 +61,14 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 - Control flow
   - Interrupts; exceptions
 - GC
-  - Storage allocation
+  - Storage allocation; tagging
   - Pinned objects
   - When is it stable?
 
 ## Find Still/Save Points
 
 - Don't change the code for a method while the method is being executed
-[ e.g. during message-send ]
-
+[ e.g. during message-send; library loading ]
 - Don't add/remove elements of a collection as it is being traversed
 - Don't move (gc) objects while they are being referenced
 - Note live-update rubrics; atomics; lock-free/wait-free
@@ -78,8 +78,9 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 - Recursion
 - Color
 - Time(r)
+- Mappings (colors;floats;integers;chars;..)
+- Compile; runtime-libs; gc; multicore; iNet;..
 - Emergent Properties
-- Compile
 
 --
 
