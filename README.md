@@ -20,7 +20,7 @@ Background:
 
 We explain the world through stories.
 
-- In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime. ["Stories all the way down"].
+- In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime. ["Stories all the way down" => "Comprehensible all the way down"].
 - In particular the Debug Context needs to be improved.
 - We need to present runtime services as telling _stories_, stories written in Smalltalk.
 - Compiler optimization by program transformation is optimization by stories with measurement to see what pays for itself. [Efficient => apt metaphor]
