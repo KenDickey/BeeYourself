@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 19 May 2021 at 4:11:36 pm'!
+'From Cuis 5.0 [latest update: #4587] on 24 May 2021 at 3:19:05 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 15!
+!provides: 'PowerLang' 1 16!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2953,6 +2953,16 @@ Object subclass: #OptimizingCodeEmitter
 OptimizingCodeEmitter class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingInstructionFragmenter category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingInstructionFragmenter
+	instanceVariableNames: 'method messages firstBlock abi'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionFragmenter class' category: 'Powerlang-Core-OCompiler'!
+OptimizingInstructionFragmenter class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3232,6 +3242,11 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
 Code Generator!
+
+!OptimizingInstructionFragmenter commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
 
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
 format 
@@ -32523,6 +32538,393 @@ visitUnary: instruction
 	self perform: selector asSymbol with: instruction! !
 
 !OptimizingCodeEmitter class methodsFor: 'instance creation' stamp: 'KenD 5/14/2021 14:19:27'!
+new 
+
+	^self basicNew initialize! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/23/2021 15:11:15'!
+abi: anAbi 
+
+	abi := anAbi! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/23/2021 15:11:24'!
+activationRecord 
+
+	^firstBlock firstInstruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:05:19'!
+firstBlock: aBasicBlock 
+
+	firstBlock := aBasicBlock
+! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:15:01'!
+insertCopyResultAfter: anInstruction 
+	| copy |
+	copy := OUnaryOperation receiver: anInstruction name: #copyResult.
+	anInstruction
+		afterInsert: copy;
+		replaceAllUsesWith: copy;
+		addUse: copy at: #receiver! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:15:16'!
+insertPush: anInstruction before: instruction 
+	| push |
+	push := OUnaryOperation receiver: anInstruction name: #push.
+	anInstruction addUse: push at: #receiver.
+	instruction beforeInsert: push.
+	^push! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:15:28'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:15:38'!
+registerNamed: regname 
+
+	^abi perform: regname! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:15:50'!
+replace: instruction withBinary: left withConstant: right 
+	| constant new |
+	constant := right value.
+	new := OBinaryConstantOperation
+		left: left
+		right: constant
+		name: instruction selector.
+	left addUse: new at: #left.
+	instruction dissolveReplacingWith: new.
+	^new! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:16:02'!
+replace: instruction withVariable: left with: right 
+	| new |
+	new := OBinaryVariableOperation
+		left: left
+		right: right
+		name: instruction selector.
+	left addUse: new at: #left.
+	right addUse: new at: #right.
+	instruction dissolveReplacingWith: new.
+	^new! !
+
+!OptimizingInstructionFragmenter methodsFor: 'accessing' stamp: 'KenD 5/24/2021 15:16:17'!
+selectorFor: name 
+
+	^(#fragment , (messages at: name ifAbsent: [#GenericMessage:])) asSymbol! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:04:27'!
+doFragment 
+
+	self
+		fragmentActivationRecordDeclaration;
+		fragmentSelfDeclaration;
+		fragmentSpecialABIArguments;
+		fragmentNormalArguments.
+	firstBlock
+		reversePostOrderDo: [:block | self fragmentInstructionsOf: block]! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:00'!
+fragmentActivationRecordDeclaration 
+	| declaration implicit |
+	declaration := firstBlock firstInstruction.
+	implicit := OActivationContext named: #activationRecord.
+	implicit source: abi regFP.
+	declaration dissolveReplacingWith: implicit! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:12'!
+fragmentBinaryCommutative: instruction 
+	| left right |
+	left := instruction receiver.
+	right := instruction arguments first.
+	right isConstant
+		ifTrue: [^self replace: instruction withBinary: left withConstant: right].
+	left isConstant
+		ifTrue: [^self replace: instruction withBinary: right withConstant: left].
+	self replace: instruction withVariable: left with: right! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:26'!
+fragmentBinaryCompare: instruction 
+	| left right new |
+	left := instruction receiver.
+	right := instruction arguments first.
+	right isConstant
+		ifTrue: [^self replace: instruction withBinary: left withConstant: right].
+	left isConstant ifTrue: [
+		new := self replace: instruction withBinary: right withConstant: left.
+		^new invertOperation].
+	self replace: instruction withVariable: left with: right! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:38'!
+fragmentBinaryNonCommutative: instruction 
+	| left right |
+	left := instruction receiver.
+	right := instruction arguments first.
+	right isConstant
+		ifTrue: [^self replace: instruction withBinary: left withConstant: right].
+	self replace: instruction withVariable: left with: right! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:48'!
+fragmentCallSite: instruction 
+	| callsite |
+	callsite := OBinaryConstantOperation
+		left: self activationRecord
+		right: 2
+		name: #_basicAt:.
+	self activationRecord addUse: callsite at: #left.
+	instruction dissolveReplacingWith: callsite! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:01'!
+fragmentGenericMessage: instruction 
+	| arguments new push |
+	arguments := instruction arguments.
+	new := arguments	withIndexCollect: [:argument :i | 
+			push := self insertPush: argument before: instruction.
+			push addUse: instruction at: i].
+	instruction arguments: new.
+	arguments
+		do: [:argument | argument removeUse: instruction; dissolveIfUnused].
+	firstBlock activationRecord haveFrame! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:34'!
+fragmentInstructionsOf: block 
+
+	block firstInstruction acceptVisitor: self! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:46'!
+fragmentNormalArguments 
+	| count argument position context |
+	count := 0.
+	context := firstBlock firstInstruction.
+	argument := context next next.
+	[argument isDefineArgument] whileTrue: [
+		argument := argument next.
+		count := count + 1].
+	argument := argument prev.
+	position := 0.
+	[position < count] whileTrue: [| new next |
+		argument isUsed
+			ifTrue: [
+				new := OBinaryConstantOperation
+					left: context
+					right: position + 3
+					name: #_basicAt:.
+				context addUse: new at: #left.
+				argument dissolveReplacingWith: new.
+				argument := new prev]
+			ifFalse: [
+				next := argument prev.
+				argument dissolve.
+				argument := next].
+		position := position + 1]! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:09:05'!
+fragmentNot: instruction 
+	| negated |
+	negated := instruction receiver halt shallowCopy.
+	negated negateOperation.
+	negated left addUse: negated at: #left.
+	negated right addUse: negated at: #right.
+	instruction dissolveReplacingWith: negated.
+	instruction receiver dissolveIfUnused! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:09:17'!
+fragmentPatchIndirectCallSiteTo: instruction 
+	| nativeCode callsite patch |
+	nativeCode := instruction arguments first.
+	callsite := OBinaryConstantOperation
+		left: self activationRecord
+		right: 2
+		name: #_basicAt:.
+	patch := OTernaryOperation
+		receiver: callsite
+		left: 0
+		right: nativeCode
+		name: #_basicAt:put:.
+	self activationRecord addUse: callsite at: #left.
+	callsite addUse: patch at: #receiver.
+	nativeCode addUse: patch at: #right.
+	instruction dissolveReplacingWith: patch.
+	patch beforeInsert: callsite! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:13'!
+fragmentSelfDeclaration 
+	| declaration implicit |
+	declaration := firstBlock firstInstruction next.
+	implicit := OLoadImplicit named: #self.
+	declaration dissolveReplacingWith: implicit! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:28'!
+fragmentSpecialABIArguments 
+	| literals i actual next load ast names index |
+	literals := method literals.
+	literals size = 0
+		ifTrue: [ ^ self ].
+	(literals at: 1) == #savePreviousSelf
+		ifTrue: [ firstBlock activationRecord doSavePreviousSelf.
+			load := firstBlock firstInstruction
+				detect: [ :inst | inst isConstant ].
+			load dissolve.
+			literals := literals beeCopyFrom: 2 ].
+	literals size = 0
+		ifTrue: [ ^ self ].
+	(literals at: 1) == #specialABIBegin
+		ifFalse: [ ^ self ].
+	i := 3.
+	ast := SCompiler parse: method source lines first in: nil.
+	names := ast arguments collect: #name.
+	[ (literals at: i) == #specialABIEnd ]
+		whileFalse: [ | name register implicit argument receiver regname |
+			name := literals at: i.
+			regname := literals at: i + 1.
+			register := self registerNamed: regname.
+			name = #self
+				ifTrue: [ receiver := firstBlock firstInstruction
+						detect:
+							[ :instruction | instruction isLoadImplicit and: [ instruction name = #self ] ].
+					receiver source: register ]
+				ifFalse: [ implicit := (OLoadImplicit named: name) source: register.
+					index := names indexOf: name.
+					argument := firstBlock firstInstruction
+						detect:
+							[ :instruction | instruction isDefineArgument and: [ instruction name = index asString ] ].
+					argument dissolveReplacingWith: implicit ].
+			i := i + 2 ].
+	actual := firstBlock firstInstruction
+		detect: [ :inst | inst isConstant ].
+	[ next := actual next.
+	actual dissolve.
+	actual isConstant and: [ actual value == #specialABIEnd ] ]
+		whileFalse: [ actual := next ]! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:47'!
+fragmentTernary: instruction 
+	| receiver left right new |
+	receiver := instruction receiver.
+	left := instruction arguments first.
+	right := instruction arguments second.
+	new := OTernaryOperation
+		receiver: receiver
+		left: left
+		right: right
+		name: instruction selector.
+	receiver addUse: new at: #receiver.
+	left addUse: new at: #left.
+	right addUse: new at: #right.
+	self
+		assert: (#(_basicAt:put: _basicULongAt:put:	_byteAt:put: _objectAtOffset:put:)
+			includes: new name).
+	instruction replaceAllUsesWith: right; dissolveReplacingWith: new! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:11:01'!
+fragmentTransferControlTo: instruction 
+	| receiver machine |
+	receiver := instruction receiver.
+	machine := instruction arguments first.
+	self replace: instruction withVariable: receiver with: machine! !
+
+!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:11:13'!
+fragmentUnary: instruction 
+	| receiver new |
+	receiver := instruction receiver.
+	"	receiver isConstant ifTrue: [self halt]."
+	new := OUnaryOperation new receiver: receiver; name: instruction selector.
+	receiver addUse: new at: #receiver.
+	instruction dissolveReplacingWith: new! !
+
+!OptimizingInstructionFragmenter methodsFor: 'initialization' stamp: 'KenD 5/24/2021 15:11:31'!
+initialize 
+
+	self initializeMessages! !
+
+!OptimizingInstructionFragmenter methodsFor: 'initialization' stamp: 'KenD 5/24/2021 15:11:51'!
+initializeMessages 
+	messages := Dictionary new
+		at: #'+' put: #BinaryCommutative:;
+		at: #'-' put: #BinaryNonCommutative:;
+		at: #'*' put: #BinaryCommutative:;
+		at: #'//' put: #BinaryNonCommutative:;
+		at: #'<' put: #BinaryCompare:;
+		at: #'<=' put: #BinaryCompare:;
+		at: #'=' put: #BinaryCompare:;
+		at: #'==' put: #BinaryCompare:;
+		at: #'~=' put: #BinaryCompare:;
+		at: #'!!=' put: #BinaryCompare:;
+		at: #'>=' put: #BinaryCompare:;
+		at: #'>' put: #BinaryCompare:;
+		at: #'&' put: #BinaryCommutative:;
+		at: #_asNative put: #Unary:;
+		at: #_asObject put: #Unary:;
+		at: #_asPointer put: #Unary:;
+		at: #_asSmallInteger put: #Unary:;
+		at: #bitAnd: put: #BinaryCommutative:;
+		at: #bitOr: put: #BinaryCommutative:;
+		at: #bitShift: put: #BinaryNonCommutative:;
+		at: #_byteAt: put: #BinaryNonCommutative:;
+		at: #_basicAt: put: #BinaryNonCommutative:;
+		at: #_basicULongAt: put: #BinaryNonCommutative:;
+		at: #_byteAt:put: put: #Ternary:;
+		at: #_basicAt:put: put: #Ternary:;
+		at: #_basicULongAt:put: put: #Ternary:;
+		at: #_objectAtOffset:put: put: #Ternary:;
+		at: #_basicFlags put: #Unary:;
+		at: #_basicFlags: put: #BinaryNonCommutative:;
+		at: #_smallSize put: #Unary:;
+		at: #_smallSize: put: #BinaryNonCommutative:;
+		at: #_largeSize put: #Unary:;
+		at: #_largeSize: put: #BinaryNonCommutative:;
+		at: #_isSmallInteger put: #Unary:;
+		at: #_transferControlTo: put: #TransferControlTo:;
+		at: #_callSite put: #CallSite:;
+		at: #_patchIndirectCallSiteTo: put: #PatchIndirectCallSiteTo:;
+		at: #not put: #Not:;
+		yourself! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:16:44'!
+visitBinaryWithConstant: instruction
+! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:16:54'!
+visitBinaryWithVariable: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:04'!
+visitDefineArgument: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:14'!
+visitJump: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:26'!
+visitJumpFalse: instruction ! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:35'!
+visitJumpTrue: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:45'!
+visitLoadConstant: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:17:55'!
+visitLoadImplicit: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:18:19'!
+visitMessageSend: instruction 
+	| selector |
+	selector := self selectorFor: instruction selector.
+	self perform: selector with: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:18:30'!
+visitPhi: instruction ! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:18:38'!
+visitReturn: instruction ! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:18:46'!
+visitTernary: instruction! !
+
+!OptimizingInstructionFragmenter methodsFor: 'visiting' stamp: 'KenD 5/24/2021 15:18:58'!
+visitUnary: instruction ! !
+
+!OptimizingInstructionFragmenter class methodsFor: 'instance creation' stamp: 'KenD 5/23/2021 15:10:40'!
 new 
 
 	^self basicNew initialize! !
