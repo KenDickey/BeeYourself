@@ -21,7 +21,7 @@ Background:
 We explain the world through stories.
 
 - In pushing compute interface from a virtual machine down into actual hardware, we need to (re)present the HW compute context in the runtime. ["Stories all the way down" => "Comprehensible all the way down"].
-- In particular the Debug Context needs to be improved.
+- In particular the Debug Context needs to be improved [also: REPL backstop Debugger].
 - We need to present runtime services as telling _stories_, stories written in Smalltalk.
 - Compiler optimization by program transformation is optimization by stories with measurement to see what pays for itself. [Efficient => apt metaphor]
 - Smalltalk is a self-presenting mediator between hardware and software.
@@ -81,6 +81,10 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 - Mappings (colors;floats;integers;chars;..)
 - Compile; runtime-libs; gc; multicore; iNet;..
 - Emergent Properties
+
+## Look, Ma, no compiler
+
+Should be able to port by cross-compiling nativizer for new platform and cross/pre-nativise the loader.  Let loader nativise methods during load.  Simple port w/o running a compiler.
 
 --
 
