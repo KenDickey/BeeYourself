@@ -64,6 +64,7 @@ Instructions <<=====>> Operations/[Macro]Opcodes
   - Storage allocation; tagging
   - Pinned objects
   - When is it stable?
+  - What needs to be pinned? [VCPUs;GC code;..]
 
 ## Find Still/Save Points
 
