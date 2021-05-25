@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 24 May 2021 at 3:19:05 pm'!
+'From Cuis 5.0 [latest update: #4587] on 24 May 2021 at 5:06:12 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 16!
+!provides: 'PowerLang' 1 17!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -2963,6 +2963,16 @@ Object subclass: #OptimizingInstructionFragmenter
 OptimizingInstructionFragmenter class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingInstructionSelector category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingInstructionSelector
+	instanceVariableNames: 'firstBlock tiles roots messages'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionSelector class' category: 'Powerlang-Core-OCompiler'!
+OptimizingInstructionSelector class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3244,6 +3254,11 @@ Copyright (c) 2020 Aucerna.
 Code Generator!
 
 !OptimizingInstructionFragmenter commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingInstructionSelector commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
@@ -32614,7 +32629,7 @@ selectorFor: name
 
 	^(#fragment , (messages at: name ifAbsent: [#GenericMessage:])) asSymbol! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:04:27'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:04:27'!
 doFragment 
 
 	self
@@ -32625,7 +32640,7 @@ doFragment
 	firstBlock
 		reversePostOrderDo: [:block | self fragmentInstructionsOf: block]! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:00'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:07:00'!
 fragmentActivationRecordDeclaration 
 	| declaration implicit |
 	declaration := firstBlock firstInstruction.
@@ -32633,7 +32648,7 @@ fragmentActivationRecordDeclaration
 	implicit source: abi regFP.
 	declaration dissolveReplacingWith: implicit! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:12'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:07:12'!
 fragmentBinaryCommutative: instruction 
 	| left right |
 	left := instruction receiver.
@@ -32644,7 +32659,7 @@ fragmentBinaryCommutative: instruction
 		ifTrue: [^self replace: instruction withBinary: right withConstant: left].
 	self replace: instruction withVariable: left with: right! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:26'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:07:26'!
 fragmentBinaryCompare: instruction 
 	| left right new |
 	left := instruction receiver.
@@ -32656,7 +32671,7 @@ fragmentBinaryCompare: instruction
 		^new invertOperation].
 	self replace: instruction withVariable: left with: right! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:38'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:07:38'!
 fragmentBinaryNonCommutative: instruction 
 	| left right |
 	left := instruction receiver.
@@ -32665,7 +32680,7 @@ fragmentBinaryNonCommutative: instruction
 		ifTrue: [^self replace: instruction withBinary: left withConstant: right].
 	self replace: instruction withVariable: left with: right! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:07:48'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:07:48'!
 fragmentCallSite: instruction 
 	| callsite |
 	callsite := OBinaryConstantOperation
@@ -32675,7 +32690,7 @@ fragmentCallSite: instruction
 	self activationRecord addUse: callsite at: #left.
 	instruction dissolveReplacingWith: callsite! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:01'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:08:01'!
 fragmentGenericMessage: instruction 
 	| arguments new push |
 	arguments := instruction arguments.
@@ -32687,12 +32702,12 @@ fragmentGenericMessage: instruction
 		do: [:argument | argument removeUse: instruction; dissolveIfUnused].
 	firstBlock activationRecord haveFrame! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:34'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:08:34'!
 fragmentInstructionsOf: block 
 
 	block firstInstruction acceptVisitor: self! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:08:46'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:08:46'!
 fragmentNormalArguments 
 	| count argument position context |
 	count := 0.
@@ -32719,7 +32734,7 @@ fragmentNormalArguments
 				argument := next].
 		position := position + 1]! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:09:05'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:09:05'!
 fragmentNot: instruction 
 	| negated |
 	negated := instruction receiver halt shallowCopy.
@@ -32729,7 +32744,7 @@ fragmentNot: instruction
 	instruction dissolveReplacingWith: negated.
 	instruction receiver dissolveIfUnused! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:09:17'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:09:17'!
 fragmentPatchIndirectCallSiteTo: instruction 
 	| nativeCode callsite patch |
 	nativeCode := instruction arguments first.
@@ -32748,14 +32763,14 @@ fragmentPatchIndirectCallSiteTo: instruction
 	instruction dissolveReplacingWith: patch.
 	patch beforeInsert: callsite! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:13'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:10:13'!
 fragmentSelfDeclaration 
 	| declaration implicit |
 	declaration := firstBlock firstInstruction next.
 	implicit := OLoadImplicit named: #self.
 	declaration dissolveReplacingWith: implicit! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:28'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:10:28'!
 fragmentSpecialABIArguments 
 	| literals i actual next load ast names index |
 	literals := method literals.
@@ -32798,7 +32813,7 @@ fragmentSpecialABIArguments
 	actual isConstant and: [ actual value == #specialABIEnd ] ]
 		whileFalse: [ actual := next ]! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:10:47'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:10:47'!
 fragmentTernary: instruction 
 	| receiver left right new |
 	receiver := instruction receiver.
@@ -32817,14 +32832,14 @@ fragmentTernary: instruction
 			includes: new name).
 	instruction replaceAllUsesWith: right; dissolveReplacingWith: new! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:11:01'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:11:01'!
 fragmentTransferControlTo: instruction 
 	| receiver machine |
 	receiver := instruction receiver.
 	machine := instruction arguments first.
 	self replace: instruction withVariable: receiver with: machine! !
 
-!OptimizingInstructionFragmenter methodsFor: 'analysis' stamp: 'KenD 5/24/2021 15:11:13'!
+!OptimizingInstructionFragmenter methodsFor: 'fragmenting' stamp: 'KenD 5/24/2021 15:11:13'!
 fragmentUnary: instruction 
 	| receiver new |
 	receiver := instruction receiver.
@@ -32925,6 +32940,406 @@ visitTernary: instruction! !
 visitUnary: instruction ! !
 
 !OptimizingInstructionFragmenter class methodsFor: 'instance creation' stamp: 'KenD 5/23/2021 15:10:40'!
+new 
+
+	^self basicNew initialize! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:53:45'!
+firstBlock: aBasicBlock 
+
+	firstBlock := aBasicBlock! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:55:18'!
+insertCopyResultAfter: anInstruction 
+	| copy |
+	copy := OUnaryOperation receiver: anInstruction name: #copyResult.
+	anInstruction
+		afterInsert: copy;
+		replaceAllUsesWith: copy;
+		addUse: copy at: #receiver! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:55:30'!
+insertPush: anInstruction before: instruction 
+	| push tile |
+	push := OUnaryOperation receiver: anInstruction name: #push.
+	anInstruction addUse: push at: #receiver.
+	instruction beforeInsert: push.
+	tile := self newTile: push.
+	self tile: push as: tile beUsed.
+	^push! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:56:00'!
+numberArguments 
+	| count instruction i |
+	count := 0.
+	instruction := firstBlock firstInstruction next.
+	[instruction next isLoadImplicit] whileTrue: [
+		instruction := instruction next.
+		count := count + 1].
+	i := 0.
+	[i < count] whileTrue: [
+		instruction name: i + 3.
+		instruction := instruction prev.
+		i := i + 1]! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:56:21'!
+removeUnused 
+
+	firstBlock instructionsWithSuccessorsDo: [:instruction | | tile |
+		tile := self tileOf: instruction.
+		(tile instruction == instruction and: [tile isUsed])
+			ifFalse: [instruction replaceAllUsesWith: tile instruction; dissolve]]! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 16:56:42'!
+selectorFor: name 
+
+	^(#send , (messages at: name ifAbsent: [#GenericMessage:])) asSymbol! !
+
+!OptimizingInstructionSelector methodsFor: 'accessing' stamp: 'KenD 5/24/2021 17:04:03'!
+tileOf: instruction 
+
+	^tiles at: instruction! !
+
+!OptimizingInstructionSelector methodsFor: 'initialization' stamp: 'KenD 5/24/2021 16:54:28'!
+initialize 
+
+	tiles := IdentityDictionary new.
+	self initializeMessages! !
+
+!OptimizingInstructionSelector methodsFor: 'initialization' stamp: 'KenD 5/24/2021 16:55:03'!
+initializeMessages 
+
+	messages := Dictionary new
+		at: #'+' put: #CommutativeBinary:;
+		at: #'-' put: #Minus:;
+		at: #'*' put: #CommutativeBinary:;
+		at: #'<' put: #Compare:;
+		at: #'<=' put: #Compare:;
+		at: #'=' put: #Compare:;
+		at: #'==' put: #Compare:;
+		at: #'~=' put: #Compare:;
+		at: #'!!=' put: #Compare:;
+		at: #'>=' put: #Compare:;
+		at: #'>' put: #Compare:;
+		at: #'&' put: #CommutativeBinary:;
+		at: #bitAnd: put: #CommutativeBinary:;
+		at: #_byteAt: put: #Binary:;
+		at: #_basicAt: put: #Binary:;
+		at: #_byteAt:put: put: #Ternary:;
+		at: #_basicAt:put: put: #Ternary:;
+		at: #_basicFlags put: #Unary:;
+		at: #_smallSize put: #Unary:;
+		at: #_largeSize put: #Unary:;
+		at: #_isSmallInteger put: #Unary:;
+		at: #_transferControlTo: put: #Binary:;
+		at: #not put: #Not:;
+		yourself! !
+
+!OptimizingInstructionSelector methodsFor: 'selection' stamp: 'KenD 5/24/2021 16:53:29'!
+doSelection 
+
+	self numberArguments.
+	firstBlock reversePostOrderDo: [:block | self generateTilingFor: block].
+	self removeUnused! !
+
+!OptimizingInstructionSelector methodsFor: 'selection' stamp: 'KenD 5/24/2021 16:54:10'!
+generateTilingFor: block 
+
+	block firstInstruction acceptVisitor: self! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:57:07'!
+send: instruction left: left commutativeRight: right 
+
+	right isConstant
+		ifTrue: [^self tile: instruction using: left toConstant: right value].
+	left isConstant
+		ifTrue: [^self tile: instruction using: right toConstant: left value].
+	self tile: instruction using: left to: right! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:57:23'!
+send: instruction left: left comparedTo: right 
+
+	right isConstant
+		ifTrue: [^self tile: instruction using: left toConstant: right value].
+	left isConstant
+		ifTrue: [^(self tile: instruction using: right toConstant: left value) invertOperation].
+	self tile: instruction using: left to: right! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:57:34'!
+send: instruction left: left minusRight: right 
+
+	right isConstant
+		ifTrue: [^self tile: instruction using: left toConstant: right value].
+	left isConstant
+		ifTrue: [^(self doesntWork
+			tile: instruction
+			using: right
+			toConstant: 0 - left value)
+			invert].
+	self tile: instruction using: left to: right! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:57:50'!
+send: instruction left: left right: right 
+
+	right isConstant
+		ifTrue: [^self tile: instruction using: left toConstant: right value].
+	left isConstant
+		ifTrue: [^self tile: instruction using: right toConstant: left value].
+	self tile: instruction using: left to: right! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:58:01'!
+send: instruction receiver: receiver 
+
+	receiver isConstant ifTrue: [^self tile: instruction toConstant: receiver].
+	self tile: instruction receiver: receiver! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:58:22'!
+send: instruction
+receiver: receiver
+left: left
+right: right 
+	"
+	right isConstant
+		ifTrue: [^self tile: instruction using: left toConstant: right value].
+	left isConstant
+		ifTrue: [^self tile: instruction using: right toConstant: left value].
+	"
+	self
+		tile: instruction
+		using: receiver
+		left: left
+		right: right! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:58:36'!
+sendBinary: instruction 
+
+	self
+		send: instruction
+		left: instruction receiver
+		right: instruction arguments first! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:58:49'!
+sendCommutativeBinary: instruction 
+
+	self
+		send: instruction
+		left: instruction receiver
+		commutativeRight: instruction arguments first! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:59:40'!
+sendCompare: instruction 
+
+	self
+		send: instruction
+		left: instruction receiver
+		comparedTo: instruction arguments first! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 16:59:51'!
+sendGenericMessage: instruction 
+	| arguments values tile new |
+	arguments := instruction arguments.
+	values := Array with: instruction receiver withAll: arguments.
+	new := arguments
+		collect: [:argument | self insertPush: argument before: instruction].
+	instruction arguments: new.
+	arguments do: [:argument | argument removeUse: instruction].
+	values do: [:value | (self tileOf: value) beUsed].
+	tile := self newTile: instruction.
+	self
+		tile: instruction as: tile beUsed;
+		insertCopyResultAfter: instruction! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 17:00:02'!
+sendMinus: instruction 
+
+	self
+		send: instruction
+		left: instruction receiver
+		minusRight: instruction arguments first! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 17:00:21'!
+sendNot: instruction 
+	| negated tile |
+	negated := (self tileOf: instruction receiver) beUsed.
+	negated instruction negateOperation.
+	tile := self newTile: instruction.
+	self tile: instruction as: tile.
+	^instruction! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 17:00:34'!
+sendTernary: instruction 
+
+	self
+		send: instruction
+		receiver: instruction receiver
+		left: instruction arguments first
+		right: instruction arguments second! !
+
+!OptimizingInstructionSelector methodsFor: 'sending' stamp: 'KenD 5/24/2021 17:00:47'!
+sendUnary: instruction 
+
+	self send: instruction receiver: instruction receiver! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 16:55:44'!
+newTile: instruction 
+
+	^OTiling for: instruction! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 17:01:34'!
+tile: instruction as: tile 
+
+	tiles at: instruction put: tile! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 17:02:28'!
+tile: instruction receiver: receiver 
+	| receivertile new tile |
+	receivertile := (self tileOf: receiver) beUsed.
+	new := OUnaryOperation new receiver: receiver; name: instruction selector.
+	receiver addUse: new at: #receiver.
+	instruction beforeInsert: new.
+	tile := self newTile: new.
+	self
+		tile: new as: tile;
+		tile: instruction as: tile.
+	^new! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 17:03:04'!
+tile: instruction
+using: receiver
+left: left
+right: right 
+	| lefttile righttile receivertile tile new |
+	receivertile := (self tileOf: receiver) beUsed.
+	lefttile := (self tileOf: left) beUsed.
+	righttile := (self tileOf: right) beUsed.
+	new := OTernaryOperation
+		receiver: receiver
+		left: left
+		right: right
+		name: instruction selector.
+	receiver addUse: new at: #receiver.
+	left addUse: new at: #left.
+	right addUse: new at: #right.
+	instruction beforeInsert: new.
+	tile := self newTile: new.
+	self
+		tile: new as: tile beUsed;
+		tile: instruction as: righttile "for at:put:".
+	^new! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 17:03:27'!
+tile: instruction using: left to: right 
+	| lefttile righttile tile new |
+	lefttile := (self tileOf: left) beUsed.
+	righttile := (self tileOf: right) beUsed.
+	new := OBinaryVariableOperation
+		left: left
+		right: right
+		name: instruction selector.
+	left addUse: new at: #left.
+	right addUse: new at: #right.
+	instruction beforeInsert: new.
+	tile := self newTile: new.
+	self
+		tile: new as: tile;
+		tile: instruction as: tile.
+	^new! !
+
+!OptimizingInstructionSelector methodsFor: 'tile-ing' stamp: 'KenD 5/24/2021 17:03:47'!
+tile: instruction using: left toConstant: value 
+	| lefttile new tile |
+	lefttile := (self tileOf: left) beUsed.
+	new := OBinaryConstantOperation
+		left: left
+		right: value
+		name: instruction selector.
+	left addUse: new at: #left.
+	instruction beforeInsert: new.
+	tile := self newTile: new.
+	self
+		tile: new as: tile;
+		tile: instruction as: tile.
+	^new! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:04:25'!
+visitJump: instruction 
+	| new |
+	new := self newTile: instruction.
+	self tile: instruction as: new beUsed! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:04:36'!
+visitJumpFalse: instruction 
+	| tile new |
+	tile := self tileOf: instruction variable.
+	tile beUsed.
+	new := self newTile: instruction.
+	self tile: instruction as: new beUsed! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:04:51'!
+visitJumpTrue: instruction 
+	| tile new |
+	tile := self tileOf: instruction variable.
+	tile beUsed.
+	new := self newTile: instruction.
+	self tile: instruction as: new beUsed! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:05:03'!
+visitLoadConstant: instruction 
+	| tile |
+	tile := self newTile: instruction.
+	self tile: instruction as: tile! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:05:17'!
+visitLoadImplicit: instruction 
+	| tile sourcetile new |
+	instruction name isSmallInteger
+		ifTrue: [
+			sourcetile := (self tileOf: instruction source) beUsed.
+			new := OBinaryConstantOperation
+				left: instruction source
+				right: instruction name
+				name: #_basicAt:.
+			instruction source addUse: new at: #left.
+			instruction beforeInsert: new; replaceAllUsesWith: new; dissolve.
+			tile := self newTile: new.
+			self tile: new as: tile]
+		ifFalse: [
+			tile := self newTile: instruction.
+			self tile: instruction as: tile.
+			instruction name == #activationRecord ifTrue: [tile beUsed]]! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:05:32'!
+visitMessageSend: instruction 
+	| selector |
+	selector := self selectorFor: instruction selector.
+	self perform: selector with: instruction! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:05:45'!
+visitPhi: instruction 
+	| tile |
+	instruction variables
+		collect: [:source | self tileOf: source]
+		thenDo: #beUsed.
+	tile := self newTile: instruction.
+	self tile: instruction as: tile! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:05:55'!
+visitReturn: instruction 
+	| tile new |
+	tile := self tileOf: instruction source.
+	tile beUsed.
+	new := self newTile: instruction.
+	self tile: instruction as: new beUsed! !
+
+!OptimizingInstructionSelector methodsFor: 'visiting' stamp: 'KenD 5/24/2021 17:06:06'!
+visitUnary: instruction 
+	| tile new |
+	tile := self tileOf: instruction receiver.
+	tile beUsed.
+	new := self newTile: instruction.
+	self tile: instruction as: new beUsed! !
+
+!OptimizingInstructionSelector class methodsFor: 'instance creation' stamp: 'KenD 5/24/2021 16:52:46'!
 new 
 
 	^self basicNew initialize! !
