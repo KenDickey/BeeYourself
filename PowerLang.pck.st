@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 24 May 2021 at 5:06:12 pm'!
+'From Cuis 5.0 [latest update: #4587] on 25 May 2021 at 12:54:28 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 17!
+!provides: 'PowerLang' 1 19!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -531,16 +531,6 @@ OBinaryOperation subclass: #OBinaryVariableOperation
 	category: 'Powerlang-Core-OCompiler-IR'!
 !classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryVariableOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OptimizingNativizer category: #'Powerlang-Core'!
-Object subclass: #OptimizingNativizer
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'OptimizingNativizer class' category: #'Powerlang-Core'!
-OptimizingNativizer class
 	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: #'Powerlang-Core'!
@@ -2973,6 +2963,36 @@ Object subclass: #OptimizingInstructionSelector
 OptimizingInstructionSelector class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingLivenessAnalysis category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingLivenessAnalysis
+	instanceVariableNames: 'firstBlock liveIn liveOut loops pressures expirations'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingLivenessAnalysis class' category: 'Powerlang-Core-OCompiler'!
+OptimizingLivenessAnalysis class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingMethodInliner category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingMethodInliner
+	instanceVariableNames: 'environment firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingMethodInliner class' category: 'Powerlang-Core-OCompiler'!
+OptimizingMethodInliner class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingNativizer category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingNativizer
+	instanceVariableNames: 'environment method firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingNativizer class' category: 'Powerlang-Core-OCompiler'!
+OptimizingNativizer class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3259,6 +3279,21 @@ Copyright (c) 2020 Aucerna.
 !
 
 !OptimizingInstructionSelector commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingLivenessAnalysis commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingMethodInliner commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingNativizer commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
@@ -33343,6 +33378,316 @@ visitUnary: instruction
 new 
 
 	^self basicNew initialize! !
+
+!OptimizingLivenessAnalysis methodsFor: 'accessing' stamp: 'KenD 5/25/2021 07:33:55'!
+firstBlock: aBlock 
+
+	firstBlock := aBlock! !
+
+!OptimizingLivenessAnalysis methodsFor: 'accessing' stamp: 'KenD 5/25/2021 07:35:00'!
+liveInOf: block 
+	^liveIn at: block! !
+
+!OptimizingLivenessAnalysis methodsFor: 'accessing' stamp: 'KenD 5/25/2021 07:35:55'!
+loops: aDictionary 
+	loops := aDictionary! !
+
+!OptimizingLivenessAnalysis methodsFor: 'accessing' stamp: 'KenD 5/25/2021 07:36:16'!
+maxPressureIn: loopBlocks 
+	| all |
+	all := loopBlocks collect: [:block | pressures at: block].
+	^all max! !
+
+!OptimizingLivenessAnalysis methodsFor: 'initialization' stamp: 'KenD 5/25/2021 07:34:24'!
+initialize! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:28:01'!
+analyzeLiveness 
+	| changed all |
+	liveIn := Dictionary new.
+	pressures := Dictionary new.
+	expirations := Dictionary new.
+	changed := true.
+	all := firstBlock withSuccessorsPostOrder.
+	[changed] whileTrue: [
+		changed := false.
+		all do: [:block | changed := (self analyzeLivenessOf: block) or: changed]].
+	all do: [:block | self computeExpirationsAt: block]! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:32:38'!
+analyzeLivenessOf: block 
+	| alive last changed pressure |
+	self haltWhen: block hash = 46528.
+	alive := self gatherAliveAfter: block.
+	self
+		haltWhen: (alive
+			anySatisfy: [:value | value printString
+				beginsWith: '[53422] [jump to #45650]']).
+	pressure := pressures at: block ifAbsentPut: [0].
+	last := block lastInstruction.
+	last realReverseDo: [:instr | 
+		instr operandsDo: [:value | 
+			self haltWhen: (value printString beginsWith: '[53422] [jump to #45650]').
+			alive addIfAbsent: value].
+		alive removeIfPresent: instr.
+		pressure := pressure max: alive size].
+	block phis reverseDo: [:phi | alive removeIfPresent: phi].
+	pressures at: block put: pressure.
+	changed := true.
+	liveIn
+		at: block ifPresent: [:prev | changed := prev size !!= alive size];
+		at: block put: alive.
+	^changed! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:33:22'!
+computeExpirationsAt: block 
+	| alive last |
+	alive := self gatherAliveAfter: block.
+	last := block lastInstruction.
+	last isConditionalJump ifTrue: [
+		block successors do: [:succ | | real leftover |
+			real := liveIn at: succ.
+			leftover := alive rejectAll: real.
+			leftover do: [:val | self kill: val at: succ firstInstruction]]].
+	last realReverseDo: [:instr | self computeExpirationsAt: instr with: alive]! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:33:36'!
+computeExpirationsAt: instruction with: alive 
+
+	instruction operandsDo: [:value | 
+		(alive includes: value) ifFalse: [self kill: value at: instruction].
+		alive addIfAbsent: value].
+	(alive includes: instruction)
+		ifTrue: [alive remove: instruction]
+		ifFalse: [self kill: instruction at: instruction]! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:33:45'!
+does: operand dieAt: instruction 
+	| dying |
+	dying := expirations at: instruction ifAbsent: [^false].
+	^dying includes: operand! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:34:07'!
+gatherAliveAfter: block 
+	| incoming extra |
+	incoming := block successors
+		gather: [:succ | liveIn at: succ ifAbsent: [OrderedCollection new]].
+	extra := block successors gather: [:succ | succ phiValuesComingFrom: block].
+	^(incoming , extra) withoutDuplicates! !
+
+!OptimizingLivenessAnalysis methodsFor: 'liveness' stamp: 'KenD 5/25/2021 07:34:41'!
+kill: value at: instruction 
+	| collection |
+	collection := expirations
+		at: instruction
+		ifAbsentPut: [OrderedCollection new].
+	collection addIfAbsent: value! !
+
+!OptimizingLivenessAnalysis class methodsFor: 'instance creation' stamp: 'KenD 5/25/2021 07:27:06'!
+new 
+
+	^self basicNew initialize! !
+
+!OptimizingMethodInliner methodsFor: 'accessing' stamp: 'KenD 5/25/2021 12:43:51'!
+bindVariablesOf: initialBlock with: aMessageSend 
+	| values |
+	values := OrderedCollection
+		with: aMessageSend receiver
+		withAll: aMessageSend arguments.
+	initialBlock instructionsDo: [:instruction | 
+		instruction isDefineArgument ifFalse: [^self].
+		instruction name == #activationRecord ifFalse: [
+			instruction replaceAllUsesWith: values first.
+			values removeFirst].
+		instruction dissolve]! !
+
+!OptimizingMethodInliner methodsFor: 'accessing' stamp: 'KenD 5/25/2021 12:44:48'!
+environment: aNativizationEnvironment 
+
+	environment:= aNativizationEnvironment! !
+
+!OptimizingMethodInliner methodsFor: 'accessing' stamp: 'KenD 5/25/2021 12:45:05'!
+firstBlock: aBasicBlock 
+	firstBlock := aBasicBlock! !
+
+!OptimizingMethodInliner methodsFor: 'inline-ing' stamp: 'KenD 5/25/2021 12:45:17'!
+inlineAllMessages 
+
+	firstBlock withSuccessorsPostOrder do: [:block | | current |
+		current := block.
+		block instructionsAsCollection do: [:instruction | 
+			(self shouldInline: instruction)
+				ifTrue: [current := self inlineMethod: instruction in: current]]]! !
+
+!OptimizingMethodInliner methodsFor: 'inline-ing' stamp: 'KenD 5/25/2021 12:45:29'!
+inlineMethod: aMessageSend in: block 
+	| method nativizer initialBlock |
+	method := self inlinedMethodFor: aMessageSend.
+	nativizer := OptimizingNativizer new environment: environment; method: method.
+	initialBlock := nativizer
+		decompose;
+		firstBlock.
+	self bindVariablesOf: initialBlock with: aMessageSend.
+	^ block inline: initialBlock replacing: aMessageSend! !
+
+!OptimizingMethodInliner methodsFor: 'inline-ing' stamp: 'KenD 5/25/2021 12:45:46'!
+inlinedMethodFor: aMessageSend 
+
+	^environment inlinedMethods detect: [ :m | m selector == aMessageSend selector ]! !
+
+!OptimizingMethodInliner methodsFor: 'testing' stamp: 'KenD 5/25/2021 12:46:09'!
+shouldInline: instruction 
+
+	^ instruction isMessageSend
+		and: [ environment shouldInline: instruction selector ]! !
+
+!OptimizingNativizer methodsFor: 'accessing' stamp: 'KenD 5/25/2021 12:50:36'!
+firstBlock 
+
+	^firstBlock! !
+
+!OptimizingNativizer methodsFor: 'accessing' stamp: 'KenD 5/25/2021 12:51:57'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	firstBlock := self irFor: anSCompiledMethod! !
+
+!OptimizingNativizer methodsFor: 'allocation' stamp: 'KenD 5/25/2021 12:48:07'!
+allocate 
+	| allocator |
+	allocator := OptimizingRegisterAllocator new
+		abi: environment abi;
+		firstBlock: firstBlock.
+	^ allocator doAllocation! !
+
+!OptimizingNativizer methodsFor: 'nativizing' stamp: 'KenD 5/25/2021 12:52:23'!
+nativize 
+	| allocation |
+	allocation := self
+		decompose;
+		fragmentInstructions;
+		simplifyCFG;
+		removeRedundantCode;
+		simplifyCFG;
+		splitCriticalEdges;
+		transformToCSSA;
+		allocate.
+	^ self
+		enforceTwoAddressCodeUsing: allocation;
+		simplifyCFG;
+		assembleUsing: allocation! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:48:29'!
+assembleUsing: allocation 
+
+	^OptimizingCodeEmitter new
+		method: method;
+		abi: environment abi;
+		allocation: allocation;
+		messageLinker: environment messageLinker;
+		assembleFrom: firstBlock! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:49:00'!
+bindVariables 
+	| binder |
+	binder := OptimizingVariableBinder new abi: environment abi.
+	binder doBindingFrom: firstBlock! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:49:14'!
+decompose 
+
+	self
+		inlineBlocks;
+		verifyPredecessors;
+		inlineMethods;
+		verifyPredecessors;
+		unifyReturns;
+		verifyPredecessors;
+		bindVariables! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:49:45'!
+eliminateDeadPhis 
+
+	OptimizingPhiSimplification new processFrom: firstBlock! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:49:58'!
+enforceTwoAddressCodeUsing: allocation 
+	| enforcer |
+	enforcer := OptimizingTwoAddressEnforcer new
+		allocation: allocation;
+		firstBlock: firstBlock.
+	^enforcer doEnforce! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:50:14'!
+environment: aNativizationEnvironment 
+
+	environment := aNativizationEnvironment! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:50:47'!
+fragmentInstructions 
+
+	OptimizingInstructionFragmenter new
+		abi: environment abi;
+		method: method;
+		firstBlock: firstBlock;
+		doFragment! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:50:58'!
+inlineBlocks 
+
+	OptimizingBlockInliner new on: firstBlock; doInline! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:51:09'!
+inlineMethods 
+
+	OptimizingMethodInliner new
+		environment: environment;
+		firstBlock: firstBlock;
+		inlineAllMessages! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:51:41'!
+irFor: anSCompiledMethod 
+	| visitor ir |
+	visitor := OptimizingVisitor new method: anSCompiledMethod.
+	ir := visitor visit: anSCompiledMethod sexpressions.
+	^ir! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:52:42'!
+removeRedundantCode
+
+	OptimizingValueNumbering new workFrom: firstBlock! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:02'!
+selectInstructions 
+	| allocator |
+	allocator := OptimizingInstructionSelector new firstBlock: firstBlock.
+	^allocator doSelection! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:12'!
+simplifyCFG 
+
+	OptimizingCFGSimplifier new cleanFrom: firstBlock! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:23'!
+splitCriticalEdges 
+
+	firstBlock splitAllCriticalEdges! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:36'!
+transformToCSSA 
+	| transformer |
+	transformer := OptimizingCSSATransformer new firstBlock: firstBlock.
+	transformer applyTransformation! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:44'!
+unifyReturns 
+
+	firstBlock unifyReturns! !
+
+!OptimizingNativizer methodsFor: 'processing' stamp: 'KenD 5/25/2021 12:53:54'!
+verifyPredecessors 
+
+	firstBlock verifyAllPredecessorsSanity! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
