@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 25 May 2021 at 3:28:12 pm'!
+'From Cuis 5.0 [latest update: #4587] on 26 May 2021 at 11:33:05 am'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 20!
+!provides: 'PowerLang' 1 21!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -3013,6 +3013,26 @@ Object subclass: #OptimizingRegisterAllocator
 OptimizingRegisterAllocator class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingSSAReconstructor category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingSSAReconstructor
+	instanceVariableNames: 'firstBlock variable reloads idoms iteratedFrontiers insertedPhis blocks'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingSSAReconstructor class' category: 'Powerlang-Core-OCompiler'!
+OptimizingSSAReconstructor class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingTwoAddressEnforcer category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingTwoAddressEnforcer
+	instanceVariableNames: 'allocation firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingTwoAddressEnforcer class' category: 'Powerlang-Core-OCompiler'!
+OptimizingTwoAddressEnforcer class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3324,6 +3344,16 @@ Copyright (c) 2020 Aucerna.
 !
 
 !OptimizingRegisterAllocator commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingSSAReconstructor commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingTwoAddressEnforcer commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
@@ -34263,6 +34293,215 @@ visitUnary: instruction
 new 
 
 	^self basicNew initialize! !
+
+!OptimizingSSAReconstructor methodsFor: 'accessing' stamp: 'KenD 5/26/2021 10:55:19'!
+definitionInBlockFrom: instruction 
+
+	instruction
+		reverseDo: [:current | (variable == current
+			or: [reloads includes: current])
+			ifTrue: [^current]].
+	^nil! !
+
+!OptimizingSSAReconstructor methodsFor: 'accessing' stamp: 'KenD 5/26/2021 10:55:36'!
+firstBlock: block 
+
+	firstBlock := block.
+	idoms := firstBlock dominatorTree allImmediateDominators! !
+
+!OptimizingSSAReconstructor methodsFor: 'accessing' stamp: 'KenD 5/26/2021 10:56:01'!
+insertPhiAt: block 
+
+	^insertedPhis at: block ifAbsentPut: [| arguments phi predecessors |
+		predecessors := block predecessors.
+		arguments := predecessors collect: [:pred | | search |
+			search := pred lastInstruction.
+			self reachingDefinitionFrom: search at: pred].
+		phi := OPhi withAll: arguments in: predecessors.
+		arguments with: predecessors do: [:var :pred | var addUse: phi at: pred].
+		block addFront: phi.
+		phi]! !
+
+!OptimizingSSAReconstructor methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:22:21'!
+reachingDefinitionFrom: instruction at: block 
+	| current search |
+	current := block.
+	search := instruction.
+	[| def |
+		def := self definitionInBlockFrom: search.
+		def ifNotNil: [^def].
+		(iteratedFrontiers includes: current) ifTrue: [^self insertPhiAt: current].
+		current := idoms at: current.
+		search := current lastInstruction] repeat! !
+
+!OptimizingSSAReconstructor methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:23:42'!
+setupFor: anInstruction with: redefinitions 
+	| users |
+	insertedPhis := Dictionary new.
+	variable := anInstruction.
+	reloads := redefinitions.
+	blocks := Dictionary new.
+	users := variable allUses collect: #user.
+	firstBlock withSuccessorsDo: [:block | 
+		block instructionsDo: [:instr | 
+			((reloads includes: instr) or: [users includes: instr])
+				ifTrue: [blocks at: instr put: block]]]! !
+
+!OptimizingSSAReconstructor methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:22:42'!
+reconstructSSA 
+	| frontiers reloadBlocks uses |
+	frontiers := firstBlock dominanceFrontiersUsing: idoms.
+	reloadBlocks := reloads collect: [:reload | blocks at: reload].
+	iteratedFrontiers := firstBlock
+		iteratedDominanceFrontiersOf: reloadBlocks
+		using: frontiers.
+	uses := variable allUses.
+	uses do: [:use | | search block def user |
+		user := use user.
+		user isPhi
+			ifTrue: [
+				block := use name.
+				search := use name lastInstruction]
+			ifFalse: [
+				block := blocks at: user.
+				search := user prev].
+		def := self reachingDefinitionFrom: search at: block.
+		use disolveReplacingWith: def]! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:25:34'!
+allocation: aDictionary 
+
+	allocation := aDictionary! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:27:53'!
+firstBlock: block 
+
+	firstBlock := block! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:26:46'!
+convert: instruction copyingLeftInto: dest 
+	| load |
+	load := OUnaryOperation receiver: instruction left name: #copy.
+	instruction left addUse: load at: #receiver.
+	instruction beforeInsert: load; left: load.
+	allocation at: load put: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:27:11'!
+convert: instruction copyingReceiverInto: dest 
+	| load |
+	load := OUnaryOperation receiver: instruction receiver name: #copy.
+	instruction receiver
+		addUse: load at: #receiver;
+		removeUse: instruction.
+	instruction beforeInsert: load; receiver: load.
+	allocation at: load put: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:27:43'!
+doEnforce 
+
+	firstBlock
+		withSuccessorsDo: [:block | block firstInstruction acceptVisitor: self]! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:28:28'!
+insertCopy: instruction rightInto: dest 
+	| load |
+	load := OUnaryOperation receiver: instruction right name: #copy.
+	instruction addUse: load at: #receiver.
+	instruction afterInsert: load.
+	allocation at: load put: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:28:43'!
+invertMinus: minus with: left with: right 
+	| negate |
+	negate := OUnaryOperation receiver: minus right name: #negate.
+	minus beforeInsert: negate.
+	allocation at: negate put: right.
+	minus right
+		removeUse: minus;
+		addUse: negate at: #receiver.
+	negate addUse: minus at: #right.
+	minus right: negate; name: #'+'; swapOperands! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:29:04'!
+visitBinaryWithConstant: instruction 
+	| left dest |
+	(#(_basicAt: _smallSize:) includes: instruction name) ifTrue: [^self].
+	left := allocation at: instruction left.
+	dest := allocation at: instruction.
+	left == dest ifTrue: [^self].
+	self convert: instruction copyingLeftInto: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:30:15'!
+visitBinaryWithVariable: instruction 
+	| left right dest temp |
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	dest := allocation at: instruction ifAbsent: [^self].
+	left == dest ifTrue: [^self].
+	right == dest ifTrue: [
+		(#(< <= = == > >= _transferControlTo: _basicAt: _byteAt: _basicFlags: _smallSize: _extendedFlags:)
+			includes: instruction name)
+			ifTrue: [^self].
+		instruction name == #'-'
+			ifTrue: [^self invertMinus: instruction with: left with: right].
+		(#(+ bitAnd: bitOr: &  ) includes: instruction name)
+			ifTrue: [
+				temp := instruction left.
+				instruction left: instruction right.
+				^instruction right: temp]
+			ifFalse: [self halt]].
+	self convert: instruction copyingLeftInto: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:30:33'!
+visitJump: instruction ! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:30:41'!
+visitJumpFalse: instruction! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:30:52'!
+visitJumpTrue: instruction! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:31:02'!
+visitLoadConstant: instruction ! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:31:11'!
+visitLoadImplicit: instruction! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:31:22'!
+visitMessageSend: instruction ! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:31:58'!
+visitNullary: instruction! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:32:08'!
+visitPhi: instruction! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:32:17'!
+visitReturn: instruction ! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:32:29'!
+visitTernary: instruction 
+	| receiver left right dest |
+	(#(_basicAt:put: _basicULongAt:put: _byteAt:put: _objectAtOffset:put:)
+		includes: instruction name)
+		ifTrue: [^self].
+	receiver := allocation at: instruction receiver.
+	left := allocation at: instruction left.
+	right := allocation at: instruction right.
+	dest := allocation at: instruction.
+	right == dest ifTrue: [^self halt].
+	self insertCopy: instruction rightInto: dest! !
+
+!OptimizingTwoAddressEnforcer methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:32:54'!
+visitUnary: instruction 
+	| receiver dest |
+	(#(_asNative _asObject _asPointer _asSmallInteger)
+		includes: instruction name)
+		ifFalse: [^self].
+	receiver := allocation at: instruction receiver.
+	dest := allocation at: instruction.
+	receiver == dest ifTrue: [^self].
+	self convert: instruction copyingReceiverInto: dest! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
