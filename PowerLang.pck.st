@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 26 May 2021 at 11:33:05 am'!
+'From Cuis 5.0 [latest update: #4587] on 26 May 2021 at 12:04:45 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 21!
+!provides: 'PowerLang' 1 24!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -3033,6 +3033,36 @@ Object subclass: #OptimizingTwoAddressEnforcer
 OptimizingTwoAddressEnforcer class
 	instanceVariableNames: ''!
 
+!classDefinition: #OptimizingUsesVerifier category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingUsesVerifier
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingUsesVerifier class' category: 'Powerlang-Core-OCompiler'!
+OptimizingUsesVerifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingValueNumbering category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingValueNumbering
+	instanceVariableNames: 'firstBlock currentBlock names hashes hashesOut constHashes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingValueNumbering class' category: 'Powerlang-Core-OCompiler'!
+OptimizingValueNumbering class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingVariableBinder category: 'Powerlang-Core-OCompiler'!
+Object subclass: #OptimizingVariableBinder
+	instanceVariableNames: 'definitions currentBlock dominatorTree immediateDominators dominanceFrontiers pendingReads pendingPhis abi'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingVariableBinder class' category: 'Powerlang-Core-OCompiler'!
+OptimizingVariableBinder class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -3354,6 +3384,21 @@ Copyright (c) 2020 Aucerna.
 !
 
 !OptimizingTwoAddressEnforcer commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingUsesVerifier commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingValueNumbering commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OptimizingVariableBinder commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
@@ -34502,6 +34547,627 @@ visitUnary: instruction
 	dest := allocation at: instruction.
 	receiver == dest ifTrue: [^self].
 	self convert: instruction copyingReceiverInto: dest! !
+
+!OptimizingUsesVerifier methodsFor: 'verify-ing' stamp: 'KenD 5/26/2021 11:37:28'!
+verify: definition usedBy: user 
+
+	definition isInteger ifTrue: [^self].
+	definition usesDo: [:use | use instruction == user ifTrue: [^self]].
+	self error: 'Corrupted instruction usage'! !
+
+!OptimizingUsesVerifier methodsFor: 'verify-ing' stamp: 'KenD 5/26/2021 11:37:37'!
+verifyFrom: firstBlock 
+
+	firstBlock
+		instructionsWithSuccessorsDo: [:instruction | instruction
+			acceptVisitor: self]! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:38:15'!
+visitBinaryWithConstant: instruction 
+
+	self verify: instruction left usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:38:36'!
+visitBinaryWithVariable: instruction 
+
+	self
+		verify: instruction left usedBy: instruction;
+		verify: instruction right usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:38:51'!
+visitJump: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:39:19'!
+visitJumpFalse: instruction 
+
+	self verify: instruction variable usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:39:29'!
+visitJumpTrue: instruction 
+
+	self verify: instruction variable usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:39:39'!
+visitLoadConstant: instruction ! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:39:49'!
+visitLoadImplicit: instruction ! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:00'!
+visitMessageSend: instruction 
+
+	self verify: instruction receiver usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:09'!
+visitNullary: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:21'!
+visitPhi: instruction 
+
+	instruction variables
+		do: [:operation | self verify: operation usedBy: instruction]! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:31'!
+visitReturn: instruction 
+
+	self verify: instruction source usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:42'!
+visitTernary: instruction 
+
+	self
+		verify: instruction receiver usedBy: instruction;
+		verify: instruction left usedBy: instruction;
+		verify: instruction right usedBy: instruction! !
+
+!OptimizingUsesVerifier methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:40:52'!
+visitUnary: instruction 
+
+	self verify: instruction receiver usedBy: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:44:32'!
+addNewName: instruction 
+
+	^names at: instruction put: '{v' , names size printString , '}'! !
+
+!OptimizingValueNumbering methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:45:53'!
+nameOf: instruction 
+
+	^names at: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:46:45'!
+resultOfBinaryWithConstants: aBinaryInstruction 
+	| operation left right |
+	operation := aBinaryInstruction name.
+	left := aBinaryInstruction left value.
+	right := aBinaryInstruction right value.
+	operation = #'+' ifTrue: [^left + right].
+	operation = #'-' ifTrue: [^left - right].
+	operation = #'*' ifTrue: [^left * right].
+	operation = #'//' ifTrue: [^left // right].
+	operation = #'=' ifTrue: [^left = right].
+	operation = #'>' ifTrue: [^left > right].
+	self halt! !
+
+!OptimizingValueNumbering methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:47:27'!
+valueBranchTo: aBasicBlock 
+	| source last comparison hash name |
+	aBasicBlock predecessors size !!= 1 ifTrue: [^self].
+	source := aBasicBlock predecessors first.
+	last := source lastInstruction.
+	last isConditionalJump ifFalse: [^self].
+	comparison := last variable.
+	name := self nameOf: comparison.
+	hash := 'branch' , name.
+	last target == aBasicBlock
+		ifTrue: [hashes at: hash put: last isJumpTrue]
+		ifFalse: [hashes at: hash put: last isJumpFalse]! !
+
+!OptimizingValueNumbering methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:47:45'!
+valueOf: hash be: instruction 
+	hashes at: hash ifPresent: [:value | | copy |
+		copy := instruction replaceWithCopyOf: value.
+		self addNewName: copy.
+		^copy == value ifFalse: [
+			(copy isUnaryOperation and: [copy name = #copy])
+				ifTrue: [hashes at: (self hashOfUnary: copy) put: instruction].
+			copy isConstant
+				ifTrue: [hashes at: (self hashOfLoadConstant: copy) put: instruction]]].
+	hashes at: hash put: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'hashing' stamp: 'KenD 5/26/2021 11:45:00'!
+hashOfLoadConstant: instruction 
+	| value |
+	value := instruction value.
+	value isInteger
+		ifTrue: [ ^ value printString ].
+	^ constHashes
+		at: value
+		ifAbsentPut: [ 'value ' , constHashes size printString ]! !
+
+!OptimizingValueNumbering methodsFor: 'hashing' stamp: 'KenD 5/26/2021 11:45:12'!
+hashOfUnary: instruction 
+	| receiver |
+	receiver := self nameOf: instruction receiver.
+	^receiver , instruction name! !
+
+!OptimizingValueNumbering methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:46:15'!
+processMemoryStore: value as: storeHash andLoads: loadHash 
+
+	hashes
+		at: loadHash
+		put: value
+	"facil hashes at: storeHash ifPresent: [:mapping | (mapping value livesInSameBlockThan: store)  ifTrue: [mapping value dissolve]]"
+	"dificil hashes at: storeHash ifPresent: [:mapping | postDominatorTree does: blockOf dominate: currentBlock ifTrue: [mapping value dissolve]]"! !
+
+!OptimizingValueNumbering methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:47:07'!
+unifyPredecessorHashes 
+	| incoming any |
+	hashes := Dictionary new.
+	currentBlock predecessors size = 0 ifTrue: [^self].
+	incoming := currentBlock predecessors
+		collect: [:pred | hashesOut at: pred ifAbsent: [Dictionary new]].
+	any := incoming removeLast.
+	any keysAndValuesDo: [:hash :value | | unanimous |
+		unanimous := incoming
+			conform: [:dict | dict
+				at: hash
+				ifPresent: [:prev | prev = value]
+				ifAbsent: false].
+		unanimous ifTrue: [hashes at: hash put: value]]! !
+
+!OptimizingValueNumbering methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:51:34'!
+workFrom: aBasicBlock 
+	| count |
+	hashes := Dictionary new.
+	hashesOut := Dictionary new.
+	constHashes := IdentityDictionary new.
+	names := Dictionary new.
+	firstBlock := aBasicBlock.
+	count := 0.
+	aBasicBlock
+		instructionsWithSuccessorsDo: [ :inst | 
+			names at: inst put: '{v' , count printString , '}'.
+			count := count + 1 ].
+	aBasicBlock withSuccessorsPostOrder
+		reverseDo: [ :block | self workOn: block ]
+! !
+
+!OptimizingValueNumbering methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:51:48'!
+workOn: aBlock 
+	(self isStillAlive: aBlock) ifFalse: [^self].
+	currentBlock := aBlock.
+	self unifyPredecessorHashes.
+	self valueBranchTo: aBlock.
+	currentBlock firstInstruction acceptVisitor: self.
+	hashesOut at: aBlock put: hashes copy! !
+
+!OptimizingValueNumbering methodsFor: 'testing' stamp: 'KenD 5/26/2021 11:45:30'!
+isCommutative: name 
+
+	^name = #'+' or: [name = #'*']! !
+
+!OptimizingValueNumbering methodsFor: 'testing' stamp: 'KenD 5/26/2021 11:45:40'!
+isStillAlive: block 
+
+	^block withPredecessors includes: firstBlock! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:51:07'!
+isitUnary: instruction 
+	| hash |
+	(#(push) includes: instruction name) ifTrue: [^self].
+	hash := self hashOfUnary: instruction.
+	self valueOf: hash be: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:48:03'!
+visitBinaryWithConstant: instruction 
+	| left right hash selector load temp value replacement |
+	left := self nameOf: instruction left.
+	right := instruction right printString.
+	(self isCommutative: instruction name) ifTrue: [
+		left > right ifTrue: [
+			temp := left.
+			left := right.
+			right := temp]].
+	hash := left , instruction name , right.
+	(#(_basicFlags: _extendedFlags:) includes: instruction name)
+		ifTrue: [
+			selector := instruction name allButLast: 1.
+			load := left , selector.
+			self processMemoryStore: instruction right as: hash andLoads: load]
+		ifFalse: [
+			(instruction left isConstant and: instruction name !!= #_basicAt:) ifTrue: [
+				value := self resultOfBinaryWithConstants: instruction.
+				replacement := OLoadConstant valued: value.
+				instruction dissolveReplacingWith: replacement.
+				^self
+					addNewName: replacement;
+					visitLoadConstant: replacement;
+					valueOf: hash be: replacement].
+			self valueOf: hash be: instruction]! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:48:24'!
+visitBinaryWithVariable: instruction 
+	| left right hash selector load temp |
+	left := self nameOf: instruction left.
+	right := self nameOf: instruction right.
+	(self isCommutative: instruction name) ifTrue: [
+		left > right ifTrue: [
+			temp := left.
+			left := right.
+			right := temp]].
+	hash := left , instruction name , right.
+	(#(_basicFlags: _extendedFlags:) includes: instruction name)
+		ifTrue: [
+			selector := instruction name allButLast: 1.
+			load := left , selector.
+			self processMemoryStore: instruction right as: hash andLoads: load]
+		ifFalse: [self valueOf: hash be: instruction]! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:48:36'!
+visitBranch: branch 
+	| hash receiver |
+	receiver := self nameOf: branch variable.
+	hash := 'branch' , receiver.
+	hashes at: hash ifPresent: [:outcome | 
+		outcome isBoolean
+			ifTrue: [branch replaceWithUnconditional: outcome in: currentBlock]]! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:48:48'!
+visitJump: aJumpInstruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:48:56'!
+visitJumpFalse: branch! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:04'!
+visitJumpTrue: branch! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:14'!
+visitLoadConstant: instruction 
+	| hash |
+	hash := self hashOfLoadConstant: instruction.
+	hash ifNil: [self].
+	self valueOf: hash be: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:25'!
+visitLoadImplicit: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:34'!
+visitMessageSend: instruction 
+	| loads |
+	loads := names keys select: [:instr | 
+		instr isPrimitiveOperation
+			and: [#(_basicAt: _byteAt: _basicFlags) includes: instr name]].
+	loads do: [:load | hashes removeAllSuchThat: [:value | value = load]]! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:48'!
+visitNullary: instruction ! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:49:56'!
+visitPhi: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:50:06'!
+visitReturn: instruction! !
+
+!OptimizingValueNumbering methodsFor: 'visiting' stamp: 'KenD 5/26/2021 11:50:34'!
+visitTernary: instruction 
+	| receiver operand left right hash load |
+	receiver := self nameOf: instruction receiver.
+	operand := instruction left.
+	left := operand isInstruction
+		ifTrue: [self nameOf: operand]
+		ifFalse: [operand printString].
+	right := self nameOf: instruction right.
+	hash := receiver , instruction name , left , right.
+	(#(_basicAt:put: _byteAt:put:) includes: instruction name)
+		ifTrue: [| selector |
+			selector := instruction name allButLast: 4.
+			load := receiver , selector , left.
+			self processMemoryStore: instruction right as: hash andLoads: load]
+		ifFalse: [^self valueOf: hash be: instruction]
+! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:54:28'!
+abi: anAbi 
+
+	abi := anAbi! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:54:40'!
+define: value as: name 
+
+	self define: value as: name in: currentBlock! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:54:53'!
+definitionOf: name 
+
+	^self definitionOf: name from: currentBlock! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:55:13'!
+definitionOf: name before: block 
+	| instruction current |
+	instruction := block firstInstruction.
+	[instruction isPhi] whileTrue: [
+		instruction variables first = name ifTrue: [^instruction].
+		instruction := instruction next].
+	current := block.
+	[
+		current := immediateDominators
+			at: current
+			ifAbsent: [self error: 'undefined variable <' , name , '>'].
+		current notNil]
+		whileTrue: [
+			definitions
+				at: current
+				ifPresent: [:here | here at: name ifPresent: [:value | ^value]]]! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:55:28'!
+definitionOf: name from: block 
+	| current |
+	current := block.
+	[current notNil] whileTrue: [
+		definitions
+			at: current
+			ifPresent: [:here | here at: name ifPresent: [:value | ^value]].
+		current := immediateDominators
+			at: current
+			ifAbsent: [^block lastValue
+			"BMNullaryOperation
+				name: 'nop'
+				self error: 'undefined variable <' , name , '>'"]]! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:55:41'!
+definitionOf: name in: block 
+
+	definitions
+		at: block
+		ifPresent: [:here | here at: name ifPresent: [:value | ^value]].
+	^nil! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 11:56:47'!
+insertPhiOf: name at: block 
+	| size variables phi |
+	(self definitionOf: name in: block) ifNotNil: [^self].
+	size := block predecessors size.
+	variables := (Array new: size)
+		atAllPut: name;
+		asOrderedCollection.
+	phi := OPhi withAll: variables in: block predecessors.
+	block firstInstruction beforeInsert: phi.
+	pendingPhis add: phi -> block.
+	self define: phi as: name in: block! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 12:04:16'!
+wordSize 
+
+	^abi wordSize! !
+
+!OptimizingVariableBinder methodsFor: 'accessing' stamp: 'KenD 5/26/2021 12:04:26'!
+wordSizeShift 
+
+	^abi wordSizeShift! !
+
+!OptimizingVariableBinder methodsFor: 'initialization' stamp: 'KenD 5/26/2021 11:56:32'!
+initialize 
+
+	definitions := Dictionary new.
+	pendingReads := OrderedCollection new.
+	pendingPhis := OrderedCollection new! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:56:13'!
+doBindingFrom: firstBlock 
+
+	dominatorTree := firstBlock dominatorTree.
+	immediateDominators := dominatorTree allImmediateDominators.
+	dominanceFrontiers := firstBlock
+		dominanceFrontiersUsing: immediateDominators.
+	firstBlock reversePostOrderDo: [:block | 
+		currentBlock := block.
+		block firstInstruction acceptVisitor: self].
+	self resolvePendingReads; rewritePhis! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:58:15'!
+resolve: aReadVariable asArgument: binding 
+	| source |
+	source := self definitionOf: binding index asString asSymbol.
+	aReadVariable replaceAllUsesWith: source; dissolve! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:59:04'!
+resolve: aReadVariable asAssociationValue: binding
+	| global read value name load |
+	binding isPoolVar ifTrue: [
+		load _ OLoadConstant valued: binding value.
+		^ aReadVariable dissolveReplacingWith: load ].
+	name _ binding association key asString asSymbol.
+	(name == #WordSize or: [ name == #WordSizeShift ]) ifTrue: [
+		value _ name == #WordSize
+			ifTrue: [ abi wordSize ]
+			ifFalse: [ abi wordSizeShift ].
+		load _ OLoadConstant valued: value.
+		^ aReadVariable dissolveReplacingWith: load ].
+	global _ OLoadConstant valued: binding association.
+	read _ OBinaryConstantOperation
+		left: global
+		right: 2
+		name: #_basicAt:.
+	global
+		addUse: read
+		at: #left.
+	aReadVariable
+		beforeInsert: global;
+		dissolveReplacingWith: read.! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:59:36'!
+resolve: aReadVariable asInstanceVar: binding 
+	| receiver index load |
+	receiver := self definitionOf: #self.
+	"	index := method classField indexOfSlot: name."
+	index := binding index.
+	load := OBinaryConstantOperation
+		left: receiver
+		right: index
+		name: #_basicAt:.
+	receiver addUse: load at: #left.
+	aReadVariable dissolveReplacingWith: load! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 11:59:47'!
+resolve: aReadVariable asLiteral: binding 
+	| constant |
+	constant := OLoadConstant valued: binding value.
+	aReadVariable dissolveReplacingWith: constant! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 12:00:00'!
+resolve: aReadVariable asTemporary: binding 
+	| source |
+	source := self definitionOf: binding name asSymbol in: currentBlock.
+	source
+		ifNil: [pendingReads add: aReadVariable -> currentBlock]
+		ifNotNil: [aReadVariable replaceAllUsesWith: source; dissolve]! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 12:00:14'!
+resolvePendingReads 
+
+	pendingReads do: [:association | | read block source |
+		read := association key.
+		block := association value.
+		source := self definitionOf: read binding name asSymbol before: block.
+		read replaceWithCopyOf: source]! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 12:00:26'!
+resolveSelf: aReadVariable 
+	| receiver |
+	receiver := self definitionOf: #self.
+	^aReadVariable replaceAllUsesWith: receiver; dissolve! !
+
+!OptimizingVariableBinder methodsFor: 'processing' stamp: 'KenD 5/26/2021 12:00:38'!
+rewritePhis 
+
+	pendingPhis do: [:association | | phi block |
+		phi := association key.
+		block := association value.
+		(phi livesAfter: phi orOutOf: block)
+			ifTrue: [
+				block predecessors withIndexDo: [:predecessor :i | | name source |
+					name := phi variables at: i.
+					source := self definitionOf: name from: predecessor.
+					phi variables at: i put: source.
+					source addUse: phi at: predecessor]]
+			ifFalse: [phi clearVariables; dissolve]]! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:00:52'!
+visitBinaryWithConstant: instruction ! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:00'!
+visitBinaryWithVariable: instruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:11'!
+visitDefineArgument: instruction 
+
+	self define: instruction as: instruction name
+! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:21'!
+visitJump: aJumpInstruction ! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:31'!
+visitJumpFalse: aJumpInstruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:38'!
+visitJumpTrue: aJumpInstruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:46'!
+visitLoadConstant: aLoadImplicit! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:01:55'!
+visitMessageSend: aMessageSend ! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:02:07'!
+visitPhi: aPhi ! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:03:10'!
+visitReadVariable: aReadVariable 
+	| binding |
+	self assert: (aReadVariable binding isKindOf: SBinding).
+	binding := aReadVariable binding.
+	binding isTemporary
+		ifTrue: [^self resolve: aReadVariable asTemporary: binding].
+	binding isArgument
+		ifTrue: [^self resolve: aReadVariable asArgument: binding].
+	binding isSelf ifTrue: [^self resolveSelf: aReadVariable].
+	binding isLiteral ifTrue: [^self resolve: aReadVariable asLiteral: binding].
+	binding isInstVar
+		ifTrue: [^self resolve: aReadVariable asInstanceVar: binding].
+	binding isAssociation
+		ifTrue: [^self resolve: aReadVariable asAssociationValue: binding].
+	self assert: false! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:03:24'!
+visitReturn: aReturnInstruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:03:31'!
+visitTernary: instruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:03:40'!
+visitUnary: instruction! !
+
+!OptimizingVariableBinder methodsFor: 'visiting' stamp: 'KenD 5/26/2021 12:03:55'!
+visitWriteVariable: aWriteVariable 
+
+	self assert: (aWriteVariable binding isKindOf: SBinding).
+	self instructionsForWriting: aWriteVariable! !
+
+!OptimizingVariableBinder methodsFor: 'writing' stamp: 'KenD 5/26/2021 11:57:16'!
+instructionsForWriting: aWriteVariable 
+	| binding |
+	binding := aWriteVariable binding.
+	binding isTemporary
+		ifTrue: [^self instructionsForWriting: aWriteVariable toTemporary: binding].
+	binding isInstVar
+		ifTrue: [^self
+			instructionsForWriting: aWriteVariable
+			toInstanceVariable: binding].
+	binding isAssociation
+		ifTrue: [^self
+			instructionsForWriting: aWriteVariable
+			toAssociation: binding].
+	self halt! !
+
+!OptimizingVariableBinder methodsFor: 'writing' stamp: 'KenD 5/26/2021 11:57:37'!
+instructionsForWriting: aWriteVariable toAssociation: binding 
+	| global write |
+	global := OLoadConstant valued: binding association.
+	write := OTernaryOperation
+		receiver: global
+		left: 1
+		right: aWriteVariable source
+		name: #_basicAt:put:.
+	global addUse: write at: #receiver.
+	aWriteVariable source addUse: write at: #right.
+	aWriteVariable beforeInsert: global; dissolveReplacingWith: write! !
+
+!OptimizingVariableBinder methodsFor: 'writing' stamp: 'KenD 5/26/2021 11:57:50'!
+instructionsForWriting: aWriteVariable toInstanceVariable: binding 
+	| this write |
+	this := self definitionOf: #self.
+	write := OTernaryOperation
+		receiver: this
+		left: binding index
+		right: aWriteVariable source
+		name: #_basicAt:put:.
+	this addUse: write at: #receiver.
+	aWriteVariable source addUse: write at: #right.
+	aWriteVariable dissolveReplacingWith: write! !
+
+!OptimizingVariableBinder methodsFor: 'writing' stamp: 'KenD 5/26/2021 11:58:02'!
+instructionsForWriting: aWriteVariable toTemporary: binding 
+	self define: aWriteVariable source as: binding name asSymbol.
+	aWriteVariable dissolve.
+	(dominanceFrontiers at: currentBlock)
+		do: [:block | self insertPhiOf: binding name asSymbol at: block]! !
+
+!OptimizingVariableBinder class methodsFor: 'instance creation' stamp: 'KenD 5/26/2021 11:54:02'!
+new 
+
+	^self basicNew initialize! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
