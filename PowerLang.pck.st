@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 9:44:14 am'!
+'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 12:31:46 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 29!
+!provides: 'PowerLang' 1 31!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -341,236 +341,6 @@ Object subclass: #OOperand
 	category: 'Powerlang-Core'!
 !classDefinition: 'OOperand class' category: #'Powerlang-Core'!
 OOperand class
-	instanceVariableNames: ''!
-
-!classDefinition: #OValue category: #'Powerlang-Core'!
-Object subclass: #OValue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'OValue class' category: #'Powerlang-Core'!
-OValue class
-	instanceVariableNames: ''!
-
-!classDefinition: #OConstant category: #'Powerlang-Core-OCompiler-IR'!
-OValue subclass: #OConstant
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OConstant class' category: #'Powerlang-Core-OCompiler-IR'!
-OConstant class
-	instanceVariableNames: ''!
-
-!classDefinition: #OInstruction category: #'Powerlang-Core-OCompiler-IR'!
-OValue subclass: #OInstruction
-	instanceVariableNames: 'prev next firstUse'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction class
-	instanceVariableNames: ''!
-
-!classDefinition: #OBeginInstruction category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OBeginInstruction
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBeginInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
-OBeginInstruction class
-	instanceVariableNames: ''!
-
-!classDefinition: #OBlockClosure category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OBlockClosure
-	instanceVariableNames: 'firstBlock'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
-OBlockClosure class
-	instanceVariableNames: ''!
-
-!classDefinition: #ODefineArgument category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #ODefineArgument
-	instanceVariableNames: 'name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'ODefineArgument class' category: #'Powerlang-Core-OCompiler-IR'!
-ODefineArgument class
-	instanceVariableNames: ''!
-
-!classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OEndInstruction
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OEndInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
-OEndInstruction class
-	instanceVariableNames: ''!
-
-!classDefinition: #OJump category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OJump
-	instanceVariableNames: 'target'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJump class' category: #'Powerlang-Core-OCompiler-IR'!
-OJump class
-	instanceVariableNames: ''!
-
-!classDefinition: #OJumpConditional category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OJumpConditional
-	instanceVariableNames: 'variable target implicitTarget'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpConditional class' category: #'Powerlang-Core-OCompiler-IR'!
-OJumpConditional class
-	instanceVariableNames: ''!
-
-!classDefinition: #OJumpFalse category: #'Powerlang-Core-OCompiler-IR'!
-OJumpConditional subclass: #OJumpFalse
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpFalse class' category: #'Powerlang-Core-OCompiler-IR'!
-OJumpFalse class
-	instanceVariableNames: ''!
-
-!classDefinition: #OJumpTrue category: #'Powerlang-Core-OCompiler-IR'!
-OJumpConditional subclass: #OJumpTrue
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpTrue class' category: #'Powerlang-Core-OCompiler-IR'!
-OJumpTrue class
-	instanceVariableNames: ''!
-
-!classDefinition: #OLoadImplicit category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OLoadImplicit
-	instanceVariableNames: 'name source'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLoadImplicit class' category: #'Powerlang-Core-OCompiler-IR'!
-OLoadImplicit class
-	instanceVariableNames: ''!
-
-!classDefinition: #OActivationContext category: #'Powerlang-Core-OCompiler-IR'!
-OLoadImplicit subclass: #OActivationContext
-	instanceVariableNames: 'hasFrame temporaries storesPreviousSelf'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OActivationContext class' category: #'Powerlang-Core-OCompiler-IR'!
-OActivationContext class
-	instanceVariableNames: ''!
-
-!classDefinition: #OMessageSend category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OMessageSend
-	instanceVariableNames: 'receiver selector arguments'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
-OMessageSend class
-	instanceVariableNames: ''!
-
-!classDefinition: #OPhi category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OPhi
-	instanceVariableNames: 'variables blocks'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPhi class' category: #'Powerlang-Core-OCompiler-IR'!
-OPhi class
-	instanceVariableNames: ''!
-
-!classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OPrimitiveOperation
-	instanceVariableNames: 'name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPrimitiveOperation class' category: #'Powerlang-Core-OCompiler-IR'!
-OPrimitiveOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OBinaryOperation category: #'Powerlang-Core-OCompiler-IR'!
-OPrimitiveOperation subclass: #OBinaryOperation
-	instanceVariableNames: 'left right'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
-OBinaryOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OBinaryConstantOperation category: #'Powerlang-Core-OCompiler-IR'!
-OBinaryOperation subclass: #OBinaryConstantOperation
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryConstantOperation class' category: #'Powerlang-Core-OCompiler-IR'!
-OBinaryConstantOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OBinaryVariableOperation category: #'Powerlang-Core-OCompiler-IR'!
-OBinaryOperation subclass: #OBinaryVariableOperation
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
-OBinaryVariableOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OTernaryOperation category: #'Powerlang-Core-OCompiler-IR'!
-OPrimitiveOperation subclass: #OTernaryOperation
-	instanceVariableNames: 'receiver left right'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTernaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
-OTernaryOperation class
-	instanceVariableNames: ''!
-
-!classDefinition: #OReturn category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OReturn
-	instanceVariableNames: 'source frame argumentsCount'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReturn class' category: #'Powerlang-Core-OCompiler-IR'!
-OReturn class
-	instanceVariableNames: ''!
-
-!classDefinition: #OUseVariable category: #'Powerlang-Core-OCompiler-IR'!
-OInstruction subclass: #OUseVariable
-	instanceVariableNames: 'binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OUseVariable class' category: #'Powerlang-Core-OCompiler-IR'!
-OUseVariable class
-	instanceVariableNames: ''!
-
-!classDefinition: #OReadVariable category: #'Powerlang-Core-OCompiler-IR'!
-OUseVariable subclass: #OReadVariable
-	instanceVariableNames: 'source'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReadVariable class' category: #'Powerlang-Core-OCompiler-IR'!
-OReadVariable class
 	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: #'Powerlang-Core'!
@@ -2493,6 +2263,266 @@ OLiveRange subclass: #OSimpleLiveRange
 OSimpleLiveRange class
 	instanceVariableNames: ''!
 
+!classDefinition: #OTiling category: #'Powerlang-Core-OCompiler-IR'!
+Object subclass: #OTiling
+	instanceVariableNames: 'action cost used instruction'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTiling class' category: #'Powerlang-Core-OCompiler-IR'!
+OTiling class
+	instanceVariableNames: ''!
+
+!classDefinition: #OValue category: #'Powerlang-Core-OCompiler-IR'!
+Object subclass: #OValue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OValue class' category: #'Powerlang-Core-OCompiler-IR'!
+OValue class
+	instanceVariableNames: ''!
+
+!classDefinition: #OConstant category: #'Powerlang-Core-OCompiler-IR'!
+OValue subclass: #OConstant
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OConstant class' category: #'Powerlang-Core-OCompiler-IR'!
+OConstant class
+	instanceVariableNames: ''!
+
+!classDefinition: #OInstruction category: #'Powerlang-Core-OCompiler-IR'!
+OValue subclass: #OInstruction
+	instanceVariableNames: 'prev next firstUse'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBeginInstruction category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OBeginInstruction
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBeginInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+OBeginInstruction class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBlockClosure category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OBlockClosure
+	instanceVariableNames: 'firstBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
+OBlockClosure class
+	instanceVariableNames: ''!
+
+!classDefinition: #ODefineArgument category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #ODefineArgument
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODefineArgument class' category: #'Powerlang-Core-OCompiler-IR'!
+ODefineArgument class
+	instanceVariableNames: ''!
+
+!classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OEndInstruction
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OEndInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+OEndInstruction class
+	instanceVariableNames: ''!
+
+!classDefinition: #OJump category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OJump
+	instanceVariableNames: 'target'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJump class' category: #'Powerlang-Core-OCompiler-IR'!
+OJump class
+	instanceVariableNames: ''!
+
+!classDefinition: #OJumpConditional category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OJumpConditional
+	instanceVariableNames: 'variable target implicitTarget'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpConditional class' category: #'Powerlang-Core-OCompiler-IR'!
+OJumpConditional class
+	instanceVariableNames: ''!
+
+!classDefinition: #OJumpFalse category: #'Powerlang-Core-OCompiler-IR'!
+OJumpConditional subclass: #OJumpFalse
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpFalse class' category: #'Powerlang-Core-OCompiler-IR'!
+OJumpFalse class
+	instanceVariableNames: ''!
+
+!classDefinition: #OJumpTrue category: #'Powerlang-Core-OCompiler-IR'!
+OJumpConditional subclass: #OJumpTrue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpTrue class' category: #'Powerlang-Core-OCompiler-IR'!
+OJumpTrue class
+	instanceVariableNames: ''!
+
+!classDefinition: #OLoadImplicit category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OLoadImplicit
+	instanceVariableNames: 'name source'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadImplicit class' category: #'Powerlang-Core-OCompiler-IR'!
+OLoadImplicit class
+	instanceVariableNames: ''!
+
+!classDefinition: #OActivationContext category: #'Powerlang-Core-OCompiler-IR'!
+OLoadImplicit subclass: #OActivationContext
+	instanceVariableNames: 'hasFrame temporaries storesPreviousSelf'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OActivationContext class' category: #'Powerlang-Core-OCompiler-IR'!
+OActivationContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #OMessageSend category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OMessageSend
+	instanceVariableNames: 'receiver selector arguments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
+OMessageSend class
+	instanceVariableNames: ''!
+
+!classDefinition: #OPhi category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OPhi
+	instanceVariableNames: 'variables blocks'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPhi class' category: #'Powerlang-Core-OCompiler-IR'!
+OPhi class
+	instanceVariableNames: ''!
+
+!classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OPrimitiveOperation
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPrimitiveOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OPrimitiveOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+OPrimitiveOperation subclass: #OBinaryOperation
+	instanceVariableNames: 'left right'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryConstantOperation category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation subclass: #OBinaryConstantOperation
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryConstantOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryConstantOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OBinaryVariableOperation category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryOperation subclass: #OBinaryVariableOperation
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OBinaryVariableOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OTernaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+OPrimitiveOperation subclass: #OTernaryOperation
+	instanceVariableNames: 'receiver left right'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTernaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OTernaryOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OUnaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+OPrimitiveOperation subclass: #OUnaryOperation
+	instanceVariableNames: 'receiver'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUnaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+OUnaryOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OReturn category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OReturn
+	instanceVariableNames: 'source frame argumentsCount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReturn class' category: #'Powerlang-Core-OCompiler-IR'!
+OReturn class
+	instanceVariableNames: ''!
+
+!classDefinition: #OUseVariable category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OUseVariable
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUseVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+OUseVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #OReadVariable category: #'Powerlang-Core-OCompiler-IR'!
+OUseVariable subclass: #OReadVariable
+	instanceVariableNames: 'source'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReadVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+OReadVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #OWriteVariable category: #'Powerlang-Core-OCompiler-IR'!
+OUseVariable subclass: #OWriteVariable
+	instanceVariableNames: 'source'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OWriteVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+OWriteVariable class
+	instanceVariableNames: ''!
+
 !classDefinition: #OVariable category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OVariable
 	instanceVariableNames: 'binding'
@@ -3186,79 +3216,6 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
 
-!OValue commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OInstruction commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
-
-!ODefineArgument commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
-
-!OJump commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OJumpConditional commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OJumpFalse commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OJumpTrue commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OLoadImplicit commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OActivationContext commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OMessageSend commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OPhi commentStamp: '<historical>' prior: 0!
-If a resource is live on entry to an extended basic block and if the resource's value can come from multiple sources, the extended basic block has a "phi node" that collects together these multiple sources. The phi node conceptually has one input for each incoming edge of the extended basic block, with the input specifying the value of the resource on that edge. 
-
-https://en.wikipedia.org/wiki/Static_single_assignment_form [SSA]!
-
-!OPrimitiveOperation commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OBinaryConstantOperation commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OBinaryVariableOperation commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OReturn commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
-
-!OUseVariable commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
-
-!OReadVariable commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
-
 !OptimizingVisitor commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
@@ -3517,6 +3474,111 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!OTiling commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OValue commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OInstruction commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OBeginInstruction commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OBlockClosure commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!ODefineArgument commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OEndInstruction commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OJump commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OJumpConditional commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OJumpFalse commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OJumpTrue commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OLoadImplicit commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OActivationContext commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OMessageSend commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OPhi commentStamp: '<historical>' prior: 0!
+If a resource is live on entry to an extended basic block and if the resource's value can come from multiple sources, the extended basic block has a "phi node" that collects together these multiple sources. The phi node conceptually has one input for each incoming edge of the extended basic block, with the input specifying the value of the resource on that edge. 
+
+https://en.wikipedia.org/wiki/Static_single_assignment_form [SSA]!
+
+!OPrimitiveOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OBinaryConstantOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OBinaryVariableOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OTernaryOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OUnaryOperation commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OReturn commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OUseVariable commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OReadVariable commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OWriteVariable commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !OVariable commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -3561,48 +3623,6 @@ definition
 name 
 
 	^name! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:49'!
-printOn: aStream 
-"
-	prev printBackwardOn: aStream.
-	aStrem nextPutAll: '-> '
-"
-	aStream
-		nextPutAll: self basicPrintString
-"	next printForwardOn: aStream cr"! !
-
-!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:25'!
-printOn: aStream 
-
-	aStream nextPutAll: '[' , self hash printString , '] '.
-	next printForwardOn: aStream! !
-
-!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:27'!
-name 
-
-	^name! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:37'!
-printOn: aStream 
-	"
-	prev printBackwardOn: aStream
-	"! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:30'!
-name 
-
-	^name! !
-
-!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:37:54'!
-name 
-
-	^name! !
-
-!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:12'!
-binding 
-
-	^binding! !
 
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
 comment 
@@ -4178,6 +4198,58 @@ printOn: aStream
 printOn: aStream 
 
 	aStream nextPutAll: 'LR of: ' , definition printString! !
+
+!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:16'!
+printOn: aStream 
+
+	aStream nextPutAll: self printString! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:49'!
+printOn: aStream 
+"
+	prev printBackwardOn: aStream.
+	aStrem nextPutAll: '-> '
+"
+	aStream
+		nextPutAll: self basicPrintString
+"	next printForwardOn: aStream cr"! !
+
+!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:25'!
+printOn: aStream 
+
+	aStream nextPutAll: '[' , self hash printString , '] '.
+	next printForwardOn: aStream! !
+
+!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:27'!
+name 
+
+	^name! !
+
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:37'!
+printOn: aStream 
+	"
+	prev printBackwardOn: aStream
+	"! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:30'!
+name 
+
+	^name! !
+
+!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:37:54'!
+name 
+
+	^name! !
+
+!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:12'!
+binding 
+
+	^binding! !
+
+!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:30:25'!
+name 
+
+	^binding name! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
 printOn: aStream 
@@ -5536,1728 +5608,6 @@ usesDo: aBlock
 
 	aBlock value: self.
 	nextUse ifNotNil: [nextUse usesDo: aBlock]! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:38:24'!
-basicPrintString 
-
-	^self primitivePrintString! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:55:40'!
-primitivePrintString 
-
-	^self class name! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:55:52'!
-printBackwardOn: aStream 
-
-	aStream size > 1000 ifTrue: [
-		aStream nextPutAll: '...'.
-		^self].
-	prev printBackwardOn: aStream.
-	aStream nextPutAll: self basicPrintString; cr! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:02'!
-printForwardOn: aStream 
-
-	aStream size > 100000 ifTrue: [
-		aStream nextPutAll: '...'.
-		^self].
-	aStream nextPutAll: self basicPrintString; cr.
-	next printForwardOn: aStream! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:16'!
-printForwardOn: aStream using: names 
-
-	aStream size > 100000 ifTrue: [
-		aStream nextPutAll: '...'.
-		^self].
-	aStream
-		nextPutAll: (names at: self) , ' := ' , (self printStringUsing: names);
-		cr.
-	next printForwardOn: aStream using: names
-! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:07'!
-addLast: anInstruction 
-
-	next addLast: anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:16'!
-addNext: anInstruction 
-
-	^self afterInsert: anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:30'!
-addUse: new 
-
-	firstUse ifNil: [firstUse := new] ifNotNil: [firstUse addUse: new]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:42'!
-addUse: user at: name 
-	| operand |
-	operand := OOperand at: user named: name.
-	self addUse: operand! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:54'!
-afterInsert: anInstruction 
-
-	anInstruction next: next.
-	anInstruction prev: self.
-	next prev: anInstruction.
-	next := anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:05'!
-afterInsertAll: anInstruction 
-	| last |
-	last := anInstruction last.
-	last next: next.
-	anInstruction prev: self.
-	next prev: last.
-	next := anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:15'!
-allUses 
-	| result following |
-	result := OrderedCollection new.
-	following := firstUse.
-	[following notNil] whileTrue: [
-		result add: following.
-		following := following nextUse].
-	^result! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:32'!
-assureBoundBy: binder 
-
-	self notYetImplemented ! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:52'!
-atOperand: name 
-
-	^self subclassResponsibility! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:03'!
-atOperand: operandName put: instruction 
-
-	^self subclassResponsibility! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:46'!
-beforeInsert: anInstruction 
-
-	anInstruction next: self.
-	anInstruction prev: prev.
-	prev next: anInstruction.
-	prev := anInstruction
-! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:56'!
-beforeInsertAll: anInstruction 
-	| last |
-	last := anInstruction "last".
-	last next: self.
-	anInstruction prev: prev.
-	prev next: anInstruction.
-	prev := last.
-	self shouldBeImplemented! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:39:40'!
-cutFollowing 
-	| end |
-	end := OEndInstruction new.
-	end prev: self.
-	next := end.
-	^end! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:39:49'!
-cutPrevious 
-	| begin |
-	begin := OBeginInstruction new.
-	begin next: self.
-	prev := begin.
-	^begin! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:40:55'!
-dissolve 
-
-	self untie; operandsDo: [:instruction | instruction removeUse: self]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:08'!
-dissolveDeep 
-
-	prev ifNil: [^self].
-	self untie; operandsDo: [:instruction | instruction removeUse: self; dissolveIfUseless]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:19'!
-dissolveIfUnused 
-
-	self isUsed ifFalse: [self dissolveDeep]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:28'!
-dissolveIfUseless 
-
-	self isUseless ifTrue: [self dissolveDeep]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:40'!
-dissolveReplacingWith: anInstruction 
-
-	prev next: anInstruction.
-	next prev: anInstruction.
-	anInstruction prev: prev.
-	anInstruction next: next.
-	prev := next := nil.
-	self operandsDo: [:instruction | 
-		instruction removeUse: self; dissolveIfUseless].
-	self replaceAllUsesWith: anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:51'!
-dissolveReplacingWithAll: instructions 
-	| last |
-	last := instructions last.
-	prev next: instructions.
-	instructions prev: prev.
-	last next: next.
-	next prev: last.
-	prev := next := nil.
-	self operandsDo: [:instruction | instruction removeUse: self].
-	self replaceAllUsesWith: last! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:42:24'!
-firstNonPhi 
-	| current |
-	current := self.
-	[current isPhi] whileTrue: [current := current next].
-	^current! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:42:34'!
-firstUse 
-
-	^firstUse! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:43:07'!
-insertCopyBefore: anInstruction 
-	| copy |
-	copy := self newCopy.
-	anInstruction beforeInsert: copy.
-	^copy! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:45:52'!
-isDefinedAt: aBlock 
-
-	aBlock instructionsDo: [:instruction | instruction == self ifTrue: [^true]].
-	^false! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:48:44'!
-last 
-
-	^next last! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:48:54'!
-lastPhi 
-	| current |
-	current := self.
-	[current next isPhi] whileTrue: [current := current next].
-	^current! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:49:11'!
-lastValue 
-	| last |
-	last := self last.
-	^last isJump ifTrue: [last prev] ifFalse: [last]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:53:51'!
-newCopy 
-	| copy |
-	copy := OUnaryOperation receiver: self name: #copy.
-	self addUse: copy at: #receiver.
-	^copy! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:04'!
-next 
-
-	^next! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:14'!
-next: anInstruction 
-
-	self deny: (self isJump and: [anInstruction isEnd not]).
-	next := anInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:39'!
-nextDetect: aBlock ifNone: absentBlock 
-
-	^next detect: aBlock ifNone: absentBlock! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:58'!
-operands 
-	| result |
-	result := OrderedCollection new.
-	self operandsDo: [:o | result add: o].
-	^result select: #isInstruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:31'!
-removeUse: instruction 
-
-	firstUse instruction == instruction
-		ifTrue: [firstUse := firstUse nextUse]
-		ifFalse: [firstUse removeUse: instruction].! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:42'!
-removeUse: instruction at: name 
-
-	(firstUse instruction == instruction and: [firstUse name = name])
-		ifTrue: [firstUse := firstUse nextUse]
-		ifFalse: [firstUse removeUse: instruction at: name]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:52'!
-replaceAllUsesWith: anInstruction 
-
-	self == anInstruction ifTrue: [^self].
-	firstUse ifNil: [^self].
-	anInstruction addUse: firstUse.
-	firstUse replaceAllUsesWith: anInstruction.
-	firstUse := nil! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:10'!
-replaceOperand: name with: instruction 
-	| previous |
-	previous := self atOperand: name.
-	previous removeUse: self.
-	self atOperand: name put: instruction.
-	instruction addUse: self at: name! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:25'!
-replaceUsesOf: value with: instruction 
-
-	self operandsDo: [:operand | 
-		operand = value ifTrue: [
-			operand
-				usesDo: [:use | use user = self
-					ifTrue: [use disolveReplacingWith: instruction]]]]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:37'!
-replaceWithCopyOf: value 
-	| instruction |
-	instruction := ((value isUsedOnlyBy: self) andNot: [value isPhi])
-		ifTrue: [value untie]
-		ifFalse: [value newCopy].
-	self dissolveReplacingWith: instruction.
-	^instruction! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:48'!
-reverseDo: aBlock 
-	| following |
-	following := prev.
-	aBlock value: self.
-	prev
-		ifNil: [following reverseDo: aBlock]
-		ifNotNil: [prev reverseDo: aBlock]! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:02'!
-targets 
-
-	^OrderedCollection new! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:14'!
-untie 
-
-	prev next: next.
-	next prev: prev.
-	prev := next := nil! !
-
-!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:25'!
-updateUser: instruction named: oldName with: newName 
-
-	self usesDo: [:use | 
-		(use instruction == instruction and: [use name == oldName])
-			ifTrue: [use name: newName]]! !
-
-!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:43:45'!
-insertPushBefore: anInstruction 
-	| push |
-	push := OUnaryOperation receiver: self name: #push.
-	self addUse: push at: #receiver.
-	anInstruction beforeInsert: push.
-	^push! !
-
-!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:49:29'!
-livesAfter: anInstruction 
-	anInstruction
-		nextDetect: [:instruction | instruction usesResultOf: self]
-		ifNone: [^false].
-	^true! !
-
-!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:49:42'!
-livesAfter: anInstruction orOutOf: aBasicBlock 
-
-	^(self livesAfter: anInstruction) or: [self livesOutOfBlock: aBasicBlock]! !
-
-!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:53:14'!
-livesOutOfBlock: aBasicBlock 
-
-	aBasicBlock successorsPostOrder
-		reverseDo: [:block | (block usesResultOf: self) ifTrue: [^true]].
-	^false! !
-
-!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:59:46'!
-useDistanceTo: value 
-	| count |
-	count := 0.
-	self do: [:instruction | 
-		(instruction usesResultOf: value) ifTrue: [^count].
-		count := count + 1].
-	^Number infinity! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:40:28'!
-detect: aBlock 
-
-	^self detect: aBlock ifNone: [self errorAbsentObject]! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:40:40'!
-detect: aBlock ifNone: absentBlock 
-
-	(aBlock value: self)
-		ifTrue: [^self]
-		ifFalse: [^next detect: aBlock ifNone: absentBlock]! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:42:08'!
-do: aBlock 
-	| following |
-	following := next.
-	aBlock value: self.
-	next ifNil: [following do: aBlock] ifNotNil: [next do: aBlock]! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:11'!
-operandsDo: aBlock 
-
-	self subclassResponsibility
-! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:20'!
-prev 
-
-	^prev! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:28'!
-prev: anInstruction 
-
-	prev := anInstruction! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:57:11'!
-realReverseDo: aBlock 
-	| following |
-	following := prev.
-	aBlock value: self.
-	prev
-		ifNil: [following realReverseDo: aBlock]
-		ifNotNil: [prev realReverseDo: aBlock]! !
-
-!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 14:00:00'!
-usesDo: aBlock 
-
-	firstUse ifNotNil: [firstUse usesDo: aBlock]! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:39:21'!
-canHaveSideEffects 
-
-	^true! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:42:46'!
-hasNext 
-
-	^true! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:42:55'!
-hasPrev 
-
-	^true! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:09'!
-isBlockStart 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:17'!
-isConditionalJump 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:26'!
-isConstant 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:45:12'!
-isDefineArgument 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:13'!
-isEnd 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:22'!
-isGenericMessage 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:41'!
-isInstruction 
-
-	^true! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:30'!
-isJump 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:52'!
-isLoadImplicit 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:01'!
-isMessageSend 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:10'!
-isPhi 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:18'!
-isPrimitiveOperation 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:25'!
-isReturn 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:32'!
-isStoreVariable 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:39'!
-isUnaryOperation 
-
-	^false! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:52'!
-isUnconditionalJump 
-
-	^self isJump andNot: [self isConditionalJump]! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:00'!
-isUsed 
-
-	^firstUse notNil! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:11'!
-isUsedJustOnce 
-
-	^firstUse notNil and: [firstUse nextUse isNil]! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:22'!
-isUsedOnlyBy: instruction 
-
-	^self isUsedJustOnce and: [firstUse user == instruction]! !
-
-!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:31'!
-isUseless 
-
-	^firstUse isNil andNot: [ self canHaveSideEffects ]! !
-
-!OInstruction methodsFor: 'visiting' stamp: 'KenD 3/11/2021 13:35:47'!
-acceptVisitor: aVisitor 
-	| following current |
-	current := self.
-	[
-		following := current next.
-		current isEnd]
-		whileFalse: [
-			current basicAcceptVisitor: aVisitor.
-			current := current next ifNil: [following]]! !
-
-!OInstruction class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 13:34:37'!
-empty 
-	| begin last |
-	begin := OBeginInstruction new.
-	last := OEndInstruction new.
-	begin next: last.
-	last prev: begin.
-	^begin! !
-
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:33:29'!
-do: aBlock 
-
-	next do: aBlock! !
-
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:16'!
-realReverseDo: aBlock! !
-
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:25'!
-reverseDo: aBlock! !
-
-!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:12'!
-printBackwardOn: aStream! !
-
-!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:44'!
-printOn: aStream using: names 
-
-	aStream nextPutAll: '[' , self basicHash printString , '] '.
-	next printForwardOn: aStream using: names! !
-
-!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:57'!
-printStringUsing: names 
-	| stream |
-	stream := '' writeStream.
-	next printForwardOn: stream using: names.
-	^stream contents! !
-
-!OBeginInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:33:51'!
-hasPrev 
-
-	^false! !
-
-!OBeginInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:35:40'!
-usesResultOf: anInstruction 
-
-	^false! !
-
-!OBeginInstruction methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:33:08'!
-basicAcceptVisitor: aVisitor! !
-
-!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:02'!
-firstBlock 
-
-	^firstBlock! !
-
-!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:13'!
-firstBlock: basicBlock 
-
-	firstBlock := basicBlock! !
-
-!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:27'!
-lastBlock 
-
-	^firstBlock lastBlock! !
-
-!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:37'!
-lastValue 
-
-	^firstBlock lastBlock lastValue! !
-
-!OBlockClosure methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:39:52'!
-operandsDo: aBlock! !
-
-!OBlockClosure class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 16:38:18'!
-containing: initialBlock 
-
-	^self new firstBlock: initialBlock! !
-
-!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:37'!
-name: aSymbol 
-
-	name := aSymbol! !
-
-!ODefineArgument methodsFor: 'enumerating' stamp: 'KenD 5/6/2021 07:30:57'!
-operandsDo: aBlock! !
-
-!ODefineArgument methodsFor: 'testing' stamp: 'KenD 5/6/2021 07:30:14'!
-isDefineArgument 
-
-	^true! !
-
-!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:30:03'!
-basicPrintString 
-
-	^'[define arg ' , name , ']'! !
-
-!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:09'!
-primitivePrintString 
-
-	^'{' , name , '}'! !
-
-!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:19'!
-printStringUsing: names 
-
-	^'define arg ' , name! !
-
-!ODefineArgument methodsFor: 'visiting' stamp: 'KenD 5/6/2021 07:29:50'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitDefineArgument: self! !
-
-!ODefineArgument class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 07:29:05'!
-named: aSymbol 
-
-	^self new name: aSymbol! !
-
-!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
-addLast: anInstruction 
-
-	prev next: anInstruction.
-	anInstruction prev: prev.
-	anInstruction next: self.
-	prev := anInstruction
-! !
-
-!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:44:04'!
-last 
-
-	^prev! !
-
-!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:44:52'!
-replace: one with: other ! !
-
-!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:43:18'!
-detect: aBlock ifNone: absentBlock 
-
-	^absentBlock value! !
-
-!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:43:28'!
-do: aBlock ! !
-
-!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:45:09'!
-reverseDo: aBlock 
-
-	prev reverseDo: aBlock! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:16'!
-printForwardOn: aStream! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:25'!
-printForwardOn: aStream using: names ! !
-
-!OEndInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:43:40'!
-hasNext 
-
-	^false! !
-
-!OEndInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:43:51'!
-isEnd 
-
-	^true! !
-
-!OEndInstruction methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:42:26'!
-acceptVisitor: aVisitor ! !
-
-!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:25'!
-retargetFrom: aBasicBlock to: otherBasicBlock 
-
-	target := otherBasicBlock! !
-
-!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:41'!
-target 
-
-	^target! !
-
-!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:52'!
-target: aBasicBlock 
-
-	target := aBasicBlock! !
-
-!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:07:03'!
-targets 
-
-	^OrderedCollection with: target! !
-
-!OJump methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 14:04:30'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitJump: self! !
-
-!OJump methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 14:05:29'!
-operandsDo: aBlock 
-
-	self notYetImplemented ! !
-
-!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:04:50'!
-basicPrintString 
-
-	^'[jump to ' , target name , ']'! !
-
-!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:05:48'!
-primitivePrintString 
-
-	^'{jump}'! !
-
-!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:06:01'!
-printStringUsing: names 
-
-	^'jump to ' , (names at: target)! !
-
-!OJump methodsFor: 'testing' stamp: 'KenD 3/11/2021 14:05:02'!
-isJump 
-
-	^true! !
-
-!OJump methodsFor: 'testing' stamp: 'KenD 3/11/2021 14:07:14'!
-usesResultOf: anInstruction 
-
-	^false! !
-
-!OJump class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 14:02:18'!
-to: aDestination 
-
-	^self new target: aDestination! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:18'!
-atOperand: name 
-	"@@FIXME: ?? name ??"
-	^variable! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:28'!
-atOperand: name put: instruction 
-
-	variable := instruction! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:37'!
-implicitTarget 
-
-	^implicitTarget! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:49'!
-implicitTarget: aBasicBlock 
-
-	implicitTarget := aBasicBlock! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:07'!
-replaceWithUnconditional: condition in: basicBlock 
-	| fixed removed jump |
-	self isJumpTrue == condition
-		ifTrue: [
-			fixed := target.
-			removed := implicitTarget]
-		ifFalse: [
-			fixed := implicitTarget.
-			removed := target].
-	jump := OJump to: fixed.
-	self dissolveReplacingWith: jump.
-	removed fullyRemovePredecessor: basicBlock! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:22'!
-retargetFrom: aBasicBlock to: otherBasicBlock 
-
-	target == aBasicBlock ifTrue: [target := otherBasicBlock].
-	implicitTarget == aBasicBlock ifTrue: [implicitTarget := otherBasicBlock]! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:30'!
-target 
-
-	^target! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:39'!
-target: aBasicBlock 
-
-	target := aBasicBlock! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:48'!
-targets 
-
-	^OrderedCollection with: implicitTarget with: target! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:03'!
-usesResultOf: anInstruction 
-
-	^variable == anInstruction! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:12'!
-variable 
-
-	^variable! !
-
-!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:20'!
-variable: operand 
-
-	variable := operand! !
-
-!OJumpConditional methodsFor: 'enumerating' stamp: 'KenD 3/12/2021 07:58:41'!
-operandsDo: aBlock 
-
-	aBlock value: variable! !
-
-!OJumpConditional methodsFor: 'testing' stamp: 'KenD 3/12/2021 07:58:14'!
-isConditionalJump 
-
-	^true! !
-
-!OJumpConditional methodsFor: 'testing' stamp: 'KenD 3/12/2021 07:58:24'!
-isJump 
-
-	^true! !
-
-!OJumpConditional class methodsFor: 'instance creation' stamp: 'KenD 3/12/2021 07:54:43'!
-variable: operation target: explicitTarget implicitTarget: implicitTarget 
-
-	^self new
-		variable: operation;
-		target: explicitTarget;
-		implicitTarget: implicitTarget! !
-
-!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:40:11'!
-basicPrintString 
-
-	^'[jump false ' , variable primitivePrintString , ' to ' , target name
-		, ' or fall to '
-		, implicitTarget name
-		, ']'! !
-
-!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:40:54'!
-primitivePrintString 
-
-	^'{jump false}'! !
-
-!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:41:06'!
-printStringUsing: names 
-
-	^'jump false ' , (names at: variable ifAbsent: ['missing']) , ' to '
-		, (names at: target ifAbsent: 'missing')
-		, ' or fall to '
-		, (names at: implicitTarget ifAbsent: 'missing')! !
-
-!OJumpFalse methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:40:28'!
-isJumpFalse 
-
-	^true! !
-
-!OJumpFalse methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:40:39'!
-isJumpTrue 
-
-	^false! !
-
-!OJumpFalse methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:39:55'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitJumpFalse: self! !
-
-!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:46:57'!
-basicPrintString 
-
-	^'[jump true ' , variable primitivePrintString , ' to ' , target name
-		, ' or fall to '
-		, implicitTarget name
-		, ']'! !
-
-!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:47:31'!
-primitivePrintString 
-
-	^'{jump true}'! !
-
-!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:47:44'!
-printStringUsing: names 
-
-	^'jump true ' , (names at: variable) , ' to ' , (names at: target)
-		, ' or fall to '
-		, (names at: implicitTarget)! !
-
-!OJumpTrue methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:47:11'!
-isJumpFalse 
-
-	^false! !
-
-!OJumpTrue methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:47:20'!
-isJumpTrue 
-
-	^true! !
-
-!OJumpTrue methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:46:44'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitJumpTrue: self! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:53:40'!
-atOperand: operandName put: instruction 
-
-	source := instruction! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:41'!
-name: aSymbol 
-
-	name := aSymbol! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:55:42'!
-source 
-
-	^source! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:55:51'!
-source: operand 
-
-	source := operand! !
-
-!OLoadImplicit methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:54:54'!
-operandsDo: aBlock 
-
-	source isInstruction ifTrue: [aBlock value: source]! !
-
-!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:54:08'!
-basicPrintString 
-
-	^'[load implicit #' , name printString , ']'! !
-
-!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:55:15'!
-primitivePrintString 
-"
-	^'<#' , source value printString , '>'
-"
-	^'{#' , name printString , '}'! !
-
-!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:55:28'!
-printStringUsing: names 
-
-	^'#' , name printString
-! !
-
-!OLoadImplicit methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:54:20'!
-isLoadImplicit 
-
-	^true! !
-
-!OLoadImplicit methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:56:02'!
-usesResultOf: anInstruction 
-
-	^false! !
-
-!OLoadImplicit methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:53:53'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitLoadImplicit: self! !
-
-!OLoadImplicit class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:53:04'!
-named: aSymbol 
-
-	^self new name: aSymbol! !
-
-!OLoadImplicit class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:53:18'!
-self 
-
-	^self new name: #self! !
-
-!OActivationContext methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:58:20'!
-doSavePreviousSelf 
-
-	storesPreviousSelf := true! !
-
-!OActivationContext methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:58:45'!
-haveFrame 
-
-	hasFrame := true! !
-
-!OActivationContext methodsFor: 'initialization' stamp: 'KenD 4/26/2021 14:59:21'!
-initialize 
-
-	hasFrame := false.
-	storesPreviousSelf := false! !
-
-!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:58:29'!
-hasFrame 
-
-	^hasFrame! !
-
-!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:33'!
-savesPreviousSelf 
-
-	^storesPreviousSelf! !
-
-!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:42'!
-temporaries 
-
-	^temporaries! !
-
-!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:52'!
-temporaries: aNumber 
-
-	temporaries := aNumber.
-	aNumber > 0 ifTrue: [self haveFrame]! !
-
-!OActivationContext class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:57:58'!
-new 
-
-	^self basicNew initialize! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:38'!
-arguments 
-
-	^arguments! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:48'!
-arguments: operands 
-
-	arguments := operands! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:01'!
-atOperand: named 
-
-	^named == #receiver ifTrue: [receiver] ifFalse: [arguments at: named]! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:13'!
-atOperand: name put: instruction 
-
-	name = #receiver
-		ifTrue: [receiver := instruction]
-		ifFalse: [arguments at: name put: instruction]! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:14'!
-receiver 
-
-	^receiver! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:24'!
-receiver: operand 
-
-	receiver := operand! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:37'!
-selector 
-
-	^selector
-! !
-
-!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:45'!
-selector: aSymbol 
-
-	selector := aSymbol! !
-
-!OMessageSend methodsFor: 'enumerating' stamp: 'KenD 5/11/2021 14:38:36'!
-operandsDo: aBlock 
-
-	aBlock value: receiver.
-	arguments do: aBlock! !
-
-!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:37:56'!
-basicPrintString 
-	| string |
-	string := arguments size > 0
-		ifTrue: [' with: '
-			, (arguments gather: [:arg | arg primitivePrintString , ' '])]
-		ifFalse: [''].
-	^'[send #' , selector , ' to ' , receiver primitivePrintString
-		, string trim
-		, ']'! !
-
-!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:38:51'!
-primitivePrintString 
-
-	^'{#' , selector , '}'! !
-
-!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:39:38'!
-printStringUsing: names 
-	| string |
-	string := arguments size > 0
-		ifTrue: [' with: '
-			, (arguments gather: [:arg | (names at: arg ifAbsent: ['missing']) , ' '])]
-		ifFalse: [''].
-	^'send #' , selector , ' to ' , (names at: receiver ifAbsent: ['missing'])
-		, string withoutTrailingBlanks! !
-
-!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:38:14'!
-isMessageSend 
-
-	^true! !
-
-!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:41:02'!
-usesResultOf: anInstruction 
-
-	^receiver == anInstruction
-		or: [arguments anySatisfy: [:argument | argument == anInstruction]]
-! !
-
-!OMessageSend methodsFor: 'visiting' stamp: 'KenD 5/11/2021 14:37:33'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitMessageSend: self
-! !
-
-!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:35:36'!
-receiver: receiver selector: selector arguments: arguments 
-
-	^self new
-		receiver: receiver;
-		selector: selector;
-		arguments: arguments;
-		yourself! !
-
-!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:36:22'!
-selector: selector 
-
-	^self new selector: selector! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:19'!
-addVariable: value from: block 
-
-	self deny: (blocks includes: block).
-	variables add: value.
-	blocks add: block.
-	value addUse: self at: block! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:35'!
-atOperand: name 
-
-	| index |
-	index := blocks indexOf: name.
-	^variables at: index! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:17:00'!
-atOperand: name put: instruction 
-	| index |
-	index := blocks indexOf: name.
-	variables at: index put: instruction! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:25'!
-blocks 
-
-	^blocks! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:49'!
-blocks: aCollection 
-
-	blocks := aCollection! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:14'!
-removeBlock: removed 
-	| index variable |
-	index := blocks indexOf: removed.
-	variable := variables at: index.
-	variable removeUse: self at: removed.
-	variables removeIndex: index.
-	blocks removeIndex: index.
-	variables size = 1 ifTrue: [
-		self replaceAllUsesWith: variables first; dissolve.
-		^variables first].
-	^self! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:34'!
-removeVariable: removed at: index 
-	| block |
-	block := blocks at: index.
-	removed removeUse: self at: block.
-	variables removeIndex: index.
-	blocks removeIndex: index.
-	variables size = 1
-		ifTrue: [self replaceAllUsesWith: variables first; dissolve]! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:54'!
-replaceBlock: original with: new 
-
-	blocks withIndexDo: [:block :i | | source |
-		block == original ifTrue: [
-			source := variables at: i.
-			source updateUser: self named: original with: new.
-			blocks at: i put: new]]! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:07'!
-variables 
-
-	^variables! !
-
-!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:19'!
-variables: aCollection 
-
-	variables := aCollection! !
-
-!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:20:08'!
-operandsDo: aBlock 
-
-	variables do: aBlock! !
-
-!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:21:01'!
-realReverseDo: aBlock
-
-	self notYetImplemented ! !
-
-!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:23:37'!
-variablesWithBlocksDo: aBlock 
-
-	variables with: blocks do: aBlock! !
-
-!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:15'!
-clearVariables 
-
-	variables := OrderedCollection new.
-	blocks := OrderedCollection new! !
-
-!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:43'!
-initialize
-	
-	self clearVariables ! !
-
-!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:18:03'!
-basicPrintString 
-	| sources |
-	sources := variables size > 0
-		ifTrue: [
-			(variables
-				with: blocks
-				collect: [:var :block | block name , '->' , var primitivePrintString])
-				gather: [:x | x , ', ']]
-		ifFalse: ['  '].
-	^'[phi(' , (sources allButLast: 2) , ')]'! !
-
-!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:20'!
-primitivePrintString 
-
-	^'{#phi}'! !
-
-!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:34'!
-printStringUsing: names 
-	| sources |
-	sources := variables size > 0
-		ifTrue: [
-			(variables
-				with: blocks
-				collect: [:var :block | (names at: block ifAbsent: ['missing']) , '->'
-					, (names at: var ifAbsent: ['missing'])])
-				gather: [:x | x , ', ']]
-		ifFalse: ['  '].
-	^'phi(' , (sources allButLast: 2) , ')'! !
-
-!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:22:09'!
-shortPrintString 
-	| sources |
-	sources := variables size > 0
-		ifTrue: [(variables collect: #primitivePrintString) gather: [:x | x , ', ']]
-		ifFalse: ['  '].
-	^'[phi(' , (sources allButLast: 2) , ')]'! !
-
-!OPhi methodsFor: 'sorting' stamp: 'KenD 5/13/2021 07:22:36'!
-sortAfter: predecessors 
-	| indices |
-	indices := predecessors collect: [:pred | blocks indexOf: pred].
-	variables := indices collect: [:index | variables at: index].
-	blocks := predecessors copy! !
-
-!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:19:56'!
-isPhi 
-
-	^true! !
-
-!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:22:55'!
-usesResultOf: anInstruction 
-
-	^variables includes: anInstruction! !
-
-!OPhi methodsFor: 'visiting' stamp: 'KenD 5/13/2021 07:17:43'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitPhi: self! !
-
-!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:30'!
-new 
-
-	^self basicNew initialize
-! !
-
-!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:51'!
-with: operation1
-from: block1
-with: operation2
-from: block2 
-
-	^self new
-		addVariable: operation1 from: block1;
-		addVariable: operation2 from: block2! !
-
-!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:57:08'!
-withAll: operations in: blocks 
-
-	^self new variables: operations; blocks: blocks copy! !
-
-!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:38:05'!
-name: selector 
-
-	name := selector! !
-
-!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:37:15'!
-basicPrintString 
-
-	^self primitivePrintString! !
-
-!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:38:18'!
-primitivePrintString 
-
-	^'{#' , name , '}'! !
-
-!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:38:29'!
-printStringUsing: names 
-
-	^self primitivePrintString! !
-
-!OPrimitiveOperation methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:37:38'!
-isPrimitiveOperation 
-
-	^true! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:41'!
-atOperand: named 
-
-	^named == #left ifTrue: [left] ifFalse: [right]! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:57'!
-atOperand: operandName put: instruction 
-
-	operandName = #left
-		ifTrue: [left := instruction]
-		ifFalse: [right := instruction]! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:26:56'!
-left 
-
-	^left! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:08'!
-left: anInstruction 
-
-	left := anInstruction! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:32'!
-right 
-
-	^right! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:41'!
-right: anInstruction 
-
-	right := anInstruction! !
-
-!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:28:02'!
-swapOperands 
-	| temp |
-	left removeUse: self.
-	right removeUse: self.
-	temp := left.
-	left := right.
-	right := temp.
-	left addUse: self at: #left.
-	right addUse: self at: #right! !
-
-!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 07:59:26'!
-canHaveSideEffects 
-
-	^false! !
-
-!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:28:16'!
-usesResultOf: anInstruction 
-
-	^left == anInstruction or: [right == anInstruction]! !
-
-!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:26:27'!
-invertOperation 
-
-	name == #'<' ifTrue: [^name := #'>'].
-	name == #'<=' ifTrue: [^name := #'>='].
-	name == #'>' ifTrue: [^name := #'<'].
-	name == #'>=' ifTrue: [^name := #'<='].
-	name == #'==' ifTrue: [^name].
-	self halt! !
-
-!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:27:20'!
-negateOperation 
-
-	name == #'<' ifTrue: [^name := #'>='].
-	name == #'<=' ifTrue: [^name := #'>'].
-	name == #'>' ifTrue: [^name := #'<='].
-	name == #'>=' ifTrue: [name := #'<']! !
-
-!OBinaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 07:18:09'!
-left: left right: right name: selector 
-
-	^self new
-		left: left;
-		right: right;
-		name: selector! !
-
-!OBinaryConstantOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:30:41'!
-operandsDo: aBlock 
-
-	aBlock value: left! !
-
-!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:02'!
-basicPrintString 
-
-	^'[' , left primitivePrintString , ' ' , name , ' '
-		, right primitivePrintString
-		, ']'! !
-
-!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:55'!
-printStringUsing: names 
-
-	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , right printString! !
-
-!OBinaryConstantOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:30:20'!
-isBinaryConstantOperation 
-
-	^true! !
-
-!OBinaryConstantOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:29:45'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitBinaryWithConstant: self! !
-
-!OBinaryVariableOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:33:16'!
-operandsDo: aBlock 
-
-	aBlock value: left.
-	aBlock value: right! !
-
-!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:32:47'!
-basicPrintString 
-
-	^'[' , left primitivePrintString , ' ' , name , ' '
-		, right primitivePrintString
-		, ']'! !
-
-!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:33:29'!
-printStringUsing: names 
-
-	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , (names at: right)! !
-
-!OBinaryVariableOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:32:57'!
-isBinaryVariableOperation 
-
-	^true! !
-
-!OBinaryVariableOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:32:30'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitBinaryWithVariable: self! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:38:45'!
-atOperand: named 
-
-	^named == #receiver
-		ifTrue: [receiver]
-		ifFalse: [named == #left ifTrue: [left] ifFalse: [right]]! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:39:01'!
-atOperand: operandName put: instruction 
-
-	operandName = #receiver ifTrue: [receiver := instruction] ifFalse: [
-		operandName = #left
-			ifTrue: [left := instruction]
-			ifFalse: [right := instruction]]! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:40:09'!
-left 
-
-	^left! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:40:18'!
-left: value 
-
-	left := value! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:16'!
-receiver 
-
-	^receiver! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:25'!
-receiver: value 
-
-	receiver := value! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:33'!
-right 
-
-	^right! !
-
-!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:41'!
-right: value 
-
-	right := value! !
-
-!OTernaryOperation methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 09:40:40'!
-operandsDo: aBlock 
-
-	aBlock value: receiver.
-	left isInstruction ifTrue: [aBlock value: left].
-	aBlock value: right
-! !
-
-!OTernaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:39:39'!
-basicPrintString 
-
-	^'['
-		, (receiver isInstruction
-			ifTrue: [receiver primitivePrintString]
-			ifFalse: [receiver printString]) , ' ' , name , ' '
-		, left primitivePrintString
-		, ', '
-		, right primitivePrintString
-		, ']'! !
-
-!OTernaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:41:02'!
-printStringUsing: names 
-
-	^(receiver isInstruction
-		ifTrue: [names at: receiver ifAbsent: ['{missing', receiver printString, '}']]
-		ifFalse: [receiver printString]) , ' ' , name , ' '
-		, (left isInstruction ifTrue: [names at: left] ifFalse: [left printString])
-		, ', '
-		, (right isInstruction
-			ifTrue: [names at: right]
-			ifFalse: [right printString])! !
-
-!OTernaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 09:39:56'!
-isTernaryOperation 
-
-	^true! !
-
-!OTernaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 09:41:56'!
-usesResultOf: anInstruction 
-
-	^receiver == anInstruction
-		or: [left == anInstruction or: [right == anInstruction]]! !
-
-!OTernaryOperation methodsFor: 'visiting' stamp: 'KenD 5/29/2021 09:39:22'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitTernary: self! !
-
-!OTernaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 09:38:21'!
-receiver: receiver
-left: left
-right: right
-name: selector 
-
-	^self new
-		receiver: receiver;
-		left: left;
-		right: right;
-		name: selector! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:17:51'!
-argumentsCount 
-
-	^argumentsCount! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:01'!
-argumentsCount: anInteger 
-
-	argumentsCount := anInteger! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:12'!
-atOperand: name 
-
-	^name == #source ifTrue: [source] ifFalse: [frame]! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:21:26'!
-atOperand: name put: instruction 
-
-	^name == #source
-		ifTrue: [source := instruction]
-		ifFalse: [frame := instruction]! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:22:13'!
-frame: anInstruction 
-
-	frame := anInstruction! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:30'!
-source 
-
-	^source! !
-
-!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:40'!
-source: anInstruction 
-
-	source := anInstruction! !
-
-!OReturn methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:22:48'!
-operandsDo: aBlock 
-
-	aBlock value: source.
-	aBlock value: frame! !
-
-!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:22:00'!
-basicPrintString 
-
-	^'[ret ' , source primitivePrintString , ']'! !
-
-!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:00'!
-primitivePrintString 
-
-	^'{ret}'! !
-
-!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:18'!
-printStringUsing: names 
-
-	^'ret ' , (names at: source ifAbsent: 'missing') , ''! !
-
-!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:22:29'!
-isReturn 
-
-	^true! !
-
-!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:23:53'!
-usesResultOf: anInstruction 
-
-	^source == anInstruction or: [frame == anInstruction]! !
-
-!OReturn methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:21:43'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitReturn: self! !
-
-!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:21'!
-binding: aBinding 
-
-	binding := aBinding! !
-
-!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:04:38'!
-atOperand: name put: instruction 
-
-	source := instruction! !
-
-!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:25'!
-source 
-
-	^source! !
-
-!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:44'!
-source: anInstruction 
-
-	source := anInstruction! !
-
-!OReadVariable methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:05:50'!
-operandsDo: aBlock 
-
-	source ifNotNil: [aBlock value: source]! !
-
-!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:05:22'!
-basicPrintString 
-
-	^ '[read var #'
-		, (binding ifNil: [ '#error' ] ifNotNil: [ binding printString ]) , ']'! !
-
-!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:04'!
-primitivePrintString 
-
-	^'{#' , (binding ifNil: ['#error'] ifNotNil: [binding printString]) , ' read}'! !
-
-!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:15'!
-printStringUsing: names 
-
-	^self basicPrintString! !
-
-!OReadVariable methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:05:02'!
-basicAcceptVisitor: aVisitor 
-
-	^aVisitor visitReadVariable: self! !
-
-!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:06'!
-binding: binding 
-
-	^self new binding: binding! !
-
-!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:17'!
-source: identifier 
-
-	^self new source: identifier! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
@@ -32936,6 +31286,1889 @@ isUnused
 startsAt: operation 
 
 	^definition == operation! !
+
+!OTiling methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:16:10'!
+beUsed 
+
+	used := true! !
+
+!OTiling methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:18:16'!
+instruction 
+
+	^instruction! !
+
+!OTiling methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:18:28'!
+instruction: anInstruction 
+
+	instruction := anInstruction! !
+
+!OTiling methodsFor: 'initialization' stamp: 'KenD 5/29/2021 12:16:34'!
+initialize 
+
+	used := false! !
+
+!OTiling methodsFor: 'testing' stamp: 'KenD 5/29/2021 12:18:49'!
+isUsed 
+
+	^used = true! !
+
+!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:27'!
+printString 
+
+	^'<tiling of ' , instruction printString , ' >'! !
+
+!OTiling class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 12:15:13'!
+for: instruction 
+
+	^self new instruction: instruction! !
+
+!OTiling class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 12:15:42'!
+new 
+
+	^self basicNew initialize! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:38:24'!
+basicPrintString 
+
+	^self primitivePrintString! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:55:40'!
+primitivePrintString 
+
+	^self class name! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:55:52'!
+printBackwardOn: aStream 
+
+	aStream size > 1000 ifTrue: [
+		aStream nextPutAll: '...'.
+		^self].
+	prev printBackwardOn: aStream.
+	aStream nextPutAll: self basicPrintString; cr! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:02'!
+printForwardOn: aStream 
+
+	aStream size > 100000 ifTrue: [
+		aStream nextPutAll: '...'.
+		^self].
+	aStream nextPutAll: self basicPrintString; cr.
+	next printForwardOn: aStream! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:16'!
+printForwardOn: aStream using: names 
+
+	aStream size > 100000 ifTrue: [
+		aStream nextPutAll: '...'.
+		^self].
+	aStream
+		nextPutAll: (names at: self) , ' := ' , (self printStringUsing: names);
+		cr.
+	next printForwardOn: aStream using: names
+! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:07'!
+addLast: anInstruction 
+
+	next addLast: anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:16'!
+addNext: anInstruction 
+
+	^self afterInsert: anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:30'!
+addUse: new 
+
+	firstUse ifNil: [firstUse := new] ifNotNil: [firstUse addUse: new]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:42'!
+addUse: user at: name 
+	| operand |
+	operand := OOperand at: user named: name.
+	self addUse: operand! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:54'!
+afterInsert: anInstruction 
+
+	anInstruction next: next.
+	anInstruction prev: self.
+	next prev: anInstruction.
+	next := anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:05'!
+afterInsertAll: anInstruction 
+	| last |
+	last := anInstruction last.
+	last next: next.
+	anInstruction prev: self.
+	next prev: last.
+	next := anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:15'!
+allUses 
+	| result following |
+	result := OrderedCollection new.
+	following := firstUse.
+	[following notNil] whileTrue: [
+		result add: following.
+		following := following nextUse].
+	^result! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:32'!
+assureBoundBy: binder 
+
+	self notYetImplemented ! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:37:52'!
+atOperand: name 
+
+	^self subclassResponsibility! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:03'!
+atOperand: operandName put: instruction 
+
+	^self subclassResponsibility! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:46'!
+beforeInsert: anInstruction 
+
+	anInstruction next: self.
+	anInstruction prev: prev.
+	prev next: anInstruction.
+	prev := anInstruction
+! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:38:56'!
+beforeInsertAll: anInstruction 
+	| last |
+	last := anInstruction "last".
+	last next: self.
+	anInstruction prev: prev.
+	prev next: anInstruction.
+	prev := last.
+	self shouldBeImplemented! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:39:40'!
+cutFollowing 
+	| end |
+	end := OEndInstruction new.
+	end prev: self.
+	next := end.
+	^end! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:39:49'!
+cutPrevious 
+	| begin |
+	begin := OBeginInstruction new.
+	begin next: self.
+	prev := begin.
+	^begin! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:40:55'!
+dissolve 
+
+	self untie; operandsDo: [:instruction | instruction removeUse: self]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:08'!
+dissolveDeep 
+
+	prev ifNil: [^self].
+	self untie; operandsDo: [:instruction | instruction removeUse: self; dissolveIfUseless]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:19'!
+dissolveIfUnused 
+
+	self isUsed ifFalse: [self dissolveDeep]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:28'!
+dissolveIfUseless 
+
+	self isUseless ifTrue: [self dissolveDeep]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:40'!
+dissolveReplacingWith: anInstruction 
+
+	prev next: anInstruction.
+	next prev: anInstruction.
+	anInstruction prev: prev.
+	anInstruction next: next.
+	prev := next := nil.
+	self operandsDo: [:instruction | 
+		instruction removeUse: self; dissolveIfUseless].
+	self replaceAllUsesWith: anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:41:51'!
+dissolveReplacingWithAll: instructions 
+	| last |
+	last := instructions last.
+	prev next: instructions.
+	instructions prev: prev.
+	last next: next.
+	next prev: last.
+	prev := next := nil.
+	self operandsDo: [:instruction | instruction removeUse: self].
+	self replaceAllUsesWith: last! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:42:24'!
+firstNonPhi 
+	| current |
+	current := self.
+	[current isPhi] whileTrue: [current := current next].
+	^current! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:42:34'!
+firstUse 
+
+	^firstUse! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:43:07'!
+insertCopyBefore: anInstruction 
+	| copy |
+	copy := self newCopy.
+	anInstruction beforeInsert: copy.
+	^copy! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:45:52'!
+isDefinedAt: aBlock 
+
+	aBlock instructionsDo: [:instruction | instruction == self ifTrue: [^true]].
+	^false! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:48:44'!
+last 
+
+	^next last! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:48:54'!
+lastPhi 
+	| current |
+	current := self.
+	[current next isPhi] whileTrue: [current := current next].
+	^current! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:49:11'!
+lastValue 
+	| last |
+	last := self last.
+	^last isJump ifTrue: [last prev] ifFalse: [last]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:53:51'!
+newCopy 
+	| copy |
+	copy := OUnaryOperation receiver: self name: #copy.
+	self addUse: copy at: #receiver.
+	^copy! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:04'!
+next 
+
+	^next! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:14'!
+next: anInstruction 
+
+	self deny: (self isJump and: [anInstruction isEnd not]).
+	next := anInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:39'!
+nextDetect: aBlock ifNone: absentBlock 
+
+	^next detect: aBlock ifNone: absentBlock! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:54:58'!
+operands 
+	| result |
+	result := OrderedCollection new.
+	self operandsDo: [:o | result add: o].
+	^result select: #isInstruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:31'!
+removeUse: instruction 
+
+	firstUse instruction == instruction
+		ifTrue: [firstUse := firstUse nextUse]
+		ifFalse: [firstUse removeUse: instruction].! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:42'!
+removeUse: instruction at: name 
+
+	(firstUse instruction == instruction and: [firstUse name = name])
+		ifTrue: [firstUse := firstUse nextUse]
+		ifFalse: [firstUse removeUse: instruction at: name]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:57:52'!
+replaceAllUsesWith: anInstruction 
+
+	self == anInstruction ifTrue: [^self].
+	firstUse ifNil: [^self].
+	anInstruction addUse: firstUse.
+	firstUse replaceAllUsesWith: anInstruction.
+	firstUse := nil! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:10'!
+replaceOperand: name with: instruction 
+	| previous |
+	previous := self atOperand: name.
+	previous removeUse: self.
+	self atOperand: name put: instruction.
+	instruction addUse: self at: name! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:25'!
+replaceUsesOf: value with: instruction 
+
+	self operandsDo: [:operand | 
+		operand = value ifTrue: [
+			operand
+				usesDo: [:use | use user = self
+					ifTrue: [use disolveReplacingWith: instruction]]]]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:37'!
+replaceWithCopyOf: value 
+	| instruction |
+	instruction := ((value isUsedOnlyBy: self) andNot: [value isPhi])
+		ifTrue: [value untie]
+		ifFalse: [value newCopy].
+	self dissolveReplacingWith: instruction.
+	^instruction! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:58:48'!
+reverseDo: aBlock 
+	| following |
+	following := prev.
+	aBlock value: self.
+	prev
+		ifNil: [following reverseDo: aBlock]
+		ifNotNil: [prev reverseDo: aBlock]! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:02'!
+targets 
+
+	^OrderedCollection new! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:14'!
+untie 
+
+	prev next: next.
+	next prev: prev.
+	prev := next := nil! !
+
+!OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:59:25'!
+updateUser: instruction named: oldName with: newName 
+
+	self usesDo: [:use | 
+		(use instruction == instruction and: [use name == oldName])
+			ifTrue: [use name: newName]]! !
+
+!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:43:45'!
+insertPushBefore: anInstruction 
+	| push |
+	push := OUnaryOperation receiver: self name: #push.
+	self addUse: push at: #receiver.
+	anInstruction beforeInsert: push.
+	^push! !
+
+!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:49:29'!
+livesAfter: anInstruction 
+	anInstruction
+		nextDetect: [:instruction | instruction usesResultOf: self]
+		ifNone: [^false].
+	^true! !
+
+!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:49:42'!
+livesAfter: anInstruction orOutOf: aBasicBlock 
+
+	^(self livesAfter: anInstruction) or: [self livesOutOfBlock: aBasicBlock]! !
+
+!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:53:14'!
+livesOutOfBlock: aBasicBlock 
+
+	aBasicBlock successorsPostOrder
+		reverseDo: [:block | (block usesResultOf: self) ifTrue: [^true]].
+	^false! !
+
+!OInstruction methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 13:59:46'!
+useDistanceTo: value 
+	| count |
+	count := 0.
+	self do: [:instruction | 
+		(instruction usesResultOf: value) ifTrue: [^count].
+		count := count + 1].
+	^Number infinity! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:40:28'!
+detect: aBlock 
+
+	^self detect: aBlock ifNone: [self errorAbsentObject]! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:40:40'!
+detect: aBlock ifNone: absentBlock 
+
+	(aBlock value: self)
+		ifTrue: [^self]
+		ifFalse: [^next detect: aBlock ifNone: absentBlock]! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:42:08'!
+do: aBlock 
+	| following |
+	following := next.
+	aBlock value: self.
+	next ifNil: [following do: aBlock] ifNotNil: [next do: aBlock]! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:11'!
+operandsDo: aBlock 
+
+	self subclassResponsibility
+! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:20'!
+prev 
+
+	^prev! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:55:28'!
+prev: anInstruction 
+
+	prev := anInstruction! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 13:57:11'!
+realReverseDo: aBlock 
+	| following |
+	following := prev.
+	aBlock value: self.
+	prev
+		ifNil: [following realReverseDo: aBlock]
+		ifNotNil: [prev realReverseDo: aBlock]! !
+
+!OInstruction methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 14:00:00'!
+usesDo: aBlock 
+
+	firstUse ifNotNil: [firstUse usesDo: aBlock]! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:39:21'!
+canHaveSideEffects 
+
+	^true! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:42:46'!
+hasNext 
+
+	^true! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:42:55'!
+hasPrev 
+
+	^true! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:09'!
+isBlockStart 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:17'!
+isConditionalJump 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:44:26'!
+isConstant 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:45:12'!
+isDefineArgument 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:13'!
+isEnd 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:22'!
+isGenericMessage 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:41'!
+isInstruction 
+
+	^true! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:30'!
+isJump 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:46:52'!
+isLoadImplicit 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:01'!
+isMessageSend 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:10'!
+isPhi 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:18'!
+isPrimitiveOperation 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:25'!
+isReturn 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:32'!
+isStoreVariable 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:39'!
+isUnaryOperation 
+
+	^false! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:47:52'!
+isUnconditionalJump 
+
+	^self isJump andNot: [self isConditionalJump]! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:00'!
+isUsed 
+
+	^firstUse notNil! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:11'!
+isUsedJustOnce 
+
+	^firstUse notNil and: [firstUse nextUse isNil]! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:22'!
+isUsedOnlyBy: instruction 
+
+	^self isUsedJustOnce and: [firstUse user == instruction]! !
+
+!OInstruction methodsFor: 'testing' stamp: 'KenD 3/11/2021 13:48:31'!
+isUseless 
+
+	^firstUse isNil andNot: [ self canHaveSideEffects ]! !
+
+!OInstruction methodsFor: 'visiting' stamp: 'KenD 3/11/2021 13:35:47'!
+acceptVisitor: aVisitor 
+	| following current |
+	current := self.
+	[
+		following := current next.
+		current isEnd]
+		whileFalse: [
+			current basicAcceptVisitor: aVisitor.
+			current := current next ifNil: [following]]! !
+
+!OInstruction class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 13:34:37'!
+empty 
+	| begin last |
+	begin := OBeginInstruction new.
+	last := OEndInstruction new.
+	begin next: last.
+	last prev: begin.
+	^begin! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:33:29'!
+do: aBlock 
+
+	next do: aBlock! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:16'!
+realReverseDo: aBlock! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:25'!
+reverseDo: aBlock! !
+
+!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:12'!
+printBackwardOn: aStream! !
+
+!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:44'!
+printOn: aStream using: names 
+
+	aStream nextPutAll: '[' , self basicHash printString , '] '.
+	next printForwardOn: aStream using: names! !
+
+!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:57'!
+printStringUsing: names 
+	| stream |
+	stream := '' writeStream.
+	next printForwardOn: stream using: names.
+	^stream contents! !
+
+!OBeginInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:33:51'!
+hasPrev 
+
+	^false! !
+
+!OBeginInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:35:40'!
+usesResultOf: anInstruction 
+
+	^false! !
+
+!OBeginInstruction methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:33:08'!
+basicAcceptVisitor: aVisitor! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:02'!
+firstBlock 
+
+	^firstBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:13'!
+firstBlock: basicBlock 
+
+	firstBlock := basicBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:27'!
+lastBlock 
+
+	^firstBlock lastBlock! !
+
+!OBlockClosure methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:39:37'!
+lastValue 
+
+	^firstBlock lastBlock lastValue! !
+
+!OBlockClosure methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:39:52'!
+operandsDo: aBlock! !
+
+!OBlockClosure class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 16:38:18'!
+containing: initialBlock 
+
+	^self new firstBlock: initialBlock! !
+
+!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:37'!
+name: aSymbol 
+
+	name := aSymbol! !
+
+!ODefineArgument methodsFor: 'enumerating' stamp: 'KenD 5/6/2021 07:30:57'!
+operandsDo: aBlock! !
+
+!ODefineArgument methodsFor: 'testing' stamp: 'KenD 5/6/2021 07:30:14'!
+isDefineArgument 
+
+	^true! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:30:03'!
+basicPrintString 
+
+	^'[define arg ' , name , ']'! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:09'!
+primitivePrintString 
+
+	^'{' , name , '}'! !
+
+!ODefineArgument methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:31:19'!
+printStringUsing: names 
+
+	^'define arg ' , name! !
+
+!ODefineArgument methodsFor: 'visiting' stamp: 'KenD 5/6/2021 07:29:50'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitDefineArgument: self! !
+
+!ODefineArgument class methodsFor: 'instance creation' stamp: 'KenD 5/6/2021 07:29:05'!
+named: aSymbol 
+
+	^self new name: aSymbol! !
+
+!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
+addLast: anInstruction 
+
+	prev next: anInstruction.
+	anInstruction prev: prev.
+	anInstruction next: self.
+	prev := anInstruction
+! !
+
+!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:44:04'!
+last 
+
+	^prev! !
+
+!OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:44:52'!
+replace: one with: other ! !
+
+!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:43:18'!
+detect: aBlock ifNone: absentBlock 
+
+	^absentBlock value! !
+
+!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:43:28'!
+do: aBlock ! !
+
+!OEndInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:45:09'!
+reverseDo: aBlock 
+
+	prev reverseDo: aBlock! !
+
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:16'!
+printForwardOn: aStream! !
+
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:25'!
+printForwardOn: aStream using: names ! !
+
+!OEndInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:43:40'!
+hasNext 
+
+	^false! !
+
+!OEndInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:43:51'!
+isEnd 
+
+	^true! !
+
+!OEndInstruction methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:42:26'!
+acceptVisitor: aVisitor ! !
+
+!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:25'!
+retargetFrom: aBasicBlock to: otherBasicBlock 
+
+	target := otherBasicBlock! !
+
+!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:41'!
+target 
+
+	^target! !
+
+!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:06:52'!
+target: aBasicBlock 
+
+	target := aBasicBlock! !
+
+!OJump methodsFor: 'accessing' stamp: 'KenD 3/11/2021 14:07:03'!
+targets 
+
+	^OrderedCollection with: target! !
+
+!OJump methodsFor: 'codeGeneration' stamp: 'KenD 3/11/2021 14:04:30'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitJump: self! !
+
+!OJump methodsFor: 'enumerating' stamp: 'KenD 3/11/2021 14:05:29'!
+operandsDo: aBlock 
+
+	self notYetImplemented ! !
+
+!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:04:50'!
+basicPrintString 
+
+	^'[jump to ' , target name , ']'! !
+
+!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:05:48'!
+primitivePrintString 
+
+	^'{jump}'! !
+
+!OJump methodsFor: 'printing' stamp: 'KenD 3/11/2021 14:06:01'!
+printStringUsing: names 
+
+	^'jump to ' , (names at: target)! !
+
+!OJump methodsFor: 'testing' stamp: 'KenD 3/11/2021 14:05:02'!
+isJump 
+
+	^true! !
+
+!OJump methodsFor: 'testing' stamp: 'KenD 3/11/2021 14:07:14'!
+usesResultOf: anInstruction 
+
+	^false! !
+
+!OJump class methodsFor: 'instance creation' stamp: 'KenD 3/11/2021 14:02:18'!
+to: aDestination 
+
+	^self new target: aDestination! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:18'!
+atOperand: name 
+	"@@FIXME: ?? name ??"
+	^variable! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:28'!
+atOperand: name put: instruction 
+
+	variable := instruction! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:37'!
+implicitTarget 
+
+	^implicitTarget! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:57:49'!
+implicitTarget: aBasicBlock 
+
+	implicitTarget := aBasicBlock! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:07'!
+replaceWithUnconditional: condition in: basicBlock 
+	| fixed removed jump |
+	self isJumpTrue == condition
+		ifTrue: [
+			fixed := target.
+			removed := implicitTarget]
+		ifFalse: [
+			fixed := implicitTarget.
+			removed := target].
+	jump := OJump to: fixed.
+	self dissolveReplacingWith: jump.
+	removed fullyRemovePredecessor: basicBlock! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:22'!
+retargetFrom: aBasicBlock to: otherBasicBlock 
+
+	target == aBasicBlock ifTrue: [target := otherBasicBlock].
+	implicitTarget == aBasicBlock ifTrue: [implicitTarget := otherBasicBlock]! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:30'!
+target 
+
+	^target! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:39'!
+target: aBasicBlock 
+
+	target := aBasicBlock! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 07:59:48'!
+targets 
+
+	^OrderedCollection with: implicitTarget with: target! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:03'!
+usesResultOf: anInstruction 
+
+	^variable == anInstruction! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:12'!
+variable 
+
+	^variable! !
+
+!OJumpConditional methodsFor: 'accessing' stamp: 'KenD 3/12/2021 08:00:20'!
+variable: operand 
+
+	variable := operand! !
+
+!OJumpConditional methodsFor: 'enumerating' stamp: 'KenD 3/12/2021 07:58:41'!
+operandsDo: aBlock 
+
+	aBlock value: variable! !
+
+!OJumpConditional methodsFor: 'testing' stamp: 'KenD 3/12/2021 07:58:14'!
+isConditionalJump 
+
+	^true! !
+
+!OJumpConditional methodsFor: 'testing' stamp: 'KenD 3/12/2021 07:58:24'!
+isJump 
+
+	^true! !
+
+!OJumpConditional class methodsFor: 'instance creation' stamp: 'KenD 3/12/2021 07:54:43'!
+variable: operation target: explicitTarget implicitTarget: implicitTarget 
+
+	^self new
+		variable: operation;
+		target: explicitTarget;
+		implicitTarget: implicitTarget! !
+
+!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:40:11'!
+basicPrintString 
+
+	^'[jump false ' , variable primitivePrintString , ' to ' , target name
+		, ' or fall to '
+		, implicitTarget name
+		, ']'! !
+
+!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:40:54'!
+primitivePrintString 
+
+	^'{jump false}'! !
+
+!OJumpFalse methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:41:06'!
+printStringUsing: names 
+
+	^'jump false ' , (names at: variable ifAbsent: ['missing']) , ' to '
+		, (names at: target ifAbsent: 'missing')
+		, ' or fall to '
+		, (names at: implicitTarget ifAbsent: 'missing')! !
+
+!OJumpFalse methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:40:28'!
+isJumpFalse 
+
+	^true! !
+
+!OJumpFalse methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:40:39'!
+isJumpTrue 
+
+	^false! !
+
+!OJumpFalse methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:39:55'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitJumpFalse: self! !
+
+!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:46:57'!
+basicPrintString 
+
+	^'[jump true ' , variable primitivePrintString , ' to ' , target name
+		, ' or fall to '
+		, implicitTarget name
+		, ']'! !
+
+!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:47:31'!
+primitivePrintString 
+
+	^'{jump true}'! !
+
+!OJumpTrue methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:47:44'!
+printStringUsing: names 
+
+	^'jump true ' , (names at: variable) , ' to ' , (names at: target)
+		, ' or fall to '
+		, (names at: implicitTarget)! !
+
+!OJumpTrue methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:47:11'!
+isJumpFalse 
+
+	^false! !
+
+!OJumpTrue methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:47:20'!
+isJumpTrue 
+
+	^true! !
+
+!OJumpTrue methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:46:44'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitJumpTrue: self! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:53:40'!
+atOperand: operandName put: instruction 
+
+	source := instruction! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:41'!
+name: aSymbol 
+
+	name := aSymbol! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:55:42'!
+source 
+
+	^source! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:55:51'!
+source: operand 
+
+	source := operand! !
+
+!OLoadImplicit methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:54:54'!
+operandsDo: aBlock 
+
+	source isInstruction ifTrue: [aBlock value: source]! !
+
+!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:54:08'!
+basicPrintString 
+
+	^'[load implicit #' , name printString , ']'! !
+
+!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:55:15'!
+primitivePrintString 
+"
+	^'<#' , source value printString , '>'
+"
+	^'{#' , name printString , '}'! !
+
+!OLoadImplicit methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:55:28'!
+printStringUsing: names 
+
+	^'#' , name printString
+! !
+
+!OLoadImplicit methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:54:20'!
+isLoadImplicit 
+
+	^true! !
+
+!OLoadImplicit methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:56:02'!
+usesResultOf: anInstruction 
+
+	^false! !
+
+!OLoadImplicit methodsFor: 'visiting' stamp: 'KenD 4/26/2021 14:53:53'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitLoadImplicit: self! !
+
+!OLoadImplicit class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:53:04'!
+named: aSymbol 
+
+	^self new name: aSymbol! !
+
+!OLoadImplicit class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:53:18'!
+self 
+
+	^self new name: #self! !
+
+!OActivationContext methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:58:20'!
+doSavePreviousSelf 
+
+	storesPreviousSelf := true! !
+
+!OActivationContext methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:58:45'!
+haveFrame 
+
+	hasFrame := true! !
+
+!OActivationContext methodsFor: 'initialization' stamp: 'KenD 4/26/2021 14:59:21'!
+initialize 
+
+	hasFrame := false.
+	storesPreviousSelf := false! !
+
+!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:58:29'!
+hasFrame 
+
+	^hasFrame! !
+
+!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:33'!
+savesPreviousSelf 
+
+	^storesPreviousSelf! !
+
+!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:42'!
+temporaries 
+
+	^temporaries! !
+
+!OActivationContext methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:59:52'!
+temporaries: aNumber 
+
+	temporaries := aNumber.
+	aNumber > 0 ifTrue: [self haveFrame]! !
+
+!OActivationContext class methodsFor: 'instance creation' stamp: 'KenD 4/26/2021 14:57:58'!
+new 
+
+	^self basicNew initialize! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:38'!
+arguments 
+
+	^arguments! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:36:48'!
+arguments: operands 
+
+	arguments := operands! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:01'!
+atOperand: named 
+
+	^named == #receiver ifTrue: [receiver] ifFalse: [arguments at: named]! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:37:13'!
+atOperand: name put: instruction 
+
+	name = #receiver
+		ifTrue: [receiver := instruction]
+		ifFalse: [arguments at: name put: instruction]! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:14'!
+receiver 
+
+	^receiver! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:24'!
+receiver: operand 
+
+	receiver := operand! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:37'!
+selector 
+
+	^selector
+! !
+
+!OMessageSend methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:40:45'!
+selector: aSymbol 
+
+	selector := aSymbol! !
+
+!OMessageSend methodsFor: 'enumerating' stamp: 'KenD 5/11/2021 14:38:36'!
+operandsDo: aBlock 
+
+	aBlock value: receiver.
+	arguments do: aBlock! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:37:56'!
+basicPrintString 
+	| string |
+	string := arguments size > 0
+		ifTrue: [' with: '
+			, (arguments gather: [:arg | arg primitivePrintString , ' '])]
+		ifFalse: [''].
+	^'[send #' , selector , ' to ' , receiver primitivePrintString
+		, string trim
+		, ']'! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:38:51'!
+primitivePrintString 
+
+	^'{#' , selector , '}'! !
+
+!OMessageSend methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:39:38'!
+printStringUsing: names 
+	| string |
+	string := arguments size > 0
+		ifTrue: [' with: '
+			, (arguments gather: [:arg | (names at: arg ifAbsent: ['missing']) , ' '])]
+		ifFalse: [''].
+	^'send #' , selector , ' to ' , (names at: receiver ifAbsent: ['missing'])
+		, string withoutTrailingBlanks! !
+
+!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:38:14'!
+isMessageSend 
+
+	^true! !
+
+!OMessageSend methodsFor: 'testing' stamp: 'KenD 5/11/2021 14:41:02'!
+usesResultOf: anInstruction 
+
+	^receiver == anInstruction
+		or: [arguments anySatisfy: [:argument | argument == anInstruction]]
+! !
+
+!OMessageSend methodsFor: 'visiting' stamp: 'KenD 5/11/2021 14:37:33'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitMessageSend: self
+! !
+
+!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:35:36'!
+receiver: receiver selector: selector arguments: arguments 
+
+	^self new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		yourself! !
+
+!OMessageSend class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:36:22'!
+selector: selector 
+
+	^self new selector: selector! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:19'!
+addVariable: value from: block 
+
+	self deny: (blocks includes: block).
+	variables add: value.
+	blocks add: block.
+	value addUse: self at: block! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 06:59:35'!
+atOperand: name 
+
+	| index |
+	index := blocks indexOf: name.
+	^variables at: index! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:17:00'!
+atOperand: name put: instruction 
+	| index |
+	index := blocks indexOf: name.
+	variables at: index put: instruction! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:25'!
+blocks 
+
+	^blocks! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:18:49'!
+blocks: aCollection 
+
+	blocks := aCollection! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:14'!
+removeBlock: removed 
+	| index variable |
+	index := blocks indexOf: removed.
+	variable := variables at: index.
+	variable removeUse: self at: removed.
+	variables removeIndex: index.
+	blocks removeIndex: index.
+	variables size = 1 ifTrue: [
+		self replaceAllUsesWith: variables first; dissolve.
+		^variables first].
+	^self! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:34'!
+removeVariable: removed at: index 
+	| block |
+	block := blocks at: index.
+	removed removeUse: self at: block.
+	variables removeIndex: index.
+	blocks removeIndex: index.
+	variables size = 1
+		ifTrue: [self replaceAllUsesWith: variables first; dissolve]! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:21:54'!
+replaceBlock: original with: new 
+
+	blocks withIndexDo: [:block :i | | source |
+		block == original ifTrue: [
+			source := variables at: i.
+			source updateUser: self named: original with: new.
+			blocks at: i put: new]]! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:07'!
+variables 
+
+	^variables! !
+
+!OPhi methodsFor: 'accessing' stamp: 'KenD 5/13/2021 07:23:19'!
+variables: aCollection 
+
+	variables := aCollection! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:20:08'!
+operandsDo: aBlock 
+
+	variables do: aBlock! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:21:01'!
+realReverseDo: aBlock
+
+	self notYetImplemented ! !
+
+!OPhi methodsFor: 'enumerating' stamp: 'KenD 5/13/2021 07:23:37'!
+variablesWithBlocksDo: aBlock 
+
+	variables with: blocks do: aBlock! !
+
+!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:15'!
+clearVariables 
+
+	variables := OrderedCollection new.
+	blocks := OrderedCollection new! !
+
+!OPhi methodsFor: 'initialization' stamp: 'KenD 5/13/2021 07:19:43'!
+initialize
+	
+	self clearVariables ! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:18:03'!
+basicPrintString 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [
+			(variables
+				with: blocks
+				collect: [:var :block | block name , '->' , var primitivePrintString])
+				gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'[phi(' , (sources allButLast: 2) , ')]'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:20'!
+primitivePrintString 
+
+	^'{#phi}'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:20:34'!
+printStringUsing: names 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [
+			(variables
+				with: blocks
+				collect: [:var :block | (names at: block ifAbsent: ['missing']) , '->'
+					, (names at: var ifAbsent: ['missing'])])
+				gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'phi(' , (sources allButLast: 2) , ')'! !
+
+!OPhi methodsFor: 'printing' stamp: 'KenD 5/13/2021 07:22:09'!
+shortPrintString 
+	| sources |
+	sources := variables size > 0
+		ifTrue: [(variables collect: #primitivePrintString) gather: [:x | x , ', ']]
+		ifFalse: ['  '].
+	^'[phi(' , (sources allButLast: 2) , ')]'! !
+
+!OPhi methodsFor: 'sorting' stamp: 'KenD 5/13/2021 07:22:36'!
+sortAfter: predecessors 
+	| indices |
+	indices := predecessors collect: [:pred | blocks indexOf: pred].
+	variables := indices collect: [:index | variables at: index].
+	blocks := predecessors copy! !
+
+!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:19:56'!
+isPhi 
+
+	^true! !
+
+!OPhi methodsFor: 'testing' stamp: 'KenD 5/13/2021 07:22:55'!
+usesResultOf: anInstruction 
+
+	^variables includes: anInstruction! !
+
+!OPhi methodsFor: 'visiting' stamp: 'KenD 5/13/2021 07:17:43'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitPhi: self! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:30'!
+new 
+
+	^self basicNew initialize
+! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:56:51'!
+with: operation1
+from: block1
+with: operation2
+from: block2 
+
+	^self new
+		addVariable: operation1 from: block1;
+		addVariable: operation2 from: block2! !
+
+!OPhi class methodsFor: 'instance creation' stamp: 'KenD 5/13/2021 06:57:08'!
+withAll: operations in: blocks 
+
+	^self new variables: operations; blocks: blocks copy! !
+
+!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:38:05'!
+name: selector 
+
+	name := selector! !
+
+!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:37:15'!
+basicPrintString 
+
+	^self primitivePrintString! !
+
+!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:38:18'!
+primitivePrintString 
+
+	^'{#' , name , '}'! !
+
+!OPrimitiveOperation methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:38:29'!
+printStringUsing: names 
+
+	^self primitivePrintString! !
+
+!OPrimitiveOperation methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:37:38'!
+isPrimitiveOperation 
+
+	^true! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:41'!
+atOperand: named 
+
+	^named == #left ifTrue: [left] ifFalse: [right]! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 07:58:57'!
+atOperand: operandName put: instruction 
+
+	operandName = #left
+		ifTrue: [left := instruction]
+		ifFalse: [right := instruction]! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:26:56'!
+left 
+
+	^left! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:08'!
+left: anInstruction 
+
+	left := anInstruction! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:32'!
+right 
+
+	^right! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:27:41'!
+right: anInstruction 
+
+	right := anInstruction! !
+
+!OBinaryOperation methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:28:02'!
+swapOperands 
+	| temp |
+	left removeUse: self.
+	right removeUse: self.
+	temp := left.
+	left := right.
+	right := temp.
+	left addUse: self at: #left.
+	right addUse: self at: #right! !
+
+!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 07:59:26'!
+canHaveSideEffects 
+
+	^false! !
+
+!OBinaryOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:28:16'!
+usesResultOf: anInstruction 
+
+	^left == anInstruction or: [right == anInstruction]! !
+
+!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:26:27'!
+invertOperation 
+
+	name == #'<' ifTrue: [^name := #'>'].
+	name == #'<=' ifTrue: [^name := #'>='].
+	name == #'>' ifTrue: [^name := #'<'].
+	name == #'>=' ifTrue: [^name := #'<='].
+	name == #'==' ifTrue: [^name].
+	self halt! !
+
+!OBinaryOperation methodsFor: 'operations' stamp: 'KenD 5/5/2021 16:27:20'!
+negateOperation 
+
+	name == #'<' ifTrue: [^name := #'>='].
+	name == #'<=' ifTrue: [^name := #'>'].
+	name == #'>' ifTrue: [^name := #'<='].
+	name == #'>=' ifTrue: [name := #'<']! !
+
+!OBinaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/5/2021 07:18:09'!
+left: left right: right name: selector 
+
+	^self new
+		left: left;
+		right: right;
+		name: selector! !
+
+!OBinaryConstantOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:30:41'!
+operandsDo: aBlock 
+
+	aBlock value: left! !
+
+!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:02'!
+basicPrintString 
+
+	^'[' , left primitivePrintString , ' ' , name , ' '
+		, right primitivePrintString
+		, ']'! !
+
+!OBinaryConstantOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:30:55'!
+printStringUsing: names 
+
+	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , right printString! !
+
+!OBinaryConstantOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:30:20'!
+isBinaryConstantOperation 
+
+	^true! !
+
+!OBinaryConstantOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:29:45'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitBinaryWithConstant: self! !
+
+!OBinaryVariableOperation methodsFor: 'enumerating' stamp: 'KenD 5/5/2021 16:33:16'!
+operandsDo: aBlock 
+
+	aBlock value: left.
+	aBlock value: right! !
+
+!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:32:47'!
+basicPrintString 
+
+	^'[' , left primitivePrintString , ' ' , name , ' '
+		, right primitivePrintString
+		, ']'! !
+
+!OBinaryVariableOperation methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:33:29'!
+printStringUsing: names 
+
+	^(names at: left ifAbsent: 'missing') , ' ' , name , ' ' , (names at: right)! !
+
+!OBinaryVariableOperation methodsFor: 'testing' stamp: 'KenD 5/5/2021 16:32:57'!
+isBinaryVariableOperation 
+
+	^true! !
+
+!OBinaryVariableOperation methodsFor: 'visiting' stamp: 'KenD 5/5/2021 16:32:30'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitBinaryWithVariable: self! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:38:45'!
+atOperand: named 
+
+	^named == #receiver
+		ifTrue: [receiver]
+		ifFalse: [named == #left ifTrue: [left] ifFalse: [right]]! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:39:01'!
+atOperand: operandName put: instruction 
+
+	operandName = #receiver ifTrue: [receiver := instruction] ifFalse: [
+		operandName = #left
+			ifTrue: [left := instruction]
+			ifFalse: [right := instruction]]! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:40:09'!
+left 
+
+	^left! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:40:18'!
+left: value 
+
+	left := value! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:16'!
+receiver 
+
+	^receiver! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:25'!
+receiver: value 
+
+	receiver := value! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:33'!
+right 
+
+	^right! !
+
+!OTernaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:41:41'!
+right: value 
+
+	right := value! !
+
+!OTernaryOperation methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 09:40:40'!
+operandsDo: aBlock 
+
+	aBlock value: receiver.
+	left isInstruction ifTrue: [aBlock value: left].
+	aBlock value: right
+! !
+
+!OTernaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:39:39'!
+basicPrintString 
+
+	^'['
+		, (receiver isInstruction
+			ifTrue: [receiver primitivePrintString]
+			ifFalse: [receiver printString]) , ' ' , name , ' '
+		, left primitivePrintString
+		, ', '
+		, right primitivePrintString
+		, ']'! !
+
+!OTernaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:41:02'!
+printStringUsing: names 
+
+	^(receiver isInstruction
+		ifTrue: [names at: receiver ifAbsent: ['{missing', receiver printString, '}']]
+		ifFalse: [receiver printString]) , ' ' , name , ' '
+		, (left isInstruction ifTrue: [names at: left] ifFalse: [left printString])
+		, ', '
+		, (right isInstruction
+			ifTrue: [names at: right]
+			ifFalse: [right printString])! !
+
+!OTernaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 09:39:56'!
+isTernaryOperation 
+
+	^true! !
+
+!OTernaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 09:41:56'!
+usesResultOf: anInstruction 
+
+	^receiver == anInstruction
+		or: [left == anInstruction or: [right == anInstruction]]! !
+
+!OTernaryOperation methodsFor: 'visiting' stamp: 'KenD 5/29/2021 09:39:22'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitTernary: self! !
+
+!OTernaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 09:38:21'!
+receiver: receiver
+left: left
+right: right
+name: selector 
+
+	^self new
+		receiver: receiver;
+		left: left;
+		right: right;
+		name: selector! !
+
+!OUnaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:22:25'!
+atOperand: operandName 
+
+	^receiver! !
+
+!OUnaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:22:37'!
+atOperand: operandName put: instruction 
+
+	receiver := instruction! !
+
+!OUnaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:24:15'!
+receiver 
+
+	^receiver! !
+
+!OUnaryOperation methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:24:24'!
+receiver: operation 
+
+	receiver := operation! !
+
+!OUnaryOperation methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 12:23:53'!
+operandsDo: aBlock 
+
+	aBlock value: receiver! !
+
+!OUnaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:23:19'!
+basicPrintString 
+
+	^'['
+		, (receiver isInstruction
+			ifTrue: [receiver primitivePrintString]
+			ifFalse: [receiver printString]) , ' ' , name , ']'! !
+
+!OUnaryOperation methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:24:04'!
+printStringUsing: names 
+
+	^(receiver isInstruction
+		ifTrue: [names at: receiver ifAbsent: ['{missing ', receiver printString, '}']]
+		ifFalse: [receiver printString]) , ' ' , name! !
+
+!OUnaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 12:23:32'!
+isUnaryOperation 
+
+	^true! !
+
+!OUnaryOperation methodsFor: 'testing' stamp: 'KenD 5/29/2021 12:24:36'!
+usesResultOf: anInstruction 
+
+	^receiver == anInstruction! !
+
+!OUnaryOperation methodsFor: 'visiting' stamp: 'KenD 5/29/2021 12:22:56'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitUnary: self! !
+
+!OUnaryOperation class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 12:21:32'!
+receiver: receiver name: aString 
+
+	^self new name: aString; receiver: receiver! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:17:51'!
+argumentsCount 
+
+	^argumentsCount! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:01'!
+argumentsCount: anInteger 
+
+	argumentsCount := anInteger! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:12'!
+atOperand: name 
+
+	^name == #source ifTrue: [source] ifFalse: [frame]! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:21:26'!
+atOperand: name put: instruction 
+
+	^name == #source
+		ifTrue: [source := instruction]
+		ifFalse: [frame := instruction]! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:22:13'!
+frame: anInstruction 
+
+	frame := anInstruction! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:30'!
+source 
+
+	^source! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:40'!
+source: anInstruction 
+
+	source := anInstruction! !
+
+!OReturn methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:22:48'!
+operandsDo: aBlock 
+
+	aBlock value: source.
+	aBlock value: frame! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:22:00'!
+basicPrintString 
+
+	^'[ret ' , source primitivePrintString , ']'! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:00'!
+primitivePrintString 
+
+	^'{ret}'! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:18'!
+printStringUsing: names 
+
+	^'ret ' , (names at: source ifAbsent: 'missing') , ''! !
+
+!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:22:29'!
+isReturn 
+
+	^true! !
+
+!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:23:53'!
+usesResultOf: anInstruction 
+
+	^source == anInstruction or: [frame == anInstruction]! !
+
+!OReturn methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:21:43'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitReturn: self! !
+
+!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:21'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:04:38'!
+atOperand: name put: instruction 
+
+	source := instruction! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:25'!
+source 
+
+	^source! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:44'!
+source: anInstruction 
+
+	source := anInstruction! !
+
+!OReadVariable methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:05:50'!
+operandsDo: aBlock 
+
+	source ifNotNil: [aBlock value: source]! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:05:22'!
+basicPrintString 
+
+	^ '[read var #'
+		, (binding ifNil: [ '#error' ] ifNotNil: [ binding printString ]) , ']'! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:04'!
+primitivePrintString 
+
+	^'{#' , (binding ifNil: ['#error'] ifNotNil: [binding printString]) , ' read}'! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:15'!
+printStringUsing: names 
+
+	^self basicPrintString! !
+
+!OReadVariable methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:05:02'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitReadVariable: self! !
+
+!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:06'!
+binding: binding 
+
+	^self new binding: binding! !
+
+!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:17'!
+source: identifier 
+
+	^self new source: identifier! !
+
+!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:29:34'!
+atOperand: name put: instruction 
+
+	source := instruction! !
+
+!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:31:13'!
+source 
+	^source! !
+
+!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:31:26'!
+source: operation 
+
+	source := operation! !
+
+!OWriteVariable methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 12:30:37'!
+operandsDo: aBlock 
+
+	aBlock value: source! !
+
+!OWriteVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:30:04'!
+basicPrintString 
+	| sourceString |
+	sourceString := source isInstruction
+		ifTrue: [source primitivePrintString]
+		ifFalse: [self halt].
+	^'[write ' , self name printString , ' with ' , sourceString , ' ]'! !
+
+!OWriteVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:30:48'!
+primitivePrintString 
+
+	^'{write ' , self name printString , ' }'! !
+
+!OWriteVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:30:59'!
+printStringUsing: names 
+	| sourceString |
+	sourceString := source isInstruction
+		ifTrue: [names at: source]
+		ifFalse: [self halt].
+	^'write ' , self name printString , ' with ' , sourceString! !
+
+!OWriteVariable methodsFor: 'testing' stamp: 'KenD 5/29/2021 12:30:14'!
+isStoreVariable 
+
+	^true! !
+
+!OWriteVariable methodsFor: 'testing' stamp: 'KenD 5/29/2021 12:31:38'!
+usesResultOf: anOperand 
+
+	^source == anOperand! !
+
+!OWriteVariable methodsFor: 'visiting' stamp: 'KenD 5/29/2021 12:29:50'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitWriteVariable: self
+! !
+
+!OWriteVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 12:28:49'!
+binding: aBinding valued: operation 
+
+	^self new binding: aBinding; source: operation! !
 
 !OVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:35:13'!
 assureBoundBy: aVariableBinder 
