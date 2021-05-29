@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 28 May 2021 at 7:56:10 am'!
+'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 8:24:00 am'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 25!
+!provides: 'PowerLang' 1 26!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -531,6 +531,36 @@ OBinaryOperation subclass: #OBinaryVariableOperation
 	category: 'Powerlang-Core-OCompiler-IR'!
 !classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryVariableOperation class
+	instanceVariableNames: ''!
+
+!classDefinition: #OReturn category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OReturn
+	instanceVariableNames: 'source frame argumentsCount'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReturn class' category: #'Powerlang-Core-OCompiler-IR'!
+OReturn class
+	instanceVariableNames: ''!
+
+!classDefinition: #OUseVariable category: #'Powerlang-Core-OCompiler-IR'!
+OInstruction subclass: #OUseVariable
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUseVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+OUseVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #OReadVariable category: #'Powerlang-Core-OCompiler-IR'!
+OUseVariable subclass: #OReadVariable
+	instanceVariableNames: 'source'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReadVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+OReadVariable class
 	instanceVariableNames: ''!
 
 !classDefinition: #SParseTreeVisitor category: #'Powerlang-Core'!
@@ -3158,6 +3188,11 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!OPhi commentStamp: '<historical>' prior: 0!
+If a resource is live on entry to an extended basic block and if the resource's value can come from multiple sources, the extended basic block has a "phi node" that collects together these multiple sources. The phi node conceptually has one input for each incoming edge of the extended basic block, with the input specifying the value of the resource on that edge. 
+
+https://en.wikipedia.org/wiki/Static_single_assignment_form [SSA]!
+
 !OPrimitiveOperation commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -3169,6 +3204,20 @@ Copyright (c) 2020 Aucerna.
 !OBinaryVariableOperation commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
+
+!OReturn commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!OUseVariable commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
+!OReadVariable commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
 
 !OptimizingVisitor commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -3333,7 +3382,9 @@ Copyright (c) 2020 Aucerna.
 
 !OptimizingCSSATransformer commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.!
+    See AucernaLicence.txt (MIT license) in package directory.
+
+https://en.wikipedia.org/wiki/Static_single_assignment_form [SSA]!
 
 !OptimizingCodeEmitter commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -3379,7 +3430,8 @@ Copyright (c) 2020 Aucerna.
 !OptimizingSSAReconstructor commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
-!
+
+https://en.wikipedia.org/wiki/Static_single_assignment_form [SSA]!
 
 !OptimizingTwoAddressEnforcer commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -3404,6 +3456,9 @@ Copyright (c) 2020 Aucerna.
 !ODominatorTree commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
+
+Used for Static Single Assignment analysis:
+  https://en.wikipedia.org/wiki/Static_single_assignment_form 
 !
 
 !OLiveRange commentStamp: '<historical>' prior: 0!
@@ -3487,6 +3542,11 @@ name
 name 
 
 	^name! !
+
+!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:12'!
+binding 
+
+	^binding! !
 
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
 comment 
@@ -6903,6 +6963,135 @@ isBinaryVariableOperation
 basicAcceptVisitor: aVisitor 
 
 	^aVisitor visitBinaryWithVariable: self! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:17:51'!
+argumentsCount 
+
+	^argumentsCount! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:01'!
+argumentsCount: anInteger 
+
+	argumentsCount := anInteger! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:18:12'!
+atOperand: name 
+
+	^name == #source ifTrue: [source] ifFalse: [frame]! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:21:26'!
+atOperand: name put: instruction 
+
+	^name == #source
+		ifTrue: [source := instruction]
+		ifFalse: [frame := instruction]! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:22:13'!
+frame: anInstruction 
+
+	frame := anInstruction! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:30'!
+source 
+
+	^source! !
+
+!OReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:23:40'!
+source: anInstruction 
+
+	source := anInstruction! !
+
+!OReturn methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:22:48'!
+operandsDo: aBlock 
+
+	aBlock value: source.
+	aBlock value: frame! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:22:00'!
+basicPrintString 
+
+	^'[ret ' , source primitivePrintString , ']'! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:00'!
+primitivePrintString 
+
+	^'{ret}'! !
+
+!OReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:23:18'!
+printStringUsing: names 
+
+	^'ret ' , (names at: source ifAbsent: 'missing') , ''! !
+
+!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:22:29'!
+isReturn 
+
+	^true! !
+
+!OReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 08:23:53'!
+usesResultOf: anInstruction 
+
+	^source == anInstruction or: [frame == anInstruction]! !
+
+!OReturn methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:21:43'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitReturn: self! !
+
+!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:21'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:04:38'!
+atOperand: name put: instruction 
+
+	source := instruction! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:25'!
+source 
+
+	^source! !
+
+!OReadVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:06:44'!
+source: anInstruction 
+
+	source := anInstruction! !
+
+!OReadVariable methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 08:05:50'!
+operandsDo: aBlock 
+
+	source ifNotNil: [aBlock value: source]! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:05:22'!
+basicPrintString 
+
+	^ '[read var #'
+		, (binding ifNil: [ '#error' ] ifNotNil: [ binding printString ]) , ']'! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:04'!
+primitivePrintString 
+
+	^'{#' , (binding ifNil: ['#error'] ifNotNil: [binding printString]) , ' read}'! !
+
+!OReadVariable methodsFor: 'printing' stamp: 'KenD 5/29/2021 08:06:15'!
+printStringUsing: names 
+
+	^self basicPrintString! !
+
+!OReadVariable methodsFor: 'visiting' stamp: 'KenD 5/29/2021 08:05:02'!
+basicAcceptVisitor: aVisitor 
+
+	^aVisitor visitReadVariable: self! !
+
+!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:06'!
+binding: binding 
+
+	^self new binding: binding! !
+
+!OReadVariable class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 08:04:17'!
+source: identifier 
+
+	^self new source: identifier! !
 
 !SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
 visit: aParseNode 
