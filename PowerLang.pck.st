@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 12:31:46 pm'!
+'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 1:18:19 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 31!
+!provides: 'PowerLang' 1 32!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -573,6 +573,16 @@ SMessageNode subclass: #SCascadeMessageNode
 SCascadeMessageNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SReturnNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SReturnNode
+	instanceVariableNames: 'expression return'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SReturnNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SReturnNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SScriptNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SScriptNode
 	instanceVariableNames: 'statements arguments temporaries children scope'
@@ -591,6 +601,16 @@ SScriptNode subclass: #SBlockNode
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 !classDefinition: 'SBlockNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SBlockNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPragmaNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SPragmaNode
+	instanceVariableNames: 'type name info'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SPragmaNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SPragmaNode class
 	instanceVariableNames: ''!
 
 !classDefinition: #SmalltalkBootstrapper category: #'Powerlang-Core'!
@@ -1403,13 +1423,13 @@ Object subclass: #SExpressionInterpreter
 SExpressionInterpreter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkInterpreter category: #'Powerlang-Core'!
+!classDefinition: #SmalltalkInterpreter category: #'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter subclass: #SmalltalkInterpreter
 	instanceVariableNames: 'localRuntime'
 	classVariableNames: 'Underprimitives'
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmalltalkInterpreter class' category: #'Powerlang-Core'!
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkInterpreter class' category: #'Powerlang-Core-Metaphysics'!
 SmalltalkInterpreter class
 	instanceVariableNames: ''!
 
@@ -1441,36 +1461,6 @@ Mirror subclass: #ObjectMirror
 	category: 'Powerlang-Core-Mirrors'!
 !classDefinition: 'ObjectMirror class' category: #'Powerlang-Core-Mirrors'!
 ObjectMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #SpeciesMirror category: #'Powerlang-Core'!
-ObjectMirror subclass: #SpeciesMirror
-	instanceVariableNames: ''
-	classVariableNames: 'Flags'
-	poolDictionaries: 'SpeciesFormatMasks'
-	category: 'Powerlang-Core'!
-!classDefinition: 'SpeciesMirror class' category: #'Powerlang-Core'!
-SpeciesMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #ClassMirror category: #'Powerlang-Core-Mirrors'!
-SpeciesMirror subclass: #ClassMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClassMirror class' category: #'Powerlang-Core-Mirrors'!
-ClassMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #MetaclassMirror category: #'Powerlang-Core-Mirrors'!
-SpeciesMirror subclass: #MetaclassMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MetaclassMirror class' category: #'Powerlang-Core-Mirrors'!
-MetaclassMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssociationMirror category: #'Powerlang-Core-Mirrors'!
@@ -1541,6 +1531,36 @@ ObjectMirror subclass: #MethodDictionaryMirror
 	category: 'Powerlang-Core-Mirrors'!
 !classDefinition: 'MethodDictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
 MethodDictionaryMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #SpeciesMirror category: #'Powerlang-Core-Mirrors'!
+ObjectMirror subclass: #SpeciesMirror
+	instanceVariableNames: ''
+	classVariableNames: 'Flags'
+	poolDictionaries: 'SpeciesFormatMasks'
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'SpeciesMirror class' category: #'Powerlang-Core-Mirrors'!
+SpeciesMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassMirror category: #'Powerlang-Core-Mirrors'!
+SpeciesMirror subclass: #ClassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClassMirror class' category: #'Powerlang-Core-Mirrors'!
+ClassMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #MetaclassMirror category: #'Powerlang-Core-Mirrors'!
+SpeciesMirror subclass: #MetaclassMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'MetaclassMirror class' category: #'Powerlang-Core-Mirrors'!
+MetaclassMirror class
 	instanceVariableNames: ''!
 
 !classDefinition: #BinaryMessageNativizer category: #'Powerlang-Core-Nativization'!
@@ -3003,26 +3023,6 @@ SBinding subclass: #SAssociationBinding
 SAssociationBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPoolVarBinding category: #'Powerlang-Core'!
-SAssociationBinding subclass: #SPoolVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SPoolVarBinding class' category: #'Powerlang-Core'!
-SPoolVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SConstantPoolBinding category: #'Powerlang-Core-SExpressions'!
-SPoolVarBinding subclass: #SConstantPoolBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SConstantPoolBinding class' category: #'Powerlang-Core-SExpressions'!
-SConstantPoolBinding class
-	instanceVariableNames: ''!
-
 !classDefinition: #SClassVarBinding category: #'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SClassVarBinding
 	instanceVariableNames: ''
@@ -3051,6 +3051,26 @@ SGlobalBinding subclass: #SClassBinding
 	category: 'Powerlang-Core-SExpressions'!
 !classDefinition: 'SClassBinding class' category: #'Powerlang-Core-SExpressions'!
 SClassBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPoolVarBinding category: #'Powerlang-Core-SExpressions'!
+SAssociationBinding subclass: #SPoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPoolVarBinding class' category: #'Powerlang-Core-SExpressions'!
+SPoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SConstantPoolBinding category: #'Powerlang-Core-SExpressions'!
+SPoolVarBinding subclass: #SConstantPoolBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SConstantPoolBinding class' category: #'Powerlang-Core-SExpressions'!
+SConstantPoolBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #SInstVarBinding category: #'Powerlang-Core-SExpressions'!
@@ -3103,16 +3123,6 @@ SLiteralVar subclass: #SLiteral
 SLiteral class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessage category: #'Powerlang-Core'!
-SExpression subclass: #SMessage
-	instanceVariableNames: 'selector receiver arguments opcodes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SMessage class' category: #'Powerlang-Core'!
-SMessage class
-	instanceVariableNames: ''!
-
 !classDefinition: #SAssignment category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SAssignment
 	instanceVariableNames: 'assignees expression'
@@ -3151,6 +3161,36 @@ SExpression subclass: #SIdentifier
 	category: 'Powerlang-Core-SExpressions'!
 !classDefinition: 'SIdentifier class' category: #'Powerlang-Core-SExpressions'!
 SIdentifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessage category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SMessage
+	instanceVariableNames: 'selector receiver arguments opcodes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SMessage class' category: #'Powerlang-Core-SExpressions'!
+SMessage class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPragma category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SPragma
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPragma class' category: #'Powerlang-Core-SExpressions'!
+SPragma class
+	instanceVariableNames: ''!
+
+!classDefinition: #SReturn category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SReturn
+	instanceVariableNames: 'local expression'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SReturn class' category: #'Powerlang-Core-SExpressions'!
+SReturn class
 	instanceVariableNames: ''!
 
 !classDefinition: #SScript category: #'Powerlang-Core-SExpressions'!
@@ -3639,6 +3679,11 @@ name
 
 	^name! !
 
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:06'!
+name 
+
+	^name! !
+
 !SmalltalkBootstrapper methodsFor: 'services' stamp: 'KenD 3/2/2021 13:03:02'!
 compile: anRGMethod 
 
@@ -4063,6 +4108,23 @@ printOn: aStream
 			self class name withArticle , '(' , handle printString , ', '
 				, description , ')'! !
 
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
+methodDictionary 
+	| slot |
+	slot := handle slotAt: 1.
+	^self methodDictionaryMirrorOn: slot! !
+
+!CompiledMethodMirror methodsFor: 'printing' stamp: 'KenD 3/2/2021 12:36:32'!
+printOn: aStream 
+	| signature |
+	signature := ([ self fullName ]
+						on: StorageReadError
+						do: [ handle printString ]).
+	aStream
+		nextPutAll:
+			'a CMMirror ('
+			; nextPutAll: signature; nextPut: $)! !
+
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:33:14'!
 allInstVarNames 
 
@@ -4153,23 +4215,6 @@ subclasses
 	^instance reflectsNil
 		ifTrue: [#()]
 		ifFalse: [instance subclasses collect: [:class | class class]]! !
-
-!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
-methodDictionary 
-	| slot |
-	slot := handle slotAt: 1.
-	^self methodDictionaryMirrorOn: slot! !
-
-!CompiledMethodMirror methodsFor: 'printing' stamp: 'KenD 3/2/2021 12:36:32'!
-printOn: aStream 
-	| signature |
-	signature := ([ self fullName ]
-						on: StorageReadError
-						do: [ handle printString ]).
-	aStream
-		nextPutAll:
-			'a CMMirror ('
-			; nextPutAll: signature; nextPut: $)! !
 
 !OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
 name 
@@ -4381,6 +4426,11 @@ binding
 isVariable 
 
 	^true! !
+
+!SPragma methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:03:30'!
+name 
+
+	^ name! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:41'!
 printOn: aStream 
@@ -8665,6 +8715,42 @@ acceptVisitor: visitor
 
 	^visitor visitCascadeMessage: self! !
 
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:00'!
+expression 
+
+	^expression! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:11'!
+expression: node 
+
+	expression := node! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:18:09'!
+return: aSmalltalkToken 
+
+	return := aSmalltalkToken! !
+
+!SReturnNode methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 13:17:59'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	expression nodesDo: aBlock includingDeclarations: aBoolean! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:34'!
+hasAssign 
+
+	^expression hasAssign! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:46'!
+isReturn 
+
+	^true! !
+
+!SReturnNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:16:49'!
+acceptVisitor: visitor 
+
+	^visitor visitReturn: self! !
+
 !SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
 useSelf 
 
@@ -8864,6 +8950,49 @@ captureHome
 acceptVisitor: visitor 
 
 	^visitor visitBlock: self! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:08:42'!
+info 
+
+	^info! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:16'!
+primitive: anInteger name: aString 
+
+	type := #primitive.
+	name := aString.
+	info := anInteger! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:24'!
+type 
+
+	^type! !
+
+!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:20'!
+ffi: cc name: aString with: anFFIDescriptor 
+
+	type := cc.
+	name := aString.
+	info := anFFIDescriptor! !
+
+!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:30'!
+ffi: aString with: anFFIDescriptor 
+
+	type := #ffi.
+	name := aString.
+	info := anFFIDescriptor! !
+
+!SPragmaNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:08:51'!
+isUsed 
+
+	^type notNil! !
+
+!SPragmaNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:08:00'!
+acceptVisitor: aVisitor 
+
+	self isFFI ifTrue: [^aVisitor visitFFIPragma: self].
+	self isPrimitive ifTrue: [^aVisitor visitPrimitivePragma: self].
+	self isSymbolic ifTrue: [^aVisitor visitSymbolicPragma: self]! !
 
 !SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:02:37'!
 builder: anImageSegmentBuilder 
@@ -21922,98 +22051,6 @@ ontains: anAddress
 
 	^anAddress >= handle oid and: [anAddress < (handle oid + self size)]! !
 
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:01'!
-compiledMethodFor: selector 
-
-	^self instBehavior compiledMethodFor: selector! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
-indexOfSlot: name 
-	| instVars |
-	instVars := self allInstVarNames.
-	^instVars indexOf: name ifAbsent: 0! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:37:05'!
-localName 
-
-	^self subclassResponsibility 
-! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:16'!
-project 
-
-	^nil! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:34'!
-reflectsMetaclass 
-	| metasize |
-	metasize := 6.
-	^handle size = metasize! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:44'!
-structureType 
-
-	^#Species! !
-
-!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:38'!
-instBehavior 
-	| name |
-	name := self getInstVarNamed: #instanceBehavior.
-	^name asBehaviorMirror! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:05'!
-classVariables 
-	| classVariables |
-	classVariables := self getInstVarNamed: #classVariables.
-	classVariables reflectsNil ifTrue: [^Dictionary new].
-	^classVariables! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:21'!
-instanceClass 
-
-	^self! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:36'!
-localEquivalent 
-
-	^handle runtime objectModel at: self localName asSymbol! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:50'!
-localName 
-
-	^self name asLocalString! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:10'!
-structureType 
-
-	^#Class! !
-
-!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:50:40'!
-classVariables 
-
-	^self instanceClass classVariables! !
-
-!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:50:55'!
-instanceClass 
-	| class |
-	class := self getInstVarNamed: #class.
-	^class asClassMirror! !
-
-!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:03'!
-localEquivalent 
-
-	^(handle runtime objectModel at: self instanceClass localName asSymbol) metaclass! !
-
-!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:14'!
-localName 
-
-	^self instanceClass localName , ' class'! !
-
-!MetaclassMirror methodsFor: 'private' stamp: 'KenD 3/19/2021 16:51:35'!
-structureType 
-
-	^#Metaclass! !
-
 !AssociationMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:26:08'!
 key 
 
@@ -22278,6 +22315,98 @@ rintOn: aStream
 reflectsMethodDictionary 
 
 	^true! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:01'!
+compiledMethodFor: selector 
+
+	^self instBehavior compiledMethodFor: selector! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
+indexOfSlot: name 
+	| instVars |
+	instVars := self allInstVarNames.
+	^instVars indexOf: name ifAbsent: 0! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:37:05'!
+localName 
+
+	^self subclassResponsibility 
+! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:16'!
+project 
+
+	^nil! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:34'!
+reflectsMetaclass 
+	| metasize |
+	metasize := 6.
+	^handle size = metasize! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:44'!
+structureType 
+
+	^#Species! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:38'!
+instBehavior 
+	| name |
+	name := self getInstVarNamed: #instanceBehavior.
+	^name asBehaviorMirror! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:05'!
+classVariables 
+	| classVariables |
+	classVariables := self getInstVarNamed: #classVariables.
+	classVariables reflectsNil ifTrue: [^Dictionary new].
+	^classVariables! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:21'!
+instanceClass 
+
+	^self! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:36'!
+localEquivalent 
+
+	^handle runtime objectModel at: self localName asSymbol! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:50'!
+localName 
+
+	^self name asLocalString! !
+
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:10'!
+structureType 
+
+	^#Class! !
+
+!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:50:40'!
+classVariables 
+
+	^self instanceClass classVariables! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:50:55'!
+instanceClass 
+	| class |
+	class := self getInstVarNamed: #class.
+	^class asClassMirror! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:03'!
+localEquivalent 
+
+	^(handle runtime objectModel at: self instanceClass localName asSymbol) metaclass! !
+
+!MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:51:14'!
+localName 
+
+	^self instanceClass localName , ' class'! !
+
+!MetaclassMirror methodsFor: 'private' stamp: 'KenD 3/19/2021 16:51:35'!
+structureType 
+
+	^#Metaclass! !
 
 !BinaryMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:33:37'!
 inlineBitAnd 
@@ -35481,6 +35610,31 @@ isAssociation
 
 	^true! !
 
+!SClassVarBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:23:42'!
+isClassVar 
+
+	^true! !
+
+!SClassVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:23:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassVar! !
+
+!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
+decodeUsing: anAstcodeDecoder 
+
+	^ anAstcodeDecoder decodeGlobalBinding! !
+
+!SClassBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:22:40'!
+isClassBinding 
+
+	^true! !
+
+!SClassBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:22:24'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeClassBinding! !
+
 !SPoolVarBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 07:42:14'!
 value 
 
@@ -35510,31 +35664,6 @@ valueWithin: evaluator
 decodeUsing: anAstcodeDecoder 
 
 	^ anAstcodeDecoder decodeConstantPoolVar! !
-
-!SClassVarBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:23:42'!
-isClassVar 
-
-	^true! !
-
-!SClassVarBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:23:28'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeClassVar! !
-
-!SGlobalBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 12:22:02'!
-decodeUsing: anAstcodeDecoder 
-
-	^ anAstcodeDecoder decodeGlobalBinding! !
-
-!SClassBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:22:40'!
-isClassBinding 
-
-	^true! !
-
-!SClassBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 16:22:24'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeClassBinding! !
 
 !SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:27'!
 index 
@@ -35739,88 +35868,6 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeLiteral! !
 
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
-arguments 
-
-	^arguments! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
-opcodes 
-
-	^opcodes! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
-opcodes: aCollection 
-
-	opcodes := aCollection! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
-receiver 
-
-	^receiver! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
-receiver: anSExpression 
-
-	receiver := anSExpression! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
-selector 
-
-	^selector! !
-
-!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
-selector: aSelector 
-
-	selector := aSelector! !
-
-!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
-initialize 
-
-	super initialize.
-	arguments := #()! !
-
-!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
-	receiver printOn: aStream indent: anInteger + 1.
-	aStream nextPutAll: '.'; cr.
-	arguments
-		do: [:statement | statement printOn: aStream indent: anInteger + 1]
-		separatedBy: [aStream nextPutAll: '. '; cr].
-	aStream nextPutAll: '}'! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
-isInlined 
-
-	^opcodes = #inlined! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
-isMessage 
-
-	^true! !
-
-!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
-isOptimized 
-
-	^opcodes notNil! !
-
-!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
-acceptVisitor: visitor 
-
-	^visitor visitMessage: self! !
-
-!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeMessage! !
-
 !SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:50'!
 assign: anSIdentifier 
 
@@ -36012,6 +36059,135 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeIdentifier! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
+arguments 
+
+	^arguments! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:13'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:23'!
+opcodes 
+
+	^opcodes! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:20:33'!
+opcodes: aCollection 
+
+	opcodes := aCollection! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:22'!
+receiver 
+
+	^receiver! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:32'!
+receiver: anSExpression 
+
+	receiver := anSExpression! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:40'!
+selector 
+
+	^selector! !
+
+!SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:21:48'!
+selector: aSelector 
+
+	selector := aSelector! !
+
+!SMessage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:19:33'!
+initialize 
+
+	super initialize.
+	arguments := #()! !
+
+!SMessage methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:20:57'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{MessageId. '; print: selector; nextPutAll: '. '; cr.
+	receiver printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '.'; cr.
+	arguments
+		do: [:statement | statement printOn: aStream indent: anInteger + 1]
+		separatedBy: [aStream nextPutAll: '. '; cr].
+	aStream nextPutAll: '}'! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:19:52'!
+isInlined 
+
+	^opcodes = #inlined! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:01'!
+isMessage 
+
+	^true! !
+
+!SMessage methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:20:09'!
+isOptimized 
+
+	^opcodes notNil! !
+
+!SMessage methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:18:37'!
+acceptVisitor: visitor 
+
+	^visitor visitMessage: self! !
+
+!SMessage class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:18:01'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeMessage! !
+
+!SPragma methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:03:43'!
+name: aString 
+
+	name := aString! !
+
+!SReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:13:56'!
+expression 
+
+	^expression! !
+
+!SReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:14:06'!
+expression: anSExpression 
+
+	expression := anSExpression! !
+
+!SReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:14:27'!
+local 
+
+	^local! !
+
+!SReturn methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:14:36'!
+local: aBoolean 
+
+	local := aBoolean! !
+
+!SReturn methodsFor: 'printing' stamp: 'KenD 5/29/2021 13:14:49'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPutAll: '{ReturnId.'; cr.
+	expression printOn: aStream indent: anInteger + 1.
+	aStream nextPutAll: '}'! !
+
+!SReturn methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:14:17'!
+isReturn 
+
+	^true! !
+
+!SReturn methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:13:43'!
+acceptVisitor: visitor 
+
+	^visitor visitReturn: self! !
+
+!SReturn class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 13:13:07'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeReturn! !
 
 !SScript methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:31:48'!
 argumentCount 
