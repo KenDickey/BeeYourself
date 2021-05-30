@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:54:47 pm'!
+'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 1:49:40 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 36!
+!provides: 'PowerLang' 1 37!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -4519,8 +4519,11 @@ initialize
 	IsPointers := 16r00000002 "ObjectHeaderMasks isArrayed"
 ! !
 
-!OperandTypeFlags class methodsFor: 'class initialization' stamp: 'KenD 2/24/2021 14:02:21'!
+!OperandTypeFlags class methodsFor: 'class initialization' stamp: 'KenD 5/30/2021 13:03:53'!
 initialize
+"
+	self initialize.
+"
 	MemoryType _ 4.
 	RegisterGroupMask _ 3840.
 	ConstantType _ 2.
@@ -38378,6 +38381,32 @@ isInstruction
 includesString: subString
 
 	^(self findString: subString) ~= 0! !
+
+!String methodsFor: '*powerlang' stamp: 'KenD 5/30/2021 13:49:25'!
+replaceAllSubstrings: aString with: anotherString
+"
+  'This-and-that-and-the-Other' replaceAllSubstrings: '-a' with: '_A'.
+  ==> 'This_And-that_And-the-Other' 
+"
+	| string strm index fragment n |
+	string := aString asString.
+	string isEmpty ifTrue: [^self].
+	index := self findString: string.
+	index = 0 ifTrue: [^self].
+	strm := self asString class new writeStream.
+	fragment := self copyFrom: 1 to: index - 1.
+	strm nextPutAll: fragment.
+	n := string size.
+	[index > 0] whileTrue: [| next limit |
+		next :=  self  findSubstring: string
+					in: self  
+					startingAt: index + n 
+					matchTable: CaseSensitiveOrder.
+		limit := next = 0 ifTrue: [self size + 1] ifFalse: [next].
+		fragment := self copyFrom: index + n - 1 + 1 to: limit - 1.
+		strm nextPutAll: anotherString; nextPutAll: fragment.
+		index := next].
+	^strm contents! !
 
 !Integer methodsFor: '*powerlang-core' stamp: 'KenD 3/8/2021 07:55:07'!
 thru: anInteger 
