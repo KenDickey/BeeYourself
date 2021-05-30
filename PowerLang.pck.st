@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 29 May 2021 at 1:18:19 pm'!
+'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:09:17 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 32!
+!provides: 'PowerLang' 1 33!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -653,36 +653,6 @@ Object subclass: #StackFrameCursor
 StackFrameCursor class
 	instanceVariableNames: ''!
 
-!classDefinition: #Storage category: #'Powerlang-Core'!
-Object subclass: #Storage
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'Storage class' category: #'Powerlang-Core'!
-Storage class
-	instanceVariableNames: ''!
-
-!classDefinition: #BootstrapStorage category: #'Powerlang-Core-Metaphysics'!
-Storage subclass: #BootstrapStorage
-	instanceVariableNames: 'bootstrapper'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapStorage class' category: #'Powerlang-Core-Metaphysics'!
-BootstrapStorage class
-	instanceVariableNames: ''!
-
-!classDefinition: #ByteArrayAdapter category: #'Powerlang-Core-Metaphysics'!
-Storage subclass: #ByteArrayAdapter
-	instanceVariableNames: 'bytes'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ByteArrayAdapter class' category: #'Powerlang-Core-Metaphysics'!
-ByteArrayAdapter class
-	instanceVariableNames: ''!
-
 !classDefinition: #TonelRepository category: #'Powerlang-Core'!
 Object subclass: #TonelRepository
 	instanceVariableNames: ''
@@ -911,6 +881,16 @@ Assembler64 subclass: #JITAssembler64
 	category: 'Powerlang-Core-Assembler-JIT'!
 !classDefinition: 'JITAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 class
+	instanceVariableNames: ''!
+
+!classDefinition: #TemplateAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
+JITAssembler64 subclass: #TemplateAssembler64
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'TemplateAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
+TemplateAssembler64 class
 	instanceVariableNames: ''!
 
 !classDefinition: #NameOfSubclass category: #'Powerlang-Core-Assembler-JIT'!
@@ -1433,6 +1413,36 @@ SExpressionInterpreter subclass: #SmalltalkInterpreter
 SmalltalkInterpreter class
 	instanceVariableNames: ''!
 
+!classDefinition: #Storage category: #'Powerlang-Core-Metaphysics'!
+Object subclass: #Storage
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Storage class' category: #'Powerlang-Core-Metaphysics'!
+Storage class
+	instanceVariableNames: ''!
+
+!classDefinition: #BootstrapStorage category: #'Powerlang-Core-Metaphysics'!
+Storage subclass: #BootstrapStorage
+	instanceVariableNames: 'bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapStorage class' category: #'Powerlang-Core-Metaphysics'!
+BootstrapStorage class
+	instanceVariableNames: ''!
+
+!classDefinition: #ByteArrayAdapter category: #'Powerlang-Core-Metaphysics'!
+Storage subclass: #ByteArrayAdapter
+	instanceVariableNames: 'bytes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ByteArrayAdapter class' category: #'Powerlang-Core-Metaphysics'!
+ByteArrayAdapter class
+	instanceVariableNames: ''!
+
 !classDefinition: #Mirror category: #'Powerlang-Core-Mirrors'!
 Object subclass: #Mirror
 	instanceVariableNames: 'handle'
@@ -1671,36 +1681,6 @@ Object subclass: #Opcode
 	category: 'Powerlang-Core-Nativization'!
 !classDefinition: 'Opcode class' category: #'Powerlang-Core-Nativization'!
 Opcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackOpcode category: #'Powerlang-Core'!
-Opcode subclass: #StackOpcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackOpcode class' category: #'Powerlang-Core'!
-StackOpcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #PopRopcode category: #'Powerlang-Core-Nativization'!
-StackOpcode subclass: #PopRopcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PopRopcode class' category: #'Powerlang-Core-Nativization'!
-PopRopcode class
-	instanceVariableNames: ''!
-
-!classDefinition: #PushRopcode category: #'Powerlang-Core-Nativization'!
-StackOpcode subclass: #PushRopcode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PushRopcode class' category: #'Powerlang-Core-Nativization'!
-PushRopcode class
 	instanceVariableNames: ''!
 
 !classDefinition: #EnsureSmallIntegerOpcode category: #'Powerlang-Core-Nativization'!
@@ -2021,6 +2001,36 @@ LoadROpcode subclass: #LoadRwithTrue
 	category: 'Powerlang-Core-Nativization'!
 !classDefinition: 'LoadRwithTrue class' category: #'Powerlang-Core-Nativization'!
 LoadRwithTrue class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackOpcode category: #'Powerlang-Core-Nativization'!
+Opcode subclass: #StackOpcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'StackOpcode class' category: #'Powerlang-Core-Nativization'!
+StackOpcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #PopRopcode category: #'Powerlang-Core-Nativization'!
+StackOpcode subclass: #PopRopcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PopRopcode class' category: #'Powerlang-Core-Nativization'!
+PopRopcode class
+	instanceVariableNames: ''!
+
+!classDefinition: #PushRopcode category: #'Powerlang-Core-Nativization'!
+StackOpcode subclass: #PushRopcode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PushRopcode class' category: #'Powerlang-Core-Nativization'!
+PushRopcode class
 	instanceVariableNames: ''!
 
 !classDefinition: #SExpressionNativizer category: #'Powerlang-Core-Nativization'!
@@ -3236,9 +3246,6 @@ WARNING: x86 specific!
 !SFFIDescriptor commentStamp: '<historical>' prior: 0!
 #type : #bytes!
 
-!StorageReadError commentStamp: '<historical>' prior: 0!
-?? Subclass Error ??!
-
 !AssemblerGrammar commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
@@ -3260,9 +3267,6 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 !
-
-!Storage commentStamp: '<historical>' prior: 0!
-?? Subclass Error ??!
 
 !ABI commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -3336,13 +3340,19 @@ Nota Bene: Intel/x86 specific!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
-Nota Bene: x86 specific!
+Nota Bene: x86-64 specific!
 
 !JITAssembler64 commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
-Nota Bene: x86 specific!
+Nota Bene: x86-64 specific!
+
+!TemplateAssembler64 commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: x86-64 specific!
 
 !ISAInstructionPartReader commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -9348,165 +9358,6 @@ nativizer
 undermethods 
 
 	^builder undermethods! !
-
-!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:30'!
-arrayedSlotOf: base at: index put: value 
-
-	^ self subclassResponsibility! !
-
-!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:45'!
-new: oid 
-
-	^self subclassResponsibility! !
-
-!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:56'!
-slotOf: base at: index 
-
-	^ self subclassResponsibility! !
-
-!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:24:06'!
-slotOf: base at: index put: value 
-
-	^self subclassResponsibility! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:26:51'!
-arrayedSlotOf: oid at: index put: anotherOid 
-	"fixme: this message should be sent to ObjectFormat"
-	^ oid at: index put: anotherOid! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:01'!
-bootstrapper: aSmalltalkBootstrapper 
-
-	bootstrapper := aSmalltalkBootstrapper! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:14'!
-new: oid 
-	| meta base behavior |
-	meta := oid spec.
-	self assert: meta isMeta.
-	base := meta baseClass.
-	behavior := bootstrapper instanceBehaviorOfSpec: base.
-	^ (ObjectMap new: base) behavior: behavior; atAllPut: bootstrapper nilObject! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:39'!
-new: oid sized: anInteger 
-	| meta base behavior |
-	meta := oid spec.
-	self assert: meta isMeta.
-	base := meta baseClass.
-	behavior := bootstrapper instanceBehaviorOfSpec: base.
-	^ (ObjectMap new: base size: anInteger)
-		behavior: behavior;
-		atAllPut: bootstrapper nilObject! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:09'!
-newClosure: anObjectHandle 
-	| size |
-	size := anObjectHandle target size.
-	^ bootstrapper new: #Closure sized: size! !
-
-!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:23'!
-slotOf: anObjectMap at: index put: value 
-
-	index <= anObjectMap size
-		ifTrue: [ anObjectMap slotAt: index put: value ]
-		ifFalse: [ anObjectMap at: index put: value ].
-	^ value! !
-
-!BootstrapStorage class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:26:24'!
-on: aSmalltalkBootstrapper 
-
-	^ self new bootstrapper: aSmalltalkBootstrapper! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:35'!
-bytes: aByteArray 
-
-	bytes := aByteArray! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:52'!
-bytesAt: base sized: size 
-
-	^ bytes copyFrom: base + 1 to: base + size! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:05'!
-slotOf: base at: index 
-
-	^ self uint64atOffset: base + (8 * (index - 1))! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:18'!
-slotOf: base at: index put: value 
-
-	^ self uint64atOffset: base + ((index - 1) * 8) put: value! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:35'!
-stringAt: base sized: size 
-
-	^ (self bytesAt: base sized: size) asString! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:46'!
-uint16atOffset: anInteger 
-
-	^ bytes unsignedShortAt: anInteger + 1! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:57'!
-uint16atOffset: anInteger put: value 
-
-	^ bytes unsignedShortAt: anInteger + 1 put: value! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:07'!
-uint16of: base atOffset: offset 
-
-	^ self uint16atOffset: base + offset! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:18'!
-uint32atOffset: anInteger 
-
-	^ bytes unsignedLongAt: anInteger + 1! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:29'!
-uint32atOffset: anInteger put: value 
-
-	^ bytes unsignedLongAt: anInteger + 1 put: value! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:40'!
-uint32of: base atOffset: offset 
-
-	^ self uint32atOffset: base + offset! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:59'!
-uint64atOffset: anInteger 
-
-	^ bytes unsignedLongLongAt: anInteger + 1! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:10'!
-uint64atOffset: anInteger put: value 
-
-	^ bytes unsignedLongLongAt: anInteger + 1 put: value! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:21'!
-uint8atOffset: anInteger 
-
-	^ bytes unsignedByteAt: anInteger + 1! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:34'!
-uint8atOffset: anInteger put: value 
-
-	^ bytes unsignedByteAt: anInteger + 1 put: value! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:45'!
-uint8of: base atOffset: offset 
-
-	^ self uint8atOffset: base + offset! !
-
-!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:33:02'!
-wordSize 
-
-	^8! !
-
-!ByteArrayAdapter class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:29:15'!
-on: aByteArray 
-
-	^self new bytes: aByteArray! !
 
 !VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
 allSharedPoolsUsing: globals 
@@ -16186,6 +16037,1600 @@ initialize
 	super initialize.
 	ExternalFunctions := Dictionary new! !
 
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:33:59'!
+addAtoR 
+
+	self assembleBytes: #[16r48 16r1 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:33:51'!
+addDoubleX1toX0 
+
+	self assembleBytes: #[16rF2 16rF 16r58 16rC1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:34:18'!
+addSPtoT 
+
+	self assembleBytes: #[16r48 16r1 16rE1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:34:31'!
+addSPwithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16rC4];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r81 16rC4];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r1 16rDC]! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:34:45'!
+addSslotsToSP 
+
+	self assembleBytes: #[16r48 16r8D 16r24 16rF4].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:34:56'!
+addTslotsToSP 
+
+	self assembleBytes: #[16r48 16r8D 16r24 16rCC].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 07:35:06'!
+addTtoR 
+
+	self assembleBytes: #[16r48 16r1 16rC8].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:25:50'!
+decR 
+
+	self assembleBytes: #[16r48 16rFF 16rC8].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:25:59'!
+decRindirect 
+
+	self assembleBytes: #[16r48 16rFF 16r8].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:26:23'!
+divideDoubleX0byX1 
+
+	self assembleBytes: #[16rF2 16rF 16r5E 16rC1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:26:34'!
+divideRbyT 
+
+	self assembleBytes: #[16r48 16r99 16r48 16rF7 16rF9].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:26:45'!
+dropTopOfFPU 
+
+	self assembleBytes: #[16rDD 16rD8].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:27:50'!
+incA 
+
+	self assembleBytes: #[16r48 16rFF 16rC2].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:28:01'!
+incC 
+
+	self assembleBytes: #[16r48 16rFF 16rC3].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:46:21'!
+lock 
+
+	self flag: #funkyCategory.
+	self assembleBytes: #[16rF0].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:48:41'!
+multiplyDoubleX0byX1 
+
+	self assembleBytes: #[16rF2 16rF 16r59 16rC1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:48:50'!
+multiplyRbyA 
+
+	self assembleBytes: #[16r48 16rF7 16rEA].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 11:59:26'!
+sqrtDoubleX0 
+
+	self assembleBytes: #[16rF2 16rF 16r51 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 12:06:07'!
+subAfromR 
+
+	self assembleBytes: #[16r48 16r29 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 12:06:16'!
+subAfromT 
+
+	self assembleBytes: #[16r48 16r29 16rD1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 12:06:26'!
+subDoubleX1fromX0 
+
+	self assembleBytes: #[16rF2 16rF 16r5C 16rC1].! !
+
+!TemplateAssembler64 methodsFor: 'arithmetic' stamp: 'KenD 5/30/2021 12:06:37'!
+subTslotsToSP 
+
+	self assembleBytes: #[16r48 16rF7 16rD9 16r48 16r8D 16r24 16rCC 16r48 16rF7 16rD9].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:19:25'!
+clearAintegerBit 
+
+	self assembleBytes: #[16r48 16rFF 16rCA].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:19:57'!
+clearFPUFlags 
+
+	self assembleBytes: #[16rDB 16rE2].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:53:03'!
+clearRhighHalf 
+
+	self assembleBytes: #[16r89 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:20:53'!
+clearRintegerBit 
+
+	self assembleBytes: #[16r48 16rFF 16rC8].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:21:04'!
+clearSafeRintegerBit 
+
+	self assembleBytes: #[16r24 16rFE].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:27:16'!
+ensureRintegerBit 
+
+	self assembleBytes: #[16rC 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:27:25'!
+ensureSafeRintegerBit 
+
+	self assembleBytes: #[16rC 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:58:53'!
+scaleFloatOnRWithA 
+
+	self assembleBytes: #[16rDD 16r2 16rDD 16r0 16rD9 16rFD 16rDD 16r18 16rDD 16rD8].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:59:04'!
+shiftLeftRwithT 
+
+	self assembleBytes: #[16r48 16rD3 16rE0].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 11:59:13'!
+shiftRightRwithT 
+
+	self assembleBytes: #[16r48 16rD3 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:06:49'!
+testAintegerBit 
+
+	self assembleBytes: #[16rF6 16rC2 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:07:00'!
+testRintegerBit 
+
+	self assembleBytes: #[16rA8 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:07:14'!
+testRwithR 
+
+	self assembleBytes: #[16r48 16r85 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:07:24'!
+testTIntegerBit 
+
+	self assembleBytes: #[16rF6 16rC1 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:07:35'!
+testTintegerBit 
+
+	self assembleBytes: #[16rF6 16rC1 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:07:46'!
+wordSize: anInteger 
+
+	self assert: anInteger = 8.
+	super wordSize: anInteger! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:08:51'!
+xorAwithR 
+
+	self assembleBytes: #[16r48 16r31 16rC2].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:09:00'!
+xorFPwithFP 
+
+	self assembleBytes: #[16r48 16r31 16rED].! !
+
+!TemplateAssembler64 methodsFor: 'bits' stamp: 'KenD 5/30/2021 12:09:10'!
+xorRwithA 
+
+	self assembleBytes: #[16r48 16r31 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 07:38:43'!
+buildFrame 
+
+	self assembleBytes: #[16r55 16r48 16r89 16rE5].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:17:20'!
+callA 
+
+	self assembleBytes: #[16rFF 16rD2].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:17:30'!
+callIndirectA 
+
+	self assembleBytes: #[16rFF 16r12].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:17:51'!
+callR 
+
+	self assembleBytes: #[16rFF 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:57:28'!
+restoreCallerEnvironment 
+
+	self assembleBytes: #[16r48 16r8B 16r7D 16rE8].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:57:38'!
+restoreCallerFrame 
+
+	self assembleBytes: #[16r48 16r89 16rEC 16r5D].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:57:50'!
+restoreCallerM 
+
+	self assembleBytes: #[16r48 16r8B 16r5D 16rF0]! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:57:58'!
+restoreCallerSelf 
+
+	self assembleBytes: #[16r48 16r8B 16r75 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:58:07'!
+restoreRSmallInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:58:17'!
+restoreRsmallInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'call+return' stamp: 'KenD 5/30/2021 11:58:28'!
+saveCallerFrame 
+
+	self assembleBytes: #[16r55 16r48 16r89 16rE5].! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:21:33'!
+compareAwithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16rFA];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r81 16rFA];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r39 16rDA]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:21:54'!
+compareEqualLargeX0withAindirect 
+
+	self assembleBytes: #[16rF2 16rF 16rC2 16r2 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:03'!
+compareLessThanLargeX0withAindirect 
+
+	self assembleBytes: #[16rF2 16rF 16rC2 16r2 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:13'!
+compareRwithA 
+
+	self assembleBytes: #[16r48 16r39 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:23'!
+compareRwithEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r3B 16r7]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r3B 16r47];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r3B 16r87];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:33'!
+compareRwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r3B 16r45 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r3B 16r45];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r3B 16r85];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:45'!
+compareRwithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16rF8];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r3D];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r39 16rD8]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:22:55'!
+compareRwithS 
+
+	self assembleBytes: #[16r48 16r39 16rF0].! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:23:06'!
+compareRwithSindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r3B 16r6]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r3B 16r46];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r3B 16r86];
+				assembleBytes: offset count: 4]
+! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:23:25'!
+compareRwithVindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r49 16r3B 16r3]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r49 16r3B 16r43];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r49 16r3B 16r83];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:23:41'!
+compareSwithTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r3B 16r31]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r3B 16r71];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r3B 16rB1];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'comparing' stamp: 'KenD 5/30/2021 11:23:54'!
+compareTwithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16rF9];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r81 16rF9];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r39 16rD9]! !
+
+!TemplateAssembler64 methodsFor: 'initialization' stamp: 'KenD 5/30/2021 11:28:29'!
+initializeS 
+
+	self assembleBytes: #[16r48 16r89 16rC6].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:24:26'!
+convertAtoNativeInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rFA].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:24:36'!
+convertAtoSmallInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rE2 16r48 16rFF 16rC2].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:24:46'!
+convertRtoNativeInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:24:57'!
+convertRtoSmallInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rE0 16r48 16rFF 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:25:06'!
+convertTToNativeInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rF9].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:25:18'!
+convertTosToSmallInteger 
+
+	self assembleBytes: #[16r48 16rD1 16r24 16r24 16r48 16rFF 16r4 16r24].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:25:28'!
+convertTtoNativeInteger 
+
+	self assembleBytes: #[16r48 16rD1 16rF9].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 11:48:28'!
+moveTslots 
+
+	self assembleBytes: #[16rF3 16r48 16rA5].! !
+
+!TemplateAssembler64 methodsFor: 'integers' stamp: 'KenD 5/30/2021 12:08:15'!
+writeTslots 
+
+	self assembleBytes: #[16rF3 16r48 16rAB].! !
+
+!TemplateAssembler64 methodsFor: 'jumps' stamp: 'KenD 5/30/2021 11:28:43'!
+jumpIndirectA 
+
+	self assembleBytes: #[16rFF 16r22].! !
+
+!TemplateAssembler64 methodsFor: 'jumps' stamp: 'KenD 5/30/2021 11:29:21'!
+jumpToA 
+
+	self assembleBytes: #[16rFF 16rE2].! !
+
+!TemplateAssembler64 methodsFor: 'jumps' stamp: 'KenD 5/30/2021 11:29:34'!
+jumpToS 
+
+	self assembleBytes: #[16rFF 16rE6].! !
+
+!TemplateAssembler64 methodsFor: 'jumps' stamp: 'KenD 5/30/2021 11:29:53'!
+jumpToTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16rFF 16r21]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16rFF 16r61];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16rFF 16rA1];
+				assembleBytes: offset count: 4]
+! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:26:57'!
+dummyPointer 
+
+	^16r1BADADD01BADADD0! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:27:38'!
+exchangeRindirectWithT 
+
+	self assembleBytes: #[16r48 16r87 16r8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:30:34'!
+loadAwithAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r12]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r52];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r92];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:30:45'!
+loadAwithEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r17]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r57];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r97];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:31:00'!
+loadAwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r55 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r55];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r95];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:31:14'!
+loadAwithFalse 
+
+	self assembleBytes: #[16r4C 16r89 16rF2]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:31:24'!
+loadAwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16rC7 16rC2];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r48 16rBA];
+		assembleBytes: imm count: 8! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:31:35'!
+loadAwithNil 
+
+	self assembleBytes: #[16r4C 16r89 16rE2]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:31:46'!
+loadAwithR 
+
+	self assembleBytes: #[16r48 16r89 16rC2].
+	! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:32:02'!
+loadAwithRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r10]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r50];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r90];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:32:18'!
+loadAwithRoffsetAtA 
+
+	self assembleBytes: #[16r48 16r8B 16r14 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:32:27'!
+loadAwithS 
+
+	self assembleBytes: #[16r48 16r89 16rF2].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:32:39'!
+loadAwithSindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r16]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r56];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r96];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:32:49'!
+loadAwithT 
+
+	self assembleBytes: #[16r48 16r89 16rCA].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:33:01'!
+loadAwithTrue 
+
+	self assembleBytes: #[16r4C 16r89 16rEA]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:33:15'!
+loadEwithAddressOfRatA 
+
+	self assembleBytes: #[16r48 16r8D 16r7C 16rD0 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:33:30'!
+loadEwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r7D 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r7D];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16rBD];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:33:46'!
+loadEwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16rC7 16rC7];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r48 16rBF];
+		assembleBytes: imm count: 8
+! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:33:57'!
+loadEwithR 
+
+	self assembleBytes: #[16r48 16r89 16rC7].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:34:06'!
+loadFPwithR 
+
+	self assembleBytes: #[16r48 16r89 16rC5].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:34:15'!
+loadFPwithSP 
+
+	self assembleBytes: #[16r48 16r89 16rE5].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:34:25'!
+loadLargeX0withRindirect 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r6E 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:34:36'!
+loadLargeX1withAindirect 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r6E 16rA].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:34:47'!
+loadLongRWithRAtOffsetA 
+
+	self assembleBytes: #[16r8B 16r4 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:01'!
+loadLongRwithRatOffsetA 
+
+	self assembleBytes: #[16r8B 16r4 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:12'!
+loadMXCSRfromA 
+
+	self assembleBytes: #[16rF 16rAE 16r12].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:29'!
+loadMwithA 
+
+	self assembleBytes: #[16r48 16r89 16rD3]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:39'!
+loadRConvertingDoubleRindirect 
+
+	self assembleBytes: #[16rF2 16r48 16rF 16r2C 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:50'!
+loadRconvertingDoublePointedByR 
+
+	self assembleBytes: #[16rF2 16r48 16rF 16r2C 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:35:59'!
+loadRwithA 
+
+	self assembleBytes: #[16r48 16r89 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:36:09'!
+loadRwithArgPointer 
+
+	self assembleBytes: #[16r48 16r8D 16r45 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:36:19'!
+loadRwithE 
+
+	self assembleBytes: #[16r48 16r89 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:36:31'!
+loadRwithEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r7]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r47];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r87];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:36:44'!
+loadRwithFP 
+
+	self assembleBytes: #[16r48 16r89 16rE8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:36:58'!
+loadRwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r45 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r45];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r85];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:37:09'!
+loadRwithFalse 
+
+	self assembleBytes: #[16r4C 16r89 16rF0]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:37:22'!
+loadRwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16rC7 16rC0];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r48 16rB8];
+		assembleBytes: imm count: 8! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:37:37'!
+loadRwithM 
+
+	self assembleBytes: #[16r48 16r89 16rD8]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:37:47'!
+loadRwithMindex: index 
+	| offset |
+	offset := (index - 1) * wordSize.
+	offset = 0
+		ifTrue: [ ^ self assembleBytes: #[16r48 16r8B 16r03] ].
+	(-128 <= offset and: [ offset < 128 ])
+		ifTrue: [ self
+				assembleBytes: #[16r48 16r8B 16r43];
+				assembleByte: offset ]
+		ifFalse: [ self
+				assembleBytes: #[16r48 16r8B 16r83];
+				assembleBytes: offset count: 4 ]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:38:00'!
+loadRwithNil 
+
+	self assembleBytes: #[16r4C 16r89 16rE0]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:38:13'!
+loadRwithRatA 
+
+	self assembleBytes: #[16r48 16r8B 16r44 16rD0 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:38:22'!
+loadRwithRatOffsetA 
+
+	self assembleBytes: #[16r48 16r8B 16r4 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:38:33'!
+loadRwithRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r40];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r80];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:38:46'!
+loadRwithS 
+
+	self assembleBytes: #[16r48 16r89 16rF0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:39:00'!
+loadRwithSPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r4 16r24]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r44 16r24];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r84 16r24];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:39:12'!
+loadRwithSindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r6]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r46];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r86];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:39:26'!
+loadRwithT 
+
+	self assembleBytes: #[16r48 16r89 16rC8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:39:53'!
+loadRwithTIBatIndexR 
+
+	self assembleBytes: #[16r65 16r48 16r8B 16r4 16rC5 16r0 16r0 16r0 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:40:06'!
+loadRwithThreadVariableAtIndexR 
+
+	self assembleBytes: #[16r65 16r48 16r8B 16r4 16rC5 16r80 16r14 16r0 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:40:18'!
+loadRwithTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r1]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r41];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r81];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:40:30'!
+loadRwithTos 
+
+	self assembleBytes: #[16r48 16r8B 16r4 16r24].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:40:39'!
+loadRwithTrue 
+
+	self assembleBytes: #[16r4C 16r89 16rE8]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:40:55'!
+loadRwithX0 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r7E 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:41:05'!
+loadSPwithFP 
+
+	self assembleBytes: #[16r48 16r89 16rEC].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:41:15'!
+loadSPwithT 
+
+	self assembleBytes: #[16r48 16r89 16rCC].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:41:29'!
+loadSwithA 
+
+	self assembleBytes: #[16r48 16r89 16rD6].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:41:40'!
+loadSwithAddressOfSatA 
+
+	self assembleBytes: #[16r48 16r8D 16r74 16rD6 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:41:52'!
+loadSwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r75 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r75];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16rB5];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:42:07'!
+loadSwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16rC7 16rC6];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r48 16rBE];
+		assembleBytes: imm count: 8! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:42:18'!
+loadSwithRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r30]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r70];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16rB0];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:42:29'!
+loadSwithT 
+
+	self assembleBytes: #[16r48 16r89 16rCE].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:42:38'!
+loadTwithA 
+
+	self assembleBytes: #[16r48 16r89 16rD1].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:42:49'!
+loadTwithAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16rA]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r4A];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r8A];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:43:01'!
+loadTwithEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16rF]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r4F];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r8F];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:43:15'!
+loadTwithFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r4D 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r4D];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r8D];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:43:26'!
+loadTwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16rC7 16rC1];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r48 16rB9];
+		assembleBytes: imm count: 8! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:43:40'!
+loadTwithR 
+
+	self assembleBytes: #[16r48 16r89 16rC1].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:43:50'!
+loadTwithTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r8B 16r9]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r8B 16r49];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r8B 16r89];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:44:02'!
+loadVwithImmediate: imm 
+
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r49 16rC7 16rC3];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:44:13'!
+loadX0withRasDouble 
+
+	self assembleBytes: #[16rF2 16r48 16rF 16r2A 16rC0].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:44:25'!
+loadX1roundingX0 
+
+	self assembleBytes: #[16r66 16rF 16r3A 16rB 16rC8 16r3].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:44:36'!
+loadZeroExtendByteRwithRatA 
+
+	self assembleBytes: #[16r48 16rF 16rB6 16r44 16r10 16rFF].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:44:56'!
+loadZeroExtendByteRwithSPatA 
+
+	self assembleBytes: #[16r48 16rF 16rB6 16r44 16r14 16rFF].! !
+
+!TemplateAssembler64 methodsFor: 'load' stamp: 'KenD 5/30/2021 11:45:07'!
+loadZeroExtendLongRwithRatA 
+
+	self assembleBytes: #[16r8B 16r44 16r90 16rFC].! !
+
+!TemplateAssembler64 methodsFor: 'logic' stamp: 'KenD 5/30/2021 07:36:03'!
+andRwithA 
+
+	self assembleBytes: #[16r48 16r21 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'logic' stamp: 'KenD 5/30/2021 07:36:53'!
+andRwithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16rE0];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r25];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r21 16rD8]! !
+
+!TemplateAssembler64 methodsFor: 'logic' stamp: 'KenD 5/30/2021 07:38:02'!
+andTosWithImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r83 16r24 16r24];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r48 16r81 16r24 16r24];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r4C 16r21 16r1C 16r24]! !
+
+!TemplateAssembler64 methodsFor: 'logic' stamp: 'KenD 5/30/2021 11:49:07'!
+orRwithA 
+
+	self assembleBytes: #[16r48 16r9 16rD0].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:49:24'!
+popA 
+
+	self assembleBytes: #[16r5A].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:49:34'!
+popB 
+
+	self assembleBytes: #[16r5B].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:49:45'!
+popE 
+
+	self assembleBytes: #[16r5F].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:49:54'!
+popFP 
+
+	self assembleBytes: #[16r5D].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:04'!
+popR 
+
+	self assembleBytes: #[16r58].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:12'!
+popS 
+
+	self assembleBytes: #[16r5E].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:22'!
+popSP 
+
+	self assembleBytes: #[16r5C].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:31'!
+popSPindirect 
+
+	self assembleBytes: #[16r8F 16r4 16r24].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:44'!
+popT 
+
+	self assembleBytes: #[16r59].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:50:53'!
+pushA 
+
+	self assembleBytes: #[16r52].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:51:02'!
+pushAOnFPUStack 
+
+	self assembleBytes: #[16rDD 16r2].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:51:13'!
+pushB 
+
+	self assembleBytes: #[16r53].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:51:21'!
+pushE 
+
+	self assembleBytes: #[16r57].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:51:32'!
+pushEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16rFF 16r37]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16rFF 16r77];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16rFF 16rB7];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:51:45'!
+pushFP 
+
+	self assembleBytes: #[16r55].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:53:26'!
+pushFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16rFF 16r75 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16rFF 16r75];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16rFF 16rB5];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:53:37'!
+pushImmediate: imm 
+
+	(-128 <= imm and: [ imm < 128 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r6A];
+				assembleByte: imm ].
+	(-16r80000000 <= imm and: [ imm < 16r80000000 ])
+		ifTrue: [ ^ self
+				assembleBytes: #[16r68];
+				assembleBytes: imm count: 4 ].
+	self
+		assembleBytes: #[16r49 16rBB];
+		assembleBytes: imm count: 8;
+		assembleBytes: #[16r41 16r53]! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:55:46'!
+pushIndirectR 
+
+	self assembleBytes: #[16rFF 16r30].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:55:55'!
+pushR 
+
+	self assembleBytes: #[16r50].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:04'!
+pushROnFPUStack 
+
+	self assembleBytes: #[16rDD 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:12'!
+pushS 
+
+	self assembleBytes: #[16r56].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:22'!
+pushSP 
+
+	self assembleBytes: #[16r54].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:35'!
+pushSindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16rFF 16r36]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16rFF 16r76];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16rFF 16rB6];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:45'!
+pushT 
+
+	self assembleBytes: #[16r51].! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:56:54'!
+pushTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16rFF 16r31]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16rFF 16r71];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16rFF 16rB1];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'push/pop' stamp: 'KenD 5/30/2021 11:57:06'!
+pushVindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r41 16rFF 16r33]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r41 16rFF 16r73];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r41 16rFF 16rB3];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 11:59:47'!
+storeAinSPatT 
+
+	self assembleBytes: #[16r48 16r89 16r54 16rCC 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 11:59:58'!
+storeAinThreadVariableAtIndexR 
+
+	self assembleBytes: #[16r65 16r48 16r89 16r14 16rC5 16r80 16r14 16r0 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:00:10'!
+storeAinTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r11]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r51];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r91];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:01:11'!
+storeArgumentsInStack 
+
+	self assembleBytes: #[16r48 16r89 16r4D 16r10 16r48 16r89 16r55 16r18 16r4C 16r89 16r45 16r20 16r4C 16r89 16r4D 16r28].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:01:19'!
+storeByteTinRatA 
+
+	self assembleBytes: #[16r88 16r4C 16r10 16rFF].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:01:28'!
+storeDoubleResultInRindirect 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r7E 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:01:43'!
+storeEinAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r3A]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r7A];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16rBA];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:01:55'!
+storeEinRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r38]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r78];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16rB8];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:06'!
+storeLargeX0inA 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r7E 16r2].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:15'!
+storeLargeX0inR 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r7E 16r0].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:27'!
+storeLargeX0inT 
+
+	self assembleBytes: #[16r66 16r48 16rF 16r7E 16r1].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:39'!
+storeLongTInRAtA 
+
+	self assembleBytes: #[16r89 16r4C 16r90 16rFC].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:50'!
+storeLongTinRatA 
+
+	self assembleBytes: #[16r89 16r4C 16r90 16rFC].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:02:59'!
+storeLongTinRatOffsetA 
+
+	self assembleBytes: #[16r89 16rC 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:03:14'!
+storeMXCSRintoA 
+
+	self assembleBytes: #[16rF 16rAE 16r1A].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:03:25'!
+storeRinAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r2]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r42];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r82];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:03:35'!
+storeRinEindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r7]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r47];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r87];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:03:46'!
+storeRinFPindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r45 16r0]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r45];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r85];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:03:57'!
+storeRinSindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r6]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r46];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r86];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:04:09'!
+storeRinTindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r1]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r41];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r81];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:04:22'!
+storeShortTinRatOffsetA 
+
+	self assembleBytes: #[16r66 16r89 16rC 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:04:32'!
+storeSinAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r32]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r72];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16rB2];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:04:43'!
+storeSinRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r30]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r70];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16rB0];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:04:56'!
+storeTIBwithAatIndexR 
+
+	self assembleBytes: #[16r65 16r48 16r89 16r14 16rC5 16r0 16r0 16r0 16r0].
+	! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:05:07'!
+storeTInRAtA 
+
+	self assembleBytes: #[16r48 16r89 16r4C 16rD0 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:05:18'!
+storeTinAindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16rA]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r4A];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r8A];
+				assembleBytes: offset count: 4]! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:05:27'!
+storeTinRatA 
+
+	self assembleBytes: #[16r48 16r89 16r4C 16rD0 16rF8].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:05:38'!
+storeTinRatOffsetA 
+
+	self assembleBytes: #[16r48 16r89 16rC 16r10].! !
+
+!TemplateAssembler64 methodsFor: 'store' stamp: 'KenD 5/30/2021 12:05:47'!
+storeTinRindex: index 
+	| offset |
+	offset := index - 1 * wordSize.
+	offset = 0 ifTrue: [^self assembleBytes: #[16r48 16r89 16r8]].
+	(-128 <= offset and: [offset < 128])
+		 ifTrue: [
+			self
+				assembleBytes: #[16r48 16r89 16r48];
+		 		assembleByte: offset]
+		ifFalse: [ 
+			self
+				assembleBytes: #[16r48 16r89 16r88];
+				assembleBytes: offset count: 4]! !
+
 !NameOfSubclass methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:40:52'!
 baseAddress 
 
@@ -21677,6 +23122,165 @@ initialize
 			_isSmallInteger 
 			_basicHash _basicHash:)! !
 
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:30'!
+arrayedSlotOf: base at: index put: value 
+
+	^ self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:45'!
+new: oid 
+
+	^self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:23:56'!
+slotOf: base at: index 
+
+	^ self subclassResponsibility! !
+
+!Storage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:24:06'!
+slotOf: base at: index put: value 
+
+	^self subclassResponsibility! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:26:51'!
+arrayedSlotOf: oid at: index put: anotherOid 
+	"fixme: this message should be sent to ObjectFormat"
+	^ oid at: index put: anotherOid! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:01'!
+bootstrapper: aSmalltalkBootstrapper 
+
+	bootstrapper := aSmalltalkBootstrapper! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:14'!
+new: oid 
+	| meta base behavior |
+	meta := oid spec.
+	self assert: meta isMeta.
+	base := meta baseClass.
+	behavior := bootstrapper instanceBehaviorOfSpec: base.
+	^ (ObjectMap new: base) behavior: behavior; atAllPut: bootstrapper nilObject! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:27:39'!
+new: oid sized: anInteger 
+	| meta base behavior |
+	meta := oid spec.
+	self assert: meta isMeta.
+	base := meta baseClass.
+	behavior := bootstrapper instanceBehaviorOfSpec: base.
+	^ (ObjectMap new: base size: anInteger)
+		behavior: behavior;
+		atAllPut: bootstrapper nilObject! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:09'!
+newClosure: anObjectHandle 
+	| size |
+	size := anObjectHandle target size.
+	^ bootstrapper new: #Closure sized: size! !
+
+!BootstrapStorage methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:28:23'!
+slotOf: anObjectMap at: index put: value 
+
+	index <= anObjectMap size
+		ifTrue: [ anObjectMap slotAt: index put: value ]
+		ifFalse: [ anObjectMap at: index put: value ].
+	^ value! !
+
+!BootstrapStorage class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:26:24'!
+on: aSmalltalkBootstrapper 
+
+	^ self new bootstrapper: aSmalltalkBootstrapper! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:35'!
+bytes: aByteArray 
+
+	bytes := aByteArray! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:29:52'!
+bytesAt: base sized: size 
+
+	^ bytes copyFrom: base + 1 to: base + size! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:05'!
+slotOf: base at: index 
+
+	^ self uint64atOffset: base + (8 * (index - 1))! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:18'!
+slotOf: base at: index put: value 
+
+	^ self uint64atOffset: base + ((index - 1) * 8) put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:35'!
+stringAt: base sized: size 
+
+	^ (self bytesAt: base sized: size) asString! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:46'!
+uint16atOffset: anInteger 
+
+	^ bytes unsignedShortAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:30:57'!
+uint16atOffset: anInteger put: value 
+
+	^ bytes unsignedShortAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:07'!
+uint16of: base atOffset: offset 
+
+	^ self uint16atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:18'!
+uint32atOffset: anInteger 
+
+	^ bytes unsignedLongAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:29'!
+uint32atOffset: anInteger put: value 
+
+	^ bytes unsignedLongAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:40'!
+uint32of: base atOffset: offset 
+
+	^ self uint32atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:31:59'!
+uint64atOffset: anInteger 
+
+	^ bytes unsignedLongLongAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:10'!
+uint64atOffset: anInteger put: value 
+
+	^ bytes unsignedLongLongAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:21'!
+uint8atOffset: anInteger 
+
+	^ bytes unsignedByteAt: anInteger + 1! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:34'!
+uint8atOffset: anInteger put: value 
+
+	^ bytes unsignedByteAt: anInteger + 1 put: value! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:32:45'!
+uint8of: base atOffset: offset 
+
+	^ self uint8atOffset: base + offset! !
+
+!ByteArrayAdapter methodsFor: 'accessing' stamp: 'KenD 2/28/2021 13:33:02'!
+wordSize 
+
+	^8! !
+
+!ByteArrayAdapter class methodsFor: 'instance creation' stamp: 'KenD 2/28/2021 13:29:15'!
+on: aByteArray 
+
+	^self new bytes: aByteArray! !
+
 !Mirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:21:23'!
 handle 
 
@@ -24737,21 +26341,6 @@ nativizeUsing: anAssembler for: messageNativizer
 
 	self nativizeUsing: anAssembler! !
 
-!StackOpcode class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:50:03'!
-decodeUsing: anAstcodeDecoder 
-
-	^ self new! !
-
-!PopRopcode methodsFor: 'codeGeneration' stamp: 'KenD 4/12/2021 10:38:46'!
-nativizeUsing: anAssembler for: messageNativizer 
-
-	messageNativizer popR! !
-
-!PushRopcode methodsFor: 'codeGeneration' stamp: 'KenD 4/12/2021 10:47:11'!
-nativizeUsing: anAssembler for: messageNativizer 
-
-	messageNativizer pushR! !
-
 !EnsureSmallIntegerOpcode class methodsFor: 'instance creation' stamp: 'KenD 3/3/2021 13:03:09'!
 decodeUsing: anAstcodeDecoder 
 
@@ -24988,6 +26577,21 @@ decodeUsing: anAstcodeDecoder
 decodeUsing: anAstcodeDecoder 
 
 	^ self new! !
+
+!StackOpcode class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:50:03'!
+decodeUsing: anAstcodeDecoder 
+
+	^ self new! !
+
+!PopRopcode methodsFor: 'codeGeneration' stamp: 'KenD 4/12/2021 10:38:46'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	messageNativizer popR! !
+
+!PushRopcode methodsFor: 'codeGeneration' stamp: 'KenD 4/12/2021 10:47:11'!
+nativizeUsing: anAssembler for: messageNativizer 
+
+	messageNativizer pushR! !
 
 !SExpressionNativizer methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:28:00'!
 addFallback: aBlock 
