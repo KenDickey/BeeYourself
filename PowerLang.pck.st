@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:35:49 pm'!
+'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:54:47 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 35!
+!provides: 'PowerLang' 1 36!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -66,7 +66,7 @@ Prefixes class
 !classDefinition: #Registers category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Registers
 	instanceVariableNames: ''
-	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9 al cl dl'
+	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
 !classDefinition: 'Registers class' category: #'Powerlang-Core-Assembler-Intel'!
