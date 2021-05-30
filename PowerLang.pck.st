@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:09:17 pm'!
+'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:35:49 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 33!
+!provides: 'PowerLang' 1 35!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -663,36 +663,6 @@ Object subclass: #TonelRepository
 TonelRepository class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSpecies category: #'Powerlang-Core'!
-Object subclass: #VirtualSpecies
-	instanceVariableNames: 'spec superclass map'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualSpecies class' category: #'Powerlang-Core'!
-VirtualSpecies class
-	instanceVariableNames: ''!
-
-!classDefinition: #VirtualClass category: #'Powerlang-Core'!
-VirtualSpecies subclass: #VirtualClass
-	instanceVariableNames: 'cvars'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualClass class' category: #'Powerlang-Core'!
-VirtualClass class
-	instanceVariableNames: ''!
-
-!classDefinition: #VirtualMetaclass category: #'Powerlang-Core'!
-VirtualSpecies subclass: #VirtualMetaclass
-	instanceVariableNames: 'class'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'VirtualMetaclass class' category: #'Powerlang-Core'!
-VirtualMetaclass class
-	instanceVariableNames: ''!
-
 !classDefinition: #ABI category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ABI
 	instanceVariableNames: ''
@@ -703,13 +673,13 @@ Object subclass: #ABI
 ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X64ABI category: #'Powerlang-Core'!
+!classDefinition: #X64ABI category: #'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'X64ABI class' category: #'Powerlang-Core'!
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 X64ABI class
 	instanceVariableNames: ''!
 
@@ -723,13 +693,23 @@ X64ABI subclass: #SysVX64ABI
 SysVX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X86ABI category: #'Powerlang-Core'!
+!classDefinition: #WinX64ABI category: #'Powerlang-Core-Assembler-Intel'!
+X64ABI subclass: #WinX64ABI
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'WinX64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
+WinX64ABI class
+	instanceVariableNames: ''!
+
+!classDefinition: #X86ABI category: #'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X86ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'X86ABI class' category: #'Powerlang-Core'!
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X86ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 X86ABI class
 	instanceVariableNames: ''!
 
@@ -841,6 +821,16 @@ InstructionPrefix subclass: #SegmentPrefix
 	category: 'Powerlang-Core-Assembler-Intel'!
 !classDefinition: 'SegmentPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 SegmentPrefix class
+	instanceVariableNames: ''!
+
+!classDefinition: #VEXPrefix category: #'Powerlang-Core-Assembler-Intel'!
+InstructionPrefix subclass: #VEXPrefix
+	instanceVariableNames: 'signature'
+	classVariableNames: 'Signatures'
+	poolDictionaries: 'CharacterConstants'
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'VEXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+VEXPrefix class
 	instanceVariableNames: ''!
 
 !classDefinition: #InstructionSpec category: #'Powerlang-Core-Assembler-Intel'!
@@ -1143,6 +1133,16 @@ Object subclass: #MethodEvaluator
 MethodEvaluator class
 	instanceVariableNames: ''!
 
+!classDefinition: #VirtualDictionary category: #'Powerlang-Core-Emulation'!
+Object subclass: #VirtualDictionary
+	instanceVariableNames: 'constant cache nilObj dictionary'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualDictionary class' category: #'Powerlang-Core-Emulation'!
+VirtualDictionary class
+	instanceVariableNames: ''!
+
 !classDefinition: #VirtualSmalltalkImage category: #'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSmalltalkImage
 	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
@@ -1161,6 +1161,36 @@ Object subclass: #VirtualSmalltalkRuntime
 	category: 'Powerlang-Core-Emulation'!
 !classDefinition: 'VirtualSmalltalkRuntime class' category: #'Powerlang-Core-Emulation'!
 VirtualSmalltalkRuntime class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSpecies category: #'Powerlang-Core-Emulation'!
+Object subclass: #VirtualSpecies
+	instanceVariableNames: 'spec superclass map'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSpecies class' category: #'Powerlang-Core-Emulation'!
+VirtualSpecies class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualClass category: #'Powerlang-Core-Emulation'!
+VirtualSpecies subclass: #VirtualClass
+	instanceVariableNames: 'cvars'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualClass class' category: #'Powerlang-Core-Emulation'!
+VirtualClass class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualMetaclass category: #'Powerlang-Core-Emulation'!
+VirtualSpecies subclass: #VirtualMetaclass
+	instanceVariableNames: 'class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualMetaclass class' category: #'Powerlang-Core-Emulation'!
+VirtualMetaclass class
 	instanceVariableNames: ''!
 
 !classDefinition: #Bridge category: #'Powerlang-Core-Metaphysics'!
@@ -2743,16 +2773,6 @@ Object subclass: #Binding
 Binding class
 	instanceVariableNames: ''!
 
-!classDefinition: #UnresolvedBinding category: #'Powerlang-Core'!
-Binding subclass: #UnresolvedBinding
-	instanceVariableNames: ''
-	classVariableNames: 'Default'
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'UnresolvedBinding class' category: #'Powerlang-Core'!
-UnresolvedBinding class
-	instanceVariableNames: ''!
-
 !classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #AssociationBinding
 	instanceVariableNames: 'association'
@@ -2833,16 +2853,6 @@ Binding subclass: #LiteralBinding
 LiteralBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TrueBinding category: #'Powerlang-Core'!
-LiteralBinding subclass: #TrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'TrueBinding class' category: #'Powerlang-Core'!
-TrueBinding class
-	instanceVariableNames: ''!
-
 !classDefinition: #FalseBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding subclass: #FalseBinding
 	instanceVariableNames: ''
@@ -2851,6 +2861,16 @@ LiteralBinding subclass: #FalseBinding
 	category: 'Powerlang-Core-SCompiler-Bindings'!
 !classDefinition: 'FalseBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 FalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TrueBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+LiteralBinding subclass: #TrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+TrueBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #LocalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
@@ -2863,16 +2883,6 @@ Binding subclass: #LocalBinding
 LocalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemporaryBinding category: #'Powerlang-Core'!
-LocalBinding subclass: #TemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core'!
-TemporaryBinding class
-	instanceVariableNames: ''!
-
 !classDefinition: #ArgumentBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding subclass: #ArgumentBinding
 	instanceVariableNames: ''
@@ -2881,6 +2891,16 @@ LocalBinding subclass: #ArgumentBinding
 	category: 'Powerlang-Core-SCompiler-Bindings'!
 !classDefinition: 'ArgumentBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 ArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TemporaryBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+LocalBinding subclass: #TemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+TemporaryBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #SelfBinding category: #'Powerlang-Core-SCompiler-Bindings'!
@@ -2901,6 +2921,16 @@ SelfBinding subclass: #SuperBinding
 	category: 'Powerlang-Core'!
 !classDefinition: 'SuperBinding class' category: #'Powerlang-Core'!
 SuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #UnresolvedBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #UnresolvedBinding
+	instanceVariableNames: ''
+	classVariableNames: 'Default'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'UnresolvedBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+UnresolvedBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #NilBinding category: #'Powerlang-Core-SCompiler-Bindings'!
@@ -3324,7 +3354,25 @@ Copyright (c) 2020 Aucerna.
 
 Nota Bene: Intel/x86 specific!
 
+!LegacyPrefix commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: Intel/x86 specific!
+
+!REXPrefix commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: Intel/x86 specific!
+
 !SegmentPrefix commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+
+Nota Bene: Intel/x86 specific!
+
+!VEXPrefix commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
@@ -3699,55 +3747,6 @@ compile: anRGMethod
 
 	^builder compile: anRGMethod! !
 
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
-name 
-
-	^spec name! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:11'!
-superclass 
-
-	^superclass! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:20'!
-superclass: aVirtualClass 
-
-	superclass := aVirtualClass! !
-
-!VirtualSpecies methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:41:37'!
-printOn: aStream 
-
-	aStream nextPut: $<; print: spec; nextPut: $>! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:12'!
-allInstVarNames 
-
-	^ spec allInstVarNames! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:54'!
-classPool 
-
-	^cvars ! !
-
-!VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
-withAllSuperclasses 
-
-	^ superclass ifNil:
-	 [ OrderedCollection with: self ]
-		ifNotNil:  [ superclass withAllSuperclasses
-				addFirst: self;
-				yourself ]! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:18'!
-classPool 
-
-	^ class classPool! !
-
-!VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
-allInstVarNames 
-
-	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
-
 !ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
 printOn: aStream 
 
@@ -3810,6 +3809,14 @@ printOn: aStream
 name 
 
 	^name! !
+
+!VEXPrefix methodsFor: 'printing' stamp: 'KenD 5/30/2021 12:20:49'!
+printOn: aStream 
+
+	signature isNil ifTrue: [^super printOn: aStream].
+	signature
+		do: [:s | aStream nextPutAll: s]
+		separatedBy: [aStream nextPut: $.]! !
 
 !InstructionSpec methodsFor: 'printing' stamp: 'KenD 3/7/2021 13:16:59'!
 printOn: aStream 
@@ -4014,6 +4021,55 @@ compile: anRGMethod
 	^ compiler
 		forClass: class;
 		compile: anRGMethod sourceCode! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
+name 
+
+	^spec name! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:11'!
+superclass 
+
+	^superclass! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:20'!
+superclass: aVirtualClass 
+
+	superclass := aVirtualClass! !
+
+!VirtualSpecies methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:41:37'!
+printOn: aStream 
+
+	aStream nextPut: $<; print: spec; nextPut: $>! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:12'!
+allInstVarNames 
+
+	^ spec allInstVarNames! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:54'!
+classPool 
+
+	^cvars ! !
+
+!VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
+withAllSuperclasses 
+
+	^ superclass ifNil:
+	 [ OrderedCollection with: self ]
+		ifNotNil:  [ superclass withAllSuperclasses
+				addFirst: self;
+				yourself ]! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:18'!
+classPool 
+
+	^ class classPool! !
+
+!VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
+allInstVarNames 
+
+	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
 
 !MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
 printOn: aStream 
@@ -4334,15 +4390,15 @@ name
 
 	^name! !
 
-!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
-name 
-
-	^'true'! !
-
 !FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
 name 
 
 	^'false'! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
+name 
+
+	^'true'! !
 
 !LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
 environment 
@@ -9359,97 +9415,6 @@ undermethods
 
 	^builder undermethods! !
 
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
-allSharedPoolsUsing: globals 
-	| pools class |
-	pools := Set new.
-	class := self.
-	[ class isNil ]
-		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
-			class := class superclass ].
-	^ pools! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:52'!
-map 
-
-	^map! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:04'!
-map: anObjectMap 
-	
-	map := anObjectMap ! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:53'!
-spec 
-
-	^spec! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:02'!
-spec: anRGBehavior 
-
-	spec := anRGBehavior! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:46'!
-instanceSide 
-
-	^ self! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
-localPools 
-	| pools dict name pool |
-	pools := cvars associations
-		select: [ :assoc | assoc value spec name = #PoolDictionary ].
-	dict := Dictionary new.
-	pools
-		do: [ :assoc | 
-			name := assoc key asString.
-			pool := assoc value.
-			dict at: name put: (VirtualDictionary fromPool: pool) ].
-	^ dict! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:45:33'!
-sharedPoolsUsing: globals 
-	| pools dicts |
-	pools := OrderedCollection new.
-	spec sharedPoolsDo: [ :p | pools add: p ].
-	dicts := pools
-		collect: [ :p | (globals at: p name) association value ].
-	^ dicts
-		select: [ :d | d spec name = #PoolDictionary ]
-		thenCollect: [ :d | VirtualDictionary fromPool: d ]! !
-
-!VirtualClass methodsFor: 'service' stamp: 'KenD 4/8/2021 12:44:33'!
-createClassAssociationsWith: aVirtualSmalltalkImage 
-	|  assocs |
-	assocs := spec classVariables
-		collect: [ :cvar | aVirtualSmalltalkImage newAssociation: cvar name -> nil ].
-	cvars := VirtualDictionary withAll: assocs! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:09'!
-class: aVirtualClass 
-
-	class := aVirtualClass! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:40'!
-createClassAssociationsWith: aVirtualSmalltalkImage 
-
-	self notYetImplemented ! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:50'!
-instanceSide 
-
-	^class! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
-localPools 
-
-	^ class localPools! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:09'!
-sharedPoolsUsing: globals 
-
-	^class sharedPoolsUsing: globals! !
-
 !ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
 is32bits 
 
@@ -9564,6 +9529,37 @@ restoreContext: anFFIDescriptor with: anAssembler
 storeArgumentsInStack: anFFIDescriptor with: anAssembler 
 
 	anAssembler pushS;
+		loadRwithArgPointer;
+		convertRtoSmallInteger;
+		pushR! !
+
+!WinX64ABI methodsFor: 'services' stamp: 'KenD 5/30/2021 12:35:13'!
+restoreContextUsing: anAssembler popping: anInteger 
+	anAssembler
+		popA;
+		popA;
+		popB;
+		popE;
+		popS;
+		popFalse;
+		popTrue;
+		popNil;
+		popG;
+		popFP;
+		return! !
+
+!WinX64ABI methodsFor: 'services' stamp: 'KenD 5/30/2021 12:35:25'!
+saveContextUsing: anAssembler 
+	anAssembler
+		saveCallerFrame;
+		storeArgumentsInStack;
+		pushG;
+		pushNil;
+		pushFalse;
+		pushTrue;
+		pushS;
+		pushE;
+		pushB;
 		loadRwithArgPointer;
 		convertRtoSmallInteger;
 		pushR! !
@@ -11698,6 +11694,272 @@ named: aString
 ss 
 
 	^self new name: 'ss:'; value: 16r36! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:19:30'!
+length 
+
+	signature first = 16rC5 ifTrue: [^16].
+	^24! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:20:13'!
+operandSize 
+
+	(signature includes: '128') ifTrue: [^128].
+	(signature includes: '256') ifTrue: [^256].
+	^nil! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:21:03'!
+signature 
+
+	^signature! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:21:11'!
+signature: anArray 
+
+	signature := anArray! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:22:17'!
+sizeFor: instruction 
+	| encoding |
+	((signature includes: 'WIG') or: [signature includes: 'W0']) ifFalse: [^3].
+	(signature includes: 'W1') ifTrue: [^3].
+	(signature includes: '0F3A') ifTrue: [^3].
+	(signature includes: '0F38') ifTrue: [^3].
+	instruction hasSib ifTrue: [^3].
+	encoding := instruction spec operandEncoding.
+	instruction operands withIndexDo: [:op :i | 
+		op isMemory
+			ifTrue: [(op baseExtension = 0 or: [op indexExtension = 0]) ifTrue: [^3]]
+			ifFalse: [
+				(op isRegister and: [op index > 7] andNot: [encoding isVvvvOperand: i])
+					ifTrue: [^3]]].
+	^2! !
+
+!VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:22:34'!
+valueFor: instruction 
+	| size bytes last |
+	size := self sizeFor: instruction.
+	bytes := ByteArray new: size.
+	size = 2 ifTrue: [bytes at: 1 put: 16rC5] ifFalse: [bytes at: 1 put: 16rC4].
+	last := 0.
+	(signature includes: '256')
+		ifTrue: [bytes at: size put: (bytes last bitOr: self class l)].
+	(signature includes: '66')
+		ifTrue: [last := bytes at: size put: (last bitOr: 2r1)].
+	(signature includes: 'F2')
+		ifTrue: [last := bytes at: size put: (last bitOr: 2r10)].
+	(signature includes: 'F3')
+		ifTrue: [last := bytes at: size put: (last bitOr: 2r11)].
+	(signature includes: 'W1')
+		ifTrue: [last := bytes at: size put: (last bitOr: self class w)].
+	(size = 3 and: [signature includes: '0F']) ifTrue: [bytes at: 2 put: 1].
+	(signature includes: '0F38') ifTrue: [bytes at: 2 put: 2r10].
+	(signature includes: '0F3A') ifTrue: [bytes at: 2 put: 2r11].
+	^bytes! !
+
+!VEXPrefix methodsFor: 'initialization' stamp: 'KenD 5/30/2021 12:18:46'!
+initialize 
+
+	super initialize.
+	name = 'VEX'! !
+
+!VEXPrefix methodsFor: 'input' stamp: 'KenD 5/30/2021 12:18:33'!
+fromStream: aStream 
+	| stream |
+	stream := (aStream upTo: Space) readStream.
+	signature := Array streamContents: [:strm | 
+		[stream atEnd] whileFalse: [| part |
+			part := stream upTo: $..
+			strm nextPut: part]]! !
+
+!VEXPrefix methodsFor: 'testing' stamp: 'KenD 5/30/2021 12:19:06'!
+isVex 
+
+	^true! !
+
+!VEXPrefix methodsFor: 'testing' stamp: 'KenD 5/30/2021 12:19:46'!
+matches: aByteArray 
+	| size last mmmmm |
+	(self mayMatchSize: aByteArray) ifFalse: [^false].
+	size := aByteArray size.
+	last := aByteArray at: size.
+	(signature includes: 'LIG')
+		ifFalse: [(signature includes: '256') = (last isOnBit: self class l)
+			ifFalse: [^false]].
+	(signature includes: '66') = (last isOnBit: 2r1) ifFalse: [^false].
+	(signature includes: 'F2') = (last isOnBit: 2r10) ifFalse: [^false].
+	(signature includes: 'F3') = (last isOnBit: 2r11) ifFalse: [^false].
+	(signature includes: 'WIG')
+		ifFalse: [(signature includes: 'W1') = (last isOnBit: self class w)
+			ifFalse: [^false]].
+	size = 3 ifTrue: [
+		mmmmm := (aByteArray at: 2) bitAnd: 2r11111.
+		(signature includes: '0F') = (mmmmm = 1) ifFalse: [^false].
+		(signature includes: '0F38') = (mmmmm = 2r10) ifFalse: [^false].
+		(signature includes: '0F3A') = (mmmmm = 2r11) ifFalse: [^false]].
+	^true! !
+
+!VEXPrefix methodsFor: 'testing' stamp: 'KenD 5/30/2021 12:20:03'!
+mayMatchSize: aByteArray 
+	| n |
+	n := aByteArray first = 16rC4 ifTrue: [3] ifFalse: [2].
+	((signature includes: 'WIG') or: [signature includes: 'W0']) ifFalse: [^n
+		= 3].
+	(signature includes: 'W1') ifTrue: [^n = 3].
+	(signature includes: '0F3A') ifTrue: [^n = 3].
+	(signature includes: '0F38') ifTrue: [^n = 3].
+	^true! !
+
+!VEXPrefix methodsFor: 'testing' stamp: 'KenD 5/30/2021 12:20:27'!
+overridesOperandSize 
+
+	^signature includes: '66'! !
+
+!VEXPrefix methodsFor: 'writing' stamp: 'KenD 5/30/2021 12:21:58'!
+writeOn: instruction 
+	| value |
+	value := self valueFor: instruction.
+	instruction writeVexPrefix: value! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:14:13'!
+b 
+
+	^16r20! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:15:45'!
+l 
+
+	^2r100! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:15:57'!
+operandSizeOverrideBits 
+
+	^1! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:17:07'!
+r 
+
+	^16r80! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:17:18'!
+w 
+
+	^16r80! !
+
+!VEXPrefix class methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:17:41'!
+x 
+
+	^16r40! !
+
+!VEXPrefix class methodsFor: 'class initialization' stamp: 'KenD 5/30/2021 12:15:03'!
+initializeSignatures 
+	Signatures isNil
+		ifTrue: [ Signatures := Dictionary new ].
+	'VEX.128.0F.WIG
+	VEX.128.66.0F.W0
+	VEX.128.66.0F.W1
+	VEX.128.66.0F.WIG
+	VEX.128.66.0F38.W0
+	VEX.128.66.0F38.WIG
+	VEX.128.66.0F3A.W0
+	VEX.128.66.0F3A.W1
+	VEX.128.66.0F3A.WIG
+	VEX.128.F2.0F.WIG
+	VEX.128.F3.0F.WIG
+	VEX.256.0F.WIG
+	VEX.256.66.0F.WIG
+	VEX.256.66.0F38.W0
+	VEX.256.66.0F38.WIG
+	VEX.256.66.0F3A.W0
+	VEX.256.66.0F3A.W1
+	VEX.256.66.0F3A.WIG
+	VEX.256.F2.0F.WIG
+	VEX.256.F3.0F.WIG
+	VEX.DDS.128.66.0F38.W0
+	VEX.DDS.128.66.0F38.W1
+	VEX.DDS.256.66.0F38.0
+	VEX.DDS.256.66.0F38.W0
+	VEX.DDS.256.66.0F38.W1
+	VEX.DDS.LIG.128.66.0F38.W0
+	VEX.DDS.LIG.128.66.0F38.W1
+	VEX.LIG.0F.WIG
+	VEX.LIG.66.0F.WIG
+	VEX.LIG.F2.0F.W0
+	VEX.LIG.F2.0F.W1
+	VEX.LIG.F2.0F.WIG
+	VEX.LIG.F3.0F.W0
+	VEX.LIG.F3.0F.W1
+	VEX.LIG.F3.0F.WIG
+	VEX.LZ.0F.WIG
+	VEX.LZ.F2.0F3A.W0
+	VEX.LZ.F2.0F3A.W1
+	VEX.NDD.128.66.0F.WIG
+	VEX.NDD.256.66.0F.WIG
+	VEX.NDD.LZ.0F38.W0
+	VEX.NDD.LZ.0F38.W1
+	VEX.NDD.LZ.F2.0F38.W0
+	VEX.NDD.LZ.F2.0F38.W1
+	VEX.NDS.128.0F.WIG
+	VEX.NDS.128.66.0F.W0
+	VEX.NDS.128.66.0F.WIG
+	VEX.NDS.128.66.0F38.W0
+	VEX.NDS.128.66.0F38.W1
+	VEX.NDS.128.66.0F38.WIG
+	VEX.NDS.128.66.0F3A.W0
+	VEX.NDS.128.66.0F3A.W1
+	VEX.NDS.128.66.0F3A.WIG
+	VEX.NDS.128.F2.0F.WIG
+	VEX.NDS.256.0F.WIG
+	VEX.NDS.256.66.0F.WIG
+	VEX.NDS.256.66.0F38.W0
+	VEX.NDS.256.66.0F38.W1
+	VEX.NDS.256.66.0F38.WIG
+	VEX.NDS.256.66.0F3A.W0
+	VEX.NDS.256.66.0F3A.WIG
+	VEX.NDS.256.F2.0F.WIG
+	VEX.NDS.LIG.66.0F3A.WIG
+	VEX.NDS.LIG.F2.0F.W0
+	VEX.NDS.LIG.F2.0F.W1
+	VEX.NDS.LIG.F2.0F.WIG
+	VEX.NDS.LIG.F3.0F.W0
+	VEX.NDS.LIG.F3.0F.W1
+	VEX.NDS.LIG.F3.0F.WIG
+	VEX.NDS.LZ.0F38.W0
+	VEX.NDS.LZ.0F38.W1
+	VEX.NDS.LZ.66.0F38.W0
+	VEX.NDS.LZ.66.0F38.W1
+	VEX.NDS.LZ.F2.0F38.W0
+	VEX.NDS.LZ.F2.0F38.W1
+	VEX.NDS.LZ.F3.0F38.W0
+	VEX.NDS.LZ.F3.0F38.W1
+	VEX128.66.0F.WIG' lines
+		do: [ :line | 
+			| s vex |
+			s := line trimBlanks.
+			vex := self new signature: ($. split: s).
+			Signatures at: s put: vex ]! !
+
+!VEXPrefix class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:14:29'!
+fromStream: aStream 
+
+	^self withSignature: (aStream upTo: Space)! !
+
+!VEXPrefix class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:17:30'!
+withSignature: aString 
+
+	^Signatures at: aString! !
+
+!VEXPrefix class methodsFor: 'printing' stamp: 'KenD 5/30/2021 12:16:52'!
+print: byte on: stream 
+
+	stream nextPutAll: byte hex! !
+
+!VEXPrefix class methodsFor: 'services' stamp: 'KenD 5/30/2021 12:16:39'!
+peekFrom: aStream 
+
+	aStream peek = 16rC4 ifTrue: [^aStream next: 3].
+	aStream peek = 16rC5 ifTrue: [^aStream next: 2].
+	^nil! !
 
 !InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:02'!
 arity 
@@ -20265,6 +20527,112 @@ initialize
 		_uShortAtOffset: _uShortAtOffset:put:)
 ! !
 
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:27:46'!
+add: assocMap 
+
+	cache at: assocMap key asString put: assocMap! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:27:56'!
+associationAt: aSymbol 
+
+	^ self associationAt: aSymbol ifAbsent: [ self error: 'symbol not found' ]! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:08'!
+associationAt: aSymbol ifAbsent: aBlock 
+
+	^cache at: aSymbol ifAbsent: aBlock.! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:18'!
+associations 
+
+	^ cache values! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:27'!
+at: aSymbol 
+	| assoc |
+	assoc := self associationAt: aSymbol.
+	^assoc value! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:36'!
+at: aSymbol ifAbsent: aBlock 
+	| assoc |
+	assoc := self associationAt: aSymbol ifAbsent: [ ^ aBlock value ].
+	^ assoc value! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:46'!
+at: aSymbol put: anObjectMap 
+	| assoc |
+	assoc := self associationAt: aSymbol.
+	^ assoc value: anObjectMap! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:28:54'!
+constant: aBoolean 
+
+	constant := aBoolean! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:30:16'!
+keys 
+
+	^ cache keys! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:31:03'!
+lookupAndCache: aSymbol
+	| table assoc |
+	table _ dictionary table.
+	1 to: table size
+	   do: [ :i |
+			assoc _ table slotAt: i.
+			(assoc !!= nilObj and: [ assoc key asLocalSymbol = aSymbol ]) ifTrue: [ ^ cache
+					at: aSymbol
+					put: assoc ]].
+	^ nil.! !
+
+!VirtualDictionary methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:31:14'!
+nilObject: anObjectMap 
+
+	nilObj := anObjectMap! !
+
+!VirtualDictionary methodsFor: 'enumerating' stamp: 'KenD 5/30/2021 12:29:18'!
+do: aBlock 
+
+	^ cache do: aBlock halt! !
+
+!VirtualDictionary methodsFor: 'enumerating' stamp: 'KenD 5/30/2021 12:31:29'!
+valuesDo: aBlock 
+
+	^ self associations do: [:a | aBlock value: a value ]
+! !
+
+!VirtualDictionary methodsFor: 'initialization' stamp: 'KenD 5/30/2021 12:29:43'!
+initialize 
+
+	cache := Dictionary new.
+	constant := false! !
+
+!VirtualDictionary methodsFor: 'testing' stamp: 'KenD 5/30/2021 12:30:00'!
+isConstant 
+
+	^constant! !
+
+!VirtualDictionary class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:26:53'!
+fromPool: aSlotObjectMap 
+	| entries  |
+	entries := aSlotObjectMap table slots
+		select: [ :s | s spec name = #Association ].
+	^ self withAll: entries constant: aSlotObjectMap constant asBoolean! !
+
+!VirtualDictionary class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:27:07'!
+withAll: variables 
+
+	^self withAll: variables constant: false! !
+
+!VirtualDictionary class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:27:18'!
+withAll: variables constant: aBoolean 
+	| result |
+	result := self new constant: aBoolean.
+	variables do: [ :assoc | result add: assoc ].
+	^ result! !
+
 !VirtualSmalltalkImage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:25:36'!
 => aSymbol 
 
@@ -21148,6 +21516,97 @@ initialize
 		 _basicHash _basicHash: 
 		 _smallIntegerByteAt: 
 		 _uShortAtOffset: #_uShortAtOffset:put:)! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
+allSharedPoolsUsing: globals 
+	| pools class |
+	pools := Set new.
+	class := self.
+	[ class isNil ]
+		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
+			class := class superclass ].
+	^ pools! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:52'!
+map 
+
+	^map! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:04'!
+map: anObjectMap 
+	
+	map := anObjectMap ! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:53'!
+spec 
+
+	^spec! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:02'!
+spec: anRGBehavior 
+
+	spec := anRGBehavior! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:46'!
+instanceSide 
+
+	^ self! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
+localPools 
+	| pools dict name pool |
+	pools := cvars associations
+		select: [ :assoc | assoc value spec name = #PoolDictionary ].
+	dict := Dictionary new.
+	pools
+		do: [ :assoc | 
+			name := assoc key asString.
+			pool := assoc value.
+			dict at: name put: (VirtualDictionary fromPool: pool) ].
+	^ dict! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:45:33'!
+sharedPoolsUsing: globals 
+	| pools dicts |
+	pools := OrderedCollection new.
+	spec sharedPoolsDo: [ :p | pools add: p ].
+	dicts := pools
+		collect: [ :p | (globals at: p name) association value ].
+	^ dicts
+		select: [ :d | d spec name = #PoolDictionary ]
+		thenCollect: [ :d | VirtualDictionary fromPool: d ]! !
+
+!VirtualClass methodsFor: 'service' stamp: 'KenD 4/8/2021 12:44:33'!
+createClassAssociationsWith: aVirtualSmalltalkImage 
+	|  assocs |
+	assocs := spec classVariables
+		collect: [ :cvar | aVirtualSmalltalkImage newAssociation: cvar name -> nil ].
+	cvars := VirtualDictionary withAll: assocs! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:09'!
+class: aVirtualClass 
+
+	class := aVirtualClass! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:40'!
+createClassAssociationsWith: aVirtualSmalltalkImage 
+
+	self notYetImplemented ! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:50'!
+instanceSide 
+
+	^class! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
+localPools 
+
+	^ class localPools! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:09'!
+sharedPoolsUsing: globals 
+
+	^class sharedPoolsUsing: globals! !
 
 !Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
 initialize 
@@ -36235,16 +36694,6 @@ encodeUsing: anAstcodeEncoder
 
 	self assert: false! !
 
-!UnresolvedBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:39:05'!
-isUnresolved 
-
-	^true! !
-
-!UnresolvedBinding class methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:38:42'!
-default 
-
-	^Default ifNil: [Default := self new name: '<unresolved>']! !
-
 !AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
 usesSymbols 
 
@@ -36400,16 +36849,6 @@ isLiteral
 
 	^true! !
 
-!TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodeTrue! !
-
-!TrueBinding methodsFor: 'evalutaing' stamp: 'KenD 4/8/2021 12:37:35'!
-value 
-
-	^true! !
-
 !FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 13:07:44'!
 value 
 
@@ -36419,6 +36858,16 @@ value
 encodeUsing: anAstcodeEmitter 
 
 	anAstcodeEmitter encodeFalse! !
+
+!TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodeTrue! !
+
+!TrueBinding methodsFor: 'evalutaing' stamp: 'KenD 4/8/2021 12:37:35'!
+value 
+
+	^true! !
 
 !LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:35'!
 declaration 
@@ -36475,32 +36924,6 @@ sInArray
 
 	^self isInStack not! !
 
-!TemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:34:23'!
-description 
-
-	^'temporary ' , name! !
-
-!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:35'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithTemp: index env: environment! !
-
-!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:53'!
-encodeUsing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeTemporary: index env: environment! !
-
-!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:35:10'!
-initialize 
-
-	super initialize.
-	environment := StackEnvironment new! !
-
-!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:35:25'!
-isTemporary 
-
-	^true! !
-
 !ArgumentBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:00:20'!
 description 
 
@@ -36547,6 +36970,32 @@ emitLoadAusing: anAstcodeEncoder
 
 	anAstcodeEncoder encodeLoadAwithArg: index env: environment! !
 
+!TemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:34:23'!
+description 
+
+	^'temporary ' , name! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:35'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithTemp: index env: environment! !
+
+!TemporaryBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:34:53'!
+encodeUsing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeTemporary: index env: environment! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 4/8/2021 12:35:10'!
+initialize 
+
+	super initialize.
+	environment := StackEnvironment new! !
+
+!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:35:25'!
+isTemporary 
+
+	^true! !
+
 !SelfBinding methodsFor: 'actions' stamp: 'KenD 2/27/2021 13:23:18'!
 beReferencedFrom: aScriptNode 
 
@@ -36587,6 +37036,16 @@ isSuper
 
 	^true
 ! !
+
+!UnresolvedBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 12:39:05'!
+isUnresolved 
+
+	^true! !
+
+!UnresolvedBinding class methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:38:42'!
+default 
+
+	^Default ifNil: [Default := self new name: '<unresolved>']! !
 
 !AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:30:04'!
 bindingTypeOf: id 
