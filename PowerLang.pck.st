@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 1:49:40 pm'!
+'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 1:59:14 pm'!
 'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 37!
+!provides: 'PowerLang' 1 38!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
@@ -38376,6 +38376,11 @@ initialize
 isInstruction 
 
 	^false! !
+
+!Collection methodsFor: '*powerlang' stamp: 'KenD 5/30/2021 13:58:29'!
+conform: evaluable
+
+	^self allSatisfy: evaluable! !
 
 !String methodsFor: '*powerlang' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
 includesString: subString
