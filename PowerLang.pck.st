@@ -1,3266 +1,3267 @@
-'From Cuis 5.0 [latest update: #4619] on 31 May 2021 at 2:02:47 pm'!
+'From Cuis 5.0 [latest update: #4621] on 31 May 2021 at 4:50:06 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 42!
+!provides: 'PowerLang' 1 43!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4619 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
-SystemOrganization addCategory: 'Powerlang-Core'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Intel'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-JIT'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Parser'!
-SystemOrganization addCategory: 'Powerlang-Core-Assembler-Tools'!
-SystemOrganization addCategory: 'Powerlang-Core-Building'!
-SystemOrganization addCategory: 'Powerlang-Core-Emulation'!
-SystemOrganization addCategory: 'Powerlang-Core-Metaphysics'!
-SystemOrganization addCategory: 'Powerlang-Core-Mirrors'!
-SystemOrganization addCategory: 'Powerlang-Core-Nativization'!
-SystemOrganization addCategory: 'Powerlang-Core-OCompiler'!
-SystemOrganization addCategory: 'Powerlang-Core-OCompiler-IR'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Bindings'!
-SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
+SystemOrganization addCategory: #'Powerlang-Core'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Parser'!
+SystemOrganization addCategory: #'Powerlang-Core-Assembler-Tools'!
+SystemOrganization addCategory: #'Powerlang-Core-Building'!
+SystemOrganization addCategory: #'Powerlang-Core-Emulation'!
+SystemOrganization addCategory: #'Powerlang-Core-Metaphysics'!
+SystemOrganization addCategory: #'Powerlang-Core-Mirrors'!
+SystemOrganization addCategory: #'Powerlang-Core-Nativization'!
+SystemOrganization addCategory: #'Powerlang-Core-OCompiler'!
+SystemOrganization addCategory: #'Powerlang-Core-OCompiler-IR'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
+SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk'!
 
 
-!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
+!classDefinition: #CharacterConstants category: #'Powerlang-Core'!
 PSharedPool subclass: #CharacterConstants
 	instanceVariableNames: ''
-	classVariableNames: 'Cr Lf Space Tab'
+	classVariableNames: 'Cr Lf Newline Space Tab'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
+!classDefinition: 'CharacterConstants class' category: #'Powerlang-Core'!
 CharacterConstants class
 	instanceVariableNames: ''!
 
-!classDefinition: #SpeciesFormatMasks category: 'Powerlang-Core'!
-PSharedPool subclass: #SpeciesFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: 'InstSize IsPointers'
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SpeciesFormatMasks class' category: 'Powerlang-Core'!
-SpeciesFormatMasks class
-	instanceVariableNames: ''!
-
-!classDefinition: #OperandTypeFlags category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandTypeFlags category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #OperandTypeFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandTypeFlags class' category: #'Powerlang-Core-Assembler-Intel'!
 OperandTypeFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #Prefixes category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Prefixes category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Prefixes
 	instanceVariableNames: ''
 	classVariableNames: 'AddressSize_Override LOCK OperandSize_Override REP REPE REPNE REPNZ REPZ REX REX_R REX_W'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Prefixes class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Prefixes class' category: #'Powerlang-Core-Assembler-Intel'!
 Prefixes class
 	instanceVariableNames: ''!
 
-!classDefinition: #Registers category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Registers category: #'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Registers
 	instanceVariableNames: ''
 	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Registers class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Registers class' category: #'Powerlang-Core-Assembler-Intel'!
 Registers class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderMasks category: #'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderMasks
 	instanceVariableNames: ''
 	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderMasks class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderMasks class' category: #'Powerlang-Core-Metaphysics'!
 ObjectHeaderMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderOffsets category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderOffsets category: #'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderOffsets
 	instanceVariableNames: ''
 	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderOffsets class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderOffsets class' category: #'Powerlang-Core-Metaphysics'!
 ObjectHeaderOffsets class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledBlockFormatMasks category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledBlockFormatMasks category: #'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #CompiledBlockFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockFormatMasks class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockFormatMasks class' category: #'Powerlang-Core-Mirrors'!
 CompiledBlockFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledMethodFormatMasks category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledMethodFormatMasks category: #'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #CompiledMethodFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount BlockCount TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodFormatMasks class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodFormatMasks class' category: #'Powerlang-Core-Mirrors'!
 CompiledMethodFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #FrameOffsets category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #FrameOffsets category: #'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #FrameOffsets
 	instanceVariableNames: ''
 	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'FrameOffsets class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'FrameOffsets class' category: #'Powerlang-Core-Mirrors'!
 FrameOffsets class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core-Nativization'!
+!classDefinition: #SpeciesFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #SpeciesFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: 'InstSize IsPointers'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'SpeciesFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+SpeciesFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinkerFlags category: #'Powerlang-Core-Nativization'!
 PSharedPool subclass: #InlineMessageLinkerFlags
 	instanceVariableNames: ''
 	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinkerFlags class' category: #'Powerlang-Core-Nativization'!
 InlineMessageLinkerFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SendSiteFlags category: 'Powerlang-Core-Nativization'!
+!classDefinition: #SendSiteFlags category: #'Powerlang-Core-Nativization'!
 PSharedPool subclass: #SendSiteFlags
 	instanceVariableNames: ''
 	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSiteFlags class' category: #'Powerlang-Core-Nativization'!
 SendSiteFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethodFlags category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethodFlags category: #'Powerlang-Core-SCompiler'!
 PSharedPool subclass: #SCompiledMethodFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethodFlags class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethodFlags class' category: #'Powerlang-Core-SCompiler'!
 SCompiledMethodFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstBindingTypes category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #AstBindingTypes
 	instanceVariableNames: ''
 	classVariableNames: 'ArgumentId ClassVarId ConstantPoolId EnsureAisSmallIntegerId EnsureRisSmallIntegerId FalseId GlobalClassId GlobalValueId InstVarId LoadAvisitingArgumentId LoadAwithArgumentId LoadAwithClassVarId LoadAwithConstPoolId LoadAwithFalseId LoadAwithGlobalId LoadAwithInstVarId LoadAwithLiteralId LoadAwithNilId LoadAwithPoolVarId LoadAwithSelfId LoadAwithTemporaryId LoadAwithTrueId LoadRvisitingReceiverId LoadRwithArgumentId LoadRwithClassVarId LoadRwithConstPoolId LoadRwithFalseId LoadRwithGlobalId LoadRwithInstVarId LoadRwithLiteralId LoadRwithNilId LoadRwithPoolVarId LoadRwithSelfId LoadRwithTemporaryId LoadRwithTrueId NilId PoolVarId PopRid PushRid SelfId SuperId TemporaryId TrueId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
 AstBindingTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstNodeTypes category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #AstNodeTypes
 	instanceVariableNames: ''
 	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
 AstNodeTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClosureElementTypes category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #ClosureElementTypes
 	instanceVariableNames: ''
 	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'ClosureElementTypes class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
 ClosureElementTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionTypes category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SExpressionTypes category: #'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #SExpressionTypes
 	instanceVariableNames: ''
 	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpressionTypes class' category: #'Powerlang-Core-SExpressions'!
 SExpressionTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlockFlags category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlockFlags category: #'Powerlang-Core-SCompiler'!
 SharedPool subclass: #SCompiledBlockFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount CapturesHome CapturesSelf EnvCount Id TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockFlags class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockFlags class' category: #'Powerlang-Core-SCompiler'!
 SCompiledBlockFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativeCode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #NativeCode category: #'Powerlang-Core-Nativization'!
 Array variableSubclass: #NativeCode
 	instanceVariableNames: 'machineCode compiledCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativeCode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'NativeCode class' category: #'Powerlang-Core-Nativization'!
 NativeCode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethod category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethod category: #'Powerlang-Core-SCompiler'!
 Array variableSubclass: #SCompiledMethod
 	instanceVariableNames: 'format nativeCode astcodes class selector source'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethod class' category: #'Powerlang-Core-SCompiler'!
 SCompiledMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCallbackMethod category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCallbackMethod category: #'Powerlang-Core-SCompiler'!
 SCompiledMethod variableSubclass: #SCallbackMethod
 	instanceVariableNames: 'receiver descriptor'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCallbackMethod class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCallbackMethod class' category: #'Powerlang-Core-SCompiler'!
 SCallbackMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCalloutMethod category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCalloutMethod category: #'Powerlang-Core-SCompiler'!
 SCompiledMethod variableSubclass: #SCalloutMethod
 	instanceVariableNames: 'descriptor symbol address'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCalloutMethod class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCalloutMethod class' category: #'Powerlang-Core-SCompiler'!
 SCalloutMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClosure category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SClosure category: #'Powerlang-Core-SExpressions'!
 Array variableSubclass: #SClosure
 	instanceVariableNames: 'block home'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClosure class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClosure class' category: #'Powerlang-Core-SExpressions'!
 SClosure class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFFIDescriptor category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SFFIDescriptor category: #'Powerlang-Core-SCompiler'!
 ByteArray variableByteSubclass: #SFFIDescriptor
 	instanceVariableNames: ''
 	classVariableNames: 'FFICallingConventions FFITypes'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SFFIDescriptor class' category: #'Powerlang-Core-SCompiler'!
 SFFIDescriptor class
 	instanceVariableNames: ''!
 
-!classDefinition: #StorageReadError category: 'Powerlang-Core'!
+!classDefinition: #StorageReadError category: #'Powerlang-Core-Metaphysics'!
 Error subclass: #StorageReadError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'StorageReadError class' category: #'Powerlang-Core-Metaphysics'!
 StorageReadError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationError category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationError category: #'Powerlang-Core-SCompiler'!
 Error subclass: #SCompilationError
 	instanceVariableNames: 'compiler resumable retryable stretch'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationError class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationError class' category: #'Powerlang-Core-SCompiler'!
 SCompilationError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SUndeclaredIdentifierError category: 'Powerlang-Core'!
-SCompilationError subclass: #SUndeclaredIdentifierError
-	instanceVariableNames: 'identifier assigned'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SUndeclaredIdentifierError class' category: 'Powerlang-Core'!
-SUndeclaredIdentifierError class
-	instanceVariableNames: ''!
-
-!classDefinition: #SInvalidPragmaError category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SInvalidPragmaError category: #'Powerlang-Core-SCompiler'!
 SCompilationError subclass: #SInvalidPragmaError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SInvalidPragmaError class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SInvalidPragmaError class' category: #'Powerlang-Core-SCompiler'!
 SInvalidPragmaError class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerGrammar category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #SUndeclaredIdentifierError category: #'Powerlang-Core-SCompiler'!
+SCompilationError subclass: #SUndeclaredIdentifierError
+	instanceVariableNames: 'identifier assigned'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-Core-SCompiler'!
+SUndeclaredIdentifierError class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssemblerGrammar category: #'Powerlang-Core-Assembler-Parser'!
 PPCompositeParser subclass: #AssemblerGrammar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerGrammar class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerGrammar class' category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerParser category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #AssemblerParser category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar subclass: #AssemblerParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerParser class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerParser class' category: #'Powerlang-Core-Assembler-Parser'!
 AssemblerParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #NumberParser2 category: 'Powerlang-Core'!
+!classDefinition: #NumberParser2 category: #'Powerlang-Core'!
 Object subclass: #NumberParser2
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'NumberParser2 class' category: 'Powerlang-Core'!
+!classDefinition: 'NumberParser2 class' category: #'Powerlang-Core'!
 NumberParser2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #OOperand category: 'Powerlang-Core'!
-Object subclass: #OOperand
-	instanceVariableNames: 'instruction name nextUse'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'OOperand class' category: 'Powerlang-Core'!
-OOperand class
-	instanceVariableNames: ''!
-
-!classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
-Object subclass: #SParseTreeVisitor
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SParseTreeVisitor class' category: 'Powerlang-Core'!
-SParseTreeVisitor class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSemanticVisitor category: 'Powerlang-Core'!
-SParseTreeVisitor subclass: #SSemanticVisitor
-	instanceVariableNames: 'inliner'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSemanticVisitor class' category: 'Powerlang-Core'!
-SSemanticVisitor class
-	instanceVariableNames: ''!
-
-!classDefinition: #OptimizingVisitor category: 'Powerlang-Core-OCompiler'!
-SParseTreeVisitor subclass: #OptimizingVisitor
-	instanceVariableNames: 'method firstBlock currentBlock'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingVisitor class' category: 'Powerlang-Core-OCompiler'!
-OptimizingVisitor class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstcodeEncoder category: 'Powerlang-Core-SExpressions'!
-SParseTreeVisitor subclass: #AstcodeEncoder
-	instanceVariableNames: 'method stream script'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core-SExpressions'!
-AstcodeEncoder class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkCompiler category: 'Powerlang-Core'!
-Object subclass: #SSmalltalkCompiler
-	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkCompiler class' category: 'Powerlang-Core'!
-SSmalltalkCompiler class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkParser category: 'Powerlang-Core'!
-Object subclass: #SSmalltalkParser
-	instanceVariableNames: 'compiler scanner token next'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkParser class' category: 'Powerlang-Core'!
-SSmalltalkParser class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkScanner category: 'Powerlang-Core'!
-Object subclass: #SSmalltalkScanner
-	instanceVariableNames: 'compiler stream'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkScanner class' category: 'Powerlang-Core'!
-SSmalltalkScanner class
-	instanceVariableNames: ''!
-
-!classDefinition: #SToken category: 'Powerlang-Core'!
-Object subclass: #SToken
-	instanceVariableNames: 'compiler stretch comments'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SToken class' category: 'Powerlang-Core'!
-SToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
-SToken subclass: #SSymbolicToken
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSymbolicToken class' category: 'Powerlang-Core'!
-SSymbolicToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SStringToken category: 'Powerlang-Core'!
-SSymbolicToken subclass: #SStringToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SStringToken class' category: 'Powerlang-Core'!
-SStringToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SDelimiterToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSymbolicToken subclass: #SDelimiterToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SDelimiterToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SDelimiterToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SEndToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SEndToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SEndToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SEndToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SParseNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SParseNode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SParseNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralNode category: 'Powerlang-Core'!
-SParseNode subclass: #SLiteralNode
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralNode class' category: 'Powerlang-Core'!
-SLiteralNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SStringNode category: 'Powerlang-Core'!
-SLiteralNode subclass: #SStringNode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SStringNode class' category: 'Powerlang-Core'!
-SStringNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSelectorNode category: 'Powerlang-Core'!
-SParseNode subclass: #SSelectorNode
-	instanceVariableNames: 'symbol keywords'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSelectorNode class' category: 'Powerlang-Core'!
-SSelectorNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssignmentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SAssignmentNode
-	instanceVariableNames: 'assignees expression operators'
-	classVariableNames: 'Token'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SAssignmentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SAssignmentNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SBraceNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SBraceNode
-	instanceVariableNames: 'elements message'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBraceNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SBraceNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascadeNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SCascadeNode
-	instanceVariableNames: 'receiver messages optimized'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCascadeNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCommentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SCommentNode
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCommentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCommentNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SIdentifierNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SIdentifierNode
-	instanceVariableNames: 'name binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SIdentifierNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SIdentifierNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SMessageNode
-	instanceVariableNames: 'selector receiver arguments inlined'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SMessageNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascadeMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SMessageNode subclass: #SCascadeMessageNode
-	instanceVariableNames: 'cascade'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCascadeMessageNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SReturnNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SReturnNode
-	instanceVariableNames: 'expression return'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SReturnNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SReturnNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SScriptNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SScriptNode
-	instanceVariableNames: 'statements arguments temporaries children scope'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SScriptNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SScriptNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SBlockNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SScriptNode subclass: #SBlockNode
-	instanceVariableNames: 'inlined index parent'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBlockNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SBlockNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SPragmaNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SPragmaNode
-	instanceVariableNames: 'type name info'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SPragmaNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SPragmaNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkBootstrapper category: 'Powerlang-Core'!
-Object subclass: #SmalltalkBootstrapper
-	instanceVariableNames: 'builder'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmalltalkBootstrapper class' category: 'Powerlang-Core'!
-SmalltalkBootstrapper class
-	instanceVariableNames: ''!
-
-!classDefinition: #DMRBootstrapper category: 'Powerlang-Core-Building'!
-SmalltalkBootstrapper subclass: #DMRBootstrapper
-	instanceVariableNames: 'nativizer image'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'DMRBootstrapper class' category: 'Powerlang-Core-Building'!
-DMRBootstrapper class
-	instanceVariableNames: ''!
-
-!classDefinition: #OMRBootstrapper category: 'Powerlang-Core-Building'!
-SmalltalkBootstrapper subclass: #OMRBootstrapper
-	instanceVariableNames: 'nativizer'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Building'!
-!classDefinition: 'OMRBootstrapper class' category: 'Powerlang-Core-Building'!
-OMRBootstrapper class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackFrameCursor category: 'Powerlang-Core'!
-Object subclass: #StackFrameCursor
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameCursor class' category: 'Powerlang-Core'!
-StackFrameCursor class
-	instanceVariableNames: ''!
-
-!classDefinition: #TonelRepository category: 'Powerlang-Core'!
+!classDefinition: #TonelRepository category: #'Powerlang-Core'!
 Object subclass: #TonelRepository
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'TonelRepository class' category: 'Powerlang-Core'!
+!classDefinition: 'TonelRepository class' category: #'Powerlang-Core'!
 TonelRepository class
 	instanceVariableNames: ''!
 
-!classDefinition: #ABI category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ABI category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ABI class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X64ABI category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #X64ABI category: #'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'X64ABI class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 X64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #SysVX64ABI category: 'Powerlang-Core'!
+!classDefinition: #SysVX64ABI category: #'Powerlang-Core-Assembler-Intel'!
 X64ABI subclass: #SysVX64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SysVX64ABI class' category: 'Powerlang-Core'!
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'SysVX64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 SysVX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #WinX64ABI category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #WinX64ABI category: #'Powerlang-Core-Assembler-Intel'!
 X64ABI subclass: #WinX64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'WinX64ABI class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'WinX64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 WinX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X86ABI category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #X86ABI category: #'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X86ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'X86ABI class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X86ABI class' category: #'Powerlang-Core-Assembler-Intel'!
 X86ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstruction category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAInstruction category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAInstruction
 	instanceVariableNames: 'prefix mnemonic operands template'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAInstruction class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAInstruction class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperand category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperand category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperand class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperand class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAImmediate category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAImmediate category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #ISAImmediate
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAImmediate class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAImmediate class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAImmediate class
 	instanceVariableNames: ''!
 
-!classDefinition: #MemoryOperand category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #MemoryOperand category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #MemoryOperand
 	instanceVariableNames: 'base index scale displacement segment'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'MemoryOperand class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'MemoryOperand class' category: #'Powerlang-Core-Assembler-Intel'!
 MemoryOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #Register category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Register category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #Register
 	instanceVariableNames: 'name index family flags'
 	classVariableNames: ''
 	poolDictionaries: 'OperandTypeFlags Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Register class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Register class' category: #'Powerlang-Core-Assembler-Intel'!
 Register class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperandType category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperandType category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperandType
 	instanceVariableNames: 'type length memoryLength flags'
 	classVariableNames: 'Types'
 	poolDictionaries: 'OperandTypeFlags Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperandType class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperandType class' category: #'Powerlang-Core-Assembler-Intel'!
 ISAOperandType class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionEncoder category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionEncoder category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionEncoder
 	instanceVariableNames: 'instruction spec stream prefixes rex vex opcode modrm sib displacement immediate immediate2 wordSize'
 	classVariableNames: 'Cache'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionEncoder class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionEncoder class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionEncoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionPrefix category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: 'Prefixes'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #LegacyPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #LegacyPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #LegacyPrefix
 	instanceVariableNames: 'group value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'LegacyPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'LegacyPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 LegacyPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #REXPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #REXPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #REXPrefix
 	instanceVariableNames: 'group value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'REXPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'REXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 REXPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #SegmentPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #SegmentPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #SegmentPrefix
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'SegmentPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'SegmentPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 SegmentPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #VEXPrefix category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #VEXPrefix category: #'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #VEXPrefix
 	instanceVariableNames: 'signature'
 	classVariableNames: 'Signatures'
 	poolDictionaries: 'CharacterConstants'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'VEXPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'VEXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
 VEXPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionSpec category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionSpec category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionSpec
 	instanceVariableNames: 'opcode primary extension instruction opEncoding properties implicitRead implicitWrite implicitUndef useful protected mode compat features atnt preferred description prefixes mnemonic operands'
 	classVariableNames: 'Specs'
 	poolDictionaries: 'CharacterConstants'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionSpec class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionSpec class' category: #'Powerlang-Core-Assembler-Intel'!
 InstructionSpec class
 	instanceVariableNames: ''!
 
-!classDefinition: #OperandEncoding category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandEncoding category: #'Powerlang-Core-Assembler-Intel'!
 Object subclass: #OperandEncoding
 	instanceVariableNames: 'name selectors descriptions immediate modrm'
 	classVariableNames: 'Encodings'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandEncoding class' category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandEncoding class' category: #'Powerlang-Core-Assembler-Intel'!
 OperandEncoding class
 	instanceVariableNames: ''!
 
-!classDefinition: #Assembler64 category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #Assembler64 category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #Assembler64
 	instanceVariableNames: 'instruction operands1 operands2 operands3 pointer immediate encoder wordSize memory labels'
 	classVariableNames: 'IndexedLabels'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'Assembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'Assembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 Assembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #JITAssembler64 category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #JITAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
 Assembler64 subclass: #JITAssembler64
 	instanceVariableNames: 'literals'
 	classVariableNames: 'ExternalFunctions'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'JITAssembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'JITAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemplateAssembler64 category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #TemplateAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 subclass: #TemplateAssembler64
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'TemplateAssembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'TemplateAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
 TemplateAssembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #NameOfSubclass category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #NameOfSubclass category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #NameOfSubclass
 	instanceVariableNames: 'stream address fixups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'NameOfSubclass class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NameOfSubclass class' category: #'Powerlang-Core-Assembler-JIT'!
 NameOfSubclass class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativeCodeReference category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #NativeCodeReference category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #NativeCodeReference
 	instanceVariableNames: 'source sourceOffset target absolute'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'NativeCodeReference class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NativeCodeReference class' category: #'Powerlang-Core-Assembler-JIT'!
 NativeCodeReference class
 	instanceVariableNames: ''!
 
-!classDefinition: #RelocatableBuffer category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #RelocatableBuffer category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #RelocatableBuffer
 	instanceVariableNames: 'stream address fixups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'RelocatableBuffer class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocatableBuffer class' category: #'Powerlang-Core-Assembler-JIT'!
 RelocatableBuffer class
 	instanceVariableNames: ''!
 
-!classDefinition: #RelocationFixup category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #RelocationFixup category: #'Powerlang-Core-Assembler-JIT'!
 Object subclass: #RelocationFixup
 	instanceVariableNames: 'source target relative size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'RelocationFixup class' category: 'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocationFixup class' category: #'Powerlang-Core-Assembler-JIT'!
 RelocationFixup class
 	instanceVariableNames: ''!
 
-!classDefinition: #Assembly category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #Assembly category: #'Powerlang-Core-Assembler-Parser'!
 Object subclass: #Assembly
 	instanceVariableNames: 'labels instructions source parser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'Assembly class' category: 'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'Assembly class' category: #'Powerlang-Core-Assembler-Parser'!
 Assembly class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstructionPartReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionPartReader category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionPartReader
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionPartReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionPartReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAModRMReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAModRMReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAModRMReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAModRMReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAModRMReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAModRMReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOpcodeReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAOpcodeReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAOpcodeReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAOpcodeReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAOpcodeReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAOpcodeReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAPrefixReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAPrefixReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAPrefixReader
 	instanceVariableNames: 'legacy rex vex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAPrefixReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAPrefixReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAPrefixReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISASibReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISASibReader category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISASibReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISASibReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISASibReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISASibReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstructionReader category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionReader category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionReader
 	instanceVariableNames: 'prefixes opcode modrm sib displacement immediate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionReader class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionReader class' category: #'Powerlang-Core-Assembler-Tools'!
 ISAInstructionReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #OctalStructure category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #OctalStructure category: #'Powerlang-Core-Assembler-Tools'!
 Object subclass: #OctalStructure
 	instanceVariableNames: 'byte'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'OctalStructure class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'OctalStructure class' category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ModRM category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ModRM category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #ModRM
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ModRM class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ModRM class' category: #'Powerlang-Core-Assembler-Tools'!
 ModRM class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIB category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #SIB category: #'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #SIB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'SIB class' category: 'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'SIB class' category: #'Powerlang-Core-Assembler-Tools'!
 SIB class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core-Building'!
+!classDefinition: #ImageSegmentBuilder category: #'Powerlang-Core-Building'!
 Object subclass: #ImageSegmentBuilder
 	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentBuilder class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentBuilder class' category: #'Powerlang-Core-Building'!
 ImageSegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #KernelSegmentBuilder category: 'Powerlang-Core-Building'!
+!classDefinition: #KernelSegmentBuilder category: #'Powerlang-Core-Building'!
 ImageSegmentBuilder subclass: #KernelSegmentBuilder
 	instanceVariableNames: 'smalltalk hash symbols'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'KernelSegmentBuilder class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'KernelSegmentBuilder class' category: #'Powerlang-Core-Building'!
 KernelSegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #LibrarySegmentBuilder category: 'Powerlang-Core-Building'!
+!classDefinition: #LibrarySegmentBuilder category: #'Powerlang-Core-Building'!
 ImageSegmentBuilder subclass: #LibrarySegmentBuilder
 	instanceVariableNames: 'kernelBuilder requiredSpecs imports spec'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LibrarySegmentBuilder class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'LibrarySegmentBuilder class' category: #'Powerlang-Core-Building'!
 LibrarySegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageSegmentWriter category: 'Powerlang-Core-Building'!
+!classDefinition: #ImageSegmentWriter category: #'Powerlang-Core-Building'!
 Object subclass: #ImageSegmentWriter
 	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentWriter class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentWriter class' category: #'Powerlang-Core-Building'!
 ImageSegmentWriter class
 	instanceVariableNames: ''!
 
-!classDefinition: #LookupNativizer category: 'Powerlang-Core-Building'!
+!classDefinition: #LookupNativizer category: #'Powerlang-Core-Building'!
 Object subclass: #LookupNativizer
 	instanceVariableNames: 'bootstrapper methods'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LookupNativizer class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'LookupNativizer class' category: #'Powerlang-Core-Building'!
 LookupNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectMap category: 'Powerlang-Core-Building'!
+!classDefinition: #ObjectMap category: #'Powerlang-Core-Building'!
 Object subclass: #ObjectMap
 	instanceVariableNames: 'behavior spec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ObjectMap class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'ObjectMap class' category: #'Powerlang-Core-Building'!
 ObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #SlotObjectMap category: 'Powerlang-Core'!
-ObjectMap subclass: #SlotObjectMap
-	instanceVariableNames: 'slots hash'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core'!
-SlotObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
-ObjectMap subclass: #SmallintObjectMap
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
-SmallintObjectMap class
-	instanceVariableNames: ''!
-
-!classDefinition: #ByteObjectMap category: 'Powerlang-Core-Building'!
+!classDefinition: #ByteObjectMap category: #'Powerlang-Core-Building'!
 ObjectMap subclass: #ByteObjectMap
 	instanceVariableNames: 'bytes hash'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ByteObjectMap class' category: 'Powerlang-Core-Building'!
+!classDefinition: 'ByteObjectMap class' category: #'Powerlang-Core-Building'!
 ByteObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShapeMap category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #SlotObjectMap category: #'Powerlang-Core-Building'!
+ObjectMap subclass: #SlotObjectMap
+	instanceVariableNames: 'slots hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'SlotObjectMap class' category: #'Powerlang-Core-Building'!
+SlotObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmallintObjectMap category: #'Powerlang-Core-Building'!
+ObjectMap subclass: #SmallintObjectMap
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'SmallintObjectMap class' category: #'Powerlang-Core-Building'!
+SmallintObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ShapeMap category: #'Powerlang-Core-Metaphysics'!
 ObjectMap subclass: #ShapeMap
 	instanceVariableNames: 'shapes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ShapeMap class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ShapeMap class' category: #'Powerlang-Core-Metaphysics'!
 ShapeMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodEvaluator category: 'Powerlang-Core-Emulation'!
+!classDefinition: #SmalltalkBootstrapper category: #'Powerlang-Core-Building'!
+Object subclass: #SmalltalkBootstrapper
+	instanceVariableNames: 'builder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'SmalltalkBootstrapper class' category: #'Powerlang-Core-Building'!
+SmalltalkBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #DMRBootstrapper category: #'Powerlang-Core-Building'!
+SmalltalkBootstrapper subclass: #DMRBootstrapper
+	instanceVariableNames: 'nativizer image'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'DMRBootstrapper class' category: #'Powerlang-Core-Building'!
+DMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #OMRBootstrapper category: #'Powerlang-Core-Building'!
+SmalltalkBootstrapper subclass: #OMRBootstrapper
+	instanceVariableNames: 'nativizer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Building'!
+!classDefinition: 'OMRBootstrapper class' category: #'Powerlang-Core-Building'!
+OMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodEvaluator category: #'Powerlang-Core-Emulation'!
 Object subclass: #MethodEvaluator
 	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
 	classVariableNames: 'Undermessages'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'MethodEvaluator class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'MethodEvaluator class' category: #'Powerlang-Core-Emulation'!
 MethodEvaluator class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualDictionary category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualDictionary category: #'Powerlang-Core-Emulation'!
 Object subclass: #VirtualDictionary
 	instanceVariableNames: 'constant cache nilObj dictionary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualDictionary class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualDictionary class' category: #'Powerlang-Core-Emulation'!
 VirtualDictionary class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSmalltalkImage category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSmalltalkImage category: #'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSmalltalkImage
 	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkImage class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkImage class' category: #'Powerlang-Core-Emulation'!
 VirtualSmalltalkImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSmalltalkRuntime category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSmalltalkRuntime category: #'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSmalltalkRuntime
 	instanceVariableNames: 'image frames methodCache symbolCache smallintBehavior lastHash overrides globals virtualSpecies'
 	classVariableNames: 'Undermessages'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkRuntime class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkRuntime class' category: #'Powerlang-Core-Emulation'!
 VirtualSmalltalkRuntime class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSpecies category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSpecies category: #'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSpecies
 	instanceVariableNames: 'spec superclass map'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSpecies class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSpecies class' category: #'Powerlang-Core-Emulation'!
 VirtualSpecies class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualClass category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualClass category: #'Powerlang-Core-Emulation'!
 VirtualSpecies subclass: #VirtualClass
 	instanceVariableNames: 'cvars'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualClass class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualClass class' category: #'Powerlang-Core-Emulation'!
 VirtualClass class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualMetaclass category: 'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualMetaclass category: #'Powerlang-Core-Emulation'!
 VirtualSpecies subclass: #VirtualMetaclass
 	instanceVariableNames: 'class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualMetaclass class' category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualMetaclass class' category: #'Powerlang-Core-Emulation'!
 VirtualMetaclass class
 	instanceVariableNames: ''!
 
-!classDefinition: #Bridge category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #Bridge category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #Bridge
 	instanceVariableNames: 'cache objects runtime'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Bridge class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Bridge class' category: #'Powerlang-Core-Metaphysics'!
 Bridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkBridge category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #SmalltalkBridge category: #'Powerlang-Core-Metaphysics'!
 Bridge subclass: #SmalltalkBridge
 	instanceVariableNames: 'nilObj trueObj falseObj'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SmalltalkBridge class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkBridge class' category: #'Powerlang-Core-Metaphysics'!
 SmalltalkBridge class
 	instanceVariableNames: 'falseObj'!
 
-!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrappedPstBridge category: #'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #BootstrappedPstBridge
 	instanceVariableNames: 'bootstrapper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrappedPstBridge class' category: #'Powerlang-Core-Metaphysics'!
 BootstrappedPstBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisBridge category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisBridge category: #'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #CuisBridge
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisBridge class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisBridge class' category: #'Powerlang-Core-Metaphysics'!
 CuisBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisStBridge category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisStBridge category: #'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #CuisStBridge
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStBridge class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStBridge class' category: #'Powerlang-Core-Metaphysics'!
 CuisStBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #Gate category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #Gate category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #Gate
 	instanceVariableNames: 'handle'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Gate class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Gate class' category: #'Powerlang-Core-Metaphysics'!
 Gate class
 	instanceVariableNames: ''!
 
-!classDefinition: #DirectGate category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #DirectGate category: #'Powerlang-Core-Metaphysics'!
 Gate subclass: #DirectGate
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DirectGate class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DirectGate class' category: #'Powerlang-Core-Metaphysics'!
 DirectGate class
 	instanceVariableNames: ''!
 
-!classDefinition: #MirageGate category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #MirageGate category: #'Powerlang-Core-Metaphysics'!
 Gate subclass: #MirageGate
 	instanceVariableNames: 'class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirageGate class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirageGate class' category: #'Powerlang-Core-Metaphysics'!
 MirageGate class
 	instanceVariableNames: ''!
 
-!classDefinition: #Handle category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #Handle category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #Handle
 	instanceVariableNames: 'runtime'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Handle class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Handle class' category: #'Powerlang-Core-Metaphysics'!
 Handle class
 	instanceVariableNames: ''!
 
-!classDefinition: #PstFrameHandle category: 'Powerlang-Core'!
-Handle subclass: #PstFrameHandle
-	instanceVariableNames: 'frame'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'PstFrameHandle class' category: 'Powerlang-Core'!
-PstFrameHandle class
-	instanceVariableNames: ''!
-
-!classDefinition: #CuisStFrameHandle category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisStFrameHandle category: #'Powerlang-Core-Metaphysics'!
 Handle subclass: #CuisStFrameHandle
 	instanceVariableNames: 'frame'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStFrameHandle class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStFrameHandle class' category: #'Powerlang-Core-Metaphysics'!
 CuisStFrameHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHandle category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHandle category: #'Powerlang-Core-Metaphysics'!
 Handle subclass: #ObjectHandle
 	instanceVariableNames: 'oid'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHandle class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHandle class' category: #'Powerlang-Core-Metaphysics'!
 ObjectHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalHandle category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #LocalHandle category: #'Powerlang-Core-Metaphysics'!
 ObjectHandle subclass: #LocalHandle
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'LocalHandle class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'LocalHandle class' category: #'Powerlang-Core-Metaphysics'!
 LocalHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodLookup category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #PstFrameHandle category: #'Powerlang-Core-Metaphysics'!
+Handle subclass: #PstFrameHandle
+	instanceVariableNames: 'frame'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'PstFrameHandle class' category: #'Powerlang-Core-Metaphysics'!
+PstFrameHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodLookup category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #MethodLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MethodLookup class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MethodLookup class' category: #'Powerlang-Core-Metaphysics'!
 MethodLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisLookup category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisLookup category: #'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #CuisLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisLookup class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisLookup class' category: #'Powerlang-Core-Metaphysics'!
 CuisLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #EmulationLookup category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #EmulationLookup category: #'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #EmulationLookup
 	instanceVariableNames: 'spec globals cache'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'EmulationLookup class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'EmulationLookup class' category: #'Powerlang-Core-Metaphysics'!
 EmulationLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #MirrorLookup category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #MirrorLookup category: #'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #MirrorLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirrorLookup class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirrorLookup class' category: #'Powerlang-Core-Metaphysics'!
 MirrorLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectFormat category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectFormat category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #ObjectFormat
 	instanceVariableNames: 'runtime storage'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
 ObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrapObjectFormat category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrapObjectFormat category: #'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #BootstrapObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
 BootstrapObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisObjectFormat category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisObjectFormat category: #'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #CuisObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
 CuisObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #DmrObjectFormat category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #DmrObjectFormat category: #'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #DmrObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DmrObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DmrObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
 DmrObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectShape category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectShape category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #ObjectShape
 	instanceVariableNames: 'name fields'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectShape class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectShape class' category: #'Powerlang-Core-Metaphysics'!
 ObjectShape class
 	instanceVariableNames: ''!
 
-!classDefinition: #Runtime category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #Runtime category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #Runtime
 	instanceVariableNames: 'lookup storage objectFormat bridge sources shapeMap objectModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Runtime class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Runtime class' category: #'Powerlang-Core-Metaphysics'!
 Runtime class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionInterpreter category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #SExpressionInterpreter category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #SExpressionInterpreter
 	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SExpressionInterpreter class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SExpressionInterpreter class' category: #'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkInterpreter category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #SmalltalkInterpreter category: #'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter subclass: #SmalltalkInterpreter
 	instanceVariableNames: 'localRuntime'
 	classVariableNames: 'Underprimitives'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SmalltalkInterpreter class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkInterpreter class' category: #'Powerlang-Core-Metaphysics'!
 SmalltalkInterpreter class
 	instanceVariableNames: ''!
 
-!classDefinition: #Storage category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #Storage category: #'Powerlang-Core-Metaphysics'!
 Object subclass: #Storage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Storage class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Storage class' category: #'Powerlang-Core-Metaphysics'!
 Storage class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrapStorage category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrapStorage category: #'Powerlang-Core-Metaphysics'!
 Storage subclass: #BootstrapStorage
 	instanceVariableNames: 'bootstrapper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapStorage class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapStorage class' category: #'Powerlang-Core-Metaphysics'!
 BootstrapStorage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteArrayAdapter category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: #ByteArrayAdapter category: #'Powerlang-Core-Metaphysics'!
 Storage subclass: #ByteArrayAdapter
 	instanceVariableNames: 'bytes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ByteArrayAdapter class' category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ByteArrayAdapter class' category: #'Powerlang-Core-Metaphysics'!
 ByteArrayAdapter class
 	instanceVariableNames: ''!
 
-!classDefinition: #Mirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #Mirror category: #'Powerlang-Core-Mirrors'!
 Object subclass: #Mirror
 	instanceVariableNames: 'handle'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'Mirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'Mirror class' category: #'Powerlang-Core-Mirrors'!
 Mirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackFrameMirror category: 'Powerlang-Core'!
-Mirror subclass: #StackFrameMirror
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'FrameOffsets'
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameMirror class' category: 'Powerlang-Core'!
-StackFrameMirror class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #ObjectMirror category: #'Powerlang-Core-Mirrors'!
 Mirror subclass: #ObjectMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ObjectMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ObjectMirror class' category: #'Powerlang-Core-Mirrors'!
 ObjectMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssociationMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #AssociationMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #AssociationMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'AssociationMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'AssociationMirror class' category: #'Powerlang-Core-Mirrors'!
 AssociationMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #BehaviorMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #BehaviorMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #BehaviorMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'BehaviorMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'BehaviorMirror class' category: #'Powerlang-Core-Mirrors'!
 BehaviorMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClosureMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #ClosureMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #ClosureMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClosureMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClosureMirror class' category: #'Powerlang-Core-Mirrors'!
 ClosureMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledBlockMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledBlockMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #CompiledBlockMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'CompiledBlockFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockMirror class' category: #'Powerlang-Core-Mirrors'!
 CompiledBlockMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledMethodMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledMethodMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #CompiledMethodMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'CompiledMethodFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodMirror class' category: #'Powerlang-Core-Mirrors'!
 CompiledMethodMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #DictionaryMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #DictionaryMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #DictionaryMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'DictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'DictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
 DictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodDictionaryMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #MethodDictionaryMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #MethodDictionaryMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MethodDictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'MethodDictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
 MethodDictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #SpeciesMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #SpeciesMirror category: #'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #SpeciesMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'SpeciesFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'SpeciesMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'SpeciesMirror class' category: #'Powerlang-Core-Mirrors'!
 SpeciesMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #ClassMirror category: #'Powerlang-Core-Mirrors'!
 SpeciesMirror subclass: #ClassMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClassMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClassMirror class' category: #'Powerlang-Core-Mirrors'!
 ClassMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #MetaclassMirror category: 'Powerlang-Core-Mirrors'!
+!classDefinition: #MetaclassMirror category: #'Powerlang-Core-Mirrors'!
 SpeciesMirror subclass: #MetaclassMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'MetaclassMirror class' category: #'Powerlang-Core-Mirrors'!
 MetaclassMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #BinaryMessageNativizer category: 'Powerlang-Core-Nativization'!
+!classDefinition: #StackFrameMirror category: #'Powerlang-Core-Mirrors'!
+Mirror subclass: #StackFrameMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'FrameOffsets'
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'StackFrameMirror class' category: #'Powerlang-Core-Mirrors'!
+StackFrameMirror class
+	instanceVariableNames: ''!
+
+!classDefinition: #BinaryMessageNativizer category: #'Powerlang-Core-Nativization'!
 Object subclass: #BinaryMessageNativizer
 	instanceVariableNames: 'message assembler nativizer done failed'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'BinaryMessageNativizer class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'BinaryMessageNativizer class' category: #'Powerlang-Core-Nativization'!
 BinaryMessageNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlinedMessageNativizer category: 'Powerlang-Core-Nativization'!
+!classDefinition: #InlinedMessageNativizer category: #'Powerlang-Core-Nativization'!
 Object subclass: #InlinedMessageNativizer
 	instanceVariableNames: 'message assembler nativizer start end'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlinedMessageNativizer class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlinedMessageNativizer class' category: #'Powerlang-Core-Nativization'!
 InlinedMessageNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #MessageLinker category: #'Powerlang-Core-Nativization'!
 Object subclass: #MessageLinker
 	instanceVariableNames: 'filter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'MessageLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'MessageLinker class' category: #'Powerlang-Core-Nativization'!
 MessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompositeMessageLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #CompositeMessageLinker category: #'Powerlang-Core-Nativization'!
 MessageLinker subclass: #CompositeMessageLinker
 	instanceVariableNames: 'candidates'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'CompositeMessageLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'CompositeMessageLinker class' category: #'Powerlang-Core-Nativization'!
 CompositeMessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #HaltingSend category: 'Powerlang-Core-Nativization'!
+!classDefinition: #HaltingSend category: #'Powerlang-Core-Nativization'!
 MessageLinker subclass: #HaltingSend
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'HaltingSend class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'HaltingSend class' category: #'Powerlang-Core-Nativization'!
 HaltingSend class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlineMessageLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #InlineMessageLinker category: #'Powerlang-Core-Nativization'!
 MessageLinker subclass: #InlineMessageLinker
 	instanceVariableNames: 'assembler map'
 	classVariableNames: ''
 	poolDictionaries: 'InlineMessageLinkerFlags Registers'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinker class' category: #'Powerlang-Core-Nativization'!
 InlineMessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #InvokeLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #InvokeLinker category: #'Powerlang-Core-Nativization'!
 MessageLinker subclass: #InvokeLinker
 	instanceVariableNames: 'invoker sends'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InvokeLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InvokeLinker class' category: #'Powerlang-Core-Nativization'!
 InvokeLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #LookupLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LookupLinker category: #'Powerlang-Core-Nativization'!
 MessageLinker subclass: #LookupLinker
 	instanceVariableNames: 'lookup lookupSuper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LookupLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LookupLinker class' category: #'Powerlang-Core-Nativization'!
 LookupLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #LazyLinker category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LazyLinker category: #'Powerlang-Core-Nativization'!
 LookupLinker subclass: #LazyLinker
 	instanceVariableNames: 'sends'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LazyLinker class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LazyLinker class' category: #'Powerlang-Core-Nativization'!
 LazyLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativizationEnvironment category: 'Powerlang-Core-Nativization'!
+!classDefinition: #NativizationEnvironment category: #'Powerlang-Core-Nativization'!
 Object subclass: #NativizationEnvironment
 	instanceVariableNames: 'optimizedMethods invokedMethods inlinedMethods messageLinker globals writeBarrier abi safepointCheck cachedNativizer busy'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativizationEnvironment class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'NativizationEnvironment class' category: #'Powerlang-Core-Nativization'!
 NativizationEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #Opcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #Opcode category: #'Powerlang-Core-Nativization'!
 Object subclass: #Opcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'Opcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'Opcode class' category: #'Powerlang-Core-Nativization'!
 Opcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureSmallIntegerOpcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureSmallIntegerOpcode category: #'Powerlang-Core-Nativization'!
 Opcode subclass: #EnsureSmallIntegerOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureSmallIntegerOpcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureSmallIntegerOpcode class' category: #'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureASmallInteger category: 'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureASmallInteger category: #'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode subclass: #EnsureASmallInteger
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureASmallInteger class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureASmallInteger class' category: #'Powerlang-Core-Nativization'!
 EnsureASmallInteger class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureRSmallInteger category: 'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureRSmallInteger category: #'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureRSmallInteger class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureRSmallInteger class' category: #'Powerlang-Core-Nativization'!
 EnsureRSmallInteger class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAOpcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAOpcode category: #'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadAOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAOpcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAOpcode class' category: #'Powerlang-Core-Nativization'!
 LoadAOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAvisitingArgument category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAvisitingArgument category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAvisitingArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAvisitingArgument class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAvisitingArgument class' category: #'Powerlang-Core-Nativization'!
 LoadAvisitingArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithFalse category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithFalse category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithFalse class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithFalse class' category: #'Powerlang-Core-Nativization'!
 LoadAwithFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithInstVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithInstVar category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithInstVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithInstVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithInstVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithInstVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLiteralVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLiteralVar category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithLiteralVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteralVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteralVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithAssocVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithAssocVar category: #'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithAssocVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithAssocVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithAssocVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithAssocVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithClassVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithClassVar category: #'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithClassVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithClassVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithClassVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithClassVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithGlobal category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithGlobal category: #'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithGlobal
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithGlobal class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithGlobal class' category: #'Powerlang-Core-Nativization'!
 LoadAwithGlobal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithPoolVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithPoolVar category: #'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithPoolVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithPoolVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithPoolVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithPoolVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithConstPoolVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithConstPoolVar category: #'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithConstPoolVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithConstPoolVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithConstPoolVar class' category: #'Powerlang-Core-Nativization'!
 LoadAwithConstPoolVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLiteral category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLiteral category: #'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithLiteral
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteral class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteral class' category: #'Powerlang-Core-Nativization'!
 LoadAwithLiteral class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLocal category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLocal category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithLocal
 	instanceVariableNames: 'index environment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLocal class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLocal class' category: #'Powerlang-Core-Nativization'!
 LoadAwithLocal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithArgument category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithArgument category: #'Powerlang-Core-Nativization'!
 LoadAwithLocal subclass: #LoadAwithArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithArgument class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithArgument class' category: #'Powerlang-Core-Nativization'!
 LoadAwithArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithTemporary category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithTemporary category: #'Powerlang-Core-Nativization'!
 LoadAwithLocal subclass: #LoadAwithTemporary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTemporary class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTemporary class' category: #'Powerlang-Core-Nativization'!
 LoadAwithTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithNil category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithNil category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithNil
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithNil class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithNil class' category: #'Powerlang-Core-Nativization'!
 LoadAwithNil class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithSelf category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithSelf category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithSelf
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithSelf class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithSelf class' category: #'Powerlang-Core-Nativization'!
 LoadAwithSelf class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithTrue category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithTrue category: #'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTrue class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTrue class' category: #'Powerlang-Core-Nativization'!
 LoadAwithTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadExpressionOpcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadExpressionOpcode category: #'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadExpressionOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadExpressionOpcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadExpressionOpcode class' category: #'Powerlang-Core-Nativization'!
 LoadExpressionOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithReceiver category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithReceiver category: #'Powerlang-Core-Nativization'!
 LoadExpressionOpcode subclass: #LoadRwithReceiver
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithReceiver class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithReceiver class' category: #'Powerlang-Core-Nativization'!
 LoadRwithReceiver class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadROpcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadROpcode category: #'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadROpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadROpcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadROpcode class' category: #'Powerlang-Core-Nativization'!
 LoadROpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRvisitingReceiver category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRvisitingReceiver category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRvisitingReceiver
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRvisitingReceiver class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRvisitingReceiver class' category: #'Powerlang-Core-Nativization'!
 LoadRvisitingReceiver class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithFalse category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithFalse category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithFalse class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithFalse class' category: #'Powerlang-Core-Nativization'!
 LoadRwithFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithInstVar category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithInstVar category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithInstVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithInstVar class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithInstVar class' category: #'Powerlang-Core-Nativization'!
 LoadRwithInstVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithLocal category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithLocal category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithLocal
 	instanceVariableNames: 'index environment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithLocal class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithLocal class' category: #'Powerlang-Core-Nativization'!
 LoadRwithLocal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithArgument category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithArgument category: #'Powerlang-Core-Nativization'!
 LoadRwithLocal subclass: #LoadRwithArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithArgument class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithArgument class' category: #'Powerlang-Core-Nativization'!
 LoadRwithArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithTemporary category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithTemporary category: #'Powerlang-Core-Nativization'!
 LoadRwithLocal subclass: #LoadRwithTemporary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTemporary class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTemporary class' category: #'Powerlang-Core-Nativization'!
 LoadRwithTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithNil category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithNil category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithNil
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithNil class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithNil class' category: #'Powerlang-Core-Nativization'!
 LoadRwithNil class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithSelf category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithSelf category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithSelf
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithSelf class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithSelf class' category: #'Powerlang-Core-Nativization'!
 LoadRwithSelf class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithTrue category: 'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithTrue category: #'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTrue class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTrue class' category: #'Powerlang-Core-Nativization'!
 LoadRwithTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackOpcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #StackOpcode category: #'Powerlang-Core-Nativization'!
 Opcode subclass: #StackOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'StackOpcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'StackOpcode class' category: #'Powerlang-Core-Nativization'!
 StackOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #PopRopcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #PopRopcode category: #'Powerlang-Core-Nativization'!
 StackOpcode subclass: #PopRopcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PopRopcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PopRopcode class' category: #'Powerlang-Core-Nativization'!
 PopRopcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #PushRopcode category: 'Powerlang-Core-Nativization'!
+!classDefinition: #PushRopcode category: #'Powerlang-Core-Nativization'!
 StackOpcode subclass: #PushRopcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PushRopcode class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'PushRopcode class' category: #'Powerlang-Core-Nativization'!
 PushRopcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionNativizer category: 'Powerlang-Core-Nativization'!
+!classDefinition: #SExpressionNativizer category: #'Powerlang-Core-Nativization'!
 Object subclass: #SExpressionNativizer
 	instanceVariableNames: 'environment assembler method remainingBlocks safepointCheck mainCode stackCount fallbacks activeScript'
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SExpressionNativizer class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SExpressionNativizer class' category: #'Powerlang-Core-Nativization'!
 SExpressionNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SendSite category: 'Powerlang-Core-Nativization'!
+!classDefinition: #SendSite category: #'Powerlang-Core-Nativization'!
 Object subclass: #SendSite
 	instanceVariableNames: 'instructions selector cache tally format'
 	classVariableNames: ''
 	poolDictionaries: 'SendSiteFlags'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSite class' category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSite class' category: #'Powerlang-Core-Nativization'!
 SendSite class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBlockInliner category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #StackFrameCursor category: #'Powerlang-Core-Nativization'!
+Object subclass: #StackFrameCursor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'StackFrameCursor class' category: #'Powerlang-Core-Nativization'!
+StackFrameCursor class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingBlockInliner category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBlockInliner
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBlockInliner class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBlockInliner class' category: #'Powerlang-Core-OCompiler'!
 OptimizingBlockInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBraunAllocator category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingBraunAllocator category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBraunAllocator
 	instanceVariableNames: 'firstBlock currentBlock loops liveness allocationEntry allocationExit distancesExit spillExit currentlyAvailable currentlySpilled temporaries amountOfRegisters scheduledSpills scheduledReloads blocksDone deferredCouplings'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBraunAllocator class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBraunAllocator class' category: #'Powerlang-Core-OCompiler'!
 OptimizingBraunAllocator class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBraunAssigner category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingBraunAssigner category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBraunAssigner
 	instanceVariableNames: 'firstBlock liveness allocationEntry temporaries preferences occupied assignments clusters processed'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBraunAssigner class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBraunAssigner class' category: #'Powerlang-Core-OCompiler'!
 OptimizingBraunAssigner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCFGSimplifier category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCFGSimplifier category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCFGSimplifier
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCFGSimplifier class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCFGSimplifier class' category: #'Powerlang-Core-OCompiler'!
 OptimizingCFGSimplifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCSSATransformer category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCSSATransformer category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCSSATransformer
 	instanceVariableNames: 'firstBlock liveness'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCSSATransformer class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCSSATransformer class' category: #'Powerlang-Core-OCompiler'!
 OptimizingCSSATransformer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCodeEmitter category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCodeEmitter category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCodeEmitter
 	instanceVariableNames: 'allocation assembler abi jumpDestinations assemblers method firstBlock currentBlockIndex blocks messageLinker'
 	classVariableNames: ''
 	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCodeEmitter class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCodeEmitter class' category: #'Powerlang-Core-OCompiler'!
 OptimizingCodeEmitter class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingInstructionFragmenter category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingInstructionFragmenter category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingInstructionFragmenter
 	instanceVariableNames: 'method messages firstBlock abi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingInstructionFragmenter class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionFragmenter class' category: #'Powerlang-Core-OCompiler'!
 OptimizingInstructionFragmenter class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingInstructionSelector category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingInstructionSelector category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingInstructionSelector
 	instanceVariableNames: 'firstBlock tiles roots messages'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingInstructionSelector class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionSelector class' category: #'Powerlang-Core-OCompiler'!
 OptimizingInstructionSelector class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingLivenessAnalysis category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingLivenessAnalysis category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingLivenessAnalysis
 	instanceVariableNames: 'firstBlock liveIn liveOut loops pressures expirations'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingLivenessAnalysis class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingLivenessAnalysis class' category: #'Powerlang-Core-OCompiler'!
 OptimizingLivenessAnalysis class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingMethodInliner category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingMethodInliner category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingMethodInliner
 	instanceVariableNames: 'environment firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingMethodInliner class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingMethodInliner class' category: #'Powerlang-Core-OCompiler'!
 OptimizingMethodInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingNativizer category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingNativizer category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingNativizer
 	instanceVariableNames: 'environment method firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingNativizer class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingNativizer class' category: #'Powerlang-Core-OCompiler'!
 OptimizingNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingPhiSimplification category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingPhiSimplification category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingPhiSimplification
 	instanceVariableNames: 'marks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingPhiSimplification class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingPhiSimplification class' category: #'Powerlang-Core-OCompiler'!
 OptimizingPhiSimplification class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingRegisterAllocator category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingRegisterAllocator category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingRegisterAllocator
 	instanceVariableNames: 'abi liveRanges unifiedLiveRanges expirations allocation free used usedOut locals currentBlock firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingRegisterAllocator class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingRegisterAllocator class' category: #'Powerlang-Core-OCompiler'!
 OptimizingRegisterAllocator class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingSSAReconstructor category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingSSAReconstructor category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingSSAReconstructor
 	instanceVariableNames: 'firstBlock variable reloads idoms iteratedFrontiers insertedPhis blocks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingSSAReconstructor class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingSSAReconstructor class' category: #'Powerlang-Core-OCompiler'!
 OptimizingSSAReconstructor class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingTwoAddressEnforcer category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingTwoAddressEnforcer category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingTwoAddressEnforcer
 	instanceVariableNames: 'allocation firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingTwoAddressEnforcer class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingTwoAddressEnforcer class' category: #'Powerlang-Core-OCompiler'!
 OptimizingTwoAddressEnforcer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingUsesVerifier category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingUsesVerifier category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingUsesVerifier
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingUsesVerifier class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingUsesVerifier class' category: #'Powerlang-Core-OCompiler'!
 OptimizingUsesVerifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingValueNumbering category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingValueNumbering category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingValueNumbering
 	instanceVariableNames: 'firstBlock currentBlock names hashes hashesOut constHashes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingValueNumbering class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingValueNumbering class' category: #'Powerlang-Core-OCompiler'!
 OptimizingValueNumbering class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingVariableBinder category: 'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingVariableBinder category: #'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingVariableBinder
 	instanceVariableNames: 'definitions currentBlock dominatorTree immediateDominators dominanceFrontiers pendingReads pendingPhis abi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingVariableBinder class' category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingVariableBinder class' category: #'Powerlang-Core-OCompiler'!
 OptimizingVariableBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBasicBlock category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBasicBlock category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OBasicBlock
 	instanceVariableNames: 'firstInstruction lastInstruction predecessors'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBasicBlock class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBasicBlock class' category: #'Powerlang-Core-OCompiler-IR'!
 OBasicBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #ODominatorTree category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #ODominatorTree category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #ODominatorTree
 	instanceVariableNames: 'block dominators dominated'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'ODominatorTree class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODominatorTree class' category: #'Powerlang-Core-OCompiler-IR'!
 ODominatorTree class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLiveRange category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLiveRange category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OLiveRange
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
 OLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OComposedLiveRange category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OComposedLiveRange category: #'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OComposedLiveRange
 	instanceVariableNames: 'ranges'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OComposedLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OComposedLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
 OComposedLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLoadConstant category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLoadConstant category: #'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OLoadConstant
 	instanceVariableNames: 'constant'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLoadConstant class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadConstant class' category: #'Powerlang-Core-OCompiler-IR'!
 OLoadConstant class
 	instanceVariableNames: ''!
 
-!classDefinition: #OSimpleLiveRange category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OSimpleLiveRange category: #'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OSimpleLiveRange
 	instanceVariableNames: 'definition uses definitionBlock usesBlocks isSpilled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OSimpleLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OSimpleLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
 OSimpleLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTiling category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OOperand category: #'Powerlang-Core-OCompiler-IR'!
+Object subclass: #OOperand
+	instanceVariableNames: 'instruction name nextUse'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OOperand class' category: #'Powerlang-Core-OCompiler-IR'!
+OOperand class
+	instanceVariableNames: ''!
+
+!classDefinition: #OTiling category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OTiling
 	instanceVariableNames: 'action cost used instruction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTiling class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTiling class' category: #'Powerlang-Core-OCompiler-IR'!
 OTiling class
 	instanceVariableNames: ''!
 
-!classDefinition: #OValue category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OValue category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OValue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OValue class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OValue class' category: #'Powerlang-Core-OCompiler-IR'!
 OValue class
 	instanceVariableNames: ''!
 
-!classDefinition: #OConstant category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OConstant category: #'Powerlang-Core-OCompiler-IR'!
 OValue subclass: #OConstant
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OConstant class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OConstant class' category: #'Powerlang-Core-OCompiler-IR'!
 OConstant class
 	instanceVariableNames: ''!
 
-!classDefinition: #OInstruction category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OInstruction category: #'Powerlang-Core-OCompiler-IR'!
 OValue subclass: #OInstruction
 	instanceVariableNames: 'prev next firstUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBeginInstruction category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBeginInstruction category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OBeginInstruction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBeginInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBeginInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
 OBeginInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBlockClosure category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBlockClosure category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OBlockClosure
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBlockClosure class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
 OBlockClosure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ODefineArgument category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #ODefineArgument category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #ODefineArgument
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'ODefineArgument class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODefineArgument class' category: #'Powerlang-Core-OCompiler-IR'!
 ODefineArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #OEndInstruction category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OEndInstruction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OEndInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OEndInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
 OEndInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJump category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJump category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OJump
 	instanceVariableNames: 'target'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJump class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJump class' category: #'Powerlang-Core-OCompiler-IR'!
 OJump class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpConditional category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpConditional category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OJumpConditional
 	instanceVariableNames: 'variable target implicitTarget'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpConditional class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpConditional class' category: #'Powerlang-Core-OCompiler-IR'!
 OJumpConditional class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpFalse category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpFalse category: #'Powerlang-Core-OCompiler-IR'!
 OJumpConditional subclass: #OJumpFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpFalse class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpFalse class' category: #'Powerlang-Core-OCompiler-IR'!
 OJumpFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpTrue category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpTrue category: #'Powerlang-Core-OCompiler-IR'!
 OJumpConditional subclass: #OJumpTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpTrue class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpTrue class' category: #'Powerlang-Core-OCompiler-IR'!
 OJumpTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLoadImplicit category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLoadImplicit category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OLoadImplicit
 	instanceVariableNames: 'name source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLoadImplicit class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadImplicit class' category: #'Powerlang-Core-OCompiler-IR'!
 OLoadImplicit class
 	instanceVariableNames: ''!
 
-!classDefinition: #OActivationContext category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OActivationContext category: #'Powerlang-Core-OCompiler-IR'!
 OLoadImplicit subclass: #OActivationContext
 	instanceVariableNames: 'hasFrame temporaries storesPreviousSelf'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OActivationContext class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OActivationContext class' category: #'Powerlang-Core-OCompiler-IR'!
 OActivationContext class
 	instanceVariableNames: ''!
 
-!classDefinition: #OMessageSend category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OMessageSend category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OMessageSend
 	instanceVariableNames: 'receiver selector arguments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OMessageSend class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
 OMessageSend class
 	instanceVariableNames: ''!
 
-!classDefinition: #OPhi category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OPhi category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OPhi
 	instanceVariableNames: 'variables blocks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPhi class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPhi class' category: #'Powerlang-Core-OCompiler-IR'!
 OPhi class
 	instanceVariableNames: ''!
 
-!classDefinition: #OPrimitiveOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OPrimitiveOperation
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPrimitiveOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPrimitiveOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryOperation category: #'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OBinaryOperation
 	instanceVariableNames: 'left right'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryConstantOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryConstantOperation category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation subclass: #OBinaryConstantOperation
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryConstantOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryConstantOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryConstantOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryVariableOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryVariableOperation category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation subclass: #OBinaryVariableOperation
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryVariableOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OBinaryVariableOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTernaryOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OTernaryOperation category: #'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OTernaryOperation
 	instanceVariableNames: 'receiver left right'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTernaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTernaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OTernaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OUnaryOperation category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OUnaryOperation category: #'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OUnaryOperation
 	instanceVariableNames: 'receiver'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OUnaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUnaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
 OUnaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OReturn category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OReturn category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OReturn
 	instanceVariableNames: 'source frame argumentsCount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReturn class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReturn class' category: #'Powerlang-Core-OCompiler-IR'!
 OReturn class
 	instanceVariableNames: ''!
 
-!classDefinition: #OUseVariable category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OUseVariable category: #'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OUseVariable
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OUseVariable class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUseVariable class' category: #'Powerlang-Core-OCompiler-IR'!
 OUseVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OReadVariable category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OReadVariable category: #'Powerlang-Core-OCompiler-IR'!
 OUseVariable subclass: #OReadVariable
 	instanceVariableNames: 'source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReadVariable class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReadVariable class' category: #'Powerlang-Core-OCompiler-IR'!
 OReadVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OWriteVariable category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OWriteVariable category: #'Powerlang-Core-OCompiler-IR'!
 OUseVariable subclass: #OWriteVariable
 	instanceVariableNames: 'source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OWriteVariable class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OWriteVariable class' category: #'Powerlang-Core-OCompiler-IR'!
 OWriteVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OVariable category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OVariable category: #'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OVariable
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OVariable class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OVariable class' category: #'Powerlang-Core-OCompiler-IR'!
 OVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTemporary category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OTemporary category: #'Powerlang-Core-OCompiler-IR'!
 OVariable subclass: #OTemporary
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTemporary class' category: 'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTemporary class' category: #'Powerlang-Core-OCompiler-IR'!
 OTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #IdentifierBinder category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
 Object subclass: #IdentifierBinder
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'IdentifierBinder class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'IdentifierBinder class' category: #'Powerlang-Core-SCompiler'!
 IdentifierBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #StaticBinder category: 'Powerlang-Core'!
-IdentifierBinder subclass: #StaticBinder
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StaticBinder class' category: 'Powerlang-Core'!
-StaticBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #DynamicBinder category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #DynamicBinder category: #'Powerlang-Core-SCompiler'!
 IdentifierBinder subclass: #DynamicBinder
 	instanceVariableNames: 'type'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'DynamicBinder class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'DynamicBinder class' category: #'Powerlang-Core-SCompiler'!
 DynamicBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalEnvironment category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #StaticBinder category: #'Powerlang-Core-SCompiler'!
+IdentifierBinder subclass: #StaticBinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'StaticBinder class' category: #'Powerlang-Core-SCompiler'!
+StaticBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalEnvironment category: #'Powerlang-Core-SCompiler'!
 Object subclass: #LocalEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'LocalEnvironment class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'LocalEnvironment class' category: #'Powerlang-Core-SCompiler'!
 LocalEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackEnvironment category: 'Powerlang-Core'!
-LocalEnvironment subclass: #StackEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'StackEnvironment class' category: 'Powerlang-Core'!
-StackEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArgumentEnvironment category: 'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #ArgumentEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArgumentEnvironment class' category: 'Powerlang-Core-SCompiler'!
-ArgumentEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlinedArgEnvironment category: 'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #InlinedArgEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'InlinedArgEnvironment class' category: 'Powerlang-Core-SCompiler'!
-InlinedArgEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArrayEnvironment category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #ArrayEnvironment category: #'Powerlang-Core-SCompiler'!
 LocalEnvironment subclass: #ArrayEnvironment
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArrayEnvironment class' category: #'Powerlang-Core-SCompiler'!
 ArrayEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageInliner category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #StackEnvironment category: #'Powerlang-Core-SCompiler'!
+LocalEnvironment subclass: #StackEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'StackEnvironment class' category: #'Powerlang-Core-SCompiler'!
+StackEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentEnvironment category: #'Powerlang-Core-SCompiler'!
+StackEnvironment subclass: #ArgumentEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArgumentEnvironment class' category: #'Powerlang-Core-SCompiler'!
+ArgumentEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlinedArgEnvironment category: #'Powerlang-Core-SCompiler'!
+StackEnvironment subclass: #InlinedArgEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'InlinedArgEnvironment class' category: #'Powerlang-Core-SCompiler'!
+InlinedArgEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #MessageInliner category: #'Powerlang-Core-SCompiler'!
 Object subclass: #MessageInliner
 	instanceVariableNames: 'message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MessageInliner class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'MessageInliner class' category: #'Powerlang-Core-SCompiler'!
 MessageInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationResult category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationResult category: #'Powerlang-Core-SCompiler'!
 Object subclass: #SCompilationResult
 	instanceVariableNames: 'compiler error ast method'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationResult class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationResult class' category: #'Powerlang-Core-SCompiler'!
 SCompilationResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlock category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlock category: #'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiledBlock
 	instanceVariableNames: 'format nativeCode method'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledBlockFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlock class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlock class' category: #'Powerlang-Core-SCompiler'!
 SCompiledBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlockBuilder category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlockBuilder category: #'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiledBlockBuilder
 	instanceVariableNames: 'scope node'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledBlockFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockBuilder class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockBuilder class' category: #'Powerlang-Core-SCompiler'!
 SCompiledBlockBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiler category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiler category: #'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiler
 	instanceVariableNames: 'errorHandler result class pools namespace'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiler class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiler class' category: #'Powerlang-Core-SCompiler'!
 SCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #ScriptScope category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #SParseTreeVisitor category: #'Powerlang-Core-SCompiler'!
+Object subclass: #SParseTreeVisitor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SParseTreeVisitor class' category: #'Powerlang-Core-SCompiler'!
+SParseTreeVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #OptimizingVisitor category: #'Powerlang-Core-OCompiler'!
+SParseTreeVisitor subclass: #OptimizingVisitor
+	instanceVariableNames: 'method firstBlock currentBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingVisitor class' category: #'Powerlang-Core-OCompiler'!
+OptimizingVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSemanticVisitor category: #'Powerlang-Core-SCompiler'!
+SParseTreeVisitor subclass: #SSemanticVisitor
+	instanceVariableNames: 'inliner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SSemanticVisitor class' category: #'Powerlang-Core-SCompiler'!
+SSemanticVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeEncoder category: #'Powerlang-Core-SExpressions'!
+SParseTreeVisitor subclass: #AstcodeEncoder
+	instanceVariableNames: 'method stream script'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeEncoder class' category: #'Powerlang-Core-SExpressions'!
+AstcodeEncoder class
+	instanceVariableNames: ''!
+
+!classDefinition: #ScriptScope category: #'Powerlang-Core-SCompiler'!
 Object subclass: #ScriptScope
 	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ScriptScope class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ScriptScope class' category: #'Powerlang-Core-SCompiler'!
 ScriptScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #BlockScope category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #BlockScope category: #'Powerlang-Core-SCompiler'!
 ScriptScope subclass: #BlockScope
 	instanceVariableNames: 'environments captured'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'BlockScope class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'BlockScope class' category: #'Powerlang-Core-SCompiler'!
 BlockScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodScope category: 'Powerlang-Core-SCompiler'!
+!classDefinition: #MethodScope category: #'Powerlang-Core-SCompiler'!
 ScriptScope subclass: #MethodScope
 	instanceVariableNames: 'species pseudo ivars cvars pools globals'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MethodScope class' category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'MethodScope class' category: #'Powerlang-Core-SCompiler'!
 MethodScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #Binding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #Binding category: #'Powerlang-Core-SCompiler-Bindings'!
 Object subclass: #Binding
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'Binding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'Binding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssociationBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #AssociationBinding
 	instanceVariableNames: 'association'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'AssociationBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'AssociationBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ClassVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #ClassVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 ClassVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #GlobalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #GlobalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #GlobalBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'GlobalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'GlobalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 GlobalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ClassBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 GlobalBinding subclass: #ClassBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 ClassBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #PoolVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #PoolVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #PoolVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'PoolVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'PoolVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 PoolVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ConstantPoolBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ConstantPoolBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 PoolVarBinding subclass: #ConstantPoolBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ConstantPoolBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ConstantPoolBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 ConstantPoolBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #InstVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #InstVarBinding
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'InstVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'InstVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 InstVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LiteralBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #LiteralBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #LiteralBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LiteralBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LiteralBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #FalseBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #FalseBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding subclass: #FalseBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'FalseBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'FalseBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 FalseBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TrueBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #TrueBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding subclass: #TrueBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TrueBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 TrueBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #LocalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LocalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LocalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ArgumentBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding subclass: #ArgumentBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ArgumentBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 ArgumentBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemporaryBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #TemporaryBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding subclass: #TemporaryBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TemporaryBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 TemporaryBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SelfBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #SelfBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #SelfBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'SelfBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 SelfBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SuperBinding category: 'Powerlang-Core'!
+!classDefinition: #SuperBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 SelfBinding subclass: #SuperBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SuperBinding class' category: 'Powerlang-Core'!
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SuperBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 SuperBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #UnresolvedBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #UnresolvedBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #UnresolvedBinding
 	instanceVariableNames: ''
 	classVariableNames: 'Default'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'UnresolvedBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'UnresolvedBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 UnresolvedBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #NilBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #NilBinding category: #'Powerlang-Core-SCompiler-Bindings'!
 Object subclass: #NilBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'NilBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'NilBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
 NilBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstcodeDecoder category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SSmalltalkParser category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+Object subclass: #SSmalltalkParser
+	instanceVariableNames: 'compiler scanner token next'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SSmalltalkParser class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSmalltalkParser class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSmalltalkScanner category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+Object subclass: #SSmalltalkScanner
+	instanceVariableNames: 'compiler stream'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SSmalltalkScanner class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSmalltalkScanner class
+	instanceVariableNames: ''!
+
+!classDefinition: #SToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+Object subclass: #SToken
+	instanceVariableNames: 'compiler stretch comments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SEndToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SEndToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SEndToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SEndToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SParseNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SParseNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SParseNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssignmentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SAssignmentNode
+	instanceVariableNames: 'assignees expression operators'
+	classVariableNames: 'Token'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SAssignmentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SAssignmentNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBraceNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SBraceNode
+	instanceVariableNames: 'elements message'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBraceNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SBraceNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SCascadeNode
+	instanceVariableNames: 'receiver messages optimized'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SCascadeNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCommentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SCommentNode
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCommentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SCommentNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdentifierNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SIdentifierNode
+	instanceVariableNames: 'name binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SIdentifierNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SIdentifierNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SLiteralNode
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SLiteralNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SLiteralNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SStringNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SLiteralNode subclass: #SStringNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SStringNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SStringNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SMessageNode
+	instanceVariableNames: 'selector receiver arguments inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SMessageNode subclass: #SCascadeMessageNode
+	instanceVariableNames: 'cascade'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SCascadeMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SReturnNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SReturnNode
+	instanceVariableNames: 'expression return'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SReturnNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SReturnNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScriptNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SScriptNode
+	instanceVariableNames: 'statements arguments temporaries children scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SScriptNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SScriptNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBlockNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SScriptNode subclass: #SBlockNode
+	instanceVariableNames: 'inlined index parent'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBlockNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SBlockNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSelectorNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SParseNode subclass: #SSelectorNode
+	instanceVariableNames: 'symbol keywords'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SSelectorNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSelectorNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPragmaNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SPragmaNode
+	instanceVariableNames: 'type name info'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SPragmaNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SPragmaNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSymbolicToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken subclass: #SSymbolicToken
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SSymbolicToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSymbolicToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SDelimiterToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSymbolicToken subclass: #SDelimiterToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SDelimiterToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SDelimiterToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SStringToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SSymbolicToken subclass: #SStringToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SStringToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SStringToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeDecoder category: #'Powerlang-Core-SExpressions'!
 Object subclass: #AstcodeDecoder
 	instanceVariableNames: 'method stream nodeTypes bindingTypes'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeDecoder class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeDecoder class' category: #'Powerlang-Core-SExpressions'!
 AstcodeDecoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #BinaryMessageOptimizer category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #BinaryMessageOptimizer category: #'Powerlang-Core-SExpressions'!
 Object subclass: #BinaryMessageOptimizer
 	instanceVariableNames: 'emitter message selector receiver argument'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'BinaryMessageOptimizer class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'BinaryMessageOptimizer class' category: #'Powerlang-Core-SExpressions'!
 BinaryMessageOptimizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SBinding category: #'Powerlang-Core-SExpressions'!
 Object subclass: #SBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBinding class' category: #'Powerlang-Core-SExpressions'!
 SBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLiteralBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
-SLiteralBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STrueBinding category: 'Powerlang-Core'!
-SLiteralBinding subclass: #STrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
-STrueBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SFalseBinding category: 'Powerlang-Core-SExpressions'!
-SLiteralBinding subclass: #SFalseBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core-SExpressions'!
-SFalseBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
-SBinding subclass: #SLocalBinding
-	instanceVariableNames: 'position environment'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
-SLocalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
-SLocalBinding subclass: #STemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
-STemporaryBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SArgumentBinding category: 'Powerlang-Core-SExpressions'!
-SLocalBinding subclass: #SArgumentBinding
-	instanceVariableNames: 'inlined'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SArgumentBinding class' category: 'Powerlang-Core-SExpressions'!
-SArgumentBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
-SBinding subclass: #SSelfBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
-SSelfBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
-SSelfBinding subclass: #SSuperBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
-SSuperBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssociationBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SAssociationBinding category: #'Powerlang-Core-SExpressions'!
 SBinding subclass: #SAssociationBinding
 	instanceVariableNames: 'index association'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssociationBinding class' category: #'Powerlang-Core-SExpressions'!
 SAssociationBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClassVarBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SClassVarBinding category: #'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SClassVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassVarBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassVarBinding class' category: #'Powerlang-Core-SExpressions'!
 SClassVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SGlobalBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SGlobalBinding category: #'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SGlobalBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SGlobalBinding class' category: #'Powerlang-Core-SExpressions'!
 SGlobalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClassBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SClassBinding category: #'Powerlang-Core-SExpressions'!
 SGlobalBinding subclass: #SClassBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassBinding class' category: #'Powerlang-Core-SExpressions'!
 SClassBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPoolVarBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SPoolVarBinding category: #'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SPoolVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPoolVarBinding class' category: #'Powerlang-Core-SExpressions'!
 SPoolVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SConstantPoolBinding category: #'Powerlang-Core-SExpressions'!
 SPoolVarBinding subclass: #SConstantPoolBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SConstantPoolBinding class' category: #'Powerlang-Core-SExpressions'!
 SConstantPoolBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SInstVarBinding category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SInstVarBinding category: #'Powerlang-Core-SExpressions'!
 SBinding subclass: #SInstVarBinding
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SInstVarBinding class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SInstVarBinding class' category: #'Powerlang-Core-SExpressions'!
 SInstVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpression category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SLiteralBinding category: #'Powerlang-Core-SExpressions'!
+SBinding subclass: #SLiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SLiteralBinding class' category: #'Powerlang-Core-SExpressions'!
+SLiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SFalseBinding category: #'Powerlang-Core-SExpressions'!
+SLiteralBinding subclass: #SFalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SFalseBinding class' category: #'Powerlang-Core-SExpressions'!
+SFalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STrueBinding category: #'Powerlang-Core-SExpressions'!
+SLiteralBinding subclass: #STrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'STrueBinding class' category: #'Powerlang-Core-SExpressions'!
+STrueBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLocalBinding category: #'Powerlang-Core-SExpressions'!
+SBinding subclass: #SLocalBinding
+	instanceVariableNames: 'position environment'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SLocalBinding class' category: #'Powerlang-Core-SExpressions'!
+SLocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SArgumentBinding category: #'Powerlang-Core-SExpressions'!
+SLocalBinding subclass: #SArgumentBinding
+	instanceVariableNames: 'inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SArgumentBinding class' category: #'Powerlang-Core-SExpressions'!
+SArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #STemporaryBinding category: #'Powerlang-Core-SExpressions'!
+SLocalBinding subclass: #STemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'STemporaryBinding class' category: #'Powerlang-Core-SExpressions'!
+STemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSelfBinding category: #'Powerlang-Core-SExpressions'!
+SBinding subclass: #SSelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SSelfBinding class' category: #'Powerlang-Core-SExpressions'!
+SSelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSuperBinding category: #'Powerlang-Core-SExpressions'!
+SSelfBinding subclass: #SSuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SSuperBinding class' category: #'Powerlang-Core-SExpressions'!
+SSuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpression category: #'Powerlang-Core-SExpressions'!
 Object subclass: #SExpression
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpression class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpression class' category: #'Powerlang-Core-SExpressions'!
 SExpression class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
-SExpression subclass: #SIdenitifier
-	instanceVariableNames: 'binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
-SIdenitifier class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
-SExpression subclass: #SLiteralVar
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
-SLiteralVar class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteral category: 'Powerlang-Core'!
-SLiteralVar subclass: #SLiteral
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
-SLiteral class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssignment category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SAssignment category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SAssignment
 	instanceVariableNames: 'assignees expression'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssignment class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssignment class' category: #'Powerlang-Core-SExpressions'!
 SAssignment class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascade category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SCascade category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SCascade
 	instanceVariableNames: 'receiver messages'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascade class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascade class' category: #'Powerlang-Core-SExpressions'!
 SCascade class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeMessage category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SCascadeMessage category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SCascadeMessage
 	instanceVariableNames: 'selector arguments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascadeMessage class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascadeMessage class' category: #'Powerlang-Core-SExpressions'!
 SCascadeMessage class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdentifier category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SIdenitifier category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SIdenitifier
+	instanceVariableNames: 'binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SIdenitifier class' category: #'Powerlang-Core-SExpressions'!
+SIdenitifier class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdentifier category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SIdentifier
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SIdentifier class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SIdentifier class' category: #'Powerlang-Core-SExpressions'!
 SIdentifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessage category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SLiteralVar category: #'Powerlang-Core-SExpressions'!
+SExpression subclass: #SLiteralVar
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SLiteralVar class' category: #'Powerlang-Core-SExpressions'!
+SLiteralVar class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteral category: #'Powerlang-Core-SExpressions'!
+SLiteralVar subclass: #SLiteral
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SLiteral class' category: #'Powerlang-Core-SExpressions'!
+SLiteral class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessage category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SMessage
 	instanceVariableNames: 'selector receiver arguments opcodes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SMessage class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SMessage class' category: #'Powerlang-Core-SExpressions'!
 SMessage class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPragma category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SPragma category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SPragma
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SPragma class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPragma class' category: #'Powerlang-Core-SExpressions'!
 SPragma class
 	instanceVariableNames: ''!
 
-!classDefinition: #SReturn category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SReturn category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SReturn
 	instanceVariableNames: 'local expression'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SReturn class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SReturn class' category: #'Powerlang-Core-SExpressions'!
 SReturn class
 	instanceVariableNames: ''!
 
-!classDefinition: #SScript category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SScript category: #'Powerlang-Core-SExpressions'!
 SExpression subclass: #SScript
 	instanceVariableNames: 'statements compiledCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SScript class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SScript class' category: #'Powerlang-Core-SExpressions'!
 SScript class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBlock category: 'Powerlang-Core-SExpressions'!
+!classDefinition: #SBlock category: #'Powerlang-Core-SExpressions'!
 SScript subclass: #SBlock
 	instanceVariableNames: 'index capturedVariables inlinedArgs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBlock class' category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBlock class' category: #'Powerlang-Core-SExpressions'!
 SBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #Subject category: 'Powerlang-Core'!
+!classDefinition: #SSmalltalkCompiler category: 'Powerlang-Core-SCompiler-Smalltalk'!
+Object subclass: #SSmalltalkCompiler
+	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk'!
+!classDefinition: 'SSmalltalkCompiler class' category: 'Powerlang-Core-SCompiler-Smalltalk'!
+SSmalltalkCompiler class
+	instanceVariableNames: ''!
+
+!classDefinition: #Subject category: #'Powerlang-Core-Metaphysics'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
 	classVariableNames: 'Counts'
 	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'Subject class' category: 'Powerlang-Core'!
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Subject class' category: #'Powerlang-Core-Metaphysics'!
 Subject class
 	instanceVariableNames: ''!
 
@@ -3288,16 +3289,6 @@ Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.
 
 Nota Bene: x86 specific!
-
-!OOperand commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
-
-!OptimizingVisitor commentStamp: '<historical>' prior: 0!
-Copyright (c) 2020 Aucerna.
-    See AucernaLicence.txt (MIT license) in package directory.
-!
 
 !ABI commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -3573,6 +3564,11 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!OOperand commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !OTiling commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
@@ -3686,6 +3682,11 @@ Copyright (c) 2020 Aucerna.
 Copyright (c) 2020 Aucerna.
     See AucernaLicence.txt (MIT license) in package directory.!
 
+!OptimizingVisitor commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.
+!
+
 !SExpression commentStamp: '<historical>' prior: 0!
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
@@ -3703,50 +3704,6 @@ printOn: aStream
 		ifNotNil: [ aStream
 				cr;
 				nextPutAll: source ]! !
-
-!OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
-printOn: aStream 
-	aStream
-		nextPutAll: '[op #' 
-			, name printString , 
-			'@' 
-			, instruction printString
-			, ']'! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:35'!
-definition 
-
-	^instruction atOperand: name! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:33'!
-name 
-
-	^name! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
-comment 
-
-	^comments notNil ifTrue: [comments anyOne]! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:24:21'!
-binding 
-
-	^binding! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:28:51'!
-name 
-
-	^name! !
-
-!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:06'!
-name 
-
-	^name! !
-
-!SmalltalkBootstrapper methodsFor: 'services' stamp: 'KenD 3/2/2021 13:03:02'!
-compile: anRGMethod 
-
-	^builder compile: anRGMethod! !
 
 !ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
 printOn: aStream 
@@ -3956,6 +3913,20 @@ isPointers
 
 	^ false! !
 
+!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
+printOn: aStream 
+
+	spec ifNil: [ ^ super printOn: aStream ].
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: self contentsString;
+		nextPutAll: '>>'! !
+
+!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
+isBytes 
+
+	^true! !
+
 !SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
 printOn: aStream 
 
@@ -3998,19 +3969,10 @@ printOn: aStream
 		nextPutAll: value printString;
 		nextPutAll: '>>'! !
 
-!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
-printOn: aStream 
+!SmalltalkBootstrapper methodsFor: 'services' stamp: 'KenD 3/2/2021 13:03:02'!
+compile: anRGMethod 
 
-	spec ifNil: [ ^ super printOn: aStream ].
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: self contentsString;
-		nextPutAll: '>>'! !
-
-!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
-isBytes 
-
-	^true! !
+	^builder compile: anRGMethod! !
 
 !MethodEvaluator methodsFor: 'printing' stamp: 'KenD 3/3/2021 11:26:46'!
 printOn: aStream 
@@ -4086,11 +4048,6 @@ printOn: aStream
 
 	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
 
-!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
-
 !CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 4/12/2021 10:45:19'!
 printOn: aStream 
 
@@ -4120,6 +4077,11 @@ isBytes
 isFixed 
 
 	^self isArrayed not! !
+
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
 
 !EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
 compile: anRGMethod 
@@ -4162,11 +4124,6 @@ printOn: aStream
 				print: a _gate;
 				cr ].
 	aStream nextPutAll: method source! !
-
-!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:48:23'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SFMirror(' , String cr , handle printString , ')'! !
 
 !ObjectMirror methodsFor: 'printing' stamp: 'KenD 2/27/2021 09:10:14'!
 printOn: aStream 
@@ -4292,6 +4249,11 @@ subclasses
 		ifTrue: [#()]
 		ifFalse: [instance subclasses collect: [:class | class class]]! !
 
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:48:23'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SFMirror(' , String cr , handle printString , ')'! !
+
 !OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
 name 
 
@@ -4319,6 +4281,25 @@ printOn: aStream
 printOn: aStream 
 
 	aStream nextPutAll: 'LR of: ' , definition printString! !
+
+!OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
+printOn: aStream 
+	aStream
+		nextPutAll: '[op #' 
+			, name printString , 
+			'@' 
+			, instruction printString
+			, ']'! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:35'!
+definition 
+
+	^instruction atOperand: name! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:33'!
+name 
+
+	^name! !
 
 !OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:16'!
 printOn: aStream 
@@ -4425,40 +4406,65 @@ name
 
 	^'super'! !
 
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
+comment 
+
+	^comments notNil ifTrue: [comments anyOne]! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:24:21'!
+binding 
+
+	^binding! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:28:51'!
+name 
+
+	^name! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:06'!
+name 
+
+	^name! !
+
 !SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
 name 
 
 	^self printString! !
 
-!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
+!SInstVarBinding methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:19:27'!
 printOn: aStream 
 
-	aStream nextPutAll: 'TrueId'! !
+	aStream nextPutAll: 'InstVarId. '; nextPutAll: index printString! !
 
 !SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
 printOn: aStream 
 
 	aStream nextPutAll: 'FalseId'! !
 
+!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
+printOn: aStream 
+
+	aStream nextPutAll: 'TrueId'! !
+
 !SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
 environment 
 
 	^environment! !
-
-!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: 'STemporary ';
-		print: position;
-		nextPutAll: ' @ env ';
-		print: environment! !
 
 !SArgumentBinding methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:15:56'!
 printOn: aStream 
 
 	aStream
 		nextPutAll: 'SArgument ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
+
+!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'STemporary ';
 		print: position;
 		nextPutAll: ' @ env ';
 		print: environment! !
@@ -4472,11 +4478,6 @@ printOn: aStream
 printOn: aStream 
 
 	aStream nextPutAll: 'SuperId'! !
-
-!SInstVarBinding methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:19:27'!
-printOn: aStream 
-
-	aStream nextPutAll: 'InstVarId. '; nextPutAll: index printString! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
 printOn: aStream 
@@ -4513,21 +4514,16 @@ printOn: aStream
 
 	aStream nextPutAll: '{'; print: gate; nextPutAll: '}'! !
 
-!CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 12:37:28'!
+!CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 5/31/2021 15:35:17'!
 initialize 
-
+"
+	self initialize.
+"
 	Cr        := Character cr.
 	Lf        := Character lf.
 	Tab     := Character tab.
-	Space := Character space.! !
-
-!SpeciesFormatMasks class methodsFor: 'class initialization' stamp: 'KenD 3/1/2021 09:15:29'!
-initialize
-	"BitMasks should be in ObjectHeaderMasks ??"
-	"flagsMask -> 16r000000FF"
-	InstSize    := 16rFF000000.
-	IsPointers := 16r00000002 "ObjectHeaderMasks isArrayed"
-! !
+	Space := Character space.
+	Newline := Character newLineCharacter.! !
 
 !OperandTypeFlags class methodsFor: 'class initialization' stamp: 'KenD 5/30/2021 13:03:53'!
 initialize
@@ -4644,6 +4640,14 @@ initialize
 	SizeOffset := -6.
 	HashOffset := -8.
 	LargeSizeOffset := -16! !
+
+!SpeciesFormatMasks class methodsFor: 'class initialization' stamp: 'KenD 3/1/2021 09:15:29'!
+initialize
+	"BitMasks should be in ObjectHeaderMasks ??"
+	"flagsMask -> 16r000000FF"
+	InstSize    := 16rFF000000.
+	IsPointers := 16r00000002 "ObjectHeaderMasks isArrayed"
+! !
 
 !InlineMessageLinkerFlags class methodsFor: 'class initialization' stamp: 'KenD 3/7/2021 08:33:16'!
 initialize 
@@ -5650,3783 +5654,6 @@ start
 comma 
 
 	^super comma ==> [:nodes | ]! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:54'!
-addUse: anOperand 
-
-	self deny: self == anOperand.
-	nextUse ifNil: [nextUse := anOperand] ifNotNil: [nextUse addUse: anOperand]! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:43'!
-at: anInstruction named: operandName 
-
-	^self new instruction: anInstruction; name: operandName! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:54'!
-disolveReplacingWith: otherInstruction 
-
-	self definition removeUse: instruction.
-	instruction atOperand: name put: otherInstruction.
-	otherInstruction addUse: instruction at: name! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:12'!
-instruction 
-
-	^instruction! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:41'!
-name: operandName 
-	name := operandName! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:52'!
-nextUse 
-
-	^nextUse! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:25'!
-nstruction: anInstruction 
-
-	instruction := anInstruction! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:03'!
-removeUse: anInstruction 
-
-	nextUse instruction == anInstruction
-		ifTrue: [nextUse := nextUse nextUse]
-		ifFalse: [nextUse removeUse: anInstruction]! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:14'!
-removeUse: anInstruction at: aName 
-
-	(nextUse instruction == anInstruction and: [nextUse name = aName])
-		ifTrue: [nextUse := nextUse nextUse]
-		ifFalse: [nextUse removeUse: anInstruction at: aName]! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:26'!
-replaceAllUsesWith: otherInstruction 
-
-	self replaceUseWith: otherInstruction.
-	nextUse ifNotNil: [nextUse replaceAllUsesWith: otherInstruction]! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:42'!
-replaceUseWith: otherInstruction 
-
-	self deny: otherInstruction class == OOperand.
-	instruction atOperand: name put: otherInstruction! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:55'!
-user 
-
-	^instruction! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:59'!
-valued: anInstruction 
-	^self new value: anInstruction! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:17'!
-valued: anInstruction in: containingInstruction 
-	^self new value: anInstruction; instruction: containingInstruction! !
-
-!OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
-asOperand 
-
-	self halt! !
-
-!OOperand methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 14:12:24'!
-usesDo: aBlock 
-
-	aBlock value: self.
-	nextUse ifNotNil: [nextUse usesDo: aBlock]! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
-visit: aParseNode 
-
-	^aParseNode notNil ifTrue: [aParseNode acceptVisitor: self] ! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:56'!
-visitAssignment: anAssignmentNode 
-
-	^self visitParseNode: anAssignmentNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:10'!
-visitBlock: aBlockNode 
-
-	^self visitParseNode: aBlockNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:23'!
-visitBraceNode: aBraceNode 
-
-	^self visitParseNode: aBraceNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:34'!
-visitCascade: aCascadeNode 
-
-	^self visitParseNode: aCascadeNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:54'!
-visitCascadeMessage: aCascadeMessageNode 
-
-	^self visitMessage: aCascadeMessageNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 15:54:18'!
-visitForeignNode: anForeignNode 
-
-	^self visitLiteral: anForeignNode ! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:29'!
-visitIdentifier: anIdentifierNode 
-
-	^self visitParseNode: anIdentifierNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:45'!
-visitLiteral: aLiteralNode 
-
-	^self visitParseNode: aLiteralNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:58'!
-visitMessage: aMessageNode 
-
-	^self visitParseNode: aMessageNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:09'!
-visitMethod: aMethodNode 
-
-	^self visitParseNode: aMethodNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:21'!
-visitNumberNode: aNumberNode 
-
-	^self visitLiteral: aNumberNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:33'!
-visitParseNode: aParseNode 
-
-	^self subclassResponsibility! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:42'!
-visitPragma: aPragmaNode 
-
-	^self visitParseNode: aPragmaNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:53'!
-visitReturn: aReturnNode 
-
-	^self visitParseNode: aReturnNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:03'!
-visitSelector: aSelectorNode 
-
-	^self visitParseNode: aSelectorNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:16'!
-visitString: aStringNode 
-
-	^self visitLiteral: aStringNode! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:30'!
-visitSymbolicPragma: aPragmaNode 
-
-	^self visitPragma: aPragmaNode! !
-
-!SParseTreeVisitor class methodsFor: 'instance creation' stamp: 'KenD 2/21/2021 13:57:12'!
-new 
-
-	^super new initialize! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:05'!
-visitAssignment: anAssignmentNode 
-	| c |
-	self analyzeAssignment: anAssignmentNode.
-	anAssignmentNode expression acceptVisitor: self.
-	c := anAssignmentNode compiler.! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:41'!
-visitBlock: aBlockNode 
-
-	self
-		analyzeBlock: aBlockNode
-		while: [aBlockNode statements do: [:node | node acceptVisitor: self]]! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:53'!
-visitBraceNode: aBraceNode 
-
-	aBraceNode isLiteral
-		ifFalse: [aBraceNode asMessageNode acceptVisitor: self]! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:03'!
-visitCascade: aCascadeNode 
-
-	aCascadeNode receiver acceptVisitor: self.
-	aCascadeNode messages do: [:msg | msg acceptVisitor: self]! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:12'!
-visitIdentifier: anIdentifierNode 
-
-	self analyzeIdentifier: anIdentifierNode! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:39'!
-visitMessage: aMessageNode 
-
-	self analyzeMessage: aMessageNode.
-	aMessageNode receiver acceptVisitor: self.
-	aMessageNode arguments do: [:arg | arg acceptVisitor: self]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:50'!
-visitMethod: aMethodNode 
-
-	self analyzeMethod: aMethodNode while: [
-		aMethodNode bindLocals.
-		aMethodNode statements do: [:s | s acceptVisitor: self].
-		aMethodNode positionLocals]! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:39:15'!
-visitParseNode: aParseNode 
-"
-	do nothing
-"
-	! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:39:26'!
-visitReturn: aReturnNode 
-
-	aReturnNode expression acceptVisitor: self.
-	self analyzeReturn: aReturnNode! !
-
-!SSemanticVisitor methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:36:36'!
-initialize 
-
-	super initialize.
-	inliner := MessageInliner new! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:34:44'!
-analyzeAssignment: anAssignmentNode 
-
-	anAssignmentNode assignees
-		do: [:v | self analyzeIdentifier: v assignee: true]! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:34:59'!
-analyzeBlock: aBlockNode while: aBlock 
-
-	aBlockNode isInlined
-		ifFalse: [aBlockNode index: aBlockNode compiler blockIndex].
-	self analyzeScript: aBlockNode while: aBlock! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:17'!
-analyzeIdentifier: anIdentifierNode 
-
-	self analyzeIdentifier: anIdentifierNode assignee: false! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:29'!
-analyzeIdentifier: anIdentifierNode assignee: aBoolean 
-	| script binding |
-	anIdentifierNode resolveAssigning: aBoolean.
-	aBoolean ifTrue: [anIdentifierNode beAssigned].
-	script := anIdentifierNode compiler activeScript.
-	binding := anIdentifierNode binding.
-	script reference: binding.
-	binding isLocal ifTrue: [binding := script scope captureLocal: binding].
-	anIdentifierNode binding: binding! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:42'!
-analyzeMessage: aMessageNode 
-	inliner inline: aMessageNode.
-	aMessageNode isInlined ifFalse: [aMessageNode compiler noticeSend]! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:53'!
-analyzeMethod: aMethodNode while: aBlock 
-
-	self analyzeScript: aMethodNode while: aBlock! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:36:03'!
-analyzeReturn: aReturnNode 
-
-	aReturnNode compiler activeScript realScript captureHome! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:36:18'!
-analyzeScript: aScriptNode while: aBlock 
-
-	aScriptNode compiler activate: aScriptNode while: aBlock! !
-
-!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:51:24'!
-insertDefineArgument: name 
-	| instruction |
-	instruction := ODefineArgument named: name.
-	currentBlock add: instruction.
-	^instruction! !
-
-!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:51:43'!
-insertReturnSelf 
-	| receiver frame instruction |
-	receiver := firstBlock firstInstruction next.
-	frame := firstBlock firstInstruction.
-	instruction := OReturn new
-		source: receiver;
-		frame: frame;
-		argumentsCount: method argumentCount.
-	receiver addUse: instruction at: #source.
-	frame addUse: instruction at: #frame.
-	currentBlock add: instruction.
-	^ instruction! !
-
-!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:52:01'!
-method: anSCompiledMethod 
-
-	method := anSCompiledMethod! !
-
-!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:52:12'!
-store: operation into: anIdentifierNode 
-	| instruction |
-	instruction := OWriteVariable
-		binding: anIdentifierNode binding
-		valued: operation.
-	operation addUse: instruction at: #source.
-	currentBlock add: instruction.
-	^instruction! !
-
-!OptimizingVisitor methodsFor: 'initialization' stamp: 'KenD 5/28/2021 07:51:10'!
-initialize 
-
-	firstBlock := OBasicBlock new.
-	currentBlock := firstBlock! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:27'!
-visit: aParseNode 
-
-	super visit: aParseNode.
-	^firstBlock! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:39'!
-visitAssignment: anAssignmentNode 
-	| result |
-	result := anAssignmentNode expression acceptVisitor: self.
-	anAssignmentNode assignees do: [:node | self store: result into: node]! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:56'!
-visitBlock: aBlockNode 
-	| previous cfg |
-	previous := currentBlock.
-	cfg := OBasicBlock new.
-	currentBlock := cfg.
-	self visitScript: aBlockNode.
-	currentBlock := previous.
-	^OBlockClosure containing: cfg! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:53:07'!
-visitCascade: aCascadeNode 
-	| receiver arguments send block |
-	block := currentBlock.
-	receiver := aCascadeNode receiver acceptVisitor: self.
-	aCascadeNode messages
-		do: [ :msg | 
-			arguments := msg arguments
-				collect: [ :node | node acceptVisitor: self ].
-			send := OMessageSend
-				receiver: receiver
-				selector: msg selector value asSymbol
-				arguments: arguments.
-			receiver addUse: send at: #receiver.
-			arguments
-				withIndexDo: [ :argument :i | 
-					argument isInstruction
-						ifTrue: [ argument addUse: send at: i ] ].
-			block add: send ].
-	^ send! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:54:46'!
-visitLiteral: aLiteralNode 
-	| load |
-	load := OLoadConstant valued: aLiteralNode value.
-	currentBlock add: load.
-	^load! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:54:57'!
-visitMessage: aMessageNode 
-	| receiver arguments send block |
-	block := currentBlock.
-	receiver := aMessageNode receiver acceptVisitor: self.
-	arguments := aMessageNode arguments
-		collect: [:node | node acceptVisitor: self].
-	send := OMessageSend
-		receiver: receiver
-		selector: aMessageNode selector value asSymbol
-		arguments: arguments.
-	receiver addUse: send at: #receiver.
-	arguments
-		withIndexDo: [:argument :i | argument isInstruction
-			ifTrue: [argument addUse: send at: i]].
-	block add: send.
-	^send! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:08'!
-visitMethod: anSMethod 
-	| last |
-	self insertDefineArgument: #activationRecord; insertDefineArgument: #self.
-	1 to: anSMethod argumentCount
-		do: [:i | self insertDefineArgument: i printString asSymbol].
-	self visitScript: anSMethod.
-	last := currentBlock lastValue.
-	last isReturn ifFalse: [self insertReturnSelf]! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:20'!
-visitNumericLiteral: aNumericLiteralNode 
-
-	^self visitLiteral: aNumericLiteralNode! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:31'!
-visitReturn: aReturnNode 
-	| source frame instruction |
-	source := aReturnNode expression acceptVisitor: self.
-	frame := firstBlock firstInstruction.
-	instruction := OReturn new
-		source: source;
-		frame: frame;
-		argumentsCount: method argumentCount.
-	source addUse: instruction at: #source.
-	frame addUse: instruction at: #frame.
-	currentBlock add: instruction.
-	^ instruction! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:45'!
-visitScript: aScriptNode 
-	[
-		aScriptNode arguments do: [:node | node acceptVisitor: self].
-		aScriptNode temporaries do: [:node | node acceptVisitor: self]].
-	aScriptNode statements do: [:node | node acceptVisitor: self]! !
-
-!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:58'!
-visitSelector: aSelectorNode ! !
-
-!OptimizingVisitor class methodsFor: 'instance creation' stamp: 'KenD 5/28/2021 07:50:25'!
-new 
-
-	^self basicNew initialize
-! !
-
-!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:39:18'!
-method: aCompiledMethod 
-
-	method := aCompiledMethod! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:29:05'!
-encodeArgument: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: ArgumentId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:00'!
-encodeClassBinding: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: GlobalClassId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:25'!
-encodeClassVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: ClassVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:09'!
-encodeClosureElements: aBlockNode 
-	| scope parent |
-	scope := aBlockNode scope.
-	parent := aBlockNode realParent.
-	^Array streamContents: [:s |
-		scope capturesSelf ifTrue: [ s nextPut: Self ].
-		scope capturedEnvironments do: [:e | | index |
-			e == parent ifTrue: [s nextPut: Environment] ifFalse: [
-				index := aBlockNode environmentIndexOf: e.
-				self assert: index notNil.
-				s nextPut: EnvironmentValue; nextPut: index]].
-		scope capturedArguments do: [:a | | binding |
-			binding := aBlockNode parent scope resolve: a name.
-			s 	nextPut: binding environmentType; nextPut: binding index]]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:31'!
-encodeFalse 
-
-	stream nextPut: FalseId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:49'!
-encodeGlobalVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: GlobalValueId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:03'!
-encodeInlinedMessage: aMessageNode 
-
-	self nextTypePut: 0! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:18'!
-encodeInstVar: index 
-
-	stream nextPut: InstVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:31'!
-encodeLoadAwithArg: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: LoadAwithArgumentId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:50'!
-encodeLoadAwithClassVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithClassVarId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:10'!
-encodeLoadAwithConstPoolVar: value 
-	| index |
-	index := method indexOf: value ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithConstPoolId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:39'!
-encodeLoadAwithGlobal: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithGlobalId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:53'!
-encodeLoadAwithInstVar: anInteger 
-
-	stream nextPut: LoadAwithInstVarId; nextPut: anInteger! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:04'!
-encodeLoadAwithLiteral: value 
-	| index |
-	index := method indexOf: value.
-	stream nextPut: LoadAwithLiteralId; nextPut: index.
-	index = 0 ifTrue: [stream nextPut: value]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:14'!
-encodeLoadAwithNil 
-
-	stream nextPut: LoadAwithNilId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:30'!
-encodeLoadAwithPoolVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithPoolVarId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:42'!
-encodeLoadAwithSelf 
-
-	stream nextPut: LoadAwithSelfId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:57'!
-encodeLoadAwithTemp: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: LoadAwithTemporaryId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:11'!
-encodeLoadRvisitingReceiver 
-
-	stream nextPut: LoadRvisitingReceiverId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:20'!
-encodeNil 
-
-	stream nextPut: NilId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:37'!
-encodeOptimizedBinary: aMessageNode 
-	| optimizer |
-	optimizer := BinaryMessageOptimizer on: aMessageNode using: self.
-	self nestedEncode: [optimizer emitOpcodes]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:00'!
-encodeOptimizedMessage: aMessageNode 
-	| selector |
-	selector := aMessageNode selector.
-	aMessageNode isInlined ifTrue: [^self encodeInlinedMessage: aMessageNode].
-	(BinaryMessageOptimizer optimizesMessage: selector value) ifFalse: [^self].
-	aMessageNode arguments size = 1
-		ifTrue: [^self encodeOptimizedBinary: aMessageNode]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:12'!
-encodePoolConst: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: ConstantPoolId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:32'!
-encodePoolVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: PoolVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:48'!
-encodePopR 
-
-	stream nextPut: PopRid! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:00'!
-encodePushR 
-
-	stream nextPut: PushRid! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:13'!
-encodeSelf 
-
-	stream nextPut: SelfId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:35'!
-encodeSuper 
-	
-	stream nextPut: SuperId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:55'!
-encodeTemporary: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: TemporaryId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:04'!
-encodeTrue 
-
-	stream nextPut: TrueId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:15'!
-encodedEnvironment: aLocalEnvironment 
-
-	aLocalEnvironment isStack
-		ifTrue: [ ^ aLocalEnvironment isInlinedArgument ifTrue: [-1] ifFalse: [nil] ].
-	aLocalEnvironment isCurrent
-		ifTrue: [ ^ 0 ].
-	^ aLocalEnvironment index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:39:50'!
-nestedEncode: aBlock 
-	| prev nested |
-	prev := stream.
-	nested := Array streamContents: [:s | 
-		stream := s.
-		aBlock value.
-		stream contents].
-	stream := prev.
-	stream nextPut: nested
-! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:44'!
-nextPut: anInteger 
-
-	stream nextPut: anInteger! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:55'!
-nextTypePut: anInteger 
-
-	stream nextPut: anInteger! !
-
-!AstcodeEncoder methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:38:34'!
-initialize 
-
-	stream := #() writeStream! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:28:41'!
-compiledBlockIndexOf: aBlockNode 
-
-	| index |
-	index := method
-		findFirst: [:literal | literal isBlock
-			and: [literal id == aBlockNode index]].
-	^index! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:14'!
-visitAssignment: anAssignmentNode 
-	self nextTypePut: AssignmentId.
-	anAssignmentNode assignees
-		do: [:node | self nestedEncode: [node acceptVisitor: self]].
-	self nestedEncode: [anAssignmentNode expression acceptVisitor: self]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:31'!
-visitBlock: aBlockNode 
-	| args |
-	self nextTypePut: BlockId.
-	aBlockNode isInlined
-		ifTrue: [ stream nextPut: 0. args := aBlockNode arguments collect: [:id | id binding index]. 
-			stream nextPut: args asArray ]
-		ifFalse: [ | index captured |
-			index := self compiledBlockIndexOf: aBlockNode.
-			self nextPut: index.
-			captured := self encodeClosureElements: aBlockNode.
-			stream nextPut: captured ].
-	self visitScript: aBlockNode! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:50'!
-visitBraceNode: aBraceNode 
-
-	aBraceNode isLiteral
-		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
-		ifFalse: [self visitCascade: aBraceNode asMessageNode]! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:07'!
-visitCascade: aCascadeNode 
-
-	self
-		nextTypePut: CascadeId;
-		nestedEncode: [aCascadeNode receiver acceptVisitor: self].
-	aCascadeNode messages
-		do: [:node | self nestedEncode: [self visitCascadeMessage: node]]! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:21'!
-visitCascadeMessage: aCascadeMessageNode 
-	| symbol selector |
-	symbol := aCascadeMessageNode selector symbol.
-	selector := method indexOf: symbol.
-	self nextPut: selector.
-	selector = 0 ifTrue: [self nextPut: symbol].
-	aCascadeMessageNode arguments do: [:arg | 
-		self nestedEncode: [arg acceptVisitor: self]]! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:43'!
-visitIdentifier: anIdentifierNode 
-
-	self nextTypePut: IdentifierId.
-	anIdentifierNode binding encodeUsing: self! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:01'!
-visitLiteral: aLiteralNode 
-	| index |
-	index := method indexOf: aLiteralNode value.
-	self nextTypePut: LiteralId; nextPut: index.
-	index = 0 ifTrue: [self nextPut: aLiteralNode value]! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:38'!
-visitMessage: aMessageNode 
-	| symbol selector |
-	symbol := aMessageNode selector symbol.
-	selector := method indexOf: symbol.
-	self
-		nextTypePut: MessageId;
-		nextPut: selector.
-	selector = 0
-		ifTrue: [ self nextPut: symbol ].
-	self nestedEncode: [ aMessageNode receiver acceptVisitor: self ].
-	self
-		nestedEncode: [ aMessageNode arguments 
-					do: [ :arg | self nestedEncode: [arg acceptVisitor: self] ] ].
-	self encodeOptimizedMessage: aMessageNode! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:55'!
-visitMethod: aMethodNode 
-	| pragma |
-	self nextTypePut: MethodId.
-	pragma := aMethodNode pragma.
-	pragma isUsed ifTrue: [ self nextTypePut: PragmaId; nextPut: pragma name ].
-	self visitScript: aMethodNode.
-	^stream contents! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:15'!
-visitParseNode: aParseNode 
-	^self assert: false! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:32'!
-visitReturn: aReturnNode 
-
-	self
-		nextTypePut: ReturnId;
-		nextPut: script realScript isMethod;
-		nestedEncode: [aReturnNode expression acceptVisitor: self]! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:43'!
-visitScript: aScriptNode 
-	| prev |
-	prev := script.
-	script := aScriptNode.
-	aScriptNode statements
-		do: [:node | self nestedEncode: [node acceptVisitor: self]].
-	script := prev! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:15:46'!
-activate: aScriptNode while: aBlock 
-	| current |
-	current := activeScript.
-	activeScript := aScriptNode.
-	aBlock value.
-	activeScript := current! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:00'!
-activeScope 
-
-	^activeScript scope! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:10'!
-activeScript 
-
-	^activeScript! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:22'!
-activeScript: aParseNode 
-
-	activeScript := aParseNode! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:17:04'!
-ast 
-
-	^ast! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:25:34'!
-frontend 
-
-	^frontend! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:25:45'!
-frontend: aCompiler 
-
-	frontend := aCompiler
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:27:52'!
-newScope 
-
-	^frontend newScope! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:28:13'!
-noticeSend 
-
-	leaf := false! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:32:05'!
-ourceCode: aString 
-
-	source := aString! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:29:33'!
-parser 
-
-	^SSmalltalkParser new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:30:53'!
-result 
-
-	^result! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:31:26'!
-scanner 
-	
-	^SSmalltalkScanner new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:31:57'!
-sourceCode 
-
-	^source! !
-
-!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/14/2021 15:17:46'!
-blockCount 
-
-	^blocks! !
-
-!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/14/2021 15:17:57'!
-blockIndex 
-
-	blocks := blocks + 1.
-	^blocks - 1! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:23:30'!
-compilationError: aString stretch: aStretch 
-
-	^SCompilationError new
-		compiler: self;
-		stretch: aStretch;
-		description: aString! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:25:09'!
-error: aString at: anInteger 
-	| stretch |
-	stretch := anInteger thru: anInteger.
-	^self error: aString stretch: stretch! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:25:21'!
-error: aString stretch: aStretch 
-	| error |
-	error := self compilationError: aString stretch: aStretch.
-	^error beFatal; signal! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:33:08'!
-undeclaredErrorAt: aStretch assignment: aBoolean 
-
-	^SUndeclaredIdentifierError new
-		compiler: self;
-		stretch: aStretch;
-		assignment: aBoolean;
-		beResumable;
-		signal! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:33:22'!
-warning: aString at: aStretch 
-	| error |
-	error := self compilationError: aString stretch: aStretch.
-	error beWarning; signal! !
-
-!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:26:52'!
-initialize 
-
-	self reset! !
-
-!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:30:10'!
-reset 
-
-	self resetResult.
-	leaf := true.
-	blocks := 0.! !
-
-!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:30:22'!
-resetResult 
-
-	result := SCompilationResult new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:16:51'!
-assignmentNode 
-
-	^SAssignmentNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:18:13'!
-blockNode 
-
-	^SBlockNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:18:47'!
-braceNode 
-
-	^SBraceNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:09'!
-buildMethod 
-
-	result method: ast buildMethod! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:19'!
-cascadeMessageNode 
-
-	^SCascadeMessageNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:32'!
-cascadeNode 
-
-	^SCascadeNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:44'!
-commentNode 
-
-	^SCommentNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:26:31'!
-identifierNode 
-
-	^SIdentifierNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:05'!
-literalNode 
-
-	^SLiteralNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:24'!
-messageNode 
-
-	^SMessageNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:38'!
-methodNode 
-
-	^SMethodNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:28:26'!
-numericLiteralNode 
-
-	^SNumberNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:29:42'!
-pragmaNode 
-
-	^SPragmaNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:31:07'!
-returnNode 
-
-	^SReturnNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:31:46'!
-selectorNode 
-
-	^SSelectorNode new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:32:36'!
-stringToken 
-
-	^SStringToken new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'parsing' stamp: 'KenD 3/14/2021 15:24:46'!
-delimiterToken 
-
-	^SDelimiterToken new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'parsing' stamp: 'KenD 3/14/2021 15:24:58'!
-endToken 
-
-	^SEndToken new compiler: self! !
-
-!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:26:07'!
-hasBlocks 
-
-	^ blocks > 0! !
-
-!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:26:19'!
-hasSends 
-
-	^ leaf not! !
-
-!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:32:48'!
-supportsBraceNodes 
-
-	^true! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:24:10'!
-compileMethod: aString 
-
-	source := aString.
-	frontend protect: [
-		self
-			parseMethod;
-			resolveSemantics;
-			buildMethod].
-	^result! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:28:42'!
-parseFragment 
-
-	headless := false.
-	self reset.
-	ast := self parser methodFragment.
-	result ast: ast! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:28:53'!
-parseFragment: aString 
-
-	source := aString.
-	[self parseFragment; resolveSemantics] on: SCompilationError do: [].
-	^ast! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:29:07'!
-parseMethod 
-
-	headless := false.
-	self reset.
-	ast := self parser method.
-	result ast: ast! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:29:18'!
-parseMethod: aString 
-
-	source := aString.
-	frontend protect: [self parseMethod; resolveSemantics].
-	^result! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:30:39'!
-resolveSemantics 
-
-	ast acceptVisitor: SSemanticVisitor new! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:39:03'!
-compiler 
-
-	^compiler! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:39:13'!
-compiler: aSmalltalkCompiler 
-
-	compiler := aSmalltalkCompiler.
-	scanner := compiler scanner! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:51:34'!
-next 
-
-	token := next.
-	next := nil.
-	^token ifNil: [token := scanner next]! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:52:47'!
-on: aString 
-
-	scanner on: aString! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:54:19'!
-peek 
-	| comments |
-	next ifNotNil: [^next].
-	next := scanner next.
-	next isComment ifFalse: [^next].
-	comments := OrderedCollection new: 2.
-	[
-		comments add: next.
-		next := scanner next.
-		next isComment] whileTrue.
-	^next comments: comments! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:57:59'!
-token 
-
-	^token! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:31:49'!
-arrayBody 
-	| literals position |
-	literals := OrderedCollection new.
-	position := token position.
-	[
-		self step.
-		(token is: $)) or: [token isEnd]]
-		whileFalse: [| element |
-			element := self arrayElement.
-			literals add: element].
-	token isEnd ifTrue: [self missingToken: ')'].
-	^self buildNode: compiler literalNode at: position with: literals asArray! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:32:05'!
-arrayElement 
-
-	token isLiteral ifTrue: [^token value].
-	token isNameToken ifTrue: [^self pseudoLiteralValue].
-	token isKeyword ifTrue: [^self literalKeyword].
-	(token is: #'-') ifTrue: [^self negativeNumberOrBinary].
-	token hasSymbol ifTrue: [^token value].
-	(token is: $() ifTrue: [^self arrayBody value].
-	(token is: #'#(') ifTrue: [^self arrayBody value].
-	(token is: #'#[') ifTrue: [^self byteArrayBody value].
-	self invalidArrayToken! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:36:00'!
-braceBody 
-	| elements position |
-	elements := OrderedCollection new.
-	position := token position.
-	self step.
-	[
-		token isEnd ifTrue: [self missingToken: '}'].
-		token is: $}]
-		whileFalse: [
-			elements add: self expression.
-			(token is: $.) ifTrue: [self step]].
-	^self buildBraceNode: elements at: position! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:36:11'!
-bracedArray 
-	| array |
-	array := self braceBody.
-	self step.
-	^array! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:38:04'!
-byteArrayBody 
-	| bytes save start array node |
-	bytes := OrderedCollection new.
-	save := token.
-	start := token position.
-	[
-		self step.
-		token isLiteral or: [token isPoolLiteral]]
-		whileTrue: [self addByteTo: bytes].
-	(token is: $]) ifFalse: [
-		token isNameToken
-			ifTrue: [self missingLiteral]
-			ifFalse: [self missingToken: ']']].
-	array := ByteArray new: bytes size.
-	bytes withIndexDo: [:b :i | array at: i put: b].
-	node := self buildNode: compiler literalNode at: start with: array.
-	^node moveCommentsFrom: save! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:47:47'!
-literalArray 
-	| array |
-	array := self arrayBody.
-	self step.
-	^array! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:47:57'!
-literalByteArray 
-	| node |
-	node := self byteArrayBody.
-	self step.
-	^node! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:16'!
-binaryMessage: aMessageNode 
-	| selector primary argument |
-	selector := self step.
-	primary := self primary.
-	primary isNil ifTrue: [
-		((selector is: $:) and: [token is: #'='])
-			ifTrue: [self
-				error: 'stray whitespaces left in assignment'
-				at: token position - 1]
-			ifFalse: [self error: 'primary missing']].
-	argument := self unarySequence: primary.
-	aMessageNode
-		selector: selector asSelectorNode;
-		end: argument end;
-		arguments: {argument}! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:28'!
-binarySequence: aParseNode 
-	| node rcvr |
-	node := aParseNode.
-	[
-		rcvr := node.
-		self hasBinarySelector]
-		whileTrue: [
-			node := self buildMessageNode: rcvr.
-			self binaryMessage: node].
-	^node! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:43'!
-binarySignature 
-	| selector arguments |
-	((token isStringToken and: [token hasSymbol])
-		or: [token is: $^]
-		or: [token is: $:])
-		ifFalse: [^nil].
-	selector := self step asSelectorNode.
-	token isNameToken ifFalse: [self missingArgument].
-	self validateLocalName: token.
-	arguments := {token asIdentifierNode}.
-	self step.
-	token moveCommentsTo: selector.
-	^self buildMethodNode: selector arguments: arguments! !
-
-!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/14/2021 12:34:14'!
-block 
-	| block |
-	block := self buildNode: compiler blockNode at: token position.
-	block parent: compiler activeScript.
-	compiler activate: block while: [
-		token moveCommentsTo: block.
-		self step.
-		block
-			arguments: self blockArguments;
-			temporaries: self temporaries;
-			addStatements: self statements.
-		(token is: $]) ifFalse: [self missingToken: ']'].
-		block end: token position.
-		token moveCommentsTo: block.
-		self step].
-	^block
-! !
-
-!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/14/2021 12:35:42'!
-blockArguments 
-	| arguments |
-	(token is: $:) ifFalse: [^#()].
-	arguments := OrderedCollection new.
-	[ self step.
-	  token isNameToken ifFalse: [self missingArgument].
-	  self validateLocalName: token.
-	  arguments add: self step asIdentifierNode.
-	  token is: $:] whileTrue.
-
-	token isBar ifTrue: [self step] ifFalse: [
-		(token is: #'||')
-			ifTrue: [token value: #'|']
-			ifFalse: [self missingToken: '|']].
-	^arguments! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:36:42'!
-buildBraceNode: elements at: position 
-	| node |
-	node := self buildNode: compiler braceNode at: position.
-	^node elements: elements! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:36:54'!
-buildCascadeMessageNode: receiver 
-	| node |
-	node := self buildNode: compiler cascadeMessageNode at: receiver position.
-	^node receiver: receiver! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:04'!
-buildMessageNode: receiver 
-	| node |
-	node := self buildNode: compiler messageNode at: receiver position.
-	^node receiver: receiver! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:14'!
-buildMethodNode: selector arguments: arguments 
-	| node |
-	node := self buildNode: compiler methodNode at: selector position.
-	compiler activeScript: node.
-	^node selector: selector; arguments: arguments! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:26'!
-buildNode: aParserNode at: anInteger 
-
-	^aParserNode position: anInteger; end: token position! !
-
-!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:47'!
-buildNode: aParseNode at: anInteger with: anObject 
-	| node |
-	node := scanner buildToken: aParseNode at: anInteger with: anObject.
-	^node end: token position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:39:34'!
-error: aString 
-
-	self error: aString at: token position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:39:51'!
-error: aString at: position 
-	
-	^compiler error: aString at: position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:44:58'!
-invalidArrayToken 
-
-	self error: 'invalid literal entry'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:45:07'!
-invalidByteValue 
-
-	self error: 'value not between 0 and 255'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:45:19'!
-invalidPragma 
-	| position stretch |
-	position := token position.
- 	stretch := position thru: position.
-	^SInvalidPragmaError new stretch: stretch; signal! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:39'!
-missingArgument 
-
-	self error: 'argument missing'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:48'!
-missingExpression 
-
-	self error: 'missing expression'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:56'!
-missingLiteral 
-
-	self error: 'missing literal or named literal'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:50:39'!
-missingToken: aString 
-
-	self error: 'missing ' , aString! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:51:45'!
-nonIntegerToken 
-
-	self error: 'non-integer token'! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:51:57'!
-notify: aString 
-
-	compiler notify: aString at: token position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:52:08'!
-notify: aString at: position 
-
-	compiler notify: aString at: position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 13:00:42'!
-warning: aString 
-
-	compiler warning: aString at: token position! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 13:00:51'!
-warning: aString at: position 
-
-	compiler warning: aString at: position! !
-
-!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:40:23'!
-ffiArguments 
-	| args type |
-	args := OrderedCollection new.
-	self step.
-	token value !!= $(
-		ifTrue: [ self error: 'expected "("' ].
-	self peek value = $)
-		ifTrue: [ self step.
-			^ args ].
-	[ type := self ffiType.
-	args add: type.
-	self step.
-	token value = #, ] whileTrue.
-	token value !!= $)
-		ifTrue: [ self error: 'expected ")"' ].
-	^ args! !
-
-!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:41:22'!
-ffiCall: aBoolean method: aMethodNode 
-	| cc return name args descriptor |
-	cc := token value.
-	return := self ffiType.
-	aBoolean
-		ifTrue: [ self step.
-			name := token value ifNil: [ self error: 'invalid function name' ] ].
-	args := self ffiArguments.
-	args size = aMethodNode selector arity
-		ifFalse:
-			[ ^ self error: 'method arity does not match with function arguments' ].
-	self step.
-	descriptor := SFFIDescriptor ret: return args: args cc: cc.
-	^ compiler pragmaNode ffi: cc name: name with: descriptor! !
-
-!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:41:54'!
-ffiOrPrimitive: aMethodNode 
-	| tag |
-	tag := token value asLowercase.
-	tag last = $: ifFalse: [self invalidPragma].
-	tag := tag allButLast.
-	token value: tag.
-	tag = 'primitive' ifTrue: [^self primitive].
-	tag = 'callback' ifTrue: [ ^self ffiCall: false method: aMethodNode ].
-	tag = 'callout' ifTrue: [ ^self ffiCall: true method: aMethodNode ].	
-	self invalidPragma! !
-
-!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:42:07'!
-ffiType 
-	| type |
-	self step.
-	token isNameToken ifFalse: [self error: 'expected type name'].
-	type := token value.
-	type = 'struct' ifFalse: [ ^type].
-	self step.
-	token isNameToken ifFalse: [self error: 'expected type name'].	
-	^token value! !
-
-!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:57:05'!
-symbolicPragma 
-	| position symbol pragma |
-	position := token position.
-	symbol := self step value.
-	pragma := self buildNode: compiler pragmaNode at: position.
-	^pragma symbol: symbol! !
-
-!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:45:50'!
-keywordArgument 
-	| arg |
-	arg := self primary ifNil: [self missingArgument].
-	arg := self unarySequence: arg.
-	^self binarySequence: arg! !
-
-!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:46:29'!
-keywordMessage: aMessageNode 
-	| selector arguments node |
-	node := self buildNode: compiler selectorNode at: token position.
-	selector := '' writeStream.
-	arguments := OrderedCollection new.
-	[token isKeyword] whileTrue: [
-		selector nextPutAll: token value.
-		node addKeyword: self step.
-		arguments add: self keywordArgument].
-	node symbol: selector contents; end: token prevPosition.
-	aMessageNode
-		arguments: arguments;
-		end: token prevPosition;
-		selector: node! !
-
-!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:46:42'!
-keywordSequence: aParseNode 
-	| expression |
-	self hasKeywordSelector ifFalse: [^aParseNode].
-	expression := self buildMessageNode: aParseNode.
-	self keywordMessage: expression.
-	^expression! !
-
-!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:47:13'!
-keywordSignature 
-	| selector arguments node |
-	selector := '' writeStream.
-	arguments := OrderedCollection new.
-	node := self buildNode: compiler selectorNode at: token position.
-	[token isKeyword] whileTrue: [
-		selector nextPutAll: token value.
-		node addKeyword: token asSelectorNode.
-		self step.
-		token isNameToken ifFalse: [self missingArgument].
-		arguments add: token asIdentifierNode.
-		self step].
-	arguments isEmpty ifTrue: [^nil].
-	node
-		symbol: selector contents;
-		end: token end;
-		moveCommentsFrom: token.
-	^self buildMethodNode: node arguments: arguments! !
-
-!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:48:07'!
-literalKeyword 
-	| keyword |
-	keyword := token value , scanner nextKeyword value.
-	^keyword reduced asSymbol! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:09'!
-addBodyTo: aMethodNode 
-
-	self
-		addTemporariesTo: aMethodNode;
-		addPragmaTo: aMethodNode;
-		addStatementsTo: aMethodNode! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:42'!
-addByteTo: aCollection 
-	| byte |
-	byte := token isLiteral ifTrue: [token value] ifFalse: [token literalValue].
-	byte isInteger ifFalse: [self nonIntegerToken].
-	(byte between: 0 and: 255) ifFalse: [self invalidByteValue].
-	aCollection add: byte! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:57'!
-addPragmaTo: aMethodNode 
-
-	(self attachPragmaTo: aMethodNode) ifTrue: [self step]! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:31:10'!
-addStatementsTo: aMethodNode 
-
-	aMethodNode
-		position: token position;
-		addStatements: self statements;
-		end: token position;
-		moveCommentsFrom: token.
-	token isEnd
-		ifFalse: [^self unexpectedStatementError: aMethodNode statements]! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:31:22'!
-addTemporariesTo: aMethodNode 
-
-	aMethodNode temporaries: self temporarie! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:32:26'!
-assignment 
-	| position variable delimiter expression assignment |
-	position := token position.
-	variable := self step asIdentifierNode moveCommentsFrom: token.
-	delimiter := self step.
-	expression := self expression.
-	expression isAssign
-		ifTrue: [^expression assign: variable operator: delimiter].
-	expression moveCommentsFrom: token.
-	assignment := self buildNode: compiler assignmentNode at: position.
-	^assignment assign: variable with: expression operator: delimiter! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:32:43'!
-attachPragmaTo: aMethodNode 
-	| start pragma |
-	(aMethodNode isHeadless orNot: [token is: #'<']) ifTrue: [^false].
-	start := token position.
-	self step.
-	pragma := token isKeyword
-		ifTrue: [self ffiOrPrimitive: aMethodNode]
-		ifFalse: [self symbolicPragma].
-	pragma position: start; end: token position.
-	aMethodNode pragma: pragma.
-	(token is: #'>') ifFalse: [self missingToken: '>'].
-	^true! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:38:26'!
-cascadeMessage: aMessageNode 
-	| msg |
-	self hasUnarySelector ifTrue: [^self unaryMessage: aMessageNode].
-	self hasBinarySelector ifTrue: [^self binaryMessage: aMessageNode].
-	self hasKeywordSelector ifTrue: [^self keywordMessage: aMessageNode].
-	msg := token value = ''
-		ifTrue: ['unfinished cascade']
-		ifFalse: [token value asString , ' not allowed in cascade'].
-	self error: msg! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:38:44'!
-cascadeSequence: aMessageNode 
-	| cascade receiver messages msg node |
-	(token is: $;) ifFalse: [^aMessageNode].
-	cascade := self buildNode: compiler cascadeNode at: aMessageNode position.
-	receiver := aMessageNode receiver.
-	cascade receiver: receiver.
-	node := compiler cascadeMessageNode from: aMessageNode.
-	node cascade: cascade.
-	messages := OrderedCollection with: node.
-	[token is: $;] whileTrue: [
-		self step.
-		msg := self buildCascadeMessageNode: receiver.
-		msg
-			cascade: cascade;
-			position: token position;
-			moveCommentsFrom: token.
-		messages add: msg.
-		self cascadeMessage: msg].
-	^cascade messages: messages asArray; end: msg end! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:40:09'!
-expression 
-	| primary expression |
-	(token isNameToken and: [self peek isAssignment]) ifTrue: [^self assignment].
-	primary := self primary ifNil: [^self missingExpression].
-	expression := self unarySequence: primary.
-	expression := self binarySequence: expression.
-	expression := self keywordSequence: expression.
-	expression == primary
-		ifFalse: [expression := self cascadeSequence: expression].
-	token endsExpression ifFalse: [self errorIn: primary].
-	^expression! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:48:58'!
-methodPragma 
-	self step.
-	^[| method |
-		method := self methodSignature.
-		self addTemporariesTo: method; attachPragmaTo: method.
-		method pragma]
-		on: SCompilationError
-		do: [:ex | ex return: compiler pragmaNode]! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:50:50'!
-namedPrimitive 
-	| name pragma |
-	token isNameToken ifFalse: [self invalidPragma].
-	name := token value.
-	pragma := self buildNode: compiler pragmaNode at: token position.
-	^pragma primitive: 0 name: name! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:51:03'!
-negativeNumber 
-
-	token := nil.
-	^self negativeNumberOrBinary; step! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:51:19'!
-negativeNumberOrBinary 
-
-	self peek isNumberNode
-		ifTrue: [token := self next negate position: token position - 1].
-	^token value! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:52:31'!
-numberedPrimitive 
-	| number pragma |
-	number := token value.
-	number isInteger ifFalse: [self invalidPragma].
-	pragma := self buildNode: compiler pragmaNode at: token position.
-	^pragma primitive: number name: nil! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:53:03'!
-parenthesizedExpression 
-	| start open expression |
-	start := token position.
-	open := self step.
-	expression := self expression.
-	expression moveCommentsFrom: open.
-	(token is: $)) ifFalse: [self missingToken: ')'].
-	expression isImmediate
-		ifFalse: [expression position: start; end: token position].
-	self step.
-	^expression! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:54:51'!
-primary 
-
-	token isNameToken ifTrue: [^self step asIdentifierNode].
-	token isLiteral ifTrue: [^self step].
-	(token is: $[) ifTrue: [^self block].
-	(token is: $() ifTrue: [^self parenthesizedExpression].
-	(token is: #'#(') ifTrue: [^self literalArray].
-	(token is: #'#[') ifTrue: [^self literalByteArray].
-	(compiler supportsBraceNodes and: [token is: ${]) ifTrue: [^self bracedArray].
-	(token is: #'-') ifTrue: [^self negativeNumber].
-	(token is: #'<') ifTrue: [^self taggedNode].
-	^nil! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:06'!
-primitive 
-	| primitive |
-	self step.
-	primitive := token isNumberNode
-		ifTrue: [self numberedPrimitive]
-		ifFalse: [self namedPrimitive].
-	self step.
-	^primitive! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:16'!
-pseudoLiteralValue 
-	| value |
-	token isPoolLiteral ifTrue: [^token literalValue].
-	value := token value.
-	value = 'nil' ifTrue: [^nil].
-	value = 'true' ifTrue: [^true].
-	value = 'false' ifTrue: [^false].
-	^token isPoolLiteral ifTrue: [token literalValue] ifFalse: [value asSymbol]! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:35'!
-return 
-	| return expression end node |
-	return := self step.
-	expression := self expression.
-	expression moveCommentsFrom: token.
-	end := token position.
-	self skipDots.
-	node := self buildNode: compiler returnNode at: return position.
-	^node
-		return: return;
-		end: end;
-		expression: expression;
-		moveCommentsFrom: return! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:56'!
-skipDots 
-
-	[token is: $.] whileTrue: [self step]! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:29'!
-statement 
-	| expression |
-	(token is: $^) ifTrue: [^self return].
-	expression := self expression.
-	token moveCommentsTo: expression.
-	^expression! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:40'!
-statements 
-	| statements |
-	statements := OrderedCollection new.
-	[
-		token endsExpression ifTrue: [^statements].
-		statements add: self statement.
-		token is: $.]
-		whileTrue: [self skipDots].
-	^statements! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:51'!
-step 
-	| save comments |
-	save := token.
-	self next isComment ifFalse: [^save].
-	comments := OrderedCollection new: 2.
-	[
-		comments add: token.
-		self next isComment] whileTrue.
-	token comments: comments.
-	^save! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:57:24'!
-temporaries 
-	| temporaries |
-	(token is: #'||') ifTrue: [
-		self step.
-		^#()].
-	token isBar ifFalse: [^#()].
-	temporaries := OrderedCollection new.
-	[
-		self step.
-		token isNameToken]
-		whileTrue: [
-			self validateLocalName: token.
-			temporaries add: token asIdentifierNode].
-	token isBar ifFalse: [self missingToken: '|'].
-	self step.
-	^temporaries! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:08'!
-unaryMessage: aMessageNode 
-	| selector |
-	selector := self unarySelector.
-	aMessageNode
-		selector: selector;
-		end: selector end;
-		arguments: #();
-		moveCommentsFrom: selector! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:26'!
-unarySelector 
-	| selector start end node |
-	selector := token value.
-	start := token position.
-	end := start + selector size - 1.
-	self step.
-	node := self buildNode: compiler selectorNode at: start.
-	^node
-		symbol: selector;
-		end: end;
-		moveCommentsFrom: token! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:42'!
-unarySequence: aParseNode 
-	| node receiver |
-	node := aParseNode.
-	node isNameToken ifTrue: [node := node asIdentifierNode].
-	[
-		receiver := node.
-		self hasUnarySelector]
-		whileTrue: [
-			node := self buildMessageNode: receiver.
-			self unaryMessage: node].
-	^node moveCommentsFrom: token! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:57'!
-unarySignature 
-
-	self hasUnarySelector ifFalse: [^nil].
-	^self buildMethodNode: self unarySelector arguments: #()! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 13:00:29'!
-validateLocalName: aSmalltalkToken 
-
-	aSmalltalkToken isDelimitedIdentifier ifTrue: [^self].
-	(aSmalltalkToken value includes: $.)
-		ifTrue: [self error: 'invalid embedded dot']
-! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:43:47'!
-headlessMethod 
-	| method |
-	self step.
-	method := compiler methodNode.
-	compiler activeScript: method.
-	self addBodyTo: method.
-	^method! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:48:20'!
-method 
-	| method |
-	self step.
-	method := self methodSignature.
-	method isNil ifTrue: [^nil].
-	self addBodyTo: method.
-	^method! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:48:34'!
-methodFragment 
-	| method |
-	self step.
-	method := self methodSignature.
-	method isNil ifTrue: [^nil].
-	[self addBodyTo: method] on: SCompilationError do: [].
-	^method! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:49:15'!
-methodSelector 
-
-	self step.
-	^self methodSignature ifNotNil: [:m | m selectorNode]! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:49:25'!
-methodSignature 
-
-	self keywordSignature ifNotNil: [:m | ^m].
-	self binarySignature ifNotNil: [:m | ^m].
-	self unarySignature ifNotNil: [:m | ^m].
-	self error: 'method signature expected'! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:36'!
-parse: aString 
-
-	^self on: aString; method! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:45'!
-parseExpression: aString 
-
-	^self on: aString; headlessMethod! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:56'!
-parseFragment: aString 
-	| method |
-	self on: aString; step.
-	[
-		method := self methodSignature.
-		method notNil ifTrue: [self addBodyTo: method]]
-		on: SCompilationError
-		do: [].
-	^method! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:54:06'!
-parseTemporaries: aString 
-
-	self on: aString; step.
-	^self methodSignature notNil ifTrue: [self temporaries]! !
-
-!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:22'!
-hasBinarySelector 
-	^(token isStringToken and: [token hasSymbol])
-		or: [token is: $^]
-		or: [token is: $:]! !
-
-!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:44'!
-hasKeywordSelector 
-
-	^token isKeyword! !
-
-!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:51'!
-hasUnarySelector 
-
-	^token isNameToken! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:26:47'!
-on: aString 
-
-	stream := aString readStream.
-	compiler notNil ifTrue: [compiler sourceCode: aString]! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:28:19'!
-sourceCode: aString 
-
-	stream := aString readStream! !
-
-!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:14:34'!
-error: aString 
-
-	^self error: aString at: stream position! !
-
-!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:14:48'!
-error: aString at: anInteger 
-
-	^compiler error: aString at: anInteger! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:11:56'!
-buildToken: aSmalltalkToken 
-
-	^self buildToken: aSmalltalkToken at: stream position! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:12:14'!
-buildToken: aSmalltalkToken at: anInteger 
-	| string |
-	string := stream copyFrom: anInteger to: stream position.
-	^self buildToken: aSmalltalkToken at: anInteger with: string! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:12:32'!
-buildToken: aSmalltalkToken at: anInteger with: anObject 
-
-	^aSmalltalkToken
-		position: anInteger;
-		value: anObject;
-		end: stream position! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:13:54'!
-end 
-	
-	^self buildToken: compiler endToken at: stream position + 1! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:18'!
-next 
-
-	^self nextToken! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:32'!
-nextArrayPrefix 
-	| string |
-	string := stream copyFrom: stream position - 1 to: stream position.
-	^self
-		buildToken: compiler delimiterToken
-		at: stream position - 1
-		with: string! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:49'!
-nextAssignment 
-
-	^self buildToken: compiler delimiterToken at: stream position with: #':='! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:00'!
-nextBinarySelector 
-
-	stream back.
-	^self
-		buildToken: compiler stringToken
-		at: stream position + 1
-		with: self scanBinarySymbol! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:12'!
-nextBinarySymbol 
-
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: self scanBinarySymbol! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:25'!
-nextColon 
-	| start char |
-	start := stream position.
-	char := stream peek.
-	((char = $ or: [char = $	]) and: [(stream peek: 2) second = $=]) ifTrue: [
-		stream skip: 1.
-		char := $=].
-	char = $= ifTrue: [
-		stream skip.
-		^self nextAssignment position: start].
-	^(self isBinary: stream peek)
-		ifTrue: [self nextBinarySelector]
-		ifFalse: [self nextSpecialCharacter]! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:40'!
-nextComment 
-	| start comment |
-	start := stream position.
-	(stream skipTo: $") ifFalse: [self error: 'unfinished comment' at: start].
-	stream position: start.
-	comment := stream upTo: $".
-	^self buildToken: compiler commentNode at: start with: comment! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:56'!
-nextIdentifierOrKeyword 
-	| start |
-	start := stream position.
-	self skipIdentifier.
-	((stream peekFor: $:) and: [stream peekFor: $=]) ifTrue: [stream skip: -2].
-	^self buildToken: compiler stringToken at: start! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:18'!
-nextKeyword 
-	| start string |
-	start := stream position + 1.
-	self skipKeyword.
-	string := stream copyFrom: start to: stream position.
-	^self buildToken: compiler literalNode at: start - 1 with: string asSymbol! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:29'!
-nextLiteralCharacter 
-
-	stream atEnd ifTrue: [^self error: 'character expected'].
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: stream next! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:41'!
-nextLiteralString 
-
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: self scanString reduced! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:53'!
-nextNumber 
-	| parser assoc |
-	stream skip: -1.
-	parser := NumberParser2 new on: stream.
-	assoc := parser next.
-	parser error ifNotNil: [:e | ^self error: e key at: e value].
-	^self
-		buildToken: compiler numericLiteralNode
-		at: assoc value start
-		with: assoc key! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:20:25'!
-nextQuotedSymbol 
-	| node |
-	node := self nextLiteralString.
-	^node beSymbol; position: node position - 1! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:20:34'!
-nextSpecialCharacter 
-	| token |
-	token := self buildToken: compiler delimiterToken.
-	^token beCharacter! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:21:11'!
-nextSymbolOrArrayPrefix 
-	| char |
-	stream atEnd ifTrue: [self error: 'character expected'].
-	char := stream peek.
-	(self canBeInIdentifier: char) ifTrue: [^self nextKeyword].
-	(self isBinary: char) ifTrue: [^self nextBinarySymbol].
-	stream next.
-	(char = $[ or: [char = $(]) ifTrue: [^self nextArrayPrefix].
-	char = $' ifTrue: [^self nextQuotedSymbol].
-	self error: 'character expected'! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:26:21'!
-nextToken 
-	| first |
-	first := self scanChar.
-	first isNil ifTrue: [^self end].
-	(self canStartIdentifier: first) ifTrue: [^self nextIdentifierOrKeyword].
-	"(first = $→ or: [first = $_]) ifTrue: [^self nextAssignment]."
-	(first = $_) ifTrue: [^self nextAssignment].
-	first = $: ifTrue: [^self nextColon].
-	first = $' ifTrue: [^self nextLiteralString].
-	first = $$ ifTrue: [^self nextLiteralCharacter].
-	first = $# ifTrue: [^self nextSymbolOrArrayPrefix].
-	first = $" ifTrue: [^self nextComment].
-	first isDigit ifTrue: [^self nextNumber].
-	(first !!= $^ and: [first !!= $_ and: [self isBinary: first]])
-		ifTrue: [^self nextBinarySelector].
-	^self nextSpecialCharacter! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:05'!
-scanBinarySymbol 
-	| start symbol |
-	start := stream position.
-	self skipBinary.
-	symbol := stream copyFrom: start + 1 to: stream position.
-	^symbol asSymbol! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:17'!
-scanChar 
-
-	^stream skipSeparators atEnd ifFalse: [stream next]! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:28'!
-scanString 
-	| current start |
-	start := current := stream position.
-	^String streamContents: [:writer | 
-		[| fragment |
-			fragment := stream upTo: $'.
-			writer nextPutAll: fragment.
-			(current < stream position and: [(stream back; next) = $'])
-				ifFalse: [self error: 'string end expected' at: start].
-			stream peekFor: $']
-			whileTrue: [
-				writer nextPut: $'.
-				current := stream position]]! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:41'!
-skipBinary 
-
-	[self isBinary: stream peek] whileTrue: [stream next]! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:52'!
-skipIdentifier 
-	| frontend |
-	frontend := compiler frontend.
-	[stream atEnd]
-		whileFalse: [(frontend peekForIdentifier: stream) ifFalse: [^self]]! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:28:06'!
-skipKeyword 
-	| frontend continue pos |
-	frontend := compiler frontend.
-	[
-		self skipIdentifier.
-		continue := false.
-		(stream peekFor: $:) ifTrue: [
-			pos := stream position.
-			stream atEnd
-				ifFalse: [continue := frontend canStartIdentifier: stream peek]].
-		continue] whileTrue.
-	pos isNil ifFalse: [stream position: pos]! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:01'!
-canBeInIdentifier: aCharacter 
-
-	^compiler frontend canBeInIdentifier: aCharacter! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:15'!
-canStartIdentifier: aCharacter 
-
-	(compiler frontend canStartIdentifier: aCharacter) ifFalse: [^false].
-	aCharacter = $_
-		ifTrue: [^stream peek ifNil: [false] ifNotNil: [:ch | ch asInteger >= 33]].
-	^true! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:25'!
-compiler 
-
-	^compiler! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:35'!
-compiler: aSmalltalkCompiler 
-
-	compiler := aSmalltalkCompiler.
-	compiler sourceCode ifNotNil: [:s | self sourceCode: s]! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:17:02'!
-isBinary: aCharacter 
-	| code |
-	aCharacter isNil ifTrue: [^false].
-	code := aCharacter asInteger.
-	code < 128 ifTrue: [
-		^#($+ $- $< $> $= $* $/ $\ $| $& $~ $, $@ $% $? $!! $: $^)
-			includes: aCharacter].
-	^code > 255! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:45'!
-comments 
-
-	^comments! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:56'!
-comments: aCollection 
-
-	aCollection isNil ifTrue: [^self].
-	comments isNil
-		ifTrue: [comments := aCollection]
-		ifFalse: [comments addAll: aCollection]! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:27:32'!
-moveCommentsTo: aParseNode 
-
-	aParseNode comments: comments.
-	comments := nil! !
-
-!SToken methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:24:19'!
-isDelimitedIdentifier 
-
-	^false! !
-
-!SToken methodsFor: 'initialization' stamp: 'KenD 2/21/2021 13:26:35'!
-initialize 
-
-	super initialize.
-	stretch := 1 thru: 0! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:01'!
-endsExpression 
-
-	^self isEnd! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:14'!
-hasSymbol 
-
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:44'!
-is: anObject 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:55'!
-isAssignment 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:07'!
-isBar 
-
-	^(self is: #'|') or: [self is: #'/']! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:17'!
-isBlockNode 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:28'!
-isComment 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:56'!
-isDelimiter 
-
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:49'!
-isEnd 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:09'!
-isIdentifier 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:20'!
-isLiteral 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:29'!
-isNameToken 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:38'!
-isNumberNode 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:52'!
-isPoolLiteral 
-
-	^false! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:26:57'!
-sStringToken 
-
-	^false! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:29'!
-compileWarning: aString 
-
-	compiler notify: aString at: self stretch! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:41'!
-compiler 
-
-	^compiler! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:14'!
-compiler: aSmalltalkCompiler 
-
-	compiler := aSmalltalkCompiler! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:25'!
-end 
-
-	^stretch end! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:35'!
-end: aNumber 
-
-	stretch end: aNumber! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:27:49'!
-position 
-
-	^stretch start! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:02'!
-position: aNumber 
-
-	stretch start: aNumber! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:13'!
-prevPosition 
-
-	^stretch start - 1! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:27'!
-source 
-	^compiler sourceCode copyFrom: stretch start to: stretch end! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:38'!
-stretch 
-
-	^stretch! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:50'!
-stretch: aStretch 
-
-	stretch := aStretch! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
-value 
-
-	^value! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:25'!
-value: anObject 
-
-	value := anObject! !
-
-!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:12:43'!
-is: anObject 
-
-	^value == anObject! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:39'!
-hasSymbol 
-
-	^value isSymbol! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:52'!
-isBinary 
-
-	^value isSymbol! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:04'!
-isDelimitedIdentifier 
-
-	^value first = ${! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:18'!
-isKeyword 
-
-	^value last = $:! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:32'!
-isNameToken 
-
-	^(self isKeyword or: [self isBinary]) not! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:43'!
-isStringToken 
-
-	^true! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:03'!
-asIdentifierNode 
-
-	^compiler identifierNode
-		name: value;
-		stretch: stretch;
-		comments: comments! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:21'!
-asSelectorNode 
-
-	^compiler selectorNode symbol: value; stretch: stretch! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:07'!
-endsExpression 
-
-	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:17'!
-isAssignment 
-
-	^self is: #':='! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:30'!
-isDelimiter 
-
-	^true! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:07:46'!
-beCharacter 
-
-	value := value isCharacter ifTrue: [value] ifFalse: [value first]! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:08:46'!
-value: aString 
-
-	super value: aString asSymbol! !
-
-!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:07:09'!
-asSelectorNode 
-
-	^compiler selectorNode symbol: value asString; stretch: stretch! !
-
-!SEndToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:05:41'!
-value: aString 
-
-	''! !
-
-!SEndToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:04:42'!
-position: aNumber 
-
-	super position: aNumber - 1! !
-
-!SEndToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:05:00'!
-prevPosition 
-
-	^stretch start! !
-
-!SEndToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:04:14'!
-isEnd
-	^true! !
-
-!SParseNode methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:52:09'!
-moveCommentsFrom: aParseNode 
-
-	aParseNode moveCommentsTo: self! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:12'!
-ast 
-
-	^compiler ast! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:34'!
-hasAssign 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:48'!
-isAssign 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:00'!
-isBraceNode 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:11'!
-isCascade 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:22'!
-isCascadeMessage 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:30'!
-isEvaluable 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:39'!
-isImmediate 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:45'!
-isMessageNode 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:52'!
-isMethod 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:59'!
-isMethodArgument 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:05'!
-isMethodTemporary 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:14'!
-isReturn 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:28'!
-isSelector 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:34'!
-isSelf 
-
-	^false! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:45'!
-isSuper 
-
-	^false! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:48:44'!
-allNodesDo: aBlock 
-
-	self nodesDo: aBlock includingDeclarations: true! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:52:43'!
-nodeWithLiteral: anObject 
-
-	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) 
-					and: [n value = anObject]] 
-		ifAbsent: nil
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:53:52'!
-nodesDetect: aBlock ifAbsent: absentBlock 
-
-	self  nodesDo: [:node | (aBlock value: node) ifTrue: [ ^node ] ] 
-		includingDeclarations: false.
-	^absentBlock value! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:05'!
-nodesDo: aBlock 
-
-	self nodesDo: aBlock includingDeclarations: false! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:21'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	aBlock evaluateWith: self! !
-
-!SParseNode methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:48:13'!
-acceptVisitor: visitor 
-
-	^visitor visitParseNode: self! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:41'!
-hasSymbol 
-
-	^value isSymbol! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:28'!
-isEvaluable 
-
-	^true! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:19'!
-isImmediate 
-
-	^true! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:00'!
-isLiteral 
-
-	^true! !
-
-!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:23'!
-value 
-
-	^value! !
-
-!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:34'!
-value: anObject 
-
-	value := anObject! !
-
-!SLiteralNode methodsFor: 'emitCode' stamp: 'KenD 2/22/2021 13:02:25'!
-emitLoadAusing: anSExpressionNativizer 
-
-	anSExpressionNativizer encodeLoadAwithLiteral: value! !
-
-!SLiteralNode methodsFor: 'private' stamp: 'KenD 2/22/2021 13:01:22'!
-beSymbol 
-
-	value := value asSymbol! !
-
-!SLiteralNode methodsFor: 'visiting' stamp: 'KenD 2/22/2021 12:55:31'!
-acceptVisitor: visitor 
-	
-	^visitor visitLiteral: self! !
-
-!SStringNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:34:49'!
-acceptVisitor: visitor 
-
-	^visitor visitString: self! !
-
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:10'!
-hasSymbol 
-
-	^symbol isSymbol! !
-
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:26'!
-isBinary 
-
-	^symbol isBinary! !
-
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:43'!
-isSelector
-
-	^true! !
-
-!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:15:26'!
-value 
-
-	^symbol! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:24'!
-addKeyword: aSelectorNode 
-
-	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
-	keywords add: aSelectorNode! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:52'!
-end 
-
-	stretch end ifNotNil: [:e | ^e].
-	^keywords notNil ifTrue: [keywords last end]! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:23'!
-keywords 
-
-	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:17'!
-positions 
-
-	^self keywords collect: [:node | node position]! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:36'!
-symbol 
-
-	^symbol! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:47'!
-symbol: aString 
-
-	symbol := aString asSymbol! !
-
-!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 2/24/2021 13:12:01'!
-acceptVisitor: visitor 
-
-	^visitor visitSelector: self! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:19'!
-assignees 
-
-	^assignees! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:29'!
-expression 
-
-	^expression! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:31:51'!
-operators 
-
-	^operators! !
-
-!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:43'!
-assign: anIdentifierNode operator: aDelimiterToken 
-
-	assignees add: anIdentifierNode.
-	operators add: aDelimiterToken! !
-
-!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:55'!
-assign: anIdentifierNode with: aParseNode operator: aDelimiterToken 
-
-	assignees add: anIdentifierNode.
-	operators add: aDelimiterToken.
-	expression := aParseNode! !
-
-!SAssignmentNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:31:37'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	assignees do: [:v | v nodesDo: aBlock includingDeclarations: aBoolean].
-	expression nodesDo: aBlock includingDeclarations: aBoolean! !
-
-!SAssignmentNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:31:02'!
-initialize 
-
-	super initialize.
-	assignees := OrderedCollection new: 1.
-	operators := OrderedCollection new: 1! !
-
-!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:30:44'!
-hasAssign 
-
-	^true! !
-
-!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:31:14'!
-isAssign 
-
-	^true! !
-
-!SAssignmentNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:29:16'!
-acceptVisitor: visitor 
-
-	^visitor visitAssignment: self! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:44:59'!
-asMessageNode 
-
-	message notNil ifTrue: [^message].
-	^message := self expanded! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:11'!
-elements 
-
-	^elements! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:20'!
-elements: aCollection 
-
-	elements := aCollection asArray! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:46:23'!
-expanded 
-	| receiver n new argument array messages i you yourself cascade |
-	receiver := compiler identifierNode name: 'Array'.
-	n := elements size.
-	new := compiler selectorNode symbol: #new:.
-	argument := compiler numericLiteralNode value: n.
-	array := compiler messageNode.
-	array receiver: receiver.
-	array selector: new.
-	array arguments: (Array with: argument).
-	i := 0.
-	messages := elements collect: [:elem | | msg sel idx args |
-		i := i + 1.
-		msg := compiler cascadeMessageNode 
-					position: elem position; 
-					end: elem end.
-		sel := compiler selectorNode symbol: #at:put:.
-		idx := compiler numericLiteralNode value: i.
-		args := Array with: idx with: elem.
-		msg selector: sel; arguments: args].
-	you := compiler selectorNode symbol: #yourself.
-	yourself := compiler cascadeMessageNode.
-	yourself selector: you.
-	yourself arguments: #().
-	messages := messages copyWith: yourself.
-	cascade := compiler cascadeNode receiver: array.
-	messages do: [:msg | msg cascade: cascade].
-	^cascade messages: messages! !
-
-!SBraceNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:46:54'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	elements do: [:n | n nodesDo: aBlock includingDeclarations: aBoolean]! !
-
-!SBraceNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:46:37'!
-isBraceNode 
-
-	^true! !
-
-!SBraceNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:44:18'!
-acceptVisitor: visitor 
-
-	^visitor visitBraceNode: self! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:12'!
-messages 
-
-	^messages! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:21'!
-messages: aCollection 
-
-	messages := aCollection! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:44'!
-receiver 
-
-	^receiver! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:52'!
-receiver: rcvr 
-
-	receiver := rcvr! !
-
-!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:20:33'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	receiver nodesDo: aBlock includingDeclarations: aBoolean.
-	messages do: [:msg | msg nodesDo: aBlock includingDeclarations: aBoolean]! !
-
-!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:37'!
-hasAssign 
-
-	receiver hasAssign ifTrue: [^true].
-	messages detect: [:msg | msg hasAssign] ifNone: [^false].
-	^true! !
-
-!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:47'!
-isCascade 
-
-	^true! !
-
-!SCascadeNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:19:20'!
-acceptVisitor: visitor 
-
-	^visitor visitCascade: self! !
-
-!SCommentNode methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:40:59'!
-value 
-
-	^value! !
-
-!SCommentNode methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:41:12'!
-value: aString 
-
-	value := aString! !
-
-!SCommentNode methodsFor: 'testing' stamp: 'KenD 4/7/2021 13:40:38'!
-isComment 
-
-	^true! !
-
-!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 2/23/2021 14:29:21'!
-name: aString 
-
-	name := aString reduced! !
-
-!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:23:55'!
-beAssigned 
-
-	| immutable |
-	binding canBeAssigned ifTrue: [^self].
-	immutable := binding isClassBinding
-		ifTrue: ['class']
-		ifFalse: [compiler activeScope describe: binding name].
-	self compileError: 'cannot assign to ' , immutable! !
-
-!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:29:35'!
-resolveAssigning: aBoolean 
-	| scope |
-	scope := compiler activeScope.
-	binding := scope resolve: name.
-	binding isUnresolved ifFalse: [^binding].
-	(scope hasMultipleBindingsFor: name)
-		ifTrue: [self compileError: 'variable belongs in multiple pools'].
-	compiler undeclaredErrorAt: self stretch assignment: aBoolean.
-	^binding := scope resolve: name! !
-
-!SIdentifierNode methodsFor: 'emitCode' stamp: 'KenD 2/23/2021 14:26:14'!
-emitLoadAusing: anAstcodeEncoder 
-
-	binding emitLoadAusing: anAstcodeEncoder! !
-
-!SIdentifierNode methodsFor: 'initialization' stamp: 'KenD 2/23/2021 14:26:31'!
-nitialize 
-
-	super initialize.
-	binding := UnresolvedBinding default! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:24:42'!
-checkLowercase 
-	| char |
-	char := name first.
-	(char isLetter and: [char isUppercase]) ifFalse: [^self].
-	self compileWarning: name storeString , ' should start with lowercase'! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:26:53'!
-isEvaluable 
-
-	^self isIdentifierLiteral! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:06'!
-isIdentifier 
-
-	^true! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:15'!
-isIdentifierLiteral 
-
-	binding isUnresolved ifFalse: [^binding isLiteral].
-	^self ast ifNil: [false] ifNotNil: [:ast | | b |
-		b := ast scope resolve: name.
-		b isLiteral]! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:40'!
-isImmediate 
-
-	^true! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:54'!
-isMethodArgument 
-	| ast |
-	binding isArgument ifFalse: [^false].
-	ast := self ast ifNil: [^false].
-	^ast arguments includes: self declaration! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:13'!
-isMethodTemporary 
-
-	^self ast temporaries includes: self declaration! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:22'!
-isSelf 
-
-	^binding isSelf! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:33'!
-sSuper 
-
-	^binding isSuper! !
-
-!SIdentifierNode methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:23:40'!
-acceptVisitor: visitor 
-
-	^visitor visitIdentifier: self
-! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:06'!
-declaration 
-
-	^binding declaration! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:20'!
-defineArgumentIn: aScriptScope 
-
-	binding := aScriptScope defineArgument: name.
-	binding declaration: self! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:37'!
-defineTemporaryIn: scope 
-
-	binding := scope defineTemporary: name.
-	binding declaration: self! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:18'!
-arguments 
-
-	^arguments! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:33'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:26'!
-receiver 
-
-	^receiver! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:35'!
-receiver: node 
-
-	receiver := node! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:44'!
-selector 
-
-	^selector! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:52'!
-selector: node 
-
-	selector := node! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:30:01'!
-symbol 
-
-	^selector symbol! !
-
-!SMessageNode methodsFor: 'emitting - inlined' stamp: 'KenD 4/8/2021 08:26:19'!
-beInlined 
-
-	inlined := true! !
-
-!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:29:12'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	receiver nodesDo: aBlock includingDeclarations: aBoolean.
-	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean].
-	selector nodesDo: aBlock includingDeclarations: aBoolean
-! !
-
-!SMessageNode methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:27:34'!
-initialize 
-
-	super initialize.
-	inlined := false! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:41'!
-hasAssign 
-
-	receiver hasAssign ifTrue: [^true].
-	^arguments anySatisfy: [:arg | arg hasAssign]! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:54'!
-hasVolatileArguments 
-
-	^arguments anySatisfy: [:arg | 
-		arg isIdentifier
-			ifTrue: [arg binding canBeAssigned]
-			ifFalse: [arg isBlockNode not andNot: [arg isLiteral]]]! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:14'!
-hasVolatileReceiver 
-
-	^ compiler hasBlocks
-		  or: [ receiver isMethodTemporary not ]
-		  or: [ arguments anySatisfy: [ :arg | arg hasAssign ] ]! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:45'!
-isCascadeMessage 
-
-	^false! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:53'!
-isInlined 
-
-	^inlined! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:02'!
-isMessageNode 
-
-	^true! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:17'!
-needsStrictEvaluationOrder 
-
-	arguments size = 0 ifTrue: [^false].
-	receiver isBlockNode ifTrue: [^false].
-	receiver isLiteral ifTrue: [^false].
-	receiver isSelf ifTrue: [^false].
-	receiver isSuper ifTrue: [^false].
-	receiver isMethodArgument ifTrue: [^false].
-	self hasVolatileReceiver ifFalse: [^false].
-	(receiver isImmediate
-		and: [arguments conform: [:arg | arg isImmediate or: [arg isBlockNode]]])
-		ifTrue: [^false].
-	receiver hasAssign ifTrue: [^true].
-	receiver isMessageNode ifTrue: [ ^true ]. 
-	^self hasVolatileArguments! !
-
-!SMessageNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:25:07'!
-acceptVisitor: visitor 
-
-	^visitor visitMessage: self! !
-
-!SCascadeMessageNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:16:12'!
-cascade: aCascadeNode 
-
-	cascade := aCascadeNode.
-	receiver := cascade receiver! !
-
-!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:17:16'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	aBlock evaluateWith: self.
-	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]! !
-
-!SCascadeMessageNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 16:16:40'!
-from: aMessageNode 
-
-	arguments := aMessageNode arguments.
-	receiver := aMessageNode receiver.
-	selector := aMessageNode selector.
-	inlined := aMessageNode isInlined.
-	stretch := aMessageNode stretch.
-	comments := aMessageNode comments! !
-
-!SCascadeMessageNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:16:54'!
-isCascadeMessage 
-
-	^true! !
-
-!SCascadeMessageNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:15:57'!
-acceptVisitor: visitor 
-
-	^visitor visitCascadeMessage: self! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:00'!
-expression 
-
-	^expression! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:11'!
-expression: node 
-
-	expression := node! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:18:09'!
-return: aSmalltalkToken 
-
-	return := aSmalltalkToken! !
-
-!SReturnNode methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 13:17:59'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	expression nodesDo: aBlock includingDeclarations: aBoolean! !
-
-!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:34'!
-hasAssign 
-
-	^expression hasAssign! !
-
-!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:46'!
-isReturn 
-
-	^true! !
-
-!SReturnNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:16:49'!
-acceptVisitor: visitor 
-
-	^visitor visitReturn: self! !
-
-!SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
-useSelf 
-
-	scope captureSelf! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:04'!
-addChild: aBlockNode 
-
-	children add: aBlockNode! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:49'!
-addStatements: anOrderedCollection 
-
-	statements addAll: anOrderedCollection! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:58'!
-arguments 
-
-	^arguments! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:07'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:47'!
-children 
-
-	^children! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:57'!
-environmentSize 
-
-	^scope environmentSize! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:02'!
-realScript 
-
-	self subclassResponsibility! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:34'!
-scope 
-
-	^scope! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:27'!
-statements 
-
-	^statements! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:40'!
-temporaries 
-
-	^temporaries! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:55'!
-temporaries: aCollection 
-
-	temporaries := aCollection! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:46:36'!
-bindLocals 
-
-	arguments do: [:arg | arg defineArgumentIn: scope].
-	temporaries do: [:temp | temp checkLowercase; defineTemporaryIn: scope].
-	children do: [:block | block bindLocals]! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:48:42'!
-positionLocals 
-
-	scope positionLocals.
-	children do: [:b | b positionLocals]! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:49:21'!
-reference: aBinding 
-
-	aBinding beReferencedFrom: self! !
-
-!SScriptNode methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 11:48:26'!
-nodesDo: aBlock includingDeclarations: aBoolean 
-
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	aBoolean ifTrue: [
-		arguments do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean].
-		temporaries do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean]].
-	statements do: [:s | s nodesDo: aBlock includingDeclarations: aBoolean]! !
-
-!SScriptNode methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:47:49'!
-initialize 
-
-	super initialize.
-	statements := OrderedCollection new.
-	arguments := #().
-	temporaries := #().
-	children := OrderedCollection new! !
-
-!SScriptNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:47:31'!
-hasAssign 
-
-	statements do: [:s | s hasAssign ifTrue: [^true]].
-	^false! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:40:01'!
-environmentIndexOf: aParseNode 
-
-	^scope environmentIndexOf: aParseNode! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:41:46'!
-parent 
-
-	^parent! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:00'!
-parent: aScriptNode 
-
-	parent := aScriptNode addChild: self! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:11'!
-realParent 
-
-	^parent realScript! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:21'!
-realScript 
-
-	^inlined ifTrue: [parent realScript] ifFalse: [self]! !
-
-!SBlockNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:40:54'!
-initialize 
-
-	super initialize.
-	inlined := false.
-	scope := BlockScope on: self! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:28'!
-index 
-
-	^index! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:37'!
-index: aNumber 
-
-	index := aNumber! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:04'!
-isBlockNode 
-
-	^true! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:19'!
-isEvaluable 
-
-	^self isNullary! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:27'!
-isInlined 
-
-	^inlined! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:36'!
-isNullary 
-
-	^arguments isEmpty! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:42:37'!
-usesHome 
-
-	^inlined
-		ifTrue: [children anySatisfy: [:block | block usesHome]]
-		ifFalse: [scope capturesHome]! !
-
-!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:38:05'!
-beInlined 
-
-	inlined := true.
-	arguments do: [:arg | arg binding beInlined]! !
-
-!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:23'!
-buildBlock 
-	| block |
-	self isInlined ifTrue: [ ^ nil ].
-	block := SCompiledBlock new.
-	^ block
-		  id: index;
-		  argumentCount: arguments size;
-		  tempCount: scope stackSize;
-		  environmentCount: scope environmentSize;
-		  capturesSelf: scope capturesSelf;
-			capturesHome: scope capturesHome! !
-
-!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:36'!
-captureHome 
-
-	scope captureEnvironment: self ast! !
-
-!SBlockNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:36:57'!
-acceptVisitor: visitor 
-
-	^visitor visitBlock: self! !
-
-!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:08:42'!
-info 
-
-	^info! !
-
-!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:16'!
-primitive: anInteger name: aString 
-
-	type := #primitive.
-	name := aString.
-	info := anInteger! !
-
-!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:24'!
-type 
-
-	^type! !
-
-!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:20'!
-ffi: cc name: aString with: anFFIDescriptor 
-
-	type := cc.
-	name := aString.
-	info := anFFIDescriptor! !
-
-!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:30'!
-ffi: aString with: anFFIDescriptor 
-
-	type := #ffi.
-	name := aString.
-	info := anFFIDescriptor! !
-
-!SPragmaNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:08:51'!
-isUsed 
-
-	^type notNil! !
-
-!SPragmaNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:08:00'!
-acceptVisitor: aVisitor 
-
-	self isFFI ifTrue: [^aVisitor visitFFIPragma: self].
-	self isPrimitive ifTrue: [^aVisitor visitPrimitivePragma: self].
-	self isSymbolic ifTrue: [^aVisitor visitSymbolicPragma: self]! !
-
-!SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:02:37'!
-builder: anImageSegmentBuilder 
-
-	builder := anImageSegmentBuilder! !
-
-!SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:03:13'!
-spec 
-
-	^builder image kernel! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:04:44'!
-initializeInlinedMethods 
-	| compiled |
-	compiled := self inlinedMethods
-		collect: [ :method | builder methods at: method ].
-	nativizer inlinedMethods: compiled! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:05:08'!
-initializeInvokedMethods 
-	| compiled |
-	compiled := self invokedMethods
-		collect: [ :method | builder methods at: method ].
-	nativizer invokedMethods: compiled! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:05:26'!
-initializeKernelModule 
-	| runtime smethod transferred array module |
-	module := builder module.
-	runtime := {(image => #Kernel >> #entry:argv:)}
-		collect: [ :def | 
-			smethod := builder methods at: def.
-			transferred := image surrogateFor: smethod.
-			transferred nativeCode machineCode ].
-	array := image newArray: builder classes values.
-	module
-		name: (image newString: 'Kernel');
-		version: (image newString: '0.1.0');
-		exports: array;
-		hash: image nil;
-		loadAction: builder createLoadAction;
-		runtime: (image newArray: runtime)! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:06:32'!
-initializeNativizer 
-
-	nativizer := NativizationEnvironment new.
-	self
-		initializeNativizerGlobals;
-		initializeInlinedMethods;
-		initializeInvokedMethods;
-		initializeOptimizedMethods;
-		nativizeInvoke;
-		nativizeWriteBarrier;
-		nativizeLookup;
-		transferNativizerGlobals;
-		setupMessageLinkers! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:06:55'!
-initializeNativizerGlobals 
-	| smi items |
-	smi := image classNamed: #SmallInteger.
-	nativizer globalNamed: #SmallIntegerBehavior put: smi behavior.
-	items := {(#Lookup -> (NativeCode new code: 'Lookup Placeholder')).
-	(#LookupSuper -> (NativeCode new code: 'LookupSuper Placeholder')).
-	(#DebuggableLookup
-		-> (NativeCode new code: 'DebuggableLookup placeholder')).
-	(#DebuggableLookupSuper
-		-> (NativeCode new code: 'DebuggableLookupSuper placeholder')).
-	(#Invoke -> (NativeCode new code: 'Invoke placeholder')).
-	(#Safepoint -> (NativeCode new code: 'SafepointCheck placeholder')).
-	(#WriteBarrier -> (NativeCode new code: 'Write Barrier placeholder'))}
-		asDictionary.
-	items
-		keysAndValuesDo: [ :key :placeholder | nativizer globalNamed: key put: placeholder ]! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:07:33'!
-initializeOptimizedMethods 
-	| compiled |
-	compiled := self optimizedMethods
-		collect: [ :method | builder methods at: method ].
-	nativizer optimizedMethods: compiled! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:08:08'!
-initializeSendSite 
-
-	self 
-		initializeSendSiteMIC: nativizer monomorphicCache
-		PIC: nativizer polymorphicCache! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:08:33'!
-initializeSendSiteMIC: micStub PIC: picStub 
-	| class lkup invk mic pic |
-	class := image classNamed: #SendSite.
-	lkup := nativizer globalNamed: #Lookup.
-	lkup := image surrogateFor: lkup.
-	invk := nativizer globalNamed: #Invoke.
-	invk := image surrogateFor: invk.
-	mic := image newBytesFrom: micStub.
-	pic := image newBytesFrom: picStub.
-	builder runtime
-		send: #allocateInitialCachesUsing: to: class with: {lkup};
-		send: #initializeInvoke: to: class with: {invk};
-		send: #monomorphicCache: to: class with: {mic};
-		send: #polymorphicCache: to: class with: {pic}! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:11:14'!
-inlinedMethods 
-	| map |
-	map := 
-	{(#ProtoObject
-		->
-		#(#objectAtValid: #objectAtValid:put: #behavior #class   
-		  #primitiveAt: #_cachedLookup: #_cachedLookup:in:)).
-	(#Object
-		-> 
-		#(#byteAtValid: #byteAtValid:put: #basicObjectIndexOf: #at:put:)).
-	(#Species
-		->
-		#(#instSize #_instancesAreArrayed #_instancesHavePointers 
-		    #memory #instanceBehavior #primitiveNew #primitiveNew:)).
-	(#CompiledMethod
-		->
-		#(#prepareForExecution #isNativized #nativeCode 
-		   #blockCount #literalIndexFrom:)).
-	(#CompiledBlock 
-	 	-> 
-		#(#argumentCount #blockNumber #blockCode #method)).
-	(#NativeCode -> #(#code)).
-	(#GCSpace -> #(#commitedLimit #nextFree #nextFree:)).
-	(#CharacterArray -> #(#characterAtValid:))}.
-
-	^ builder undermethods , (builder methodSubset: map)
-	! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:21'!
-invokedMethods 
-	| map |
-	map := 
-	{(#ProtoObject
-		-> #(behavior class primitiveAt: #initializeExtended:contentSize:)).
-	(#Object 
-		-> #(#_replaceFrom:to:with:)).
-	(#Species
-		->
-		#(#allocate:size: instanceBehavior _instancesAreArrayed 
-		_instancesHavePointers #nil:slotsOf: memory primitiveNewBytes: 
-		primitiveNewPointers: #zero:bytesOf:))}.
-
-	^ builder undermethods , (builder methodSubset: map)! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:37'!
-mapNativizerGlobal: name to: transferred 
-	| placeholder |
-	placeholder := nativizer globalNamed: name.
-	image
-		map: placeholder to: transferred;
-		map: placeholder code to: transferred machineCode.
-	builder export: transferred as: name! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:51'!
-nativize 
-
-	self
-		initializeNativizer;
-		initializeSendSite;
-		nativizeRemainingMethods! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:23:05'!
-nativizeInvoke 
-	| invoke |
-	invoke := builder compile: builder => #SendSite >> #_invokeOn:.
-	nativizer nativizeOptimizing: invoke.
-	self transfer: invoke in: #ProtoObject asNativizerGlobal: #Invoke! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:23:20'!
-nativizeLookup 
-	| n transferred species lookup lookupSuper |
-	n := LookupNativizer new
-		bootstrapper: self;
-		nativizeMethods.
-	lookup := n methodFor: #_dispatchOn:.
-	lookupSuper := n methodFor: #_dispatchOn:startingAt:.
-	n methods
-		do: [ :m | 
-			species := image speciesFor: image => m classBinding name.
-			transferred := builder transferMethod: m in: species.
-			image map: m to: transferred ];
-		do: [ :m | 
-			transferred := image surrogateFor: m.
-			self transferNativeCode: m nativeCode of: transferred ].
-	transferred := (image surrogateFor: lookup) nativeCode.
-	self mapNativizerGlobal: #Lookup to: transferred.
-	transferred := (image surrogateFor: lookupSuper) nativeCode.
-	self mapNativizerGlobal: #LookupSuper to: transferred! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:24:59'!
-nativizeRemainingMethods 
-
-	builder classSpecs
-		do: [ :def | 
-			self
-				trace: 'nativizing ' , def name , '...';
-				nativizeRemainingMethodsIn: def;
-				nativizeRemainingMethodsIn: def metaclass ]! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:25:17'!
-nativizeRemainingMethodsIn: species 
-
-	builder methods
-		do: [ :smethod | 
-			smethod nativeCode
-				ifNil: [ "self haltIf: smethod selector == #foo."
-					nativizer nativize: smethod.
-					self transferNativeCodeOfMethod: smethod ] ]! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:25:37'!
-nativizeWriteBarrier 
-	| map inlined dispatcher barrier |
-	map := {('Memory class' -> #(current)).
-	(#Memory -> #(isYoung: isYoungSafe: remember:)).
-	(#CriticalArray -> #(unsafeAdd: #unsafeAt:put:)).
-	(#Magnitude -> #(#between:and:))}.
-	inlined := builder methodSubset: map.
-	inlined addAll: builder undermethods.
-	inlined := inlined collect: [ :m | builder compile: m ].
-	barrier := builder
-		compile: builder => #ProtoObject >> #holdRefererIfNeeded:.
-	dispatcher := LookupLinker new initializeFrom: nativizer.
-	NativizationEnvironment new
-		globals: nativizer globals;
-		inlinedMethods: inlined;
-		messageLinker: dispatcher;
-		completeInitialization;
-		nativizeOptimizing: barrier.
-	self
-		transfer: barrier
-		in: #ProtoObject
-		asNativizerGlobal: #WriteBarrier! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:28:22'!
-optimizedMethods 
-	| map |
-	map := 
-	{(#ProtoObject
-		->
-		#(behavior class primitiveAt: #primitiveAt:put: 
-		  #initializeExtended:contentSize:)).
-	(#Object
-		->
-		#(at: #at:put: basicByteAt: #basicByteAt:put: byteAtValid: 
-		  #byteAtValid:put: basicObjectAt: #basicObjectAt:put: 
-		  #replaceBytesForwardFrom:to:with:startingAt:)).
-	(#SendSite
-		->
-		#(_dispatchOn: #_dispatchOn:startingAt: 
-		  _dispatchDebuggableOn: #_dispatchDebuggableOn:startingAt:)).
-	(#Species
-		->
-		#(#allocate:size: primitiveNew primitiveNew: instSize
-		   primitiveNewBytes: primitiveNewPointers:)).
-	(#'Float class' 
-		-> #(new)).
-	(#CompiledBlock 
-		-> #(argumentCount arity blockCode method)).
-	(#Closure 
-		-> #(value value: #value:value:)).
-	(#CompiledMethod 
-		-> #(blockCount isNativized)).
-	(#String 
-		-> #(at: #at:put: byteAt: #byteAt:put:)).
-	(#GCSpace
-		-> 
-		#(lockedAllocateIfPossible: lockedAllocateUnsafe: shallowCopy:)).
-	(#Memory 
-		-> #(shallowCopy:))}.
-
-	^ builder undermethods , (builder methodSubset: map)! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:28:45'!
-setupMessageLinkers 
-	| invoker dispatcher |
-	invoker := InvokeLinker new
-		invoker: nativizer invokeStub;
-		addMethods: nativizer invokedMethods.
-	dispatcher := LookupLinker new initializeFrom: nativizer.
-	nativizer
-		addLinker: invoker;
-		addLinker: dispatcher;
-		completeInitialization! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:29:13'!
-transfer: anSMethod in: classname asNativizerGlobal: name 
-	| species transferred |
-	species := image classNamed: classname.
-	transferred := builder transferMethod: anSMethod in: species.
-	transferred := self
-		transferNativeCode: anSMethod nativeCode
-		of: transferred.
-	self mapNativizerGlobal: name to: transferred! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:29:36'!
-transferNativeCode: aNativeCode of: compiledCode 
-	| size transferred code slot callback |
-	size := aNativeCode size.
-	transferred := image newSlots: 'NativeCode' sized: size.
-	callback := compiledCode classname = #CallbackMethod.
-	code := callback
-		ifTrue: [ builder newCallback: transferred bytesFrom: aNativeCode code ]
-		ifFalse: [ image newBytesFrom: aNativeCode code ].
-	transferred
-		machineCode: code;
-		compiledCode: compiledCode.
-	compiledCode nativeCode: transferred.
-	aNativeCode
-		withIndexDo: [ :elem :i | 
-			slot := image transferLiteralDeep: elem.
-			transferred at: i put: slot ].
-	^ transferred! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:30:08'!
-transferNativeCodeOfMethod: anSCompiledMethod 
-	| transferred remaining literal block position |
-	transferred := image surrogateFor: anSCompiledMethod.
-	self transferNativeCode: anSCompiledMethod nativeCode of: transferred.
-	remaining := anSCompiledMethod blockCount.
-	position := 1.
-	[ remaining > 0 ]
-		whileTrue: [ literal := anSCompiledMethod at: position.
-			literal isBlock
-				ifTrue: [ block := transferred at: position.
-					self transferNativeCode: literal nativeCode of: block.
-					remaining := remaining - 1 ].
-			position := position + 1 ].
-	^ transferred! !
-
-!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:30:22'!
-transferNativizerGlobals 
-
-	image transferLiteralDeep: nativizer globals! !
-
-!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:04:20'!
-image: aVirtualSmalltalkImage 
-
-	image := aVirtualSmalltalkImage! !
-
-!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:26:05'!
-nativizer 
-
-	^nativizer! !
-
-!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:30:37'!
-undermethods 
-
-	^builder undermethods! !
 
 !ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
 is32bits 
@@ -19940,6 +16167,118 @@ new: anRGBehavior size: size
 	class := self classFor: anRGBehavior.
 	^ class new initializeAs: anRGBehavior sized: size! !
 
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
+initialize 
+
+	hash := 0! !
+
+!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:38'!
+initializeAs: anRGBehavior sized: size 
+
+	self assert: anRGBehavior notNil.
+"	self assert: anRGBehavior isBytes.
+	self assert: anRGBehavior isVariable.
+"	
+	spec := anRGBehavior.
+	bytes := ByteArray new: size! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:32'!
+at: index 
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: bytes size).
+	^bytes at: index! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:47'!
+at: index put: anObjectMap 
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+
+	| value |
+	self assert: (index between: 1 and: bytes size).
+	self assert: anObjectMap isImmediate.
+	value := anObjectMap value.
+	self assert: (value between: 0 and: 255).
+	bytes at: index put: value.
+	^anObjectMap! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:13'!
+bodySizeInBytes 
+	"Return the size of object body(s) in bytes, padded"
+	
+	^ self size alignedTo: self wordSize! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:26'!
+bytes 
+
+	^ bytes! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:11'!
+contentsString 
+
+	spec name == #String
+		ifTrue: [ ^bytes allButLast asString storeString ].
+	spec name == #Symbol
+		ifTrue: [ ^bytes allButLast asString asSymbol storeString ].
+	spec name == #ByteArray
+		ifTrue: [ ^bytes storeString ].
+	^spec name withArticle, ': ', bytes printString! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:27'!
+fillFrom: anObject 
+
+	self assert: anObject size == bytes size.
+	bytes replaceFrom: 1 to: bytes size with: anObject startingAt: 1! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:38'!
+headerFlags 
+
+	| byte variable small |
+	byte := 1.
+	variable := 2.
+	small := self isSmall ifTrue: [ 16r80 ] ifFalse: [ 0 ].
+	^ byte | variable | small! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:57'!
+headerHash 
+
+	^ hash! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:11:08'!
+headerHash: anInteger 
+
+	hash := anInteger! !
+
+!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:12:42'!
+size 
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ bytes size! !
+
+!ByteObjectMap methodsFor: 'converting' stamp: 'KenD 2/22/2021 14:08:13'!
+asString 
+
+	^ bytes allButLast asString! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:05:48'!
+new: anRGBehavior size: anInteger 
+
+	^ self new
+		initializeAs: anRGBehavior sized: anInteger! !
+
+!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:06:08'!
+new: anRGBehavior valued: bytes 
+	"self assert: anRGBehavior isBytes."
+	
+	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
+
 !SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:45'!
 arrayedSize 
 
@@ -20181,118 +16520,6 @@ new: anRGBehavior valued: anInteger
 
 	^self new initializeAs: anRGBehavior valued: anInteger! !
 
-!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
-initialize 
-
-	hash := 0! !
-
-!ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:38'!
-initializeAs: anRGBehavior sized: size 
-
-	self assert: anRGBehavior notNil.
-"	self assert: anRGBehavior isBytes.
-	self assert: anRGBehavior isVariable.
-"	
-	spec := anRGBehavior.
-	bytes := ByteArray new: size! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:32'!
-at: index 
-	"Return indexed value at given index, starting with 1. This CANNOT be 
-	 used for accessing named slots (aka, instance variables), to access 
-	 them use #instVarAt:"
-	
-	self assert: (index between: 1 and: bytes size).
-	^bytes at: index! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:08:47'!
-at: index put: anObjectMap 
-	"Set indexed value at given `index` to `value`. This CANNOT be used for 
-	 setting named slots (aka, instance variables), to access them use 
-	 #instVarAt:put:"
-
-	| value |
-	self assert: (index between: 1 and: bytes size).
-	self assert: anObjectMap isImmediate.
-	value := anObjectMap value.
-	self assert: (value between: 0 and: 255).
-	bytes at: index put: value.
-	^anObjectMap! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:13'!
-bodySizeInBytes 
-	"Return the size of object body(s) in bytes, padded"
-	
-	^ self size alignedTo: self wordSize! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:09:26'!
-bytes 
-
-	^ bytes! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:11'!
-contentsString 
-
-	spec name == #String
-		ifTrue: [ ^bytes allButLast asString storeString ].
-	spec name == #Symbol
-		ifTrue: [ ^bytes allButLast asString asSymbol storeString ].
-	spec name == #ByteArray
-		ifTrue: [ ^bytes storeString ].
-	^spec name withArticle, ': ', bytes printString! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:27'!
-fillFrom: anObject 
-
-	self assert: anObject size == bytes size.
-	bytes replaceFrom: 1 to: bytes size with: anObject startingAt: 1! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:38'!
-headerFlags 
-
-	| byte variable small |
-	byte := 1.
-	variable := 2.
-	small := self isSmall ifTrue: [ 16r80 ] ifFalse: [ 0 ].
-	^ byte | variable | small! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:10:57'!
-headerHash 
-
-	^ hash! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:11:08'!
-headerHash: anInteger 
-
-	hash := anInteger! !
-
-!ByteObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 14:12:42'!
-size 
-	"Return the size if this object, that this, the value of
-	 size field in object header. 
-	
-	 For slot (pointer) objects, this is a number of slots. 
-	 For byte objects, this is a number of bytes. "
-	
-	^ bytes size! !
-
-!ByteObjectMap methodsFor: 'converting' stamp: 'KenD 2/22/2021 14:08:13'!
-asString 
-
-	^ bytes allButLast asString! !
-
-!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:05:48'!
-new: anRGBehavior size: anInteger 
-
-	^ self new
-		initializeAs: anRGBehavior sized: anInteger! !
-
-!ByteObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2021 14:06:08'!
-new: anRGBehavior valued: bytes 
-	"self assert: anRGBehavior isBytes."
-	
-	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
-
 !ShapeMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:17:08'!
 initialize 
 
@@ -20337,6 +16564,361 @@ load: aClassDefinition
 new 
 
 	^self basicNew initialize! !
+
+!SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:02:37'!
+builder: anImageSegmentBuilder 
+
+	builder := anImageSegmentBuilder! !
+
+!SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:03:13'!
+spec 
+
+	^builder image kernel! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:04:44'!
+initializeInlinedMethods 
+	| compiled |
+	compiled := self inlinedMethods
+		collect: [ :method | builder methods at: method ].
+	nativizer inlinedMethods: compiled! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:05:08'!
+initializeInvokedMethods 
+	| compiled |
+	compiled := self invokedMethods
+		collect: [ :method | builder methods at: method ].
+	nativizer invokedMethods: compiled! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:05:26'!
+initializeKernelModule 
+	| runtime smethod transferred array module |
+	module := builder module.
+	runtime := {(image => #Kernel >> #entry:argv:)}
+		collect: [ :def | 
+			smethod := builder methods at: def.
+			transferred := image surrogateFor: smethod.
+			transferred nativeCode machineCode ].
+	array := image newArray: builder classes values.
+	module
+		name: (image newString: 'Kernel');
+		version: (image newString: '0.1.0');
+		exports: array;
+		hash: image nil;
+		loadAction: builder createLoadAction;
+		runtime: (image newArray: runtime)! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:06:32'!
+initializeNativizer 
+
+	nativizer := NativizationEnvironment new.
+	self
+		initializeNativizerGlobals;
+		initializeInlinedMethods;
+		initializeInvokedMethods;
+		initializeOptimizedMethods;
+		nativizeInvoke;
+		nativizeWriteBarrier;
+		nativizeLookup;
+		transferNativizerGlobals;
+		setupMessageLinkers! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:06:55'!
+initializeNativizerGlobals 
+	| smi items |
+	smi := image classNamed: #SmallInteger.
+	nativizer globalNamed: #SmallIntegerBehavior put: smi behavior.
+	items := {(#Lookup -> (NativeCode new code: 'Lookup Placeholder')).
+	(#LookupSuper -> (NativeCode new code: 'LookupSuper Placeholder')).
+	(#DebuggableLookup
+		-> (NativeCode new code: 'DebuggableLookup placeholder')).
+	(#DebuggableLookupSuper
+		-> (NativeCode new code: 'DebuggableLookupSuper placeholder')).
+	(#Invoke -> (NativeCode new code: 'Invoke placeholder')).
+	(#Safepoint -> (NativeCode new code: 'SafepointCheck placeholder')).
+	(#WriteBarrier -> (NativeCode new code: 'Write Barrier placeholder'))}
+		asDictionary.
+	items
+		keysAndValuesDo: [ :key :placeholder | nativizer globalNamed: key put: placeholder ]! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:07:33'!
+initializeOptimizedMethods 
+	| compiled |
+	compiled := self optimizedMethods
+		collect: [ :method | builder methods at: method ].
+	nativizer optimizedMethods: compiled! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:08:08'!
+initializeSendSite 
+
+	self 
+		initializeSendSiteMIC: nativizer monomorphicCache
+		PIC: nativizer polymorphicCache! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:08:33'!
+initializeSendSiteMIC: micStub PIC: picStub 
+	| class lkup invk mic pic |
+	class := image classNamed: #SendSite.
+	lkup := nativizer globalNamed: #Lookup.
+	lkup := image surrogateFor: lkup.
+	invk := nativizer globalNamed: #Invoke.
+	invk := image surrogateFor: invk.
+	mic := image newBytesFrom: micStub.
+	pic := image newBytesFrom: picStub.
+	builder runtime
+		send: #allocateInitialCachesUsing: to: class with: {lkup};
+		send: #initializeInvoke: to: class with: {invk};
+		send: #monomorphicCache: to: class with: {mic};
+		send: #polymorphicCache: to: class with: {pic}! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:11:14'!
+inlinedMethods 
+	| map |
+	map := 
+	{(#ProtoObject
+		->
+		#(#objectAtValid: #objectAtValid:put: #behavior #class   
+		  #primitiveAt: #_cachedLookup: #_cachedLookup:in:)).
+	(#Object
+		-> 
+		#(#byteAtValid: #byteAtValid:put: #basicObjectIndexOf: #at:put:)).
+	(#Species
+		->
+		#(#instSize #_instancesAreArrayed #_instancesHavePointers 
+		    #memory #instanceBehavior #primitiveNew #primitiveNew:)).
+	(#CompiledMethod
+		->
+		#(#prepareForExecution #isNativized #nativeCode 
+		   #blockCount #literalIndexFrom:)).
+	(#CompiledBlock 
+	 	-> 
+		#(#argumentCount #blockNumber #blockCode #method)).
+	(#NativeCode -> #(#code)).
+	(#GCSpace -> #(#commitedLimit #nextFree #nextFree:)).
+	(#CharacterArray -> #(#characterAtValid:))}.
+
+	^ builder undermethods , (builder methodSubset: map)
+	! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:21'!
+invokedMethods 
+	| map |
+	map := 
+	{(#ProtoObject
+		-> #(behavior class primitiveAt: #initializeExtended:contentSize:)).
+	(#Object 
+		-> #(#_replaceFrom:to:with:)).
+	(#Species
+		->
+		#(#allocate:size: instanceBehavior _instancesAreArrayed 
+		_instancesHavePointers #nil:slotsOf: memory primitiveNewBytes: 
+		primitiveNewPointers: #zero:bytesOf:))}.
+
+	^ builder undermethods , (builder methodSubset: map)! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:37'!
+mapNativizerGlobal: name to: transferred 
+	| placeholder |
+	placeholder := nativizer globalNamed: name.
+	image
+		map: placeholder to: transferred;
+		map: placeholder code to: transferred machineCode.
+	builder export: transferred as: name! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:22:51'!
+nativize 
+
+	self
+		initializeNativizer;
+		initializeSendSite;
+		nativizeRemainingMethods! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:23:05'!
+nativizeInvoke 
+	| invoke |
+	invoke := builder compile: builder => #SendSite >> #_invokeOn:.
+	nativizer nativizeOptimizing: invoke.
+	self transfer: invoke in: #ProtoObject asNativizerGlobal: #Invoke! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:23:20'!
+nativizeLookup 
+	| n transferred species lookup lookupSuper |
+	n := LookupNativizer new
+		bootstrapper: self;
+		nativizeMethods.
+	lookup := n methodFor: #_dispatchOn:.
+	lookupSuper := n methodFor: #_dispatchOn:startingAt:.
+	n methods
+		do: [ :m | 
+			species := image speciesFor: image => m classBinding name.
+			transferred := builder transferMethod: m in: species.
+			image map: m to: transferred ];
+		do: [ :m | 
+			transferred := image surrogateFor: m.
+			self transferNativeCode: m nativeCode of: transferred ].
+	transferred := (image surrogateFor: lookup) nativeCode.
+	self mapNativizerGlobal: #Lookup to: transferred.
+	transferred := (image surrogateFor: lookupSuper) nativeCode.
+	self mapNativizerGlobal: #LookupSuper to: transferred! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:24:59'!
+nativizeRemainingMethods 
+
+	builder classSpecs
+		do: [ :def | 
+			self
+				trace: 'nativizing ' , def name , '...';
+				nativizeRemainingMethodsIn: def;
+				nativizeRemainingMethodsIn: def metaclass ]! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:25:17'!
+nativizeRemainingMethodsIn: species 
+
+	builder methods
+		do: [ :smethod | 
+			smethod nativeCode
+				ifNil: [ "self haltIf: smethod selector == #foo."
+					nativizer nativize: smethod.
+					self transferNativeCodeOfMethod: smethod ] ]! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:25:37'!
+nativizeWriteBarrier 
+	| map inlined dispatcher barrier |
+	map := {('Memory class' -> #(current)).
+	(#Memory -> #(isYoung: isYoungSafe: remember:)).
+	(#CriticalArray -> #(unsafeAdd: #unsafeAt:put:)).
+	(#Magnitude -> #(#between:and:))}.
+	inlined := builder methodSubset: map.
+	inlined addAll: builder undermethods.
+	inlined := inlined collect: [ :m | builder compile: m ].
+	barrier := builder
+		compile: builder => #ProtoObject >> #holdRefererIfNeeded:.
+	dispatcher := LookupLinker new initializeFrom: nativizer.
+	NativizationEnvironment new
+		globals: nativizer globals;
+		inlinedMethods: inlined;
+		messageLinker: dispatcher;
+		completeInitialization;
+		nativizeOptimizing: barrier.
+	self
+		transfer: barrier
+		in: #ProtoObject
+		asNativizerGlobal: #WriteBarrier! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:28:22'!
+optimizedMethods 
+	| map |
+	map := 
+	{(#ProtoObject
+		->
+		#(behavior class primitiveAt: #primitiveAt:put: 
+		  #initializeExtended:contentSize:)).
+	(#Object
+		->
+		#(at: #at:put: basicByteAt: #basicByteAt:put: byteAtValid: 
+		  #byteAtValid:put: basicObjectAt: #basicObjectAt:put: 
+		  #replaceBytesForwardFrom:to:with:startingAt:)).
+	(#SendSite
+		->
+		#(_dispatchOn: #_dispatchOn:startingAt: 
+		  _dispatchDebuggableOn: #_dispatchDebuggableOn:startingAt:)).
+	(#Species
+		->
+		#(#allocate:size: primitiveNew primitiveNew: instSize
+		   primitiveNewBytes: primitiveNewPointers:)).
+	(#'Float class' 
+		-> #(new)).
+	(#CompiledBlock 
+		-> #(argumentCount arity blockCode method)).
+	(#Closure 
+		-> #(value value: #value:value:)).
+	(#CompiledMethod 
+		-> #(blockCount isNativized)).
+	(#String 
+		-> #(at: #at:put: byteAt: #byteAt:put:)).
+	(#GCSpace
+		-> 
+		#(lockedAllocateIfPossible: lockedAllocateUnsafe: shallowCopy:)).
+	(#Memory 
+		-> #(shallowCopy:))}.
+
+	^ builder undermethods , (builder methodSubset: map)! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:28:45'!
+setupMessageLinkers 
+	| invoker dispatcher |
+	invoker := InvokeLinker new
+		invoker: nativizer invokeStub;
+		addMethods: nativizer invokedMethods.
+	dispatcher := LookupLinker new initializeFrom: nativizer.
+	nativizer
+		addLinker: invoker;
+		addLinker: dispatcher;
+		completeInitialization! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:29:13'!
+transfer: anSMethod in: classname asNativizerGlobal: name 
+	| species transferred |
+	species := image classNamed: classname.
+	transferred := builder transferMethod: anSMethod in: species.
+	transferred := self
+		transferNativeCode: anSMethod nativeCode
+		of: transferred.
+	self mapNativizerGlobal: name to: transferred! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:29:36'!
+transferNativeCode: aNativeCode of: compiledCode 
+	| size transferred code slot callback |
+	size := aNativeCode size.
+	transferred := image newSlots: 'NativeCode' sized: size.
+	callback := compiledCode classname = #CallbackMethod.
+	code := callback
+		ifTrue: [ builder newCallback: transferred bytesFrom: aNativeCode code ]
+		ifFalse: [ image newBytesFrom: aNativeCode code ].
+	transferred
+		machineCode: code;
+		compiledCode: compiledCode.
+	compiledCode nativeCode: transferred.
+	aNativeCode
+		withIndexDo: [ :elem :i | 
+			slot := image transferLiteralDeep: elem.
+			transferred at: i put: slot ].
+	^ transferred! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:30:08'!
+transferNativeCodeOfMethod: anSCompiledMethod 
+	| transferred remaining literal block position |
+	transferred := image surrogateFor: anSCompiledMethod.
+	self transferNativeCode: anSCompiledMethod nativeCode of: transferred.
+	remaining := anSCompiledMethod blockCount.
+	position := 1.
+	[ remaining > 0 ]
+		whileTrue: [ literal := anSCompiledMethod at: position.
+			literal isBlock
+				ifTrue: [ block := transferred at: position.
+					self transferNativeCode: literal nativeCode of: block.
+					remaining := remaining - 1 ].
+			position := position + 1 ].
+	^ transferred! !
+
+!DMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 3/2/2021 13:30:22'!
+transferNativizerGlobals 
+
+	image transferLiteralDeep: nativizer globals! !
+
+!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:04:20'!
+image: aVirtualSmalltalkImage 
+
+	image := aVirtualSmalltalkImage! !
+
+!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:26:05'!
+nativizer 
+
+	^nativizer! !
+
+!DMRBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:30:37'!
+undermethods 
+
+	^builder undermethods! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -22470,37 +19052,6 @@ objectHandleOn: objectId
 
 	^ ObjectHandle on: objectId within: runtime! !
 
-!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
-currentIp 
-
-	^frame currentIp! !
-
-!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:27:59'!
-frame: aFrame 
-
-	frame := aFrame! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:28:35'!
-objectAtSlot: index 
-	| slot |
-	slot := frame slotAt: index.
-	^self objectHandleOn: slot! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:29:57'!
-slotAt: index 
-
-	^self objectAtSlot: index! !
-
-!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:30:10'!
-slotAtTop 
-
-	^frame slotAtTop! !
-
-!PstFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 3/27/2021 08:27:27'!
-on: frame within: runtime 
-
-	^self new frame: frame; runtime: runtime! !
-
 !CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:23'!
 currentIp 
 
@@ -22768,6 +19319,37 @@ slotAt: index
 isLocal 
 
 	^true! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
+currentIp 
+
+	^frame currentIp! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:27:59'!
+frame: aFrame 
+
+	frame := aFrame! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:28:35'!
+objectAtSlot: index 
+	| slot |
+	slot := frame slotAt: index.
+	^self objectHandleOn: slot! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:29:57'!
+slotAt: index 
+
+	^self objectAtSlot: index! !
+
+!PstFrameHandle methodsFor: 'meta accessing' stamp: 'KenD 3/27/2021 08:30:10'!
+slotAtTop 
+
+	^frame slotAtTop! !
+
+!PstFrameHandle class methodsFor: 'instance creation' stamp: 'KenD 3/27/2021 08:27:27'!
+on: frame within: runtime 
+
+	^self new frame: frame; runtime: runtime! !
 
 !MethodLookup methodsFor: 'meta accessing' stamp: 'KenD 3/3/2021 11:04:34'!
 lookup: aSymbol on: aSubject 
@@ -24278,37 +20860,6 @@ on: handle
 
 	^self new handle: handle! !
 
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:19'!
-argumentAt: index 
-
-	^(handle slotAt: LastArgumentIndex - index + 1) mirror! !
-
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:50'!
-currentIp 
-
-	^handle currentIp! !
-
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:59'!
-method 
-	| mirror |
-	mirror := (handle slotAt: MethodIndex) mirror asMethodMirror.
-	^mirror isValid ifTrue: mirror! !
-
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:36'!
-receiver 
-
-	^(handle slotAt: ReceiverIndex) mirror! !
-
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:45'!
-returnAddress 
-
-	^handle slotAt: ReturnAddressIndex! !
-
-!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:54'!
-slotAtTop 
-
-	^handle slotAtTop! !
-
 !ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:25:55'!
 at: index 
 	| slot |
@@ -24933,6 +21484,37 @@ localName
 structureType 
 
 	^#Metaclass! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:19'!
+argumentAt: index 
+
+	^(handle slotAt: LastArgumentIndex - index + 1) mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:50'!
+currentIp 
+
+	^handle currentIp! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:59'!
+method 
+	| mirror |
+	mirror := (handle slotAt: MethodIndex) mirror asMethodMirror.
+	^mirror isValid ifTrue: mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:36'!
+receiver 
+
+	^(handle slotAt: ReceiverIndex) mirror! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:45'!
+returnAddress 
+
+	^handle slotAt: ReturnAddressIndex! !
+
+!StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:48:54'!
+slotAtTop 
+
+	^handle slotAtTop! !
 
 !BinaryMessageNativizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:33:37'!
 inlineBitAnd 
@@ -33942,6 +30524,93 @@ startsAt: operation
 
 	^definition == operation! !
 
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:54'!
+addUse: anOperand 
+
+	self deny: self == anOperand.
+	nextUse ifNil: [nextUse := anOperand] ifNotNil: [nextUse addUse: anOperand]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:43'!
+at: anInstruction named: operandName 
+
+	^self new instruction: anInstruction; name: operandName! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:54'!
+disolveReplacingWith: otherInstruction 
+
+	self definition removeUse: instruction.
+	instruction atOperand: name put: otherInstruction.
+	otherInstruction addUse: instruction at: name! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:12'!
+instruction 
+
+	^instruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:41'!
+name: operandName 
+	name := operandName! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:52'!
+nextUse 
+
+	^nextUse! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:25'!
+nstruction: anInstruction 
+
+	instruction := anInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:03'!
+removeUse: anInstruction 
+
+	nextUse instruction == anInstruction
+		ifTrue: [nextUse := nextUse nextUse]
+		ifFalse: [nextUse removeUse: anInstruction]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:14'!
+removeUse: anInstruction at: aName 
+
+	(nextUse instruction == anInstruction and: [nextUse name = aName])
+		ifTrue: [nextUse := nextUse nextUse]
+		ifFalse: [nextUse removeUse: anInstruction at: aName]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:26'!
+replaceAllUsesWith: otherInstruction 
+
+	self replaceUseWith: otherInstruction.
+	nextUse ifNotNil: [nextUse replaceAllUsesWith: otherInstruction]! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:42'!
+replaceUseWith: otherInstruction 
+
+	self deny: otherInstruction class == OOperand.
+	instruction atOperand: name put: otherInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:11:55'!
+user 
+
+	^instruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:06:59'!
+valued: anInstruction 
+	^self new value: anInstruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:17'!
+valued: anInstruction in: containingInstruction 
+	^self new value: anInstruction; instruction: containingInstruction! !
+
+!OOperand methodsFor: 'converting' stamp: 'KenD 2/24/2021 14:08:23'!
+asOperand 
+
+	self halt! !
+
+!OOperand methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 14:12:24'!
+usesDo: aBlock 
+
+	aBlock value: self.
+	nextUse ifNotNil: [nextUse usesDo: aBlock]! !
+
 !OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:27'!
 printString 
 
@@ -35870,66 +32539,6 @@ keyFor: aString
 new 
 	^super new initialize! !
 
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:50:58'!
-at: aString 
-
-	^contents at: aString ifAbsent: nil! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:12'!
-at: aString ifAbsentPut: aBlock 
-
-	^contents at: aString ifAbsentPut: aBlock! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:23'!
-at: aString put: aBinding 
-
-	contents at: aString put: aBinding! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:36'!
-define: aString as: aBinding 
-
-	contents at: aString put: aBinding! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:09'!
-select: aBlock 
-
-	^contents select: aBlock! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:17'!
-values 
-
-	^contents values! !
-
-!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:52:21'!
-do: aBlock 
-
-	contents do: aBlock! !
-
-!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:53:31'!
-withIndexDo: aBlock 
-
-	contents withIndexDo: aBlock! !
-
-!StaticBinder methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:52:38'!
-initialize 
-
-	super initialize.
-	contents := OrderedDictionary new! !
-
-!StaticBinder methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:52:56'!
-printOn: aStream indent: anInteger 
-
-	aStream tab: anInteger; nextPut: $<.
-	contents keys
-		do: [:name | name printOn: aStream]
-		separatedBy: [aStream space].
-	aStream nextPut: $>! !
-
-!StaticBinder methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:51:57'!
-defines: identifier 
-
-	^contents includesKey: identifier! !
-
 !DynamicBinder methodsFor: 'accessing' stamp: 'KenD 3/3/2021 10:45:41'!
 at: aString 
 	| key assoc |
@@ -36007,30 +32616,70 @@ on: aDictionary of: type
 
 	^self new on: aDictionary type: type! !
 
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:50:58'!
+at: aString 
+
+	^contents at: aString ifAbsent: nil! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:12'!
+at: aString ifAbsentPut: aBlock 
+
+	^contents at: aString ifAbsentPut: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:23'!
+at: aString put: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:51:36'!
+define: aString as: aBinding 
+
+	contents at: aString put: aBinding! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:09'!
+select: aBlock 
+
+	^contents select: aBlock! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:53:17'!
+values 
+
+	^contents values! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:52:21'!
+do: aBlock 
+
+	contents do: aBlock! !
+
+!StaticBinder methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:53:31'!
+withIndexDo: aBlock 
+
+	contents withIndexDo: aBlock! !
+
+!StaticBinder methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:52:38'!
+initialize 
+
+	super initialize.
+	contents := OrderedDictionary new! !
+
+!StaticBinder methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:52:56'!
+printOn: aStream indent: anInteger 
+
+	aStream tab: anInteger; nextPut: $<.
+	contents keys
+		do: [:name | name printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $>! !
+
+!StaticBinder methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:51:57'!
+defines: identifier 
+
+	^contents includesKey: identifier! !
+
 !LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 12:58:34'!
 isInlinedArgument 
 
 	^false! !
-
-!StackEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:06:37'!
-isStack 
-
-	^true! !
-
-!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:06:18'!
-index 
-
-	^nil! !
-
-!ArgumentEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:07:51'!
-environmentType 
-
-	^LocalArgument! !
-
-!InlinedArgEnvironment methodsFor: 'testing' stamp: 'KenD 3/7/2021 08:17:09'!
-isInlinedArgument 
-
-	^true! !
 
 !ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:11:43'!
 isCurrent 
@@ -36061,6 +32710,26 @@ index
 index: anInteger 
 
 	index := anInteger! !
+
+!StackEnvironment methodsFor: 'testing' stamp: 'KenD 2/25/2021 13:06:37'!
+isStack 
+
+	^true! !
+
+!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:06:18'!
+index 
+
+	^nil! !
+
+!ArgumentEnvironment methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:07:51'!
+environmentType 
+
+	^LocalArgument! !
+
+!InlinedArgEnvironment methodsFor: 'testing' stamp: 'KenD 3/7/2021 08:17:09'!
+isInlinedArgument 
+
+	^true! !
 
 !MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/19/2021 16:47:04'!
 inlineConditional 
@@ -36533,6 +33202,733 @@ parse: aString in: aClass
 	| compiler |
 	compiler := self forClass: aClass.
 	^compiler parse: aString! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:44'!
+visit: aParseNode 
+
+	^aParseNode notNil ifTrue: [aParseNode acceptVisitor: self] ! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:57:56'!
+visitAssignment: anAssignmentNode 
+
+	^self visitParseNode: anAssignmentNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:10'!
+visitBlock: aBlockNode 
+
+	^self visitParseNode: aBlockNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:23'!
+visitBraceNode: aBraceNode 
+
+	^self visitParseNode: aBraceNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:34'!
+visitCascade: aCascadeNode 
+
+	^self visitParseNode: aCascadeNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:58:54'!
+visitCascadeMessage: aCascadeMessageNode 
+
+	^self visitMessage: aCascadeMessageNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 15:54:18'!
+visitForeignNode: anForeignNode 
+
+	^self visitLiteral: anForeignNode ! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:29'!
+visitIdentifier: anIdentifierNode 
+
+	^self visitParseNode: anIdentifierNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:45'!
+visitLiteral: aLiteralNode 
+
+	^self visitParseNode: aLiteralNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:59:58'!
+visitMessage: aMessageNode 
+
+	^self visitParseNode: aMessageNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:09'!
+visitMethod: aMethodNode 
+
+	^self visitParseNode: aMethodNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:21'!
+visitNumberNode: aNumberNode 
+
+	^self visitLiteral: aNumberNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:33'!
+visitParseNode: aParseNode 
+
+	^self subclassResponsibility! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:42'!
+visitPragma: aPragmaNode 
+
+	^self visitParseNode: aPragmaNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:00:53'!
+visitReturn: aReturnNode 
+
+	^self visitParseNode: aReturnNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:03'!
+visitSelector: aSelectorNode 
+
+	^self visitParseNode: aSelectorNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:16'!
+visitString: aStringNode 
+
+	^self visitLiteral: aStringNode! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 2/21/2021 14:01:30'!
+visitSymbolicPragma: aPragmaNode 
+
+	^self visitPragma: aPragmaNode! !
+
+!SParseTreeVisitor class methodsFor: 'instance creation' stamp: 'KenD 2/21/2021 13:57:12'!
+new 
+
+	^super new initialize! !
+
+!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:51:24'!
+insertDefineArgument: name 
+	| instruction |
+	instruction := ODefineArgument named: name.
+	currentBlock add: instruction.
+	^instruction! !
+
+!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:51:43'!
+insertReturnSelf 
+	| receiver frame instruction |
+	receiver := firstBlock firstInstruction next.
+	frame := firstBlock firstInstruction.
+	instruction := OReturn new
+		source: receiver;
+		frame: frame;
+		argumentsCount: method argumentCount.
+	receiver addUse: instruction at: #source.
+	frame addUse: instruction at: #frame.
+	currentBlock add: instruction.
+	^ instruction! !
+
+!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:52:01'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod! !
+
+!OptimizingVisitor methodsFor: 'accessing' stamp: 'KenD 5/28/2021 07:52:12'!
+store: operation into: anIdentifierNode 
+	| instruction |
+	instruction := OWriteVariable
+		binding: anIdentifierNode binding
+		valued: operation.
+	operation addUse: instruction at: #source.
+	currentBlock add: instruction.
+	^instruction! !
+
+!OptimizingVisitor methodsFor: 'initialization' stamp: 'KenD 5/28/2021 07:51:10'!
+initialize 
+
+	firstBlock := OBasicBlock new.
+	currentBlock := firstBlock! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:27'!
+visit: aParseNode 
+
+	super visit: aParseNode.
+	^firstBlock! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:39'!
+visitAssignment: anAssignmentNode 
+	| result |
+	result := anAssignmentNode expression acceptVisitor: self.
+	anAssignmentNode assignees do: [:node | self store: result into: node]! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:52:56'!
+visitBlock: aBlockNode 
+	| previous cfg |
+	previous := currentBlock.
+	cfg := OBasicBlock new.
+	currentBlock := cfg.
+	self visitScript: aBlockNode.
+	currentBlock := previous.
+	^OBlockClosure containing: cfg! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:53:07'!
+visitCascade: aCascadeNode 
+	| receiver arguments send block |
+	block := currentBlock.
+	receiver := aCascadeNode receiver acceptVisitor: self.
+	aCascadeNode messages
+		do: [ :msg | 
+			arguments := msg arguments
+				collect: [ :node | node acceptVisitor: self ].
+			send := OMessageSend
+				receiver: receiver
+				selector: msg selector value asSymbol
+				arguments: arguments.
+			receiver addUse: send at: #receiver.
+			arguments
+				withIndexDo: [ :argument :i | 
+					argument isInstruction
+						ifTrue: [ argument addUse: send at: i ] ].
+			block add: send ].
+	^ send! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:54:46'!
+visitLiteral: aLiteralNode 
+	| load |
+	load := OLoadConstant valued: aLiteralNode value.
+	currentBlock add: load.
+	^load! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:54:57'!
+visitMessage: aMessageNode 
+	| receiver arguments send block |
+	block := currentBlock.
+	receiver := aMessageNode receiver acceptVisitor: self.
+	arguments := aMessageNode arguments
+		collect: [:node | node acceptVisitor: self].
+	send := OMessageSend
+		receiver: receiver
+		selector: aMessageNode selector value asSymbol
+		arguments: arguments.
+	receiver addUse: send at: #receiver.
+	arguments
+		withIndexDo: [:argument :i | argument isInstruction
+			ifTrue: [argument addUse: send at: i]].
+	block add: send.
+	^send! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:08'!
+visitMethod: anSMethod 
+	| last |
+	self insertDefineArgument: #activationRecord; insertDefineArgument: #self.
+	1 to: anSMethod argumentCount
+		do: [:i | self insertDefineArgument: i printString asSymbol].
+	self visitScript: anSMethod.
+	last := currentBlock lastValue.
+	last isReturn ifFalse: [self insertReturnSelf]! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:20'!
+visitNumericLiteral: aNumericLiteralNode 
+
+	^self visitLiteral: aNumericLiteralNode! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:31'!
+visitReturn: aReturnNode 
+	| source frame instruction |
+	source := aReturnNode expression acceptVisitor: self.
+	frame := firstBlock firstInstruction.
+	instruction := OReturn new
+		source: source;
+		frame: frame;
+		argumentsCount: method argumentCount.
+	source addUse: instruction at: #source.
+	frame addUse: instruction at: #frame.
+	currentBlock add: instruction.
+	^ instruction! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:45'!
+visitScript: aScriptNode 
+	[
+		aScriptNode arguments do: [:node | node acceptVisitor: self].
+		aScriptNode temporaries do: [:node | node acceptVisitor: self]].
+	aScriptNode statements do: [:node | node acceptVisitor: self]! !
+
+!OptimizingVisitor methodsFor: 'visiting' stamp: 'KenD 5/28/2021 07:55:58'!
+visitSelector: aSelectorNode ! !
+
+!OptimizingVisitor class methodsFor: 'instance creation' stamp: 'KenD 5/28/2021 07:50:25'!
+new 
+
+	^self basicNew initialize
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:05'!
+visitAssignment: anAssignmentNode 
+	| c |
+	self analyzeAssignment: anAssignmentNode.
+	anAssignmentNode expression acceptVisitor: self.
+	c := anAssignmentNode compiler.! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:41'!
+visitBlock: aBlockNode 
+
+	self
+		analyzeBlock: aBlockNode
+		while: [aBlockNode statements do: [:node | node acceptVisitor: self]]! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:37:53'!
+visitBraceNode: aBraceNode 
+
+	aBraceNode isLiteral
+		ifFalse: [aBraceNode asMessageNode acceptVisitor: self]! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:03'!
+visitCascade: aCascadeNode 
+
+	aCascadeNode receiver acceptVisitor: self.
+	aCascadeNode messages do: [:msg | msg acceptVisitor: self]! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:12'!
+visitIdentifier: anIdentifierNode 
+
+	self analyzeIdentifier: anIdentifierNode! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:39'!
+visitMessage: aMessageNode 
+
+	self analyzeMessage: aMessageNode.
+	aMessageNode receiver acceptVisitor: self.
+	aMessageNode arguments do: [:arg | arg acceptVisitor: self]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:38:50'!
+visitMethod: aMethodNode 
+
+	self analyzeMethod: aMethodNode while: [
+		aMethodNode bindLocals.
+		aMethodNode statements do: [:s | s acceptVisitor: self].
+		aMethodNode positionLocals]! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:39:15'!
+visitParseNode: aParseNode 
+"
+	do nothing
+"
+	! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/14/2021 15:39:26'!
+visitReturn: aReturnNode 
+
+	aReturnNode expression acceptVisitor: self.
+	self analyzeReturn: aReturnNode! !
+
+!SSemanticVisitor methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:36:36'!
+initialize 
+
+	super initialize.
+	inliner := MessageInliner new! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:34:44'!
+analyzeAssignment: anAssignmentNode 
+
+	anAssignmentNode assignees
+		do: [:v | self analyzeIdentifier: v assignee: true]! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:34:59'!
+analyzeBlock: aBlockNode while: aBlock 
+
+	aBlockNode isInlined
+		ifFalse: [aBlockNode index: aBlockNode compiler blockIndex].
+	self analyzeScript: aBlockNode while: aBlock! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:17'!
+analyzeIdentifier: anIdentifierNode 
+
+	self analyzeIdentifier: anIdentifierNode assignee: false! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:29'!
+analyzeIdentifier: anIdentifierNode assignee: aBoolean 
+	| script binding |
+	anIdentifierNode resolveAssigning: aBoolean.
+	aBoolean ifTrue: [anIdentifierNode beAssigned].
+	script := anIdentifierNode compiler activeScript.
+	binding := anIdentifierNode binding.
+	script reference: binding.
+	binding isLocal ifTrue: [binding := script scope captureLocal: binding].
+	anIdentifierNode binding: binding! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:42'!
+analyzeMessage: aMessageNode 
+	inliner inline: aMessageNode.
+	aMessageNode isInlined ifFalse: [aMessageNode compiler noticeSend]! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:35:53'!
+analyzeMethod: aMethodNode while: aBlock 
+
+	self analyzeScript: aMethodNode while: aBlock! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:36:03'!
+analyzeReturn: aReturnNode 
+
+	aReturnNode compiler activeScript realScript captureHome! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/14/2021 15:36:18'!
+analyzeScript: aScriptNode while: aBlock 
+
+	aScriptNode compiler activate: aScriptNode while: aBlock! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:39:18'!
+method: aCompiledMethod 
+
+	method := aCompiledMethod! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:29:05'!
+encodeArgument: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: ArgumentId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:00'!
+encodeClassBinding: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: GlobalClassId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:25'!
+encodeClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: ClassVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:09'!
+encodeClosureElements: aBlockNode 
+	| scope parent |
+	scope := aBlockNode scope.
+	parent := aBlockNode realParent.
+	^Array streamContents: [:s |
+		scope capturesSelf ifTrue: [ s nextPut: Self ].
+		scope capturedEnvironments do: [:e | | index |
+			e == parent ifTrue: [s nextPut: Environment] ifFalse: [
+				index := aBlockNode environmentIndexOf: e.
+				self assert: index notNil.
+				s nextPut: EnvironmentValue; nextPut: index]].
+		scope capturedArguments do: [:a | | binding |
+			binding := aBlockNode parent scope resolve: a name.
+			s 	nextPut: binding environmentType; nextPut: binding index]]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:31'!
+encodeFalse 
+
+	stream nextPut: FalseId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:49'!
+encodeGlobalVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: GlobalValueId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:03'!
+encodeInlinedMessage: aMessageNode 
+
+	self nextTypePut: 0! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:18'!
+encodeInstVar: index 
+
+	stream nextPut: InstVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:31'!
+encodeLoadAwithArg: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithArgumentId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:50'!
+encodeLoadAwithClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithClassVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:10'!
+encodeLoadAwithConstPoolVar: value 
+	| index |
+	index := method indexOf: value ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithConstPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:39'!
+encodeLoadAwithGlobal: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithGlobalId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:53'!
+encodeLoadAwithInstVar: anInteger 
+
+	stream nextPut: LoadAwithInstVarId; nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:04'!
+encodeLoadAwithLiteral: value 
+	| index |
+	index := method indexOf: value.
+	stream nextPut: LoadAwithLiteralId; nextPut: index.
+	index = 0 ifTrue: [stream nextPut: value]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:14'!
+encodeLoadAwithNil 
+
+	stream nextPut: LoadAwithNilId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:30'!
+encodeLoadAwithPoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithPoolVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:42'!
+encodeLoadAwithSelf 
+
+	stream nextPut: LoadAwithSelfId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:57'!
+encodeLoadAwithTemp: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithTemporaryId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:11'!
+encodeLoadRvisitingReceiver 
+
+	stream nextPut: LoadRvisitingReceiverId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:20'!
+encodeNil 
+
+	stream nextPut: NilId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:37'!
+encodeOptimizedBinary: aMessageNode 
+	| optimizer |
+	optimizer := BinaryMessageOptimizer on: aMessageNode using: self.
+	self nestedEncode: [optimizer emitOpcodes]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:00'!
+encodeOptimizedMessage: aMessageNode 
+	| selector |
+	selector := aMessageNode selector.
+	aMessageNode isInlined ifTrue: [^self encodeInlinedMessage: aMessageNode].
+	(BinaryMessageOptimizer optimizesMessage: selector value) ifFalse: [^self].
+	aMessageNode arguments size = 1
+		ifTrue: [^self encodeOptimizedBinary: aMessageNode]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:12'!
+encodePoolConst: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: ConstantPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:32'!
+encodePoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: PoolVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:48'!
+encodePopR 
+
+	stream nextPut: PopRid! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:00'!
+encodePushR 
+
+	stream nextPut: PushRid! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:13'!
+encodeSelf 
+
+	stream nextPut: SelfId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:35'!
+encodeSuper 
+	
+	stream nextPut: SuperId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:37:55'!
+encodeTemporary: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: TemporaryId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:04'!
+encodeTrue 
+
+	stream nextPut: TrueId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:38:15'!
+encodedEnvironment: aLocalEnvironment 
+
+	aLocalEnvironment isStack
+		ifTrue: [ ^ aLocalEnvironment isInlinedArgument ifTrue: [-1] ifFalse: [nil] ].
+	aLocalEnvironment isCurrent
+		ifTrue: [ ^ 0 ].
+	^ aLocalEnvironment index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:39:50'!
+nestedEncode: aBlock 
+	| prev nested |
+	prev := stream.
+	nested := Array streamContents: [:s | 
+		stream := s.
+		aBlock value.
+		stream contents].
+	stream := prev.
+	stream nextPut: nested
+! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:44'!
+nextPut: anInteger 
+
+	stream nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:40:55'!
+nextTypePut: anInteger 
+
+	stream nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'initialization' stamp: 'KenD 2/25/2021 13:38:34'!
+initialize 
+
+	stream := #() writeStream! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:28:41'!
+compiledBlockIndexOf: aBlockNode 
+
+	| index |
+	index := method
+		findFirst: [:literal | literal isBlock
+			and: [literal id == aBlockNode index]].
+	^index! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:14'!
+visitAssignment: anAssignmentNode 
+	self nextTypePut: AssignmentId.
+	anAssignmentNode assignees
+		do: [:node | self nestedEncode: [node acceptVisitor: self]].
+	self nestedEncode: [anAssignmentNode expression acceptVisitor: self]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:31'!
+visitBlock: aBlockNode 
+	| args |
+	self nextTypePut: BlockId.
+	aBlockNode isInlined
+		ifTrue: [ stream nextPut: 0. args := aBlockNode arguments collect: [:id | id binding index]. 
+			stream nextPut: args asArray ]
+		ifFalse: [ | index captured |
+			index := self compiledBlockIndexOf: aBlockNode.
+			self nextPut: index.
+			captured := self encodeClosureElements: aBlockNode.
+			stream nextPut: captured ].
+	self visitScript: aBlockNode! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:41:50'!
+visitBraceNode: aBraceNode 
+
+	aBraceNode isLiteral
+		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
+		ifFalse: [self visitCascade: aBraceNode asMessageNode]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:07'!
+visitCascade: aCascadeNode 
+
+	self
+		nextTypePut: CascadeId;
+		nestedEncode: [aCascadeNode receiver acceptVisitor: self].
+	aCascadeNode messages
+		do: [:node | self nestedEncode: [self visitCascadeMessage: node]]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:21'!
+visitCascadeMessage: aCascadeMessageNode 
+	| symbol selector |
+	symbol := aCascadeMessageNode selector symbol.
+	selector := method indexOf: symbol.
+	self nextPut: selector.
+	selector = 0 ifTrue: [self nextPut: symbol].
+	aCascadeMessageNode arguments do: [:arg | 
+		self nestedEncode: [arg acceptVisitor: self]]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:42:43'!
+visitIdentifier: anIdentifierNode 
+
+	self nextTypePut: IdentifierId.
+	anIdentifierNode binding encodeUsing: self! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:01'!
+visitLiteral: aLiteralNode 
+	| index |
+	index := method indexOf: aLiteralNode value.
+	self nextTypePut: LiteralId; nextPut: index.
+	index = 0 ifTrue: [self nextPut: aLiteralNode value]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:38'!
+visitMessage: aMessageNode 
+	| symbol selector |
+	symbol := aMessageNode selector symbol.
+	selector := method indexOf: symbol.
+	self
+		nextTypePut: MessageId;
+		nextPut: selector.
+	selector = 0
+		ifTrue: [ self nextPut: symbol ].
+	self nestedEncode: [ aMessageNode receiver acceptVisitor: self ].
+	self
+		nestedEncode: [ aMessageNode arguments 
+					do: [ :arg | self nestedEncode: [arg acceptVisitor: self] ] ].
+	self encodeOptimizedMessage: aMessageNode! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:43:55'!
+visitMethod: aMethodNode 
+	| pragma |
+	self nextTypePut: MethodId.
+	pragma := aMethodNode pragma.
+	pragma isUsed ifTrue: [ self nextTypePut: PragmaId; nextPut: pragma name ].
+	self visitScript: aMethodNode.
+	^stream contents! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:15'!
+visitParseNode: aParseNode 
+	^self assert: false! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:32'!
+visitReturn: aReturnNode 
+
+	self
+		nextTypePut: ReturnId;
+		nextPut: script realScript isMethod;
+		nestedEncode: [aReturnNode expression acceptVisitor: self]! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/25/2021 13:44:43'!
+visitScript: aScriptNode 
+	| prev |
+	prev := script.
+	script := aScriptNode.
+	aScriptNode statements
+		do: [:node | self nestedEncode: [node acceptVisitor: self]].
+	script := prev! !
 
 !ScriptScope methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:03:15'!
 script: aScriptNode 
@@ -37510,6 +34906,2325 @@ default
 
 	^Default ifNil: [Default := self new name: '<unresolved>']! !
 
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:39:03'!
+compiler 
+
+	^compiler! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:39:13'!
+compiler: aSmalltalkCompiler 
+
+	compiler := aSmalltalkCompiler.
+	scanner := compiler scanner! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:51:34'!
+next 
+
+	token := next.
+	next := nil.
+	^token ifNil: [token := scanner next]! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:52:47'!
+on: aString 
+
+	scanner on: aString! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:54:19'!
+peek 
+	| comments |
+	next ifNotNil: [^next].
+	next := scanner next.
+	next isComment ifFalse: [^next].
+	comments := OrderedCollection new: 2.
+	[
+		comments add: next.
+		next := scanner next.
+		next isComment] whileTrue.
+	^next comments: comments! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:57:59'!
+token 
+
+	^token! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:31:49'!
+arrayBody 
+	| literals position |
+	literals := OrderedCollection new.
+	position := token position.
+	[
+		self step.
+		(token is: $)) or: [token isEnd]]
+		whileFalse: [| element |
+			element := self arrayElement.
+			literals add: element].
+	token isEnd ifTrue: [self missingToken: ')'].
+	^self buildNode: compiler literalNode at: position with: literals asArray! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:32:05'!
+arrayElement 
+
+	token isLiteral ifTrue: [^token value].
+	token isNameToken ifTrue: [^self pseudoLiteralValue].
+	token isKeyword ifTrue: [^self literalKeyword].
+	(token is: #'-') ifTrue: [^self negativeNumberOrBinary].
+	token hasSymbol ifTrue: [^token value].
+	(token is: $() ifTrue: [^self arrayBody value].
+	(token is: #'#(') ifTrue: [^self arrayBody value].
+	(token is: #'#[') ifTrue: [^self byteArrayBody value].
+	self invalidArrayToken! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:36:00'!
+braceBody 
+	| elements position |
+	elements := OrderedCollection new.
+	position := token position.
+	self step.
+	[
+		token isEnd ifTrue: [self missingToken: '}'].
+		token is: $}]
+		whileFalse: [
+			elements add: self expression.
+			(token is: $.) ifTrue: [self step]].
+	^self buildBraceNode: elements at: position! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:36:11'!
+bracedArray 
+	| array |
+	array := self braceBody.
+	self step.
+	^array! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:38:04'!
+byteArrayBody 
+	| bytes save start array node |
+	bytes := OrderedCollection new.
+	save := token.
+	start := token position.
+	[
+		self step.
+		token isLiteral or: [token isPoolLiteral]]
+		whileTrue: [self addByteTo: bytes].
+	(token is: $]) ifFalse: [
+		token isNameToken
+			ifTrue: [self missingLiteral]
+			ifFalse: [self missingToken: ']']].
+	array := ByteArray new: bytes size.
+	bytes withIndexDo: [:b :i | array at: i put: b].
+	node := self buildNode: compiler literalNode at: start with: array.
+	^node moveCommentsFrom: save! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:47:47'!
+literalArray 
+	| array |
+	array := self arrayBody.
+	self step.
+	^array! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/14/2021 12:47:57'!
+literalByteArray 
+	| node |
+	node := self byteArrayBody.
+	self step.
+	^node! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:16'!
+binaryMessage: aMessageNode 
+	| selector primary argument |
+	selector := self step.
+	primary := self primary.
+	primary isNil ifTrue: [
+		((selector is: $:) and: [token is: #'='])
+			ifTrue: [self
+				error: 'stray whitespaces left in assignment'
+				at: token position - 1]
+			ifFalse: [self error: 'primary missing']].
+	argument := self unarySequence: primary.
+	aMessageNode
+		selector: selector asSelectorNode;
+		end: argument end;
+		arguments: {argument}! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:28'!
+binarySequence: aParseNode 
+	| node rcvr |
+	node := aParseNode.
+	[
+		rcvr := node.
+		self hasBinarySelector]
+		whileTrue: [
+			node := self buildMessageNode: rcvr.
+			self binaryMessage: node].
+	^node! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/14/2021 12:33:43'!
+binarySignature 
+	| selector arguments |
+	((token isStringToken and: [token hasSymbol])
+		or: [token is: $^]
+		or: [token is: $:])
+		ifFalse: [^nil].
+	selector := self step asSelectorNode.
+	token isNameToken ifFalse: [self missingArgument].
+	self validateLocalName: token.
+	arguments := {token asIdentifierNode}.
+	self step.
+	token moveCommentsTo: selector.
+	^self buildMethodNode: selector arguments: arguments! !
+
+!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/14/2021 12:34:14'!
+block 
+	| block |
+	block := self buildNode: compiler blockNode at: token position.
+	block parent: compiler activeScript.
+	compiler activate: block while: [
+		token moveCommentsTo: block.
+		self step.
+		block
+			arguments: self blockArguments;
+			temporaries: self temporaries;
+			addStatements: self statements.
+		(token is: $]) ifFalse: [self missingToken: ']'].
+		block end: token position.
+		token moveCommentsTo: block.
+		self step].
+	^block
+! !
+
+!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/14/2021 12:35:42'!
+blockArguments 
+	| arguments |
+	(token is: $:) ifFalse: [^#()].
+	arguments := OrderedCollection new.
+	[ self step.
+	  token isNameToken ifFalse: [self missingArgument].
+	  self validateLocalName: token.
+	  arguments add: self step asIdentifierNode.
+	  token is: $:] whileTrue.
+
+	token isBar ifTrue: [self step] ifFalse: [
+		(token is: #'||')
+			ifTrue: [token value: #'|']
+			ifFalse: [self missingToken: '|']].
+	^arguments! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:36:42'!
+buildBraceNode: elements at: position 
+	| node |
+	node := self buildNode: compiler braceNode at: position.
+	^node elements: elements! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:36:54'!
+buildCascadeMessageNode: receiver 
+	| node |
+	node := self buildNode: compiler cascadeMessageNode at: receiver position.
+	^node receiver: receiver! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:04'!
+buildMessageNode: receiver 
+	| node |
+	node := self buildNode: compiler messageNode at: receiver position.
+	^node receiver: receiver! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:14'!
+buildMethodNode: selector arguments: arguments 
+	| node |
+	node := self buildNode: compiler methodNode at: selector position.
+	compiler activeScript: node.
+	^node selector: selector; arguments: arguments! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:26'!
+buildNode: aParserNode at: anInteger 
+
+	^aParserNode position: anInteger; end: token position! !
+
+!SSmalltalkParser methodsFor: 'buildNode' stamp: 'KenD 3/14/2021 12:37:47'!
+buildNode: aParseNode at: anInteger with: anObject 
+	| node |
+	node := scanner buildToken: aParseNode at: anInteger with: anObject.
+	^node end: token position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:39:34'!
+error: aString 
+
+	self error: aString at: token position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:39:51'!
+error: aString at: position 
+	
+	^compiler error: aString at: position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:44:58'!
+invalidArrayToken 
+
+	self error: 'invalid literal entry'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:45:07'!
+invalidByteValue 
+
+	self error: 'value not between 0 and 255'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:45:19'!
+invalidPragma 
+	| position stretch |
+	position := token position.
+ 	stretch := position thru: position.
+	^SInvalidPragmaError new stretch: stretch; signal! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:39'!
+missingArgument 
+
+	self error: 'argument missing'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:48'!
+missingExpression 
+
+	self error: 'missing expression'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:49:56'!
+missingLiteral 
+
+	self error: 'missing literal or named literal'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:50:39'!
+missingToken: aString 
+
+	self error: 'missing ' , aString! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:51:45'!
+nonIntegerToken 
+
+	self error: 'non-integer token'! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:51:57'!
+notify: aString 
+
+	compiler notify: aString at: token position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:52:08'!
+notify: aString at: position 
+
+	compiler notify: aString at: position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 13:00:42'!
+warning: aString 
+
+	compiler warning: aString at: token position! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/14/2021 13:00:51'!
+warning: aString at: position 
+
+	compiler warning: aString at: position! !
+
+!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:40:23'!
+ffiArguments 
+	| args type |
+	args := OrderedCollection new.
+	self step.
+	token value !!= $(
+		ifTrue: [ self error: 'expected "("' ].
+	self peek value = $)
+		ifTrue: [ self step.
+			^ args ].
+	[ type := self ffiType.
+	args add: type.
+	self step.
+	token value = #, ] whileTrue.
+	token value !!= $)
+		ifTrue: [ self error: 'expected ")"' ].
+	^ args! !
+
+!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:41:22'!
+ffiCall: aBoolean method: aMethodNode 
+	| cc return name args descriptor |
+	cc := token value.
+	return := self ffiType.
+	aBoolean
+		ifTrue: [ self step.
+			name := token value ifNil: [ self error: 'invalid function name' ] ].
+	args := self ffiArguments.
+	args size = aMethodNode selector arity
+		ifFalse:
+			[ ^ self error: 'method arity does not match with function arguments' ].
+	self step.
+	descriptor := SFFIDescriptor ret: return args: args cc: cc.
+	^ compiler pragmaNode ffi: cc name: name with: descriptor! !
+
+!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:41:54'!
+ffiOrPrimitive: aMethodNode 
+	| tag |
+	tag := token value asLowercase.
+	tag last = $: ifFalse: [self invalidPragma].
+	tag := tag allButLast.
+	token value: tag.
+	tag = 'primitive' ifTrue: [^self primitive].
+	tag = 'callback' ifTrue: [ ^self ffiCall: false method: aMethodNode ].
+	tag = 'callout' ifTrue: [ ^self ffiCall: true method: aMethodNode ].	
+	self invalidPragma! !
+
+!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:42:07'!
+ffiType 
+	| type |
+	self step.
+	token isNameToken ifFalse: [self error: 'expected type name'].
+	type := token value.
+	type = 'struct' ifFalse: [ ^type].
+	self step.
+	token isNameToken ifFalse: [self error: 'expected type name'].	
+	^token value! !
+
+!SSmalltalkParser methodsFor: 'ffi' stamp: 'KenD 3/14/2021 12:57:05'!
+symbolicPragma 
+	| position symbol pragma |
+	position := token position.
+	symbol := self step value.
+	pragma := self buildNode: compiler pragmaNode at: position.
+	^pragma symbol: symbol! !
+
+!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:45:50'!
+keywordArgument 
+	| arg |
+	arg := self primary ifNil: [self missingArgument].
+	arg := self unarySequence: arg.
+	^self binarySequence: arg! !
+
+!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:46:29'!
+keywordMessage: aMessageNode 
+	| selector arguments node |
+	node := self buildNode: compiler selectorNode at: token position.
+	selector := '' writeStream.
+	arguments := OrderedCollection new.
+	[token isKeyword] whileTrue: [
+		selector nextPutAll: token value.
+		node addKeyword: self step.
+		arguments add: self keywordArgument].
+	node symbol: selector contents; end: token prevPosition.
+	aMessageNode
+		arguments: arguments;
+		end: token prevPosition;
+		selector: node! !
+
+!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:46:42'!
+keywordSequence: aParseNode 
+	| expression |
+	self hasKeywordSelector ifFalse: [^aParseNode].
+	expression := self buildMessageNode: aParseNode.
+	self keywordMessage: expression.
+	^expression! !
+
+!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:47:13'!
+keywordSignature 
+	| selector arguments node |
+	selector := '' writeStream.
+	arguments := OrderedCollection new.
+	node := self buildNode: compiler selectorNode at: token position.
+	[token isKeyword] whileTrue: [
+		selector nextPutAll: token value.
+		node addKeyword: token asSelectorNode.
+		self step.
+		token isNameToken ifFalse: [self missingArgument].
+		arguments add: token asIdentifierNode.
+		self step].
+	arguments isEmpty ifTrue: [^nil].
+	node
+		symbol: selector contents;
+		end: token end;
+		moveCommentsFrom: token.
+	^self buildMethodNode: node arguments: arguments! !
+
+!SSmalltalkParser methodsFor: 'keywords' stamp: 'KenD 3/14/2021 12:48:07'!
+literalKeyword 
+	| keyword |
+	keyword := token value , scanner nextKeyword value.
+	^keyword reduced asSymbol! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:09'!
+addBodyTo: aMethodNode 
+
+	self
+		addTemporariesTo: aMethodNode;
+		addPragmaTo: aMethodNode;
+		addStatementsTo: aMethodNode! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:42'!
+addByteTo: aCollection 
+	| byte |
+	byte := token isLiteral ifTrue: [token value] ifFalse: [token literalValue].
+	byte isInteger ifFalse: [self nonIntegerToken].
+	(byte between: 0 and: 255) ifFalse: [self invalidByteValue].
+	aCollection add: byte! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:30:57'!
+addPragmaTo: aMethodNode 
+
+	(self attachPragmaTo: aMethodNode) ifTrue: [self step]! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:31:10'!
+addStatementsTo: aMethodNode 
+
+	aMethodNode
+		position: token position;
+		addStatements: self statements;
+		end: token position;
+		moveCommentsFrom: token.
+	token isEnd
+		ifFalse: [^self unexpectedStatementError: aMethodNode statements]! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:31:22'!
+addTemporariesTo: aMethodNode 
+
+	aMethodNode temporaries: self temporarie! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:32:26'!
+assignment 
+	| position variable delimiter expression assignment |
+	position := token position.
+	variable := self step asIdentifierNode moveCommentsFrom: token.
+	delimiter := self step.
+	expression := self expression.
+	expression isAssign
+		ifTrue: [^expression assign: variable operator: delimiter].
+	expression moveCommentsFrom: token.
+	assignment := self buildNode: compiler assignmentNode at: position.
+	^assignment assign: variable with: expression operator: delimiter! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:32:43'!
+attachPragmaTo: aMethodNode 
+	| start pragma |
+	(aMethodNode isHeadless orNot: [token is: #'<']) ifTrue: [^false].
+	start := token position.
+	self step.
+	pragma := token isKeyword
+		ifTrue: [self ffiOrPrimitive: aMethodNode]
+		ifFalse: [self symbolicPragma].
+	pragma position: start; end: token position.
+	aMethodNode pragma: pragma.
+	(token is: #'>') ifFalse: [self missingToken: '>'].
+	^true! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:38:26'!
+cascadeMessage: aMessageNode 
+	| msg |
+	self hasUnarySelector ifTrue: [^self unaryMessage: aMessageNode].
+	self hasBinarySelector ifTrue: [^self binaryMessage: aMessageNode].
+	self hasKeywordSelector ifTrue: [^self keywordMessage: aMessageNode].
+	msg := token value = ''
+		ifTrue: ['unfinished cascade']
+		ifFalse: [token value asString , ' not allowed in cascade'].
+	self error: msg! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:38:44'!
+cascadeSequence: aMessageNode 
+	| cascade receiver messages msg node |
+	(token is: $;) ifFalse: [^aMessageNode].
+	cascade := self buildNode: compiler cascadeNode at: aMessageNode position.
+	receiver := aMessageNode receiver.
+	cascade receiver: receiver.
+	node := compiler cascadeMessageNode from: aMessageNode.
+	node cascade: cascade.
+	messages := OrderedCollection with: node.
+	[token is: $;] whileTrue: [
+		self step.
+		msg := self buildCascadeMessageNode: receiver.
+		msg
+			cascade: cascade;
+			position: token position;
+			moveCommentsFrom: token.
+		messages add: msg.
+		self cascadeMessage: msg].
+	^cascade messages: messages asArray; end: msg end! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:40:09'!
+expression 
+	| primary expression |
+	(token isNameToken and: [self peek isAssignment]) ifTrue: [^self assignment].
+	primary := self primary ifNil: [^self missingExpression].
+	expression := self unarySequence: primary.
+	expression := self binarySequence: expression.
+	expression := self keywordSequence: expression.
+	expression == primary
+		ifFalse: [expression := self cascadeSequence: expression].
+	token endsExpression ifFalse: [self errorIn: primary].
+	^expression! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:48:58'!
+methodPragma 
+	self step.
+	^[| method |
+		method := self methodSignature.
+		self addTemporariesTo: method; attachPragmaTo: method.
+		method pragma]
+		on: SCompilationError
+		do: [:ex | ex return: compiler pragmaNode]! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:50:50'!
+namedPrimitive 
+	| name pragma |
+	token isNameToken ifFalse: [self invalidPragma].
+	name := token value.
+	pragma := self buildNode: compiler pragmaNode at: token position.
+	^pragma primitive: 0 name: name! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:51:03'!
+negativeNumber 
+
+	token := nil.
+	^self negativeNumberOrBinary; step! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:51:19'!
+negativeNumberOrBinary 
+
+	self peek isNumberNode
+		ifTrue: [token := self next negate position: token position - 1].
+	^token value! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:52:31'!
+numberedPrimitive 
+	| number pragma |
+	number := token value.
+	number isInteger ifFalse: [self invalidPragma].
+	pragma := self buildNode: compiler pragmaNode at: token position.
+	^pragma primitive: number name: nil! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:53:03'!
+parenthesizedExpression 
+	| start open expression |
+	start := token position.
+	open := self step.
+	expression := self expression.
+	expression moveCommentsFrom: open.
+	(token is: $)) ifFalse: [self missingToken: ')'].
+	expression isImmediate
+		ifFalse: [expression position: start; end: token position].
+	self step.
+	^expression! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:54:51'!
+primary 
+
+	token isNameToken ifTrue: [^self step asIdentifierNode].
+	token isLiteral ifTrue: [^self step].
+	(token is: $[) ifTrue: [^self block].
+	(token is: $() ifTrue: [^self parenthesizedExpression].
+	(token is: #'#(') ifTrue: [^self literalArray].
+	(token is: #'#[') ifTrue: [^self literalByteArray].
+	(compiler supportsBraceNodes and: [token is: ${]) ifTrue: [^self bracedArray].
+	(token is: #'-') ifTrue: [^self negativeNumber].
+	(token is: #'<') ifTrue: [^self taggedNode].
+	^nil! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:06'!
+primitive 
+	| primitive |
+	self step.
+	primitive := token isNumberNode
+		ifTrue: [self numberedPrimitive]
+		ifFalse: [self namedPrimitive].
+	self step.
+	^primitive! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:16'!
+pseudoLiteralValue 
+	| value |
+	token isPoolLiteral ifTrue: [^token literalValue].
+	value := token value.
+	value = 'nil' ifTrue: [^nil].
+	value = 'true' ifTrue: [^true].
+	value = 'false' ifTrue: [^false].
+	^token isPoolLiteral ifTrue: [token literalValue] ifFalse: [value asSymbol]! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:35'!
+return 
+	| return expression end node |
+	return := self step.
+	expression := self expression.
+	expression moveCommentsFrom: token.
+	end := token position.
+	self skipDots.
+	node := self buildNode: compiler returnNode at: return position.
+	^node
+		return: return;
+		end: end;
+		expression: expression;
+		moveCommentsFrom: return! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:55:56'!
+skipDots 
+
+	[token is: $.] whileTrue: [self step]! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:29'!
+statement 
+	| expression |
+	(token is: $^) ifTrue: [^self return].
+	expression := self expression.
+	token moveCommentsTo: expression.
+	^expression! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:40'!
+statements 
+	| statements |
+	statements := OrderedCollection new.
+	[
+		token endsExpression ifTrue: [^statements].
+		statements add: self statement.
+		token is: $.]
+		whileTrue: [self skipDots].
+	^statements! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:56:51'!
+step 
+	| save comments |
+	save := token.
+	self next isComment ifFalse: [^save].
+	comments := OrderedCollection new: 2.
+	[
+		comments add: token.
+		self next isComment] whileTrue.
+	token comments: comments.
+	^save! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:57:24'!
+temporaries 
+	| temporaries |
+	(token is: #'||') ifTrue: [
+		self step.
+		^#()].
+	token isBar ifFalse: [^#()].
+	temporaries := OrderedCollection new.
+	[
+		self step.
+		token isNameToken]
+		whileTrue: [
+			self validateLocalName: token.
+			temporaries add: token asIdentifierNode].
+	token isBar ifFalse: [self missingToken: '|'].
+	self step.
+	^temporaries! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:08'!
+unaryMessage: aMessageNode 
+	| selector |
+	selector := self unarySelector.
+	aMessageNode
+		selector: selector;
+		end: selector end;
+		arguments: #();
+		moveCommentsFrom: selector! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:26'!
+unarySelector 
+	| selector start end node |
+	selector := token value.
+	start := token position.
+	end := start + selector size - 1.
+	self step.
+	node := self buildNode: compiler selectorNode at: start.
+	^node
+		symbol: selector;
+		end: end;
+		moveCommentsFrom: token! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:42'!
+unarySequence: aParseNode 
+	| node receiver |
+	node := aParseNode.
+	node isNameToken ifTrue: [node := node asIdentifierNode].
+	[
+		receiver := node.
+		self hasUnarySelector]
+		whileTrue: [
+			node := self buildMessageNode: receiver.
+			self unaryMessage: node].
+	^node moveCommentsFrom: token! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:59:57'!
+unarySignature 
+
+	self hasUnarySelector ifFalse: [^nil].
+	^self buildMethodNode: self unarySelector arguments: #()! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 13:00:29'!
+validateLocalName: aSmalltalkToken 
+
+	aSmalltalkToken isDelimitedIdentifier ifTrue: [^self].
+	(aSmalltalkToken value includes: $.)
+		ifTrue: [self error: 'invalid embedded dot']
+! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:43:47'!
+headlessMethod 
+	| method |
+	self step.
+	method := compiler methodNode.
+	compiler activeScript: method.
+	self addBodyTo: method.
+	^method! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:48:20'!
+method 
+	| method |
+	self step.
+	method := self methodSignature.
+	method isNil ifTrue: [^nil].
+	self addBodyTo: method.
+	^method! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:48:34'!
+methodFragment 
+	| method |
+	self step.
+	method := self methodSignature.
+	method isNil ifTrue: [^nil].
+	[self addBodyTo: method] on: SCompilationError do: [].
+	^method! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:49:15'!
+methodSelector 
+
+	self step.
+	^self methodSignature ifNotNil: [:m | m selectorNode]! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/14/2021 12:49:25'!
+methodSignature 
+
+	self keywordSignature ifNotNil: [:m | ^m].
+	self binarySignature ifNotNil: [:m | ^m].
+	self unarySignature ifNotNil: [:m | ^m].
+	self error: 'method signature expected'! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:36'!
+parse: aString 
+
+	^self on: aString; method! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:45'!
+parseExpression: aString 
+
+	^self on: aString; headlessMethod! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:53:56'!
+parseFragment: aString 
+	| method |
+	self on: aString; step.
+	[
+		method := self methodSignature.
+		method notNil ifTrue: [self addBodyTo: method]]
+		on: SCompilationError
+		do: [].
+	^method! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/14/2021 12:54:06'!
+parseTemporaries: aString 
+
+	self on: aString; step.
+	^self methodSignature notNil ifTrue: [self temporaries]! !
+
+!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:22'!
+hasBinarySelector 
+	^(token isStringToken and: [token hasSymbol])
+		or: [token is: $^]
+		or: [token is: $:]! !
+
+!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:44'!
+hasKeywordSelector 
+
+	^token isKeyword! !
+
+!SSmalltalkParser methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:42:51'!
+hasUnarySelector 
+
+	^token isNameToken! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:26:47'!
+on: aString 
+
+	stream := aString readStream.
+	compiler notNil ifTrue: [compiler sourceCode: aString]! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/14/2021 12:28:19'!
+sourceCode: aString 
+
+	stream := aString readStream! !
+
+!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:14:34'!
+error: aString 
+
+	^self error: aString at: stream position! !
+
+!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/14/2021 12:14:48'!
+error: aString at: anInteger 
+
+	^compiler error: aString at: anInteger! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:11:56'!
+buildToken: aSmalltalkToken 
+
+	^self buildToken: aSmalltalkToken at: stream position! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:12:14'!
+buildToken: aSmalltalkToken at: anInteger 
+	| string |
+	string := stream copyFrom: anInteger to: stream position.
+	^self buildToken: aSmalltalkToken at: anInteger with: string! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:12:32'!
+buildToken: aSmalltalkToken at: anInteger with: anObject 
+
+	^aSmalltalkToken
+		position: anInteger;
+		value: anObject;
+		end: stream position! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:13:54'!
+end 
+	
+	^self buildToken: compiler endToken at: stream position + 1! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:18'!
+next 
+
+	^self nextToken! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:32'!
+nextArrayPrefix 
+	| string |
+	string := stream copyFrom: stream position - 1 to: stream position.
+	^self
+		buildToken: compiler delimiterToken
+		at: stream position - 1
+		with: string! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:17:49'!
+nextAssignment 
+
+	^self buildToken: compiler delimiterToken at: stream position with: #':='! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:00'!
+nextBinarySelector 
+
+	stream back.
+	^self
+		buildToken: compiler stringToken
+		at: stream position + 1
+		with: self scanBinarySymbol! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:12'!
+nextBinarySymbol 
+
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: self scanBinarySymbol! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:25'!
+nextColon 
+	| start char |
+	start := stream position.
+	char := stream peek.
+	((char = $ or: [char = $	]) and: [(stream peek: 2) second = $=]) ifTrue: [
+		stream skip: 1.
+		char := $=].
+	char = $= ifTrue: [
+		stream skip.
+		^self nextAssignment position: start].
+	^(self isBinary: stream peek)
+		ifTrue: [self nextBinarySelector]
+		ifFalse: [self nextSpecialCharacter]! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:40'!
+nextComment 
+	| start comment |
+	start := stream position.
+	(stream skipTo: $") ifFalse: [self error: 'unfinished comment' at: start].
+	stream position: start.
+	comment := stream upTo: $".
+	^self buildToken: compiler commentNode at: start with: comment! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:18:56'!
+nextIdentifierOrKeyword 
+	| start |
+	start := stream position.
+	self skipIdentifier.
+	((stream peekFor: $:) and: [stream peekFor: $=]) ifTrue: [stream skip: -2].
+	^self buildToken: compiler stringToken at: start! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:18'!
+nextKeyword 
+	| start string |
+	start := stream position + 1.
+	self skipKeyword.
+	string := stream copyFrom: start to: stream position.
+	^self buildToken: compiler literalNode at: start - 1 with: string asSymbol! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:29'!
+nextLiteralCharacter 
+
+	stream atEnd ifTrue: [^self error: 'character expected'].
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: stream next! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:41'!
+nextLiteralString 
+
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: self scanString reduced! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:19:53'!
+nextNumber 
+	| parser assoc |
+	stream skip: -1.
+	parser := NumberParser2 new on: stream.
+	assoc := parser next.
+	parser error ifNotNil: [:e | ^self error: e key at: e value].
+	^self
+		buildToken: compiler numericLiteralNode
+		at: assoc value start
+		with: assoc key! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:20:25'!
+nextQuotedSymbol 
+	| node |
+	node := self nextLiteralString.
+	^node beSymbol; position: node position - 1! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:20:34'!
+nextSpecialCharacter 
+	| token |
+	token := self buildToken: compiler delimiterToken.
+	^token beCharacter! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:21:11'!
+nextSymbolOrArrayPrefix 
+	| char |
+	stream atEnd ifTrue: [self error: 'character expected'].
+	char := stream peek.
+	(self canBeInIdentifier: char) ifTrue: [^self nextKeyword].
+	(self isBinary: char) ifTrue: [^self nextBinarySymbol].
+	stream next.
+	(char = $[ or: [char = $(]) ifTrue: [^self nextArrayPrefix].
+	char = $' ifTrue: [^self nextQuotedSymbol].
+	self error: 'character expected'! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:26:21'!
+nextToken 
+	| first |
+	first := self scanChar.
+	first isNil ifTrue: [^self end].
+	(self canStartIdentifier: first) ifTrue: [^self nextIdentifierOrKeyword].
+	"(first = $→ or: [first = $_]) ifTrue: [^self nextAssignment]."
+	(first = $_) ifTrue: [^self nextAssignment].
+	first = $: ifTrue: [^self nextColon].
+	first = $' ifTrue: [^self nextLiteralString].
+	first = $$ ifTrue: [^self nextLiteralCharacter].
+	first = $# ifTrue: [^self nextSymbolOrArrayPrefix].
+	first = $" ifTrue: [^self nextComment].
+	first isDigit ifTrue: [^self nextNumber].
+	(first !!= $^ and: [first !!= $_ and: [self isBinary: first]])
+		ifTrue: [^self nextBinarySelector].
+	^self nextSpecialCharacter! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:05'!
+scanBinarySymbol 
+	| start symbol |
+	start := stream position.
+	self skipBinary.
+	symbol := stream copyFrom: start + 1 to: stream position.
+	^symbol asSymbol! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:17'!
+scanChar 
+
+	^stream skipSeparators atEnd ifFalse: [stream next]! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:28'!
+scanString 
+	| current start |
+	start := current := stream position.
+	^String streamContents: [:writer | 
+		[| fragment |
+			fragment := stream upTo: $'.
+			writer nextPutAll: fragment.
+			(current < stream position and: [(stream back; next) = $'])
+				ifFalse: [self error: 'string end expected' at: start].
+			stream peekFor: $']
+			whileTrue: [
+				writer nextPut: $'.
+				current := stream position]]! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:41'!
+skipBinary 
+
+	[self isBinary: stream peek] whileTrue: [stream next]! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:27:52'!
+skipIdentifier 
+	| frontend |
+	frontend := compiler frontend.
+	[stream atEnd]
+		whileFalse: [(frontend peekForIdentifier: stream) ifFalse: [^self]]! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/14/2021 12:28:06'!
+skipKeyword 
+	| frontend continue pos |
+	frontend := compiler frontend.
+	[
+		self skipIdentifier.
+		continue := false.
+		(stream peekFor: $:) ifTrue: [
+			pos := stream position.
+			stream atEnd
+				ifFalse: [continue := frontend canStartIdentifier: stream peek]].
+		continue] whileTrue.
+	pos isNil ifFalse: [stream position: pos]! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:01'!
+canBeInIdentifier: aCharacter 
+
+	^compiler frontend canBeInIdentifier: aCharacter! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:15'!
+canStartIdentifier: aCharacter 
+
+	(compiler frontend canStartIdentifier: aCharacter) ifFalse: [^false].
+	aCharacter = $_
+		ifTrue: [^stream peek ifNil: [false] ifNotNil: [:ch | ch asInteger >= 33]].
+	^true! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:25'!
+compiler 
+
+	^compiler! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:13:35'!
+compiler: aSmalltalkCompiler 
+
+	compiler := aSmalltalkCompiler.
+	compiler sourceCode ifNotNil: [:s | self sourceCode: s]! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/14/2021 12:17:02'!
+isBinary: aCharacter 
+	| code |
+	aCharacter isNil ifTrue: [^false].
+	code := aCharacter asInteger.
+	code < 128 ifTrue: [
+		^#($+ $- $< $> $= $* $/ $\ $| $& $~ $, $@ $% $? $!! $: $^)
+			includes: aCharacter].
+	^code > 255! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:45'!
+comments 
+
+	^comments! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:56'!
+comments: aCollection 
+
+	aCollection isNil ifTrue: [^self].
+	comments isNil
+		ifTrue: [comments := aCollection]
+		ifFalse: [comments addAll: aCollection]! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:27:32'!
+moveCommentsTo: aParseNode 
+
+	aParseNode comments: comments.
+	comments := nil! !
+
+!SToken methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:24:19'!
+isDelimitedIdentifier 
+
+	^false! !
+
+!SToken methodsFor: 'initialization' stamp: 'KenD 2/21/2021 13:26:35'!
+initialize 
+
+	super initialize.
+	stretch := 1 thru: 0! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:01'!
+endsExpression 
+
+	^self isEnd! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:14'!
+hasSymbol 
+
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:44'!
+is: anObject 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:21:55'!
+isAssignment 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:07'!
+isBar 
+
+	^(self is: #'|') or: [self is: #'/']! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:17'!
+isBlockNode 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:22:28'!
+isComment 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:56'!
+isDelimiter 
+
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:24:49'!
+isEnd 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:09'!
+isIdentifier 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:20'!
+isLiteral 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:29'!
+isNameToken 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:38'!
+isNumberNode 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:52'!
+isPoolLiteral 
+
+	^false! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:26:57'!
+sStringToken 
+
+	^false! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:29'!
+compileWarning: aString 
+
+	compiler notify: aString at: self stretch! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:18:41'!
+compiler 
+
+	^compiler! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:14'!
+compiler: aSmalltalkCompiler 
+
+	compiler := aSmalltalkCompiler! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:25'!
+end 
+
+	^stretch end! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:20:35'!
+end: aNumber 
+
+	stretch end: aNumber! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:27:49'!
+position 
+
+	^stretch start! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:02'!
+position: aNumber 
+
+	stretch start: aNumber! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:13'!
+prevPosition 
+
+	^stretch start - 1! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:27'!
+source 
+	^compiler sourceCode copyFrom: stretch start to: stretch end! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:38'!
+stretch 
+
+	^stretch! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:28:50'!
+stretch: aStretch 
+
+	stretch := aStretch! !
+
+!SEndToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:05:41'!
+value: aString 
+
+	''! !
+
+!SEndToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:04:42'!
+position: aNumber 
+
+	super position: aNumber - 1! !
+
+!SEndToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:05:00'!
+prevPosition 
+
+	^stretch start! !
+
+!SEndToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:04:14'!
+isEnd
+	^true! !
+
+!SParseNode methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:52:09'!
+moveCommentsFrom: aParseNode 
+
+	aParseNode moveCommentsTo: self! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:12'!
+ast 
+
+	^compiler ast! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:34'!
+hasAssign 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:49:48'!
+isAssign 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:00'!
+isBraceNode 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:11'!
+isCascade 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:22'!
+isCascadeMessage 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:30'!
+isEvaluable 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:39'!
+isImmediate 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:45'!
+isMessageNode 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:52'!
+isMethod 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:50:59'!
+isMethodArgument 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:05'!
+isMethodTemporary 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:14'!
+isReturn 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:28'!
+isSelector 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:34'!
+isSelf 
+
+	^false! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 2/21/2021 13:51:45'!
+isSuper 
+
+	^false! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:48:44'!
+allNodesDo: aBlock 
+
+	self nodesDo: aBlock includingDeclarations: true! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:52:43'!
+nodeWithLiteral: anObject 
+
+	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) 
+					and: [n value = anObject]] 
+		ifAbsent: nil
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:53:52'!
+nodesDetect: aBlock ifAbsent: absentBlock 
+
+	self  nodesDo: [:node | (aBlock value: node) ifTrue: [ ^node ] ] 
+		includingDeclarations: false.
+	^absentBlock value! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:05'!
+nodesDo: aBlock 
+
+	self nodesDo: aBlock includingDeclarations: false! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:21'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	aBlock evaluateWith: self! !
+
+!SParseNode methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:48:13'!
+acceptVisitor: visitor 
+
+	^visitor visitParseNode: self! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:19'!
+assignees 
+
+	^assignees! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:30:29'!
+expression 
+
+	^expression! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:31:51'!
+operators 
+
+	^operators! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:43'!
+assign: anIdentifierNode operator: aDelimiterToken 
+
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 4/12/2021 14:29:55'!
+assign: anIdentifierNode with: aParseNode operator: aDelimiterToken 
+
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken.
+	expression := aParseNode! !
+
+!SAssignmentNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:31:37'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	assignees do: [:v | v nodesDo: aBlock includingDeclarations: aBoolean].
+	expression nodesDo: aBlock includingDeclarations: aBoolean! !
+
+!SAssignmentNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:31:02'!
+initialize 
+
+	super initialize.
+	assignees := OrderedCollection new: 1.
+	operators := OrderedCollection new: 1! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:30:44'!
+hasAssign 
+
+	^true! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:31:14'!
+isAssign 
+
+	^true! !
+
+!SAssignmentNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:29:16'!
+acceptVisitor: visitor 
+
+	^visitor visitAssignment: self! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:44:59'!
+asMessageNode 
+
+	message notNil ifTrue: [^message].
+	^message := self expanded! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:11'!
+elements 
+
+	^elements! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:45:20'!
+elements: aCollection 
+
+	elements := aCollection asArray! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:46:23'!
+expanded 
+	| receiver n new argument array messages i you yourself cascade |
+	receiver := compiler identifierNode name: 'Array'.
+	n := elements size.
+	new := compiler selectorNode symbol: #new:.
+	argument := compiler numericLiteralNode value: n.
+	array := compiler messageNode.
+	array receiver: receiver.
+	array selector: new.
+	array arguments: (Array with: argument).
+	i := 0.
+	messages := elements collect: [:elem | | msg sel idx args |
+		i := i + 1.
+		msg := compiler cascadeMessageNode 
+					position: elem position; 
+					end: elem end.
+		sel := compiler selectorNode symbol: #at:put:.
+		idx := compiler numericLiteralNode value: i.
+		args := Array with: idx with: elem.
+		msg selector: sel; arguments: args].
+	you := compiler selectorNode symbol: #yourself.
+	yourself := compiler cascadeMessageNode.
+	yourself selector: you.
+	yourself arguments: #().
+	messages := messages copyWith: yourself.
+	cascade := compiler cascadeNode receiver: array.
+	messages do: [:msg | msg cascade: cascade].
+	^cascade messages: messages! !
+
+!SBraceNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 14:46:54'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	elements do: [:n | n nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SBraceNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:46:37'!
+isBraceNode 
+
+	^true! !
+
+!SBraceNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:44:18'!
+acceptVisitor: visitor 
+
+	^visitor visitBraceNode: self! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:12'!
+messages 
+
+	^messages! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:21'!
+messages: aCollection 
+
+	messages := aCollection! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:44'!
+receiver 
+
+	^receiver! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:20:52'!
+receiver: rcvr 
+
+	receiver := rcvr! !
+
+!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:20:33'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	messages do: [:msg | msg nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:37'!
+hasAssign 
+
+	receiver hasAssign ifTrue: [^true].
+	messages detect: [:msg | msg hasAssign] ifNone: [^false].
+	^true! !
+
+!SCascadeNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:19:47'!
+isCascade 
+
+	^true! !
+
+!SCascadeNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:19:20'!
+acceptVisitor: visitor 
+
+	^visitor visitCascade: self! !
+
+!SCommentNode methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:40:59'!
+value 
+
+	^value! !
+
+!SCommentNode methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:41:12'!
+value: aString 
+
+	value := aString! !
+
+!SCommentNode methodsFor: 'testing' stamp: 'KenD 4/7/2021 13:40:38'!
+isComment 
+
+	^true! !
+
+!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 2/23/2021 14:29:21'!
+name: aString 
+
+	name := aString reduced! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:23:55'!
+beAssigned 
+
+	| immutable |
+	binding canBeAssigned ifTrue: [^self].
+	immutable := binding isClassBinding
+		ifTrue: ['class']
+		ifFalse: [compiler activeScope describe: binding name].
+	self compileError: 'cannot assign to ' , immutable! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 2/23/2021 14:29:35'!
+resolveAssigning: aBoolean 
+	| scope |
+	scope := compiler activeScope.
+	binding := scope resolve: name.
+	binding isUnresolved ifFalse: [^binding].
+	(scope hasMultipleBindingsFor: name)
+		ifTrue: [self compileError: 'variable belongs in multiple pools'].
+	compiler undeclaredErrorAt: self stretch assignment: aBoolean.
+	^binding := scope resolve: name! !
+
+!SIdentifierNode methodsFor: 'emitCode' stamp: 'KenD 2/23/2021 14:26:14'!
+emitLoadAusing: anAstcodeEncoder 
+
+	binding emitLoadAusing: anAstcodeEncoder! !
+
+!SIdentifierNode methodsFor: 'initialization' stamp: 'KenD 2/23/2021 14:26:31'!
+nitialize 
+
+	super initialize.
+	binding := UnresolvedBinding default! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:24:42'!
+checkLowercase 
+	| char |
+	char := name first.
+	(char isLetter and: [char isUppercase]) ifFalse: [^self].
+	self compileWarning: name storeString , ' should start with lowercase'! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:26:53'!
+isEvaluable 
+
+	^self isIdentifierLiteral! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:06'!
+isIdentifier 
+
+	^true! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:15'!
+isIdentifierLiteral 
+
+	binding isUnresolved ifFalse: [^binding isLiteral].
+	^self ast ifNil: [false] ifNotNil: [:ast | | b |
+		b := ast scope resolve: name.
+		b isLiteral]! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:40'!
+isImmediate 
+
+	^true! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:27:54'!
+isMethodArgument 
+	| ast |
+	binding isArgument ifFalse: [^false].
+	ast := self ast ifNil: [^false].
+	^ast arguments includes: self declaration! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:13'!
+isMethodTemporary 
+
+	^self ast temporaries includes: self declaration! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:22'!
+isSelf 
+
+	^binding isSelf! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:28:33'!
+sSuper 
+
+	^binding isSuper! !
+
+!SIdentifierNode methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:23:40'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:06'!
+declaration 
+
+	^binding declaration! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:20'!
+defineArgumentIn: aScriptScope 
+
+	binding := aScriptScope defineArgument: name.
+	binding declaration: self! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 2/23/2021 14:25:37'!
+defineTemporaryIn: scope 
+
+	binding := scope defineTemporary: name.
+	binding declaration: self! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:41'!
+hasSymbol 
+
+	^value isSymbol! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:28'!
+isEvaluable 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:19'!
+isImmediate 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:00:00'!
+isLiteral 
+
+	^true! !
+
+!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:23'!
+value 
+
+	^value! !
+
+!SLiteralNode methodsFor: 'accessing' stamp: 'KenD 2/22/2021 12:59:34'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteralNode methodsFor: 'emitCode' stamp: 'KenD 2/22/2021 13:02:25'!
+emitLoadAusing: anSExpressionNativizer 
+
+	anSExpressionNativizer encodeLoadAwithLiteral: value! !
+
+!SLiteralNode methodsFor: 'private' stamp: 'KenD 2/22/2021 13:01:22'!
+beSymbol 
+
+	value := value asSymbol! !
+
+!SLiteralNode methodsFor: 'visiting' stamp: 'KenD 2/22/2021 12:55:31'!
+acceptVisitor: visitor 
+	
+	^visitor visitLiteral: self! !
+
+!SStringNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:34:49'!
+acceptVisitor: visitor 
+
+	^visitor visitString: self! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:18'!
+arguments 
+
+	^arguments! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:25:33'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:26'!
+receiver 
+
+	^receiver! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:35'!
+receiver: node 
+
+	receiver := node! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:44'!
+selector 
+
+	^selector! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:29:52'!
+selector: node 
+
+	selector := node! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:30:01'!
+symbol 
+
+	^selector symbol! !
+
+!SMessageNode methodsFor: 'emitting - inlined' stamp: 'KenD 4/8/2021 08:26:19'!
+beInlined 
+
+	inlined := true! !
+
+!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:29:12'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean].
+	selector nodesDo: aBlock includingDeclarations: aBoolean
+! !
+
+!SMessageNode methodsFor: 'initialization' stamp: 'KenD 4/8/2021 08:27:34'!
+initialize 
+
+	super initialize.
+	inlined := false! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:41'!
+hasAssign 
+
+	receiver hasAssign ifTrue: [^true].
+	^arguments anySatisfy: [:arg | arg hasAssign]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:26:54'!
+hasVolatileArguments 
+
+	^arguments anySatisfy: [:arg | 
+		arg isIdentifier
+			ifTrue: [arg binding canBeAssigned]
+			ifFalse: [arg isBlockNode not andNot: [arg isLiteral]]]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:14'!
+hasVolatileReceiver 
+
+	^ compiler hasBlocks
+		  or: [ receiver isMethodTemporary not ]
+		  or: [ arguments anySatisfy: [ :arg | arg hasAssign ] ]! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:45'!
+isCascadeMessage 
+
+	^false! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:27:53'!
+isInlined 
+
+	^inlined! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:02'!
+isMessageNode 
+
+	^true! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:28:17'!
+needsStrictEvaluationOrder 
+
+	arguments size = 0 ifTrue: [^false].
+	receiver isBlockNode ifTrue: [^false].
+	receiver isLiteral ifTrue: [^false].
+	receiver isSelf ifTrue: [^false].
+	receiver isSuper ifTrue: [^false].
+	receiver isMethodArgument ifTrue: [^false].
+	self hasVolatileReceiver ifFalse: [^false].
+	(receiver isImmediate
+		and: [arguments conform: [:arg | arg isImmediate or: [arg isBlockNode]]])
+		ifTrue: [^false].
+	receiver hasAssign ifTrue: [^true].
+	receiver isMessageNode ifTrue: [ ^true ]. 
+	^self hasVolatileArguments! !
+
+!SMessageNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:25:07'!
+acceptVisitor: visitor 
+
+	^visitor visitMessage: self! !
+
+!SCascadeMessageNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 16:16:12'!
+cascade: aCascadeNode 
+
+	cascade := aCascadeNode.
+	receiver := cascade receiver! !
+
+!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:17:16'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	aBlock evaluateWith: self.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SCascadeMessageNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 16:16:40'!
+from: aMessageNode 
+
+	arguments := aMessageNode arguments.
+	receiver := aMessageNode receiver.
+	selector := aMessageNode selector.
+	inlined := aMessageNode isInlined.
+	stretch := aMessageNode stretch.
+	comments := aMessageNode comments! !
+
+!SCascadeMessageNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 16:16:54'!
+isCascadeMessage 
+
+	^true! !
+
+!SCascadeMessageNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 16:15:57'!
+acceptVisitor: visitor 
+
+	^visitor visitCascadeMessage: self! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:00'!
+expression 
+
+	^expression! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:17:11'!
+expression: node 
+
+	expression := node! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:18:09'!
+return: aSmalltalkToken 
+
+	return := aSmalltalkToken! !
+
+!SReturnNode methodsFor: 'enumerating' stamp: 'KenD 5/29/2021 13:17:59'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	expression nodesDo: aBlock includingDeclarations: aBoolean! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:34'!
+hasAssign 
+
+	^expression hasAssign! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:17:46'!
+isReturn 
+
+	^true! !
+
+!SReturnNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:16:49'!
+acceptVisitor: visitor 
+
+	^visitor visitReturn: self! !
+
+!SScriptNode methodsFor: 'private' stamp: 'KenD 2/24/2021 11:51:26'!
+useSelf 
+
+	scope captureSelf! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:04'!
+addChild: aBlockNode 
+
+	children add: aBlockNode! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:49'!
+addStatements: anOrderedCollection 
+
+	statements addAll: anOrderedCollection! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:45:58'!
+arguments 
+
+	^arguments! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:07'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:47'!
+children 
+
+	^children! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:46:57'!
+environmentSize 
+
+	^scope environmentSize! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:02'!
+realScript 
+
+	self subclassResponsibility! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:49:34'!
+scope 
+
+	^scope! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:27'!
+statements 
+
+	^statements! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:40'!
+temporaries 
+
+	^temporaries! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:50:55'!
+temporaries: aCollection 
+
+	temporaries := aCollection! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:46:36'!
+bindLocals 
+
+	arguments do: [:arg | arg defineArgumentIn: scope].
+	temporaries do: [:temp | temp checkLowercase; defineTemporaryIn: scope].
+	children do: [:block | block bindLocals]! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:48:42'!
+positionLocals 
+
+	scope positionLocals.
+	children do: [:b | b positionLocals]! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 2/24/2021 11:49:21'!
+reference: aBinding 
+
+	aBinding beReferencedFrom: self! !
+
+!SScriptNode methodsFor: 'enumerating' stamp: 'KenD 2/24/2021 11:48:26'!
+nodesDo: aBlock includingDeclarations: aBoolean 
+
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	aBoolean ifTrue: [
+		arguments do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean].
+		temporaries do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean]].
+	statements do: [:s | s nodesDo: aBlock includingDeclarations: aBoolean]! !
+
+!SScriptNode methodsFor: 'initialization' stamp: 'KenD 2/24/2021 11:47:49'!
+initialize 
+
+	super initialize.
+	statements := OrderedCollection new.
+	arguments := #().
+	temporaries := #().
+	children := OrderedCollection new! !
+
+!SScriptNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:47:31'!
+hasAssign 
+
+	statements do: [:s | s hasAssign ifTrue: [^true]].
+	^false! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:40:01'!
+environmentIndexOf: aParseNode 
+
+	^scope environmentIndexOf: aParseNode! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:41:46'!
+parent 
+
+	^parent! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:00'!
+parent: aScriptNode 
+
+	parent := aScriptNode addChild: self! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:11'!
+realParent 
+
+	^parent realScript! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 4/12/2021 14:42:21'!
+realScript 
+
+	^inlined ifTrue: [parent realScript] ifFalse: [self]! !
+
+!SBlockNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 14:40:54'!
+initialize 
+
+	super initialize.
+	inlined := false.
+	scope := BlockScope on: self! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:28'!
+index 
+
+	^index! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:40:37'!
+index: aNumber 
+
+	index := aNumber! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:04'!
+isBlockNode 
+
+	^true! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:19'!
+isEvaluable 
+
+	^self isNullary! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:27'!
+isInlined 
+
+	^inlined! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:41:36'!
+isNullary 
+
+	^arguments isEmpty! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 4/12/2021 14:42:37'!
+usesHome 
+
+	^inlined
+		ifTrue: [children anySatisfy: [:block | block usesHome]]
+		ifFalse: [scope capturesHome]! !
+
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:38:05'!
+beInlined 
+
+	inlined := true.
+	arguments do: [:arg | arg binding beInlined]! !
+
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:23'!
+buildBlock 
+	| block |
+	self isInlined ifTrue: [ ^ nil ].
+	block := SCompiledBlock new.
+	^ block
+		  id: index;
+		  argumentCount: arguments size;
+		  tempCount: scope stackSize;
+		  environmentCount: scope environmentSize;
+		  capturesSelf: scope capturesSelf;
+			capturesHome: scope capturesHome! !
+
+!SBlockNode methodsFor: 'services' stamp: 'KenD 4/12/2021 14:39:36'!
+captureHome 
+
+	scope captureEnvironment: self ast! !
+
+!SBlockNode methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:36:57'!
+acceptVisitor: visitor 
+
+	^visitor visitBlock: self! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:10'!
+hasSymbol 
+
+	^symbol isSymbol! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:26'!
+isBinary 
+
+	^symbol isBinary! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 2/24/2021 13:13:43'!
+isSelector
+
+	^true! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 2/24/2021 13:15:26'!
+value 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:24'!
+addKeyword: aSelectorNode 
+
+	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
+	keywords add: aSelectorNode! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:12:52'!
+end 
+
+	stretch end ifNotNil: [:e | ^e].
+	^keywords notNil ifTrue: [keywords last end]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:23'!
+keywords 
+
+	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:17'!
+positions 
+
+	^self keywords collect: [:node | node position]! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:36'!
+symbol 
+
+	^symbol! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:14:47'!
+symbol: aString 
+
+	symbol := aString asSymbol! !
+
+!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 2/24/2021 13:12:01'!
+acceptVisitor: visitor 
+
+	^visitor visitSelector: self! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:08:42'!
+info 
+
+	^info! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:16'!
+primitive: anInteger name: aString 
+
+	type := #primitive.
+	name := aString.
+	info := anInteger! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:24'!
+type 
+
+	^type! !
+
+!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:20'!
+ffi: cc name: aString with: anFFIDescriptor 
+
+	type := cc.
+	name := aString.
+	info := anFFIDescriptor! !
+
+!SPragmaNode methodsFor: 'ffi' stamp: 'KenD 5/29/2021 13:08:30'!
+ffi: aString with: anFFIDescriptor 
+
+	type := #ffi.
+	name := aString.
+	info := anFFIDescriptor! !
+
+!SPragmaNode methodsFor: 'testing' stamp: 'KenD 5/29/2021 13:08:51'!
+isUsed 
+
+	^type notNil! !
+
+!SPragmaNode methodsFor: 'visiting' stamp: 'KenD 5/29/2021 13:08:00'!
+acceptVisitor: aVisitor 
+
+	self isFFI ifTrue: [^aVisitor visitFFIPragma: self].
+	self isPrimitive ifTrue: [^aVisitor visitPrimitivePragma: self].
+	self isSymbolic ifTrue: [^aVisitor visitSymbolicPragma: self]! !
+
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:05'!
+value 
+
+	^value! !
+
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 2/20/2021 16:13:25'!
+value: anObject 
+
+	value := anObject! !
+
+!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:12:43'!
+is: anObject 
+
+	^value == anObject! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:07'!
+endsExpression 
+
+	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:17'!
+isAssignment 
+
+	^self is: #':='! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:08:30'!
+isDelimiter 
+
+	^true! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:07:46'!
+beCharacter 
+
+	value := value isCharacter ifTrue: [value] ifFalse: [value first]! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 2/20/2021 16:08:46'!
+value: aString 
+
+	super value: aString asSymbol! !
+
+!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:07:09'!
+asSelectorNode 
+
+	^compiler selectorNode symbol: value asString; stretch: stretch! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:39'!
+hasSymbol 
+
+	^value isSymbol! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:10:52'!
+isBinary 
+
+	^value isSymbol! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:04'!
+isDelimitedIdentifier 
+
+	^value first = ${! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:18'!
+isKeyword 
+
+	^value last = $:! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:32'!
+isNameToken 
+
+	^(self isKeyword or: [self isBinary]) not! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 2/20/2021 16:11:43'!
+isStringToken 
+
+	^true! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:03'!
+asIdentifierNode 
+
+	^compiler identifierNode
+		name: value;
+		stretch: stretch;
+		comments: comments! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 2/20/2021 16:10:21'!
+asSelectorNode 
+
+	^compiler selectorNode symbol: value; stretch: stretch! !
+
 !AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:30:04'!
 bindingTypeOf: id 
 	
@@ -37975,132 +37690,6 @@ isTemporary
 
 	^false! !
 
-!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
-isLiteral 
-
-	^true! !
-
-!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
-value 
-
-	^true! !
-
-!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
-valueWithin: evaluator 
-
-	^evaluator trueLiteral! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
-value 
-	
-	^false! !
-
-!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
-valueWithin: evaluator 
-
-	^evaluator falseLiteral! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
-environment: anInteger 
-
-	environment := anInteger! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
-index 
-
-	^position! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
-index: anInteger 
-
-	^position := anInteger! !
-
-!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
-isInStack 
-
-	self assert: false.
-	^ environment = 0! !
-
-!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
-assign: value within: evaluator 
-
-	evaluator temporaryAt: position in: environment put: value! !
-
-!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
-valueWithin: evaluator 
-
-	^evaluator temporaryAt: position in: environment! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
-isInCurrentEnvironment 
-
-	^environment = 1! !
-
-!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
-isTemporary 
-
-	^true! !
-
-!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeTemporary! !
-
-!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
-assign: value within: evaluator 
-
-	self halt! !
-
-!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:16:08'!
-valueWithin: evaluator 
-
-	^evaluator argumentAt: position in: environment! !
-
-!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:20'!
-isArgument 
-
-	^true! !
-
-!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:30'!
-isInlined 
-
-	^ environment = -1! !
-
-!SArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:14:42'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeArgument! !
-
-!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
-valueWithin: evaluator 
-
-	^evaluator receiver! !
-
-!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
-isSelf 
-
-	^true! !
-
-!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
-decodeUsing: anAstcodeDecoder 
-
-	^self new! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
-isSelf 
-
-	^false! !
-
-!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
-isSuper 
-
-	^true! !
-
 !SAssociationBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:38:19'!
 association 
 
@@ -38221,6 +37810,132 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeInstVar! !
 
+!SLiteralBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:54:47'!
+isLiteral 
+
+	^true! !
+
+!SLiteralBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:55:18'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
+value 
+	
+	^false! !
+
+!SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:49'!
+valueWithin: evaluator 
+
+	^evaluator falseLiteral! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
+value 
+
+	^true! !
+
+!STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:16'!
+valueWithin: evaluator 
+
+	^evaluator trueLiteral! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
+environment: anInteger 
+
+	environment := anInteger! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:46'!
+index 
+
+	^position! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:55'!
+index: anInteger 
+
+	^position := anInteger! !
+
+!SLocalBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:02:16'!
+isInStack 
+
+	self assert: false.
+	^ environment = 0! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
+assign: value within: evaluator 
+
+	self halt! !
+
+!SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:16:08'!
+valueWithin: evaluator 
+
+	^evaluator argumentAt: position in: environment! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:20'!
+isArgument 
+
+	^true! !
+
+!SArgumentBinding methodsFor: 'testing' stamp: 'KenD 4/12/2021 13:15:30'!
+isInlined 
+
+	^ environment = -1! !
+
+!SArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 4/12/2021 13:14:42'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeArgument! !
+
+!STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
+assign: value within: evaluator 
+
+	evaluator temporaryAt: position in: environment put: value! !
+
+!STemporaryBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 08:56:00'!
+valueWithin: evaluator 
+
+	^evaluator temporaryAt: position in: environment! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:05'!
+isInCurrentEnvironment 
+
+	^environment = 1! !
+
+!STemporaryBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:55:16'!
+isTemporary 
+
+	^true! !
+
+!STemporaryBinding class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 08:54:28'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeTemporary! !
+
+!SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
+valueWithin: evaluator 
+
+	^evaluator receiver! !
+
+!SSelfBinding methodsFor: 'testing' stamp: 'KenD 3/17/2021 15:57:08'!
+isSelf 
+
+	^true! !
+
+!SSelfBinding class methodsFor: 'instance creation' stamp: 'KenD 3/17/2021 15:56:36'!
+decodeUsing: anAstcodeDecoder 
+
+	^self new! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
+isSelf 
+
+	^false! !
+
+!SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:10'!
+isSuper 
+
+	^true! !
+
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
 printOn: aStream indent: anInteger 
 
@@ -38280,119 +37995,6 @@ isSuper
 acceptVisitor: visitor 
 
 	^self subclassResponsibility! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
-isArgument 
-
-	^binding isArgument! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
-isAssociation 
-
-	^binding isAssociation! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
-isIdentifier 
-
-	^true! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
-isInstVar 
-
-	^binding isInstVar! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
-isLiteral 
-
-	^binding isLiteral! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
-isSelf 
-	
-	^binding isSelf! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
-isSelfOrSuper 
-
-	^binding isSelf or: [binding isSuper]! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
-isSuper 
-
-	^binding isSuper! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
-isTemporary 
-
-	^binding isTemporary! !
-
-!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
-binding: aBinding 
-
-	binding := aBinding! !
-
-!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
-acceptVisitor: visitor 
-
-	^visitor visitIdentifier: self! !
-
-!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{IdentifierId. ';
-		print: binding;
-		nextPutAll: '}'! !
-
-!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeIdentifier! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
-index 
-
-	^index! !
-
-!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
-index: anInteger 
-
-	index := anInteger! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
-value 
-
-	^value! !
-
-!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
-value: anObject 
-
-	value := anObject! !
-
-!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
-printOn: aStream indent: anInteger 
-
-	aStream
-		tab: anInteger;
-		nextPutAll: '{LiteralId. ';
-		print: value;
-		nextPutAll: '}'! !
-
-!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
-isLiteral 
-
-	^true! !
-
-!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
-acceptVisitor: visitor 
-
-	^ visitor visitLiteral: self! !
-
-!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
-decodeUsing: anAstcodeDecoder 
-
-	^anAstcodeDecoder decodeLiteral! !
 
 !SAssignment methodsFor: 'accessing' stamp: 'KenD 4/12/2021 13:19:50'!
 assign: anSIdentifier 
@@ -38517,6 +38119,75 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeCascadeMessage! !
 
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:19'!
+isArgument 
+
+	^binding isArgument! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:33'!
+isAssociation 
+
+	^binding isAssociation! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:18:48'!
+isIdentifier 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:02'!
+isInstVar 
+
+	^binding isInstVar! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:12'!
+isLiteral 
+
+	^binding isLiteral! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:32'!
+isSelf 
+	
+	^binding isSelf! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:43'!
+isSelfOrSuper 
+
+	^binding isSelf or: [binding isSuper]! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:19:53'!
+isSuper 
+
+	^binding isSuper! !
+
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:07'!
+isTemporary 
+
+	^binding isTemporary! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdenitifier methodsFor: 'visiting' stamp: 'KenD 2/23/2021 14:16:50'!
+acceptVisitor: visitor 
+
+	^visitor visitIdentifier: self! !
+
+!SIdenitifier methodsFor: 'printing' stamp: 'KenD 2/23/2021 14:20:31'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{IdentifierId. ';
+		print: binding;
+		nextPutAll: '}'! !
+
+!SIdenitifier methodsFor: 'as yet unclassified' stamp: 'KenD 2/23/2021 14:17:16'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeIdentifier! !
+
 !SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:13'!
 binding: aBinding 
 
@@ -38585,6 +38256,50 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeIdentifier! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:28'!
+index 
+
+	^index! !
+
+!SLiteralVar methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:31:39'!
+index: anInteger 
+
+	index := anInteger! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:58:58'!
+value 
+
+	^value! !
+
+!SLiteral methodsFor: 'accessing' stamp: 'KenD 4/8/2021 07:59:07'!
+value: anObject 
+
+	value := anObject! !
+
+!SLiteral methodsFor: 'printing' stamp: 'KenD 4/8/2021 07:58:37'!
+printOn: aStream indent: anInteger 
+
+	aStream
+		tab: anInteger;
+		nextPutAll: '{LiteralId. ';
+		print: value;
+		nextPutAll: '}'! !
+
+!SLiteral methodsFor: 'testing' stamp: 'KenD 4/8/2021 07:58:16'!
+isLiteral 
+
+	^true! !
+
+!SLiteral methodsFor: 'visiting' stamp: 'KenD 4/8/2021 07:58:00'!
+acceptVisitor: visitor 
+
+	^ visitor visitLiteral: self! !
+
+!SLiteral class methodsFor: 'decoding' stamp: 'KenD 4/8/2021 07:57:31'!
+decodeUsing: anAstcodeDecoder 
+
+	^anAstcodeDecoder decodeLiteral! !
 
 !SMessage methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:19:05'!
 arguments 
@@ -38767,6 +38482,295 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeBlock! !
 
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:15:46'!
+activate: aScriptNode while: aBlock 
+	| current |
+	current := activeScript.
+	activeScript := aScriptNode.
+	aBlock value.
+	activeScript := current! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:00'!
+activeScope 
+
+	^activeScript scope! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:10'!
+activeScript 
+
+	^activeScript! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:16:22'!
+activeScript: aParseNode 
+
+	activeScript := aParseNode! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:17:04'!
+ast 
+
+	^ast! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:25:34'!
+frontend 
+
+	^frontend! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:25:45'!
+frontend: aCompiler 
+
+	frontend := aCompiler
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:27:52'!
+newScope 
+
+	^frontend newScope! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:28:13'!
+noticeSend 
+
+	leaf := false! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:32:05'!
+ourceCode: aString 
+
+	source := aString! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:29:33'!
+parser 
+
+	^SSmalltalkParser new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:30:53'!
+result 
+
+	^result! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:31:26'!
+scanner 
+	
+	^SSmalltalkScanner new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/14/2021 15:31:57'!
+sourceCode 
+
+	^source! !
+
+!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/14/2021 15:17:46'!
+blockCount 
+
+	^blocks! !
+
+!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/14/2021 15:17:57'!
+blockIndex 
+
+	blocks := blocks + 1.
+	^blocks - 1! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:23:30'!
+compilationError: aString stretch: aStretch 
+
+	^SCompilationError new
+		compiler: self;
+		stretch: aStretch;
+		description: aString! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:25:09'!
+error: aString at: anInteger 
+	| stretch |
+	stretch := anInteger thru: anInteger.
+	^self error: aString stretch: stretch! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:25:21'!
+error: aString stretch: aStretch 
+	| error |
+	error := self compilationError: aString stretch: aStretch.
+	^error beFatal; signal! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:33:08'!
+undeclaredErrorAt: aStretch assignment: aBoolean 
+
+	^SUndeclaredIdentifierError new
+		compiler: self;
+		stretch: aStretch;
+		assignment: aBoolean;
+		beResumable;
+		signal! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/14/2021 15:33:22'!
+warning: aString at: aStretch 
+	| error |
+	error := self compilationError: aString stretch: aStretch.
+	error beWarning; signal! !
+
+!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:26:52'!
+initialize 
+
+	self reset! !
+
+!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:30:10'!
+reset 
+
+	self resetResult.
+	leaf := true.
+	blocks := 0.! !
+
+!SSmalltalkCompiler methodsFor: 'initialization' stamp: 'KenD 3/14/2021 15:30:22'!
+resetResult 
+
+	result := SCompilationResult new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:16:51'!
+assignmentNode 
+
+	^SAssignmentNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:18:13'!
+blockNode 
+
+	^SBlockNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:18:47'!
+braceNode 
+
+	^SBraceNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:09'!
+buildMethod 
+
+	result method: ast buildMethod! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:19'!
+cascadeMessageNode 
+
+	^SCascadeMessageNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:32'!
+cascadeNode 
+
+	^SCascadeNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:19:44'!
+commentNode 
+
+	^SCommentNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:26:31'!
+identifierNode 
+
+	^SIdentifierNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:05'!
+literalNode 
+
+	^SLiteralNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:24'!
+messageNode 
+
+	^SMessageNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:27:38'!
+methodNode 
+
+	^SMethodNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:28:26'!
+numericLiteralNode 
+
+	^SNumberNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:29:42'!
+pragmaNode 
+
+	^SPragmaNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:31:07'!
+returnNode 
+
+	^SReturnNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:31:46'!
+selectorNode 
+
+	^SSelectorNode new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/14/2021 15:32:36'!
+stringToken 
+
+	^SStringToken new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'parsing' stamp: 'KenD 3/14/2021 15:24:46'!
+delimiterToken 
+
+	^SDelimiterToken new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'parsing' stamp: 'KenD 3/14/2021 15:24:58'!
+endToken 
+
+	^SEndToken new compiler: self! !
+
+!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:26:07'!
+hasBlocks 
+
+	^ blocks > 0! !
+
+!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:26:19'!
+hasSends 
+
+	^ leaf not! !
+
+!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/14/2021 15:32:48'!
+supportsBraceNodes 
+
+	^true! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:24:10'!
+compileMethod: aString 
+
+	source := aString.
+	frontend protect: [
+		self
+			parseMethod;
+			resolveSemantics;
+			buildMethod].
+	^result! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:28:42'!
+parseFragment 
+
+	headless := false.
+	self reset.
+	ast := self parser methodFragment.
+	result ast: ast! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:28:53'!
+parseFragment: aString 
+
+	source := aString.
+	[self parseFragment; resolveSemantics] on: SCompilationError do: [].
+	^ast! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:29:07'!
+parseMethod 
+
+	headless := false.
+	self reset.
+	ast := self parser method.
+	result ast: ast! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:29:18'!
+parseMethod: aString 
+
+	source := aString.
+	frontend protect: [self parseMethod; resolveSemantics].
+	^result! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/14/2021 15:30:39'!
+resolveSemantics 
+
+	ast acceptVisitor: SSemanticVisitor new! !
+
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
 
@@ -38842,32 +38846,6 @@ isInstruction
 
 	^false! !
 
-!Integer methodsFor: '*powerlang' stamp: 'Install-PowerLang 5/31/2021 12:50:09'!
-isOnBit: n
-
-	^(self bitAnd: n) = n! !
-
-!Integer methodsFor: '*powerlang' stamp: 'KenD 3/8/2021 07:55:07'!
-thru: anInteger 
-
-	^Stretch from: self thru: anInteger! !
-
-!Character methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 08:03:14'!
-split: aString
-	"Answer a collection of Strings split at self -- include empty strings"
-	| delimiter parts keyStart keyStop |
-	delimiter := self asString.
-	parts _ OrderedCollection new.
-	keyStop _ 1.
-	keyStart _ 1.
-	[keyStop <= aString size] whileTrue:
-		[keyStop _ aString findDelimiters: delimiter startingAt: keyStart.
-		 (keyStart < keyStop)
-			ifTrue: [parts add: (aString copyFrom: keyStart to: (keyStop - 1))]
-			ifFalse: [parts add: ''].
-		keyStart := keyStop + 1].
-	^parts! !
-
 !Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
 conform: evaluable
 
@@ -38937,22 +38915,33 @@ peek: n
 	self position: pos.
 	^data
 	! !
+
+!Integer methodsFor: '*powerlang' stamp: 'Install-PowerLang 5/31/2021 12:50:09'!
+isOnBit: n
+
+	^(self bitAnd: n) = n! !
+
+!Integer methodsFor: '*powerlang' stamp: 'KenD 3/8/2021 07:55:07'!
+thru: anInteger 
+
+	^Stretch from: self thru: anInteger! !
+
+!Character methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 08:03:14'!
+split: aString
+	"Answer a collection of Strings split at self -- include empty strings"
+	| delimiter parts keyStart keyStop |
+	delimiter := self asString.
+	parts _ OrderedCollection new.
+	keyStop _ 1.
+	keyStart _ 1.
+	[keyStop <= aString size] whileTrue:
+		[keyStop _ aString findDelimiters: delimiter startingAt: keyStart.
+		 (keyStart < keyStop)
+			ifTrue: [parts add: (aString copyFrom: keyStart to: (keyStop - 1))]
+			ifFalse: [parts add: ''].
+		keyStart := keyStop + 1].
+	^parts! !
 SFFIDescriptor initialize!
-CharacterConstants initialize!
-SpeciesFormatMasks initialize!
-OperandTypeFlags initialize!
-Prefixes initialize!
-Registers initialize!
-ObjectHeaderMasks initialize!
-ObjectHeaderOffsets initialize!
-InlineMessageLinkerFlags initialize!
-SendSiteFlags initialize!
-SCompiledMethodFlags initialize!
-AstBindingTypes initialize!
-AstNodeTypes initialize!
-ClosureElementTypes initialize!
-SExpressionTypes initialize!
-SCompiledBlockFlags initialize!
 Register initialize!
 ISAOperandType initialize!
 InstructionEncoder initialize!
@@ -38962,4 +38951,19 @@ JITAssembler64 initialize!
 MethodEvaluator initialize!
 VirtualSmalltalkRuntime initialize!
 SmalltalkInterpreter initialize!
+CharacterConstants initialize!
+OperandTypeFlags initialize!
+Prefixes initialize!
+Registers initialize!
+ObjectHeaderMasks initialize!
+ObjectHeaderOffsets initialize!
+SpeciesFormatMasks initialize!
+InlineMessageLinkerFlags initialize!
+SendSiteFlags initialize!
+SCompiledMethodFlags initialize!
+AstBindingTypes initialize!
+AstNodeTypes initialize!
+ClosureElementTypes initialize!
+SExpressionTypes initialize!
+SCompiledBlockFlags initialize!
 Subject initialize!
