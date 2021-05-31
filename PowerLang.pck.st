@@ -1,3265 +1,3266 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 2:06:33 pm'!
-'Description Port of code from https://github.com/powerlang'!
-!provides: 'PowerLang' 1 39!
+'From Cuis 5.0 [latest update: #4619] on 31 May 2021 at 2:02:47 pm'!
+'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
+!provides: 'PowerLang' 1 42!
 !requires: 'BeeCompatibility' 1 2 nil!
+!requires: 'Cuis-Base' 50 4619 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
-SystemOrganization addCategory: #'Powerlang-Core'!
-SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
-SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
-SystemOrganization addCategory: #'Powerlang-Core-Assembler-Parser'!
-SystemOrganization addCategory: #'Powerlang-Core-Assembler-Tools'!
-SystemOrganization addCategory: #'Powerlang-Core-Building'!
-SystemOrganization addCategory: #'Powerlang-Core-Emulation'!
-SystemOrganization addCategory: #'Powerlang-Core-Metaphysics'!
-SystemOrganization addCategory: #'Powerlang-Core-Mirrors'!
-SystemOrganization addCategory: #'Powerlang-Core-Nativization'!
-SystemOrganization addCategory: #'Powerlang-Core-OCompiler'!
-SystemOrganization addCategory: #'Powerlang-Core-OCompiler-IR'!
-SystemOrganization addCategory: #'Powerlang-Core-SCompiler'!
-SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
-SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
+SystemOrganization addCategory: 'Powerlang-Core'!
+SystemOrganization addCategory: 'Powerlang-Core-Assembler-Intel'!
+SystemOrganization addCategory: 'Powerlang-Core-Assembler-JIT'!
+SystemOrganization addCategory: 'Powerlang-Core-Assembler-Parser'!
+SystemOrganization addCategory: 'Powerlang-Core-Assembler-Tools'!
+SystemOrganization addCategory: 'Powerlang-Core-Building'!
+SystemOrganization addCategory: 'Powerlang-Core-Emulation'!
+SystemOrganization addCategory: 'Powerlang-Core-Metaphysics'!
+SystemOrganization addCategory: 'Powerlang-Core-Mirrors'!
+SystemOrganization addCategory: 'Powerlang-Core-Nativization'!
+SystemOrganization addCategory: 'Powerlang-Core-OCompiler'!
+SystemOrganization addCategory: 'Powerlang-Core-OCompiler-IR'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Bindings'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 
 
-!classDefinition: #CharacterConstants category: #'Powerlang-Core'!
+!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
 PSharedPool subclass: #CharacterConstants
 	instanceVariableNames: ''
 	classVariableNames: 'Cr Lf Space Tab'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'CharacterConstants class' category: #'Powerlang-Core'!
+!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
 CharacterConstants class
 	instanceVariableNames: ''!
 
-!classDefinition: #SpeciesFormatMasks category: #'Powerlang-Core'!
+!classDefinition: #SpeciesFormatMasks category: 'Powerlang-Core'!
 PSharedPool subclass: #SpeciesFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: 'InstSize IsPointers'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SpeciesFormatMasks class' category: #'Powerlang-Core'!
+!classDefinition: 'SpeciesFormatMasks class' category: 'Powerlang-Core'!
 SpeciesFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #OperandTypeFlags category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandTypeFlags category: 'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #OperandTypeFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandTypeFlags class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core-Assembler-Intel'!
 OperandTypeFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #Prefixes category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Prefixes category: 'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Prefixes
 	instanceVariableNames: ''
 	classVariableNames: 'AddressSize_Override LOCK OperandSize_Override REP REPE REPNE REPNZ REPZ REX REX_R REX_W'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Prefixes class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Prefixes class' category: 'Powerlang-Core-Assembler-Intel'!
 Prefixes class
 	instanceVariableNames: ''!
 
-!classDefinition: #Registers category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Registers category: 'Powerlang-Core-Assembler-Intel'!
 PSharedPool subclass: #Registers
 	instanceVariableNames: ''
 	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Registers class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Registers class' category: 'Powerlang-Core-Assembler-Intel'!
 Registers class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderMasks category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderMasks
 	instanceVariableNames: ''
 	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderMasks class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderMasks class' category: 'Powerlang-Core-Metaphysics'!
 ObjectHeaderMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderOffsets category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHeaderOffsets category: 'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderOffsets
 	instanceVariableNames: ''
 	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderOffsets class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderOffsets class' category: 'Powerlang-Core-Metaphysics'!
 ObjectHeaderOffsets class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledBlockFormatMasks category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledBlockFormatMasks category: 'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #CompiledBlockFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockFormatMasks class' category: 'Powerlang-Core-Mirrors'!
 CompiledBlockFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledMethodFormatMasks category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledMethodFormatMasks category: 'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #CompiledMethodFormatMasks
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount BlockCount TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodFormatMasks class' category: 'Powerlang-Core-Mirrors'!
 CompiledMethodFormatMasks class
 	instanceVariableNames: ''!
 
-!classDefinition: #FrameOffsets category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #FrameOffsets category: 'Powerlang-Core-Mirrors'!
 PSharedPool subclass: #FrameOffsets
 	instanceVariableNames: ''
 	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'FrameOffsets class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'FrameOffsets class' category: 'Powerlang-Core-Mirrors'!
 FrameOffsets class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlineMessageLinkerFlags category: #'Powerlang-Core-Nativization'!
+!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core-Nativization'!
 PSharedPool subclass: #InlineMessageLinkerFlags
 	instanceVariableNames: ''
 	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinkerFlags class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core-Nativization'!
 InlineMessageLinkerFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SendSiteFlags category: #'Powerlang-Core-Nativization'!
+!classDefinition: #SendSiteFlags category: 'Powerlang-Core-Nativization'!
 PSharedPool subclass: #SendSiteFlags
 	instanceVariableNames: ''
 	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSiteFlags class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core-Nativization'!
 SendSiteFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethodFlags category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethodFlags category: 'Powerlang-Core-SCompiler'!
 PSharedPool subclass: #SCompiledMethodFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethodFlags class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethodFlags class' category: 'Powerlang-Core-SCompiler'!
 SCompiledMethodFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #AstBindingTypes category: 'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #AstBindingTypes
 	instanceVariableNames: ''
 	classVariableNames: 'ArgumentId ClassVarId ConstantPoolId EnsureAisSmallIntegerId EnsureRisSmallIntegerId FalseId GlobalClassId GlobalValueId InstVarId LoadAvisitingArgumentId LoadAwithArgumentId LoadAwithClassVarId LoadAwithConstPoolId LoadAwithFalseId LoadAwithGlobalId LoadAwithInstVarId LoadAwithLiteralId LoadAwithNilId LoadAwithPoolVarId LoadAwithSelfId LoadAwithTemporaryId LoadAwithTrueId LoadRvisitingReceiverId LoadRwithArgumentId LoadRwithClassVarId LoadRwithConstPoolId LoadRwithFalseId LoadRwithGlobalId LoadRwithInstVarId LoadRwithLiteralId LoadRwithNilId LoadRwithPoolVarId LoadRwithSelfId LoadRwithTemporaryId LoadRwithTrueId NilId PoolVarId PopRid PushRid SelfId SuperId TemporaryId TrueId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core-SExpressions'!
 AstBindingTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #AstNodeTypes category: 'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #AstNodeTypes
 	instanceVariableNames: ''
 	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core-SExpressions'!
 AstNodeTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #ClosureElementTypes category: 'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #ClosureElementTypes
 	instanceVariableNames: ''
 	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'ClosureElementTypes class' category: 'Powerlang-Core-SExpressions'!
 ClosureElementTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionTypes category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SExpressionTypes category: 'Powerlang-Core-SExpressions'!
 PSharedPool subclass: #SExpressionTypes
 	instanceVariableNames: ''
 	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpressionTypes class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core-SExpressions'!
 SExpressionTypes class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlockFlags category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlockFlags category: 'Powerlang-Core-SCompiler'!
 SharedPool subclass: #SCompiledBlockFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount CapturesHome CapturesSelf EnvCount Id TempCount'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockFlags class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockFlags class' category: 'Powerlang-Core-SCompiler'!
 SCompiledBlockFlags class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativeCode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #NativeCode category: 'Powerlang-Core-Nativization'!
 Array variableSubclass: #NativeCode
 	instanceVariableNames: 'machineCode compiledCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativeCode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'NativeCode class' category: 'Powerlang-Core-Nativization'!
 NativeCode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethod category: 'Powerlang-Core-SCompiler'!
 Array variableSubclass: #SCompiledMethod
 	instanceVariableNames: 'format nativeCode astcodes class selector source'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethod class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethod class' category: 'Powerlang-Core-SCompiler'!
 SCompiledMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCallbackMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCallbackMethod category: 'Powerlang-Core-SCompiler'!
 SCompiledMethod variableSubclass: #SCallbackMethod
 	instanceVariableNames: 'receiver descriptor'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCallbackMethod class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCallbackMethod class' category: 'Powerlang-Core-SCompiler'!
 SCallbackMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCalloutMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCalloutMethod category: 'Powerlang-Core-SCompiler'!
 SCompiledMethod variableSubclass: #SCalloutMethod
 	instanceVariableNames: 'descriptor symbol address'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCalloutMethod class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCalloutMethod class' category: 'Powerlang-Core-SCompiler'!
 SCalloutMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClosure category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SClosure category: 'Powerlang-Core-SExpressions'!
 Array variableSubclass: #SClosure
 	instanceVariableNames: 'block home'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClosure class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClosure class' category: 'Powerlang-Core-SExpressions'!
 SClosure class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFFIDescriptor category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SFFIDescriptor category: 'Powerlang-Core-SCompiler'!
 ByteArray variableByteSubclass: #SFFIDescriptor
 	instanceVariableNames: ''
 	classVariableNames: 'FFICallingConventions FFITypes'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SFFIDescriptor class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core-SCompiler'!
 SFFIDescriptor class
 	instanceVariableNames: ''!
 
-!classDefinition: #StorageReadError category: #'Powerlang-Core'!
+!classDefinition: #StorageReadError category: 'Powerlang-Core'!
 Error subclass: #StorageReadError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StorageReadError class' category: #'Powerlang-Core'!
+!classDefinition: 'StorageReadError class' category: 'Powerlang-Core'!
 StorageReadError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationError category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationError category: 'Powerlang-Core-SCompiler'!
 Error subclass: #SCompilationError
 	instanceVariableNames: 'compiler resumable retryable stretch'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationError class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationError class' category: 'Powerlang-Core-SCompiler'!
 SCompilationError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SUndeclaredIdentifierError category: #'Powerlang-Core'!
+!classDefinition: #SUndeclaredIdentifierError category: 'Powerlang-Core'!
 SCompilationError subclass: #SUndeclaredIdentifierError
 	instanceVariableNames: 'identifier assigned'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-Core'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: 'Powerlang-Core'!
 SUndeclaredIdentifierError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SInvalidPragmaError category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SInvalidPragmaError category: 'Powerlang-Core-SCompiler'!
 SCompilationError subclass: #SInvalidPragmaError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SInvalidPragmaError class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SInvalidPragmaError class' category: 'Powerlang-Core-SCompiler'!
 SInvalidPragmaError class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerGrammar category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #AssemblerGrammar category: 'Powerlang-Core-Assembler-Parser'!
 PPCompositeParser subclass: #AssemblerGrammar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerGrammar class' category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerGrammar class' category: 'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssemblerParser category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #AssemblerParser category: 'Powerlang-Core-Assembler-Parser'!
 AssemblerGrammar subclass: #AssemblerParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'AssemblerParser class' category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'AssemblerParser class' category: 'Powerlang-Core-Assembler-Parser'!
 AssemblerParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #NumberParser2 category: #'Powerlang-Core'!
+!classDefinition: #NumberParser2 category: 'Powerlang-Core'!
 Object subclass: #NumberParser2
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'NumberParser2 class' category: #'Powerlang-Core'!
+!classDefinition: 'NumberParser2 class' category: 'Powerlang-Core'!
 NumberParser2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #OOperand category: #'Powerlang-Core'!
+!classDefinition: #OOperand category: 'Powerlang-Core'!
 Object subclass: #OOperand
 	instanceVariableNames: 'instruction name nextUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'OOperand class' category: #'Powerlang-Core'!
+!classDefinition: 'OOperand class' category: 'Powerlang-Core'!
 OOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseTreeVisitor category: #'Powerlang-Core'!
+!classDefinition: #SParseTreeVisitor category: 'Powerlang-Core'!
 Object subclass: #SParseTreeVisitor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SParseTreeVisitor class' category: #'Powerlang-Core'!
+!classDefinition: 'SParseTreeVisitor class' category: 'Powerlang-Core'!
 SParseTreeVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSemanticVisitor category: #'Powerlang-Core'!
+!classDefinition: #SSemanticVisitor category: 'Powerlang-Core'!
 SParseTreeVisitor subclass: #SSemanticVisitor
 	instanceVariableNames: 'inliner'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSemanticVisitor class' category: #'Powerlang-Core'!
+!classDefinition: 'SSemanticVisitor class' category: 'Powerlang-Core'!
 SSemanticVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingVisitor category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingVisitor category: 'Powerlang-Core-OCompiler'!
 SParseTreeVisitor subclass: #OptimizingVisitor
 	instanceVariableNames: 'method firstBlock currentBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingVisitor class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingVisitor class' category: 'Powerlang-Core-OCompiler'!
 OptimizingVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstcodeEncoder category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #AstcodeEncoder category: 'Powerlang-Core-SExpressions'!
 SParseTreeVisitor subclass: #AstcodeEncoder
 	instanceVariableNames: 'method stream script'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeEncoder class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core-SExpressions'!
 AstcodeEncoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkCompiler category: #'Powerlang-Core'!
+!classDefinition: #SSmalltalkCompiler category: 'Powerlang-Core'!
 Object subclass: #SSmalltalkCompiler
 	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkCompiler class' category: #'Powerlang-Core'!
+!classDefinition: 'SSmalltalkCompiler class' category: 'Powerlang-Core'!
 SSmalltalkCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkParser category: #'Powerlang-Core'!
+!classDefinition: #SSmalltalkParser category: 'Powerlang-Core'!
 Object subclass: #SSmalltalkParser
 	instanceVariableNames: 'compiler scanner token next'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkParser class' category: #'Powerlang-Core'!
+!classDefinition: 'SSmalltalkParser class' category: 'Powerlang-Core'!
 SSmalltalkParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkScanner category: #'Powerlang-Core'!
+!classDefinition: #SSmalltalkScanner category: 'Powerlang-Core'!
 Object subclass: #SSmalltalkScanner
 	instanceVariableNames: 'compiler stream'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSmalltalkScanner class' category: #'Powerlang-Core'!
+!classDefinition: 'SSmalltalkScanner class' category: 'Powerlang-Core'!
 SSmalltalkScanner class
 	instanceVariableNames: ''!
 
-!classDefinition: #SToken category: #'Powerlang-Core'!
+!classDefinition: #SToken category: 'Powerlang-Core'!
 Object subclass: #SToken
 	instanceVariableNames: 'compiler stretch comments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SToken class' category: #'Powerlang-Core'!
+!classDefinition: 'SToken class' category: 'Powerlang-Core'!
 SToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSymbolicToken category: #'Powerlang-Core'!
+!classDefinition: #SSymbolicToken category: 'Powerlang-Core'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSymbolicToken class' category: #'Powerlang-Core'!
+!classDefinition: 'SSymbolicToken class' category: 'Powerlang-Core'!
 SSymbolicToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringToken category: #'Powerlang-Core'!
+!classDefinition: #SStringToken category: 'Powerlang-Core'!
 SSymbolicToken subclass: #SStringToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SStringToken class' category: #'Powerlang-Core'!
+!classDefinition: 'SStringToken class' category: 'Powerlang-Core'!
 SStringToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SDelimiterToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SDelimiterToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SSymbolicToken subclass: #SDelimiterToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SDelimiterToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SDelimiterToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SDelimiterToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SEndToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SEndToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SToken subclass: #SEndToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SEndToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SEndToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SEndToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SParseNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SToken subclass: #SParseNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SParseNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SParseNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralNode category: #'Powerlang-Core'!
+!classDefinition: #SLiteralNode category: 'Powerlang-Core'!
 SParseNode subclass: #SLiteralNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralNode class' category: #'Powerlang-Core'!
+!classDefinition: 'SLiteralNode class' category: 'Powerlang-Core'!
 SLiteralNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringNode category: #'Powerlang-Core'!
+!classDefinition: #SStringNode category: 'Powerlang-Core'!
 SLiteralNode subclass: #SStringNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SStringNode class' category: #'Powerlang-Core'!
+!classDefinition: 'SStringNode class' category: 'Powerlang-Core'!
 SStringNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSelectorNode category: #'Powerlang-Core'!
+!classDefinition: #SSelectorNode category: 'Powerlang-Core'!
 SParseNode subclass: #SSelectorNode
 	instanceVariableNames: 'symbol keywords'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSelectorNode class' category: #'Powerlang-Core'!
+!classDefinition: 'SSelectorNode class' category: 'Powerlang-Core'!
 SSelectorNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SAssignmentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SAssignmentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SAssignmentNode
 	instanceVariableNames: 'assignees expression operators'
 	classVariableNames: 'Token'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SAssignmentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SAssignmentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SAssignmentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBraceNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SBraceNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SBraceNode
 	instanceVariableNames: 'elements message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBraceNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBraceNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SBraceNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCascadeNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SCascadeNode
 	instanceVariableNames: 'receiver messages optimized'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCascadeNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCommentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCommentNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SCommentNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCommentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCommentNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCommentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdentifierNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SIdentifierNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SIdentifierNode
 	instanceVariableNames: 'name binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SIdentifierNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SIdentifierNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SIdentifierNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SMessageNode
 	instanceVariableNames: 'selector receiver arguments inlined'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SCascadeMessageNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SMessageNode subclass: #SCascadeMessageNode
 	instanceVariableNames: 'cascade'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SCascadeMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SReturnNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SReturnNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SReturnNode
 	instanceVariableNames: 'expression return'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SReturnNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SReturnNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SReturnNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SScriptNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SScriptNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SParseNode subclass: #SScriptNode
 	instanceVariableNames: 'statements arguments temporaries children scope'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SScriptNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SScriptNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SScriptNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBlockNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SBlockNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SScriptNode subclass: #SBlockNode
 	instanceVariableNames: 'inlined index parent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBlockNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SBlockNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SBlockNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPragmaNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: #SPragmaNode category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SToken subclass: #SPragmaNode
 	instanceVariableNames: 'type name info'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SPragmaNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SPragmaNode class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SPragmaNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkBootstrapper category: #'Powerlang-Core'!
+!classDefinition: #SmalltalkBootstrapper category: 'Powerlang-Core'!
 Object subclass: #SmalltalkBootstrapper
 	instanceVariableNames: 'builder'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SmalltalkBootstrapper class' category: #'Powerlang-Core'!
+!classDefinition: 'SmalltalkBootstrapper class' category: 'Powerlang-Core'!
 SmalltalkBootstrapper class
 	instanceVariableNames: ''!
 
-!classDefinition: #DMRBootstrapper category: #'Powerlang-Core-Building'!
+!classDefinition: #DMRBootstrapper category: 'Powerlang-Core-Building'!
 SmalltalkBootstrapper subclass: #DMRBootstrapper
 	instanceVariableNames: 'nativizer image'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'DMRBootstrapper class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'DMRBootstrapper class' category: 'Powerlang-Core-Building'!
 DMRBootstrapper class
 	instanceVariableNames: ''!
 
-!classDefinition: #OMRBootstrapper category: #'Powerlang-Core-Building'!
+!classDefinition: #OMRBootstrapper category: 'Powerlang-Core-Building'!
 SmalltalkBootstrapper subclass: #OMRBootstrapper
 	instanceVariableNames: 'nativizer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'OMRBootstrapper class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'OMRBootstrapper class' category: 'Powerlang-Core-Building'!
 OMRBootstrapper class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackFrameCursor category: #'Powerlang-Core'!
+!classDefinition: #StackFrameCursor category: 'Powerlang-Core'!
 Object subclass: #StackFrameCursor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameCursor class' category: #'Powerlang-Core'!
+!classDefinition: 'StackFrameCursor class' category: 'Powerlang-Core'!
 StackFrameCursor class
 	instanceVariableNames: ''!
 
-!classDefinition: #TonelRepository category: #'Powerlang-Core'!
+!classDefinition: #TonelRepository category: 'Powerlang-Core'!
 Object subclass: #TonelRepository
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'TonelRepository class' category: #'Powerlang-Core'!
+!classDefinition: 'TonelRepository class' category: 'Powerlang-Core'!
 TonelRepository class
 	instanceVariableNames: ''!
 
-!classDefinition: #ABI category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ABI category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ABI class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ABI class' category: 'Powerlang-Core-Assembler-Intel'!
 ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X64ABI category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #X64ABI category: 'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'X64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X64ABI class' category: 'Powerlang-Core-Assembler-Intel'!
 X64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #SysVX64ABI category: #'Powerlang-Core'!
+!classDefinition: #SysVX64ABI category: 'Powerlang-Core'!
 X64ABI subclass: #SysVX64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SysVX64ABI class' category: #'Powerlang-Core'!
+!classDefinition: 'SysVX64ABI class' category: 'Powerlang-Core'!
 SysVX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #WinX64ABI category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #WinX64ABI category: 'Powerlang-Core-Assembler-Intel'!
 X64ABI subclass: #WinX64ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'WinX64ABI class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'WinX64ABI class' category: 'Powerlang-Core-Assembler-Intel'!
 WinX64ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #X86ABI category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #X86ABI category: 'Powerlang-Core-Assembler-Intel'!
 ABI subclass: #X86ABI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'X86ABI class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'X86ABI class' category: 'Powerlang-Core-Assembler-Intel'!
 X86ABI class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstruction category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAInstruction category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAInstruction
 	instanceVariableNames: 'prefix mnemonic operands template'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAInstruction class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAInstruction class' category: 'Powerlang-Core-Assembler-Intel'!
 ISAInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperand category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperand category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperand
 	instanceVariableNames: 'length'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperand class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperand class' category: 'Powerlang-Core-Assembler-Intel'!
 ISAOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAImmediate category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAImmediate category: 'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #ISAImmediate
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAImmediate class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAImmediate class' category: 'Powerlang-Core-Assembler-Intel'!
 ISAImmediate class
 	instanceVariableNames: ''!
 
-!classDefinition: #MemoryOperand category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #MemoryOperand category: 'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #MemoryOperand
 	instanceVariableNames: 'base index scale displacement segment'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'MemoryOperand class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'MemoryOperand class' category: 'Powerlang-Core-Assembler-Intel'!
 MemoryOperand class
 	instanceVariableNames: ''!
 
-!classDefinition: #Register category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #Register category: 'Powerlang-Core-Assembler-Intel'!
 ISAOperand subclass: #Register
 	instanceVariableNames: 'name index family flags'
 	classVariableNames: ''
 	poolDictionaries: 'OperandTypeFlags Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'Register class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'Register class' category: 'Powerlang-Core-Assembler-Intel'!
 Register class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOperandType category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #ISAOperandType category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #ISAOperandType
 	instanceVariableNames: 'type length memoryLength flags'
 	classVariableNames: 'Types'
-	poolDictionaries: 'Registers'
+	poolDictionaries: 'OperandTypeFlags Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'ISAOperandType class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'ISAOperandType class' category: 'Powerlang-Core-Assembler-Intel'!
 ISAOperandType class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionEncoder category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionEncoder category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionEncoder
 	instanceVariableNames: 'instruction spec stream prefixes rex vex opcode modrm sib displacement immediate immediate2 wordSize'
 	classVariableNames: 'Cache'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionEncoder class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionEncoder class' category: 'Powerlang-Core-Assembler-Intel'!
 InstructionEncoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionPrefix category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionPrefix category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionPrefix
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: 'Prefixes'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #LegacyPrefix category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #LegacyPrefix category: 'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #LegacyPrefix
 	instanceVariableNames: 'group value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'LegacyPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'LegacyPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
 LegacyPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #REXPrefix category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #REXPrefix category: 'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #REXPrefix
 	instanceVariableNames: 'group value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'REXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'REXPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
 REXPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #SegmentPrefix category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #SegmentPrefix category: 'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #SegmentPrefix
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'SegmentPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'SegmentPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
 SegmentPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #VEXPrefix category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #VEXPrefix category: 'Powerlang-Core-Assembler-Intel'!
 InstructionPrefix subclass: #VEXPrefix
 	instanceVariableNames: 'signature'
 	classVariableNames: 'Signatures'
 	poolDictionaries: 'CharacterConstants'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'VEXPrefix class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'VEXPrefix class' category: 'Powerlang-Core-Assembler-Intel'!
 VEXPrefix class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstructionSpec category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #InstructionSpec category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #InstructionSpec
 	instanceVariableNames: 'opcode primary extension instruction opEncoding properties implicitRead implicitWrite implicitUndef useful protected mode compat features atnt preferred description prefixes mnemonic operands'
 	classVariableNames: 'Specs'
 	poolDictionaries: 'CharacterConstants'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'InstructionSpec class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'InstructionSpec class' category: 'Powerlang-Core-Assembler-Intel'!
 InstructionSpec class
 	instanceVariableNames: ''!
 
-!classDefinition: #OperandEncoding category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: #OperandEncoding category: 'Powerlang-Core-Assembler-Intel'!
 Object subclass: #OperandEncoding
 	instanceVariableNames: 'name selectors descriptions immediate modrm'
 	classVariableNames: 'Encodings'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandEncoding class' category: #'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandEncoding class' category: 'Powerlang-Core-Assembler-Intel'!
 OperandEncoding class
 	instanceVariableNames: ''!
 
-!classDefinition: #Assembler64 category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #Assembler64 category: 'Powerlang-Core-Assembler-JIT'!
 Object subclass: #Assembler64
 	instanceVariableNames: 'instruction operands1 operands2 operands3 pointer immediate encoder wordSize memory labels'
 	classVariableNames: 'IndexedLabels'
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'Assembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'Assembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
 Assembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #JITAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #JITAssembler64 category: 'Powerlang-Core-Assembler-JIT'!
 Assembler64 subclass: #JITAssembler64
 	instanceVariableNames: 'literals'
 	classVariableNames: 'ExternalFunctions'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'JITAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'JITAssembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemplateAssembler64 category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #TemplateAssembler64 category: 'Powerlang-Core-Assembler-JIT'!
 JITAssembler64 subclass: #TemplateAssembler64
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'TemplateAssembler64 class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'TemplateAssembler64 class' category: 'Powerlang-Core-Assembler-JIT'!
 TemplateAssembler64 class
 	instanceVariableNames: ''!
 
-!classDefinition: #NameOfSubclass category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #NameOfSubclass category: 'Powerlang-Core-Assembler-JIT'!
 Object subclass: #NameOfSubclass
 	instanceVariableNames: 'stream address fixups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'NameOfSubclass class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NameOfSubclass class' category: 'Powerlang-Core-Assembler-JIT'!
 NameOfSubclass class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativeCodeReference category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #NativeCodeReference category: 'Powerlang-Core-Assembler-JIT'!
 Object subclass: #NativeCodeReference
 	instanceVariableNames: 'source sourceOffset target absolute'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'NativeCodeReference class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'NativeCodeReference class' category: 'Powerlang-Core-Assembler-JIT'!
 NativeCodeReference class
 	instanceVariableNames: ''!
 
-!classDefinition: #RelocatableBuffer category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #RelocatableBuffer category: 'Powerlang-Core-Assembler-JIT'!
 Object subclass: #RelocatableBuffer
 	instanceVariableNames: 'stream address fixups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'RelocatableBuffer class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocatableBuffer class' category: 'Powerlang-Core-Assembler-JIT'!
 RelocatableBuffer class
 	instanceVariableNames: ''!
 
-!classDefinition: #RelocationFixup category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: #RelocationFixup category: 'Powerlang-Core-Assembler-JIT'!
 Object subclass: #RelocationFixup
 	instanceVariableNames: 'source target relative size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-JIT'!
-!classDefinition: 'RelocationFixup class' category: #'Powerlang-Core-Assembler-JIT'!
+!classDefinition: 'RelocationFixup class' category: 'Powerlang-Core-Assembler-JIT'!
 RelocationFixup class
 	instanceVariableNames: ''!
 
-!classDefinition: #Assembly category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: #Assembly category: 'Powerlang-Core-Assembler-Parser'!
 Object subclass: #Assembly
 	instanceVariableNames: 'labels instructions source parser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Parser'!
-!classDefinition: 'Assembly class' category: #'Powerlang-Core-Assembler-Parser'!
+!classDefinition: 'Assembly class' category: 'Powerlang-Core-Assembler-Parser'!
 Assembly class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstructionPartReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionPartReader category: 'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionPartReader
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionPartReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionPartReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAModRMReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAModRMReader category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAModRMReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAModRMReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAModRMReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISAModRMReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAOpcodeReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAOpcodeReader category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAOpcodeReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAOpcodeReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAOpcodeReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISAOpcodeReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAPrefixReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAPrefixReader category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISAPrefixReader
 	instanceVariableNames: 'legacy rex vex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAPrefixReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAPrefixReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISAPrefixReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISASibReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISASibReader category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionPartReader subclass: #ISASibReader
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISASibReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISASibReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISASibReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #ISAInstructionReader category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ISAInstructionReader category: 'Powerlang-Core-Assembler-Tools'!
 Object subclass: #ISAInstructionReader
 	instanceVariableNames: 'prefixes opcode modrm sib displacement immediate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ISAInstructionReader class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ISAInstructionReader class' category: 'Powerlang-Core-Assembler-Tools'!
 ISAInstructionReader class
 	instanceVariableNames: ''!
 
-!classDefinition: #OctalStructure category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #OctalStructure category: 'Powerlang-Core-Assembler-Tools'!
 Object subclass: #OctalStructure
 	instanceVariableNames: 'byte'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'OctalStructure class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'OctalStructure class' category: 'Powerlang-Core-Assembler-Tools'!
 OctalStructure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ModRM category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #ModRM category: 'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #ModRM
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'ModRM class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'ModRM class' category: 'Powerlang-Core-Assembler-Tools'!
 ModRM class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIB category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: #SIB category: 'Powerlang-Core-Assembler-Tools'!
 OctalStructure subclass: #SIB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Assembler-Tools'!
-!classDefinition: 'SIB class' category: #'Powerlang-Core-Assembler-Tools'!
+!classDefinition: 'SIB class' category: 'Powerlang-Core-Assembler-Tools'!
 SIB class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageSegmentBuilder category: #'Powerlang-Core-Building'!
+!classDefinition: #ImageSegmentBuilder category: 'Powerlang-Core-Building'!
 Object subclass: #ImageSegmentBuilder
 	instanceVariableNames: 'index classes methods globals runtime image module objects temporaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentBuilder class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentBuilder class' category: 'Powerlang-Core-Building'!
 ImageSegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #KernelSegmentBuilder category: #'Powerlang-Core-Building'!
+!classDefinition: #KernelSegmentBuilder category: 'Powerlang-Core-Building'!
 ImageSegmentBuilder subclass: #KernelSegmentBuilder
 	instanceVariableNames: 'smalltalk hash symbols'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'KernelSegmentBuilder class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'KernelSegmentBuilder class' category: 'Powerlang-Core-Building'!
 KernelSegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #LibrarySegmentBuilder category: #'Powerlang-Core-Building'!
+!classDefinition: #LibrarySegmentBuilder category: 'Powerlang-Core-Building'!
 ImageSegmentBuilder subclass: #LibrarySegmentBuilder
 	instanceVariableNames: 'kernelBuilder requiredSpecs imports spec'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LibrarySegmentBuilder class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'LibrarySegmentBuilder class' category: 'Powerlang-Core-Building'!
 LibrarySegmentBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageSegmentWriter category: #'Powerlang-Core-Building'!
+!classDefinition: #ImageSegmentWriter category: 'Powerlang-Core-Building'!
 Object subclass: #ImageSegmentWriter
 	instanceVariableNames: 'stream objects space nextHash offsets size base module wordSize roots index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ImageSegmentWriter class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'ImageSegmentWriter class' category: 'Powerlang-Core-Building'!
 ImageSegmentWriter class
 	instanceVariableNames: ''!
 
-!classDefinition: #LookupNativizer category: #'Powerlang-Core-Building'!
+!classDefinition: #LookupNativizer category: 'Powerlang-Core-Building'!
 Object subclass: #LookupNativizer
 	instanceVariableNames: 'bootstrapper methods'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'LookupNativizer class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'LookupNativizer class' category: 'Powerlang-Core-Building'!
 LookupNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectMap category: #'Powerlang-Core-Building'!
+!classDefinition: #ObjectMap category: 'Powerlang-Core-Building'!
 Object subclass: #ObjectMap
 	instanceVariableNames: 'behavior spec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ObjectMap class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'ObjectMap class' category: 'Powerlang-Core-Building'!
 ObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #SlotObjectMap category: #'Powerlang-Core'!
+!classDefinition: #SlotObjectMap category: 'Powerlang-Core'!
 ObjectMap subclass: #SlotObjectMap
 	instanceVariableNames: 'slots hash'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SlotObjectMap class' category: #'Powerlang-Core'!
+!classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core'!
 SlotObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmallintObjectMap category: #'Powerlang-Core'!
+!classDefinition: #SmallintObjectMap category: 'Powerlang-Core'!
 ObjectMap subclass: #SmallintObjectMap
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SmallintObjectMap class' category: #'Powerlang-Core'!
+!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core'!
 SmallintObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteObjectMap category: #'Powerlang-Core-Building'!
+!classDefinition: #ByteObjectMap category: 'Powerlang-Core-Building'!
 ObjectMap subclass: #ByteObjectMap
 	instanceVariableNames: 'bytes hash'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Building'!
-!classDefinition: 'ByteObjectMap class' category: #'Powerlang-Core-Building'!
+!classDefinition: 'ByteObjectMap class' category: 'Powerlang-Core-Building'!
 ByteObjectMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShapeMap category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ShapeMap category: 'Powerlang-Core-Metaphysics'!
 ObjectMap subclass: #ShapeMap
 	instanceVariableNames: 'shapes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ShapeMap class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ShapeMap class' category: 'Powerlang-Core-Metaphysics'!
 ShapeMap class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodEvaluator category: #'Powerlang-Core-Emulation'!
+!classDefinition: #MethodEvaluator category: 'Powerlang-Core-Emulation'!
 Object subclass: #MethodEvaluator
 	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
 	classVariableNames: 'Undermessages'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'MethodEvaluator class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'MethodEvaluator class' category: 'Powerlang-Core-Emulation'!
 MethodEvaluator class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualDictionary category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualDictionary category: 'Powerlang-Core-Emulation'!
 Object subclass: #VirtualDictionary
 	instanceVariableNames: 'constant cache nilObj dictionary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualDictionary class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualDictionary class' category: 'Powerlang-Core-Emulation'!
 VirtualDictionary class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSmalltalkImage category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSmalltalkImage category: 'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSmalltalkImage
 	instanceVariableNames: 'nilObj falseObj trueObj wordSize minSMI maxSMI classes metaclasses kernel identityMap'
 	classVariableNames: 'KernelSpec'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkImage class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkImage class' category: 'Powerlang-Core-Emulation'!
 VirtualSmalltalkImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSmalltalkRuntime category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSmalltalkRuntime category: 'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSmalltalkRuntime
 	instanceVariableNames: 'image frames methodCache symbolCache smallintBehavior lastHash overrides globals virtualSpecies'
 	classVariableNames: 'Undermessages'
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSmalltalkRuntime class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSmalltalkRuntime class' category: 'Powerlang-Core-Emulation'!
 VirtualSmalltalkRuntime class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualSpecies category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualSpecies category: 'Powerlang-Core-Emulation'!
 Object subclass: #VirtualSpecies
 	instanceVariableNames: 'spec superclass map'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualSpecies class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualSpecies class' category: 'Powerlang-Core-Emulation'!
 VirtualSpecies class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualClass category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualClass category: 'Powerlang-Core-Emulation'!
 VirtualSpecies subclass: #VirtualClass
 	instanceVariableNames: 'cvars'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualClass class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualClass class' category: 'Powerlang-Core-Emulation'!
 VirtualClass class
 	instanceVariableNames: ''!
 
-!classDefinition: #VirtualMetaclass category: #'Powerlang-Core-Emulation'!
+!classDefinition: #VirtualMetaclass category: 'Powerlang-Core-Emulation'!
 VirtualSpecies subclass: #VirtualMetaclass
 	instanceVariableNames: 'class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'VirtualMetaclass class' category: #'Powerlang-Core-Emulation'!
+!classDefinition: 'VirtualMetaclass class' category: 'Powerlang-Core-Emulation'!
 VirtualMetaclass class
 	instanceVariableNames: ''!
 
-!classDefinition: #Bridge category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #Bridge category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Bridge
 	instanceVariableNames: 'cache objects runtime'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Bridge class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Bridge class' category: 'Powerlang-Core-Metaphysics'!
 Bridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkBridge category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #SmalltalkBridge category: 'Powerlang-Core-Metaphysics'!
 Bridge subclass: #SmalltalkBridge
 	instanceVariableNames: 'nilObj trueObj falseObj'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SmalltalkBridge class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkBridge class' category: 'Powerlang-Core-Metaphysics'!
 SmalltalkBridge class
 	instanceVariableNames: 'falseObj'!
 
-!classDefinition: #BootstrappedPstBridge category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #BootstrappedPstBridge
 	instanceVariableNames: 'bootstrapper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrappedPstBridge class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core-Metaphysics'!
 BootstrappedPstBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisBridge category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisBridge category: 'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #CuisBridge
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisBridge class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisBridge class' category: 'Powerlang-Core-Metaphysics'!
 CuisBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisStBridge category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisStBridge category: 'Powerlang-Core-Metaphysics'!
 SmalltalkBridge subclass: #CuisStBridge
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStBridge class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStBridge class' category: 'Powerlang-Core-Metaphysics'!
 CuisStBridge class
 	instanceVariableNames: ''!
 
-!classDefinition: #Gate category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #Gate category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Gate
 	instanceVariableNames: 'handle'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Gate class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Gate class' category: 'Powerlang-Core-Metaphysics'!
 Gate class
 	instanceVariableNames: ''!
 
-!classDefinition: #DirectGate category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #DirectGate category: 'Powerlang-Core-Metaphysics'!
 Gate subclass: #DirectGate
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DirectGate class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DirectGate class' category: 'Powerlang-Core-Metaphysics'!
 DirectGate class
 	instanceVariableNames: ''!
 
-!classDefinition: #MirageGate category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #MirageGate category: 'Powerlang-Core-Metaphysics'!
 Gate subclass: #MirageGate
 	instanceVariableNames: 'class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirageGate class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirageGate class' category: 'Powerlang-Core-Metaphysics'!
 MirageGate class
 	instanceVariableNames: ''!
 
-!classDefinition: #Handle category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #Handle category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Handle
 	instanceVariableNames: 'runtime'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Handle class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Handle class' category: 'Powerlang-Core-Metaphysics'!
 Handle class
 	instanceVariableNames: ''!
 
-!classDefinition: #PstFrameHandle category: #'Powerlang-Core'!
+!classDefinition: #PstFrameHandle category: 'Powerlang-Core'!
 Handle subclass: #PstFrameHandle
 	instanceVariableNames: 'frame'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'PstFrameHandle class' category: #'Powerlang-Core'!
+!classDefinition: 'PstFrameHandle class' category: 'Powerlang-Core'!
 PstFrameHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisStFrameHandle category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisStFrameHandle category: 'Powerlang-Core-Metaphysics'!
 Handle subclass: #CuisStFrameHandle
 	instanceVariableNames: 'frame'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisStFrameHandle class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisStFrameHandle class' category: 'Powerlang-Core-Metaphysics'!
 CuisStFrameHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHandle category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectHandle category: 'Powerlang-Core-Metaphysics'!
 Handle subclass: #ObjectHandle
 	instanceVariableNames: 'oid'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHandle class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHandle class' category: 'Powerlang-Core-Metaphysics'!
 ObjectHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalHandle category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #LocalHandle category: 'Powerlang-Core-Metaphysics'!
 ObjectHandle subclass: #LocalHandle
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'LocalHandle class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'LocalHandle class' category: 'Powerlang-Core-Metaphysics'!
 LocalHandle class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodLookup category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #MethodLookup category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #MethodLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MethodLookup class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MethodLookup class' category: 'Powerlang-Core-Metaphysics'!
 MethodLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisLookup category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisLookup category: 'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #CuisLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisLookup class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisLookup class' category: 'Powerlang-Core-Metaphysics'!
 CuisLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #EmulationLookup category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #EmulationLookup category: 'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #EmulationLookup
 	instanceVariableNames: 'spec globals cache'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'EmulationLookup class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'EmulationLookup class' category: 'Powerlang-Core-Metaphysics'!
 EmulationLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #MirrorLookup category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #MirrorLookup category: 'Powerlang-Core-Metaphysics'!
 MethodLookup subclass: #MirrorLookup
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'MirrorLookup class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'MirrorLookup class' category: 'Powerlang-Core-Metaphysics'!
 MirrorLookup class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectFormat category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectFormat category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #ObjectFormat
 	instanceVariableNames: 'runtime storage'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
 ObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrapObjectFormat category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrapObjectFormat category: 'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #BootstrapObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
 BootstrapObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisObjectFormat category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #CuisObjectFormat category: 'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #CuisObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'CuisObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'CuisObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
 CuisObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #DmrObjectFormat category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #DmrObjectFormat category: 'Powerlang-Core-Metaphysics'!
 ObjectFormat subclass: #DmrObjectFormat
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'DmrObjectFormat class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'DmrObjectFormat class' category: 'Powerlang-Core-Metaphysics'!
 DmrObjectFormat class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectShape category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ObjectShape category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #ObjectShape
 	instanceVariableNames: 'name fields'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectShape class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectShape class' category: 'Powerlang-Core-Metaphysics'!
 ObjectShape class
 	instanceVariableNames: ''!
 
-!classDefinition: #Runtime category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #Runtime category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Runtime
 	instanceVariableNames: 'lookup storage objectFormat bridge sources shapeMap objectModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Runtime class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Runtime class' category: 'Powerlang-Core-Metaphysics'!
 Runtime class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionInterpreter category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #SExpressionInterpreter category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #SExpressionInterpreter
 	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SExpressionInterpreter class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SExpressionInterpreter class' category: 'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkInterpreter category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #SmalltalkInterpreter category: 'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter subclass: #SmalltalkInterpreter
 	instanceVariableNames: 'localRuntime'
 	classVariableNames: 'Underprimitives'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'SmalltalkInterpreter class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkInterpreter class' category: 'Powerlang-Core-Metaphysics'!
 SmalltalkInterpreter class
 	instanceVariableNames: ''!
 
-!classDefinition: #Storage category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #Storage category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Storage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'Storage class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Storage class' category: 'Powerlang-Core-Metaphysics'!
 Storage class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrapStorage category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #BootstrapStorage category: 'Powerlang-Core-Metaphysics'!
 Storage subclass: #BootstrapStorage
 	instanceVariableNames: 'bootstrapper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrapStorage class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrapStorage class' category: 'Powerlang-Core-Metaphysics'!
 BootstrapStorage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteArrayAdapter category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: #ByteArrayAdapter category: 'Powerlang-Core-Metaphysics'!
 Storage subclass: #ByteArrayAdapter
 	instanceVariableNames: 'bytes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ByteArrayAdapter class' category: #'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ByteArrayAdapter class' category: 'Powerlang-Core-Metaphysics'!
 ByteArrayAdapter class
 	instanceVariableNames: ''!
 
-!classDefinition: #Mirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #Mirror category: 'Powerlang-Core-Mirrors'!
 Object subclass: #Mirror
 	instanceVariableNames: 'handle'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'Mirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'Mirror class' category: 'Powerlang-Core-Mirrors'!
 Mirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackFrameMirror category: #'Powerlang-Core'!
+!classDefinition: #StackFrameMirror category: 'Powerlang-Core'!
 Mirror subclass: #StackFrameMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'FrameOffsets'
 	category: 'Powerlang-Core'!
-!classDefinition: 'StackFrameMirror class' category: #'Powerlang-Core'!
+!classDefinition: 'StackFrameMirror class' category: 'Powerlang-Core'!
 StackFrameMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ObjectMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #ObjectMirror category: 'Powerlang-Core-Mirrors'!
 Mirror subclass: #ObjectMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ObjectMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'ObjectMirror class' category: 'Powerlang-Core-Mirrors'!
 ObjectMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssociationMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #AssociationMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #AssociationMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'AssociationMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'AssociationMirror class' category: 'Powerlang-Core-Mirrors'!
 AssociationMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #BehaviorMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #BehaviorMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #BehaviorMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'BehaviorMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'BehaviorMirror class' category: 'Powerlang-Core-Mirrors'!
 BehaviorMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClosureMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #ClosureMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #ClosureMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClosureMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClosureMirror class' category: 'Powerlang-Core-Mirrors'!
 ClosureMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledBlockMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledBlockMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #CompiledBlockMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'CompiledBlockFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockMirror class' category: 'Powerlang-Core-Mirrors'!
 CompiledBlockMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompiledMethodMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #CompiledMethodMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #CompiledMethodMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'CompiledMethodFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodMirror class' category: 'Powerlang-Core-Mirrors'!
 CompiledMethodMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #DictionaryMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #DictionaryMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #DictionaryMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'DictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'DictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
 DictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodDictionaryMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #MethodDictionaryMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #MethodDictionaryMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MethodDictionaryMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'MethodDictionaryMirror class' category: 'Powerlang-Core-Mirrors'!
 MethodDictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #SpeciesMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #SpeciesMirror category: 'Powerlang-Core-Mirrors'!
 ObjectMirror subclass: #SpeciesMirror
 	instanceVariableNames: ''
 	classVariableNames: 'Flags'
 	poolDictionaries: 'SpeciesFormatMasks'
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'SpeciesMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'SpeciesMirror class' category: 'Powerlang-Core-Mirrors'!
 SpeciesMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #ClassMirror category: 'Powerlang-Core-Mirrors'!
 SpeciesMirror subclass: #ClassMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'ClassMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'ClassMirror class' category: 'Powerlang-Core-Mirrors'!
 ClassMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #MetaclassMirror category: #'Powerlang-Core-Mirrors'!
+!classDefinition: #MetaclassMirror category: 'Powerlang-Core-Mirrors'!
 SpeciesMirror subclass: #MetaclassMirror
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'MetaclassMirror class' category: #'Powerlang-Core-Mirrors'!
+!classDefinition: 'MetaclassMirror class' category: 'Powerlang-Core-Mirrors'!
 MetaclassMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #BinaryMessageNativizer category: #'Powerlang-Core-Nativization'!
+!classDefinition: #BinaryMessageNativizer category: 'Powerlang-Core-Nativization'!
 Object subclass: #BinaryMessageNativizer
 	instanceVariableNames: 'message assembler nativizer done failed'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'BinaryMessageNativizer class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'BinaryMessageNativizer class' category: 'Powerlang-Core-Nativization'!
 BinaryMessageNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlinedMessageNativizer category: #'Powerlang-Core-Nativization'!
+!classDefinition: #InlinedMessageNativizer category: 'Powerlang-Core-Nativization'!
 Object subclass: #InlinedMessageNativizer
 	instanceVariableNames: 'message assembler nativizer start end'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlinedMessageNativizer class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'InlinedMessageNativizer class' category: 'Powerlang-Core-Nativization'!
 InlinedMessageNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #MessageLinker category: 'Powerlang-Core-Nativization'!
 Object subclass: #MessageLinker
 	instanceVariableNames: 'filter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'MessageLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'MessageLinker class' category: 'Powerlang-Core-Nativization'!
 MessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompositeMessageLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #CompositeMessageLinker category: 'Powerlang-Core-Nativization'!
 MessageLinker subclass: #CompositeMessageLinker
 	instanceVariableNames: 'candidates'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'CompositeMessageLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'CompositeMessageLinker class' category: 'Powerlang-Core-Nativization'!
 CompositeMessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #HaltingSend category: #'Powerlang-Core-Nativization'!
+!classDefinition: #HaltingSend category: 'Powerlang-Core-Nativization'!
 MessageLinker subclass: #HaltingSend
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'HaltingSend class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'HaltingSend class' category: 'Powerlang-Core-Nativization'!
 HaltingSend class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlineMessageLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #InlineMessageLinker category: 'Powerlang-Core-Nativization'!
 MessageLinker subclass: #InlineMessageLinker
 	instanceVariableNames: 'assembler map'
 	classVariableNames: ''
 	poolDictionaries: 'InlineMessageLinkerFlags Registers'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinker class' category: 'Powerlang-Core-Nativization'!
 InlineMessageLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #InvokeLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #InvokeLinker category: 'Powerlang-Core-Nativization'!
 MessageLinker subclass: #InvokeLinker
 	instanceVariableNames: 'invoker sends'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InvokeLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'InvokeLinker class' category: 'Powerlang-Core-Nativization'!
 InvokeLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #LookupLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LookupLinker category: 'Powerlang-Core-Nativization'!
 MessageLinker subclass: #LookupLinker
 	instanceVariableNames: 'lookup lookupSuper'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LookupLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LookupLinker class' category: 'Powerlang-Core-Nativization'!
 LookupLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #LazyLinker category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LazyLinker category: 'Powerlang-Core-Nativization'!
 LookupLinker subclass: #LazyLinker
 	instanceVariableNames: 'sends'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LazyLinker class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LazyLinker class' category: 'Powerlang-Core-Nativization'!
 LazyLinker class
 	instanceVariableNames: ''!
 
-!classDefinition: #NativizationEnvironment category: #'Powerlang-Core-Nativization'!
+!classDefinition: #NativizationEnvironment category: 'Powerlang-Core-Nativization'!
 Object subclass: #NativizationEnvironment
 	instanceVariableNames: 'optimizedMethods invokedMethods inlinedMethods messageLinker globals writeBarrier abi safepointCheck cachedNativizer busy'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'NativizationEnvironment class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'NativizationEnvironment class' category: 'Powerlang-Core-Nativization'!
 NativizationEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #Opcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #Opcode category: 'Powerlang-Core-Nativization'!
 Object subclass: #Opcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'Opcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'Opcode class' category: 'Powerlang-Core-Nativization'!
 Opcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureSmallIntegerOpcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureSmallIntegerOpcode category: 'Powerlang-Core-Nativization'!
 Opcode subclass: #EnsureSmallIntegerOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureSmallIntegerOpcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureSmallIntegerOpcode class' category: 'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureASmallInteger category: #'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureASmallInteger category: 'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode subclass: #EnsureASmallInteger
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureASmallInteger class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureASmallInteger class' category: 'Powerlang-Core-Nativization'!
 EnsureASmallInteger class
 	instanceVariableNames: ''!
 
-!classDefinition: #EnsureRSmallInteger category: #'Powerlang-Core-Nativization'!
+!classDefinition: #EnsureRSmallInteger category: 'Powerlang-Core-Nativization'!
 EnsureSmallIntegerOpcode subclass: #EnsureRSmallInteger
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'EnsureRSmallInteger class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'EnsureRSmallInteger class' category: 'Powerlang-Core-Nativization'!
 EnsureRSmallInteger class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAOpcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAOpcode category: 'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadAOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAOpcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAOpcode class' category: 'Powerlang-Core-Nativization'!
 LoadAOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAvisitingArgument category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAvisitingArgument category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAvisitingArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAvisitingArgument class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAvisitingArgument class' category: 'Powerlang-Core-Nativization'!
 LoadAvisitingArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithFalse category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithFalse category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithFalse class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithFalse class' category: 'Powerlang-Core-Nativization'!
 LoadAwithFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithInstVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithInstVar category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithInstVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithInstVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithInstVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithInstVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLiteralVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLiteralVar category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithLiteralVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteralVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteralVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithAssocVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithAssocVar category: 'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithAssocVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithAssocVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithAssocVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithAssocVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithClassVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithClassVar category: 'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithClassVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithClassVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithClassVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithClassVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithGlobal category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithGlobal category: 'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithGlobal
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithGlobal class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithGlobal class' category: 'Powerlang-Core-Nativization'!
 LoadAwithGlobal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithPoolVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithPoolVar category: 'Powerlang-Core-Nativization'!
 LoadAwithAssocVar subclass: #LoadAwithPoolVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithPoolVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithPoolVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithPoolVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithConstPoolVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithConstPoolVar category: 'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithConstPoolVar
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithConstPoolVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithConstPoolVar class' category: 'Powerlang-Core-Nativization'!
 LoadAwithConstPoolVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLiteral category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLiteral category: 'Powerlang-Core-Nativization'!
 LoadAwithLiteralVar subclass: #LoadAwithLiteral
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLiteral class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLiteral class' category: 'Powerlang-Core-Nativization'!
 LoadAwithLiteral class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithLocal category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithLocal category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithLocal
 	instanceVariableNames: 'index environment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithLocal class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithLocal class' category: 'Powerlang-Core-Nativization'!
 LoadAwithLocal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithArgument category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithArgument category: 'Powerlang-Core-Nativization'!
 LoadAwithLocal subclass: #LoadAwithArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithArgument class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithArgument class' category: 'Powerlang-Core-Nativization'!
 LoadAwithArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithTemporary category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithTemporary category: 'Powerlang-Core-Nativization'!
 LoadAwithLocal subclass: #LoadAwithTemporary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTemporary class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTemporary class' category: 'Powerlang-Core-Nativization'!
 LoadAwithTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithNil category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithNil category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithNil
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithNil class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithNil class' category: 'Powerlang-Core-Nativization'!
 LoadAwithNil class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithSelf category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithSelf category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithSelf
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithSelf class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithSelf class' category: 'Powerlang-Core-Nativization'!
 LoadAwithSelf class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadAwithTrue category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadAwithTrue category: 'Powerlang-Core-Nativization'!
 LoadAOpcode subclass: #LoadAwithTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadAwithTrue class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadAwithTrue class' category: 'Powerlang-Core-Nativization'!
 LoadAwithTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadExpressionOpcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadExpressionOpcode category: 'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadExpressionOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadExpressionOpcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadExpressionOpcode class' category: 'Powerlang-Core-Nativization'!
 LoadExpressionOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithReceiver category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithReceiver category: 'Powerlang-Core-Nativization'!
 LoadExpressionOpcode subclass: #LoadRwithReceiver
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithReceiver class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithReceiver class' category: 'Powerlang-Core-Nativization'!
 LoadRwithReceiver class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadROpcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadROpcode category: 'Powerlang-Core-Nativization'!
 Opcode subclass: #LoadROpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadROpcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadROpcode class' category: 'Powerlang-Core-Nativization'!
 LoadROpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRvisitingReceiver category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRvisitingReceiver category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRvisitingReceiver
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRvisitingReceiver class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRvisitingReceiver class' category: 'Powerlang-Core-Nativization'!
 LoadRvisitingReceiver class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithFalse category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithFalse category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithFalse class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithFalse class' category: 'Powerlang-Core-Nativization'!
 LoadRwithFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithInstVar category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithInstVar category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithInstVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithInstVar class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithInstVar class' category: 'Powerlang-Core-Nativization'!
 LoadRwithInstVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithLocal category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithLocal category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithLocal
 	instanceVariableNames: 'index environment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithLocal class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithLocal class' category: 'Powerlang-Core-Nativization'!
 LoadRwithLocal class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithArgument category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithArgument category: 'Powerlang-Core-Nativization'!
 LoadRwithLocal subclass: #LoadRwithArgument
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithArgument class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithArgument class' category: 'Powerlang-Core-Nativization'!
 LoadRwithArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithTemporary category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithTemporary category: 'Powerlang-Core-Nativization'!
 LoadRwithLocal subclass: #LoadRwithTemporary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTemporary class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTemporary class' category: 'Powerlang-Core-Nativization'!
 LoadRwithTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithNil category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithNil category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithNil
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithNil class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithNil class' category: 'Powerlang-Core-Nativization'!
 LoadRwithNil class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithSelf category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithSelf category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithSelf
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithSelf class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithSelf class' category: 'Powerlang-Core-Nativization'!
 LoadRwithSelf class
 	instanceVariableNames: ''!
 
-!classDefinition: #LoadRwithTrue category: #'Powerlang-Core-Nativization'!
+!classDefinition: #LoadRwithTrue category: 'Powerlang-Core-Nativization'!
 LoadROpcode subclass: #LoadRwithTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'LoadRwithTrue class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'LoadRwithTrue class' category: 'Powerlang-Core-Nativization'!
 LoadRwithTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackOpcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #StackOpcode category: 'Powerlang-Core-Nativization'!
 Opcode subclass: #StackOpcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'StackOpcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'StackOpcode class' category: 'Powerlang-Core-Nativization'!
 StackOpcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #PopRopcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #PopRopcode category: 'Powerlang-Core-Nativization'!
 StackOpcode subclass: #PopRopcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PopRopcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'PopRopcode class' category: 'Powerlang-Core-Nativization'!
 PopRopcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #PushRopcode category: #'Powerlang-Core-Nativization'!
+!classDefinition: #PushRopcode category: 'Powerlang-Core-Nativization'!
 StackOpcode subclass: #PushRopcode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'PushRopcode class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'PushRopcode class' category: 'Powerlang-Core-Nativization'!
 PushRopcode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpressionNativizer category: #'Powerlang-Core-Nativization'!
+!classDefinition: #SExpressionNativizer category: 'Powerlang-Core-Nativization'!
 Object subclass: #SExpressionNativizer
 	instanceVariableNames: 'environment assembler method remainingBlocks safepointCheck mainCode stackCount fallbacks activeScript'
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SExpressionNativizer class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'SExpressionNativizer class' category: 'Powerlang-Core-Nativization'!
 SExpressionNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SendSite category: #'Powerlang-Core-Nativization'!
+!classDefinition: #SendSite category: 'Powerlang-Core-Nativization'!
 Object subclass: #SendSite
 	instanceVariableNames: 'instructions selector cache tally format'
 	classVariableNames: ''
 	poolDictionaries: 'SendSiteFlags'
 	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSite class' category: #'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSite class' category: 'Powerlang-Core-Nativization'!
 SendSite class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBlockInliner category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingBlockInliner category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBlockInliner
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBlockInliner class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBlockInliner class' category: 'Powerlang-Core-OCompiler'!
 OptimizingBlockInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBraunAllocator category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingBraunAllocator category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBraunAllocator
 	instanceVariableNames: 'firstBlock currentBlock loops liveness allocationEntry allocationExit distancesExit spillExit currentlyAvailable currentlySpilled temporaries amountOfRegisters scheduledSpills scheduledReloads blocksDone deferredCouplings'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBraunAllocator class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBraunAllocator class' category: 'Powerlang-Core-OCompiler'!
 OptimizingBraunAllocator class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingBraunAssigner category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingBraunAssigner category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingBraunAssigner
 	instanceVariableNames: 'firstBlock liveness allocationEntry temporaries preferences occupied assignments clusters processed'
 	classVariableNames: ''
 	poolDictionaries: 'Registers'
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingBraunAssigner class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingBraunAssigner class' category: 'Powerlang-Core-OCompiler'!
 OptimizingBraunAssigner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCFGSimplifier category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCFGSimplifier category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCFGSimplifier
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCFGSimplifier class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCFGSimplifier class' category: 'Powerlang-Core-OCompiler'!
 OptimizingCFGSimplifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCSSATransformer category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCSSATransformer category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCSSATransformer
 	instanceVariableNames: 'firstBlock liveness'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCSSATransformer class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCSSATransformer class' category: 'Powerlang-Core-OCompiler'!
 OptimizingCSSATransformer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingCodeEmitter category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingCodeEmitter category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingCodeEmitter
 	instanceVariableNames: 'allocation assembler abi jumpDestinations assemblers method firstBlock currentBlockIndex blocks messageLinker'
 	classVariableNames: ''
 	poolDictionaries: 'ObjectHeaderMasks ObjectHeaderOffsets'
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingCodeEmitter class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingCodeEmitter class' category: 'Powerlang-Core-OCompiler'!
 OptimizingCodeEmitter class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingInstructionFragmenter category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingInstructionFragmenter category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingInstructionFragmenter
 	instanceVariableNames: 'method messages firstBlock abi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingInstructionFragmenter class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionFragmenter class' category: 'Powerlang-Core-OCompiler'!
 OptimizingInstructionFragmenter class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingInstructionSelector category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingInstructionSelector category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingInstructionSelector
 	instanceVariableNames: 'firstBlock tiles roots messages'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingInstructionSelector class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingInstructionSelector class' category: 'Powerlang-Core-OCompiler'!
 OptimizingInstructionSelector class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingLivenessAnalysis category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingLivenessAnalysis category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingLivenessAnalysis
 	instanceVariableNames: 'firstBlock liveIn liveOut loops pressures expirations'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingLivenessAnalysis class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingLivenessAnalysis class' category: 'Powerlang-Core-OCompiler'!
 OptimizingLivenessAnalysis class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingMethodInliner category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingMethodInliner category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingMethodInliner
 	instanceVariableNames: 'environment firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingMethodInliner class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingMethodInliner class' category: 'Powerlang-Core-OCompiler'!
 OptimizingMethodInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingNativizer category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingNativizer category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingNativizer
 	instanceVariableNames: 'environment method firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingNativizer class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingNativizer class' category: 'Powerlang-Core-OCompiler'!
 OptimizingNativizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingPhiSimplification category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingPhiSimplification category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingPhiSimplification
 	instanceVariableNames: 'marks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingPhiSimplification class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingPhiSimplification class' category: 'Powerlang-Core-OCompiler'!
 OptimizingPhiSimplification class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingRegisterAllocator category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingRegisterAllocator category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingRegisterAllocator
 	instanceVariableNames: 'abi liveRanges unifiedLiveRanges expirations allocation free used usedOut locals currentBlock firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingRegisterAllocator class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingRegisterAllocator class' category: 'Powerlang-Core-OCompiler'!
 OptimizingRegisterAllocator class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingSSAReconstructor category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingSSAReconstructor category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingSSAReconstructor
 	instanceVariableNames: 'firstBlock variable reloads idoms iteratedFrontiers insertedPhis blocks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingSSAReconstructor class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingSSAReconstructor class' category: 'Powerlang-Core-OCompiler'!
 OptimizingSSAReconstructor class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingTwoAddressEnforcer category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingTwoAddressEnforcer category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingTwoAddressEnforcer
 	instanceVariableNames: 'allocation firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingTwoAddressEnforcer class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingTwoAddressEnforcer class' category: 'Powerlang-Core-OCompiler'!
 OptimizingTwoAddressEnforcer class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingUsesVerifier category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingUsesVerifier category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingUsesVerifier
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingUsesVerifier class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingUsesVerifier class' category: 'Powerlang-Core-OCompiler'!
 OptimizingUsesVerifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingValueNumbering category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingValueNumbering category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingValueNumbering
 	instanceVariableNames: 'firstBlock currentBlock names hashes hashesOut constHashes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingValueNumbering class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingValueNumbering class' category: 'Powerlang-Core-OCompiler'!
 OptimizingValueNumbering class
 	instanceVariableNames: ''!
 
-!classDefinition: #OptimizingVariableBinder category: #'Powerlang-Core-OCompiler'!
+!classDefinition: #OptimizingVariableBinder category: 'Powerlang-Core-OCompiler'!
 Object subclass: #OptimizingVariableBinder
 	instanceVariableNames: 'definitions currentBlock dominatorTree immediateDominators dominanceFrontiers pendingReads pendingPhis abi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler'!
-!classDefinition: 'OptimizingVariableBinder class' category: #'Powerlang-Core-OCompiler'!
+!classDefinition: 'OptimizingVariableBinder class' category: 'Powerlang-Core-OCompiler'!
 OptimizingVariableBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBasicBlock category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBasicBlock category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OBasicBlock
 	instanceVariableNames: 'firstInstruction lastInstruction predecessors'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBasicBlock class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBasicBlock class' category: 'Powerlang-Core-OCompiler-IR'!
 OBasicBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #ODominatorTree category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #ODominatorTree category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #ODominatorTree
 	instanceVariableNames: 'block dominators dominated'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'ODominatorTree class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODominatorTree class' category: 'Powerlang-Core-OCompiler-IR'!
 ODominatorTree class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLiveRange category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLiveRange category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OLiveRange
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
 OLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OComposedLiveRange category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OComposedLiveRange category: 'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OComposedLiveRange
 	instanceVariableNames: 'ranges'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OComposedLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OComposedLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
 OComposedLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLoadConstant category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLoadConstant category: 'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OLoadConstant
 	instanceVariableNames: 'constant'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLoadConstant class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadConstant class' category: 'Powerlang-Core-OCompiler-IR'!
 OLoadConstant class
 	instanceVariableNames: ''!
 
-!classDefinition: #OSimpleLiveRange category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OSimpleLiveRange category: 'Powerlang-Core-OCompiler-IR'!
 OLiveRange subclass: #OSimpleLiveRange
 	instanceVariableNames: 'definition uses definitionBlock usesBlocks isSpilled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OSimpleLiveRange class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OSimpleLiveRange class' category: 'Powerlang-Core-OCompiler-IR'!
 OSimpleLiveRange class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTiling category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OTiling category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OTiling
 	instanceVariableNames: 'action cost used instruction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTiling class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTiling class' category: 'Powerlang-Core-OCompiler-IR'!
 OTiling class
 	instanceVariableNames: ''!
 
-!classDefinition: #OValue category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OValue category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OValue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OValue class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OValue class' category: 'Powerlang-Core-OCompiler-IR'!
 OValue class
 	instanceVariableNames: ''!
 
-!classDefinition: #OConstant category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OConstant category: 'Powerlang-Core-OCompiler-IR'!
 OValue subclass: #OConstant
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OConstant class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OConstant class' category: 'Powerlang-Core-OCompiler-IR'!
 OConstant class
 	instanceVariableNames: ''!
 
-!classDefinition: #OInstruction category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OInstruction category: 'Powerlang-Core-OCompiler-IR'!
 OValue subclass: #OInstruction
 	instanceVariableNames: 'prev next firstUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBeginInstruction category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBeginInstruction category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OBeginInstruction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBeginInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBeginInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
 OBeginInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBlockClosure category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBlockClosure category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OBlockClosure
 	instanceVariableNames: 'firstBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBlockClosure class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBlockClosure class' category: 'Powerlang-Core-OCompiler-IR'!
 OBlockClosure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ODefineArgument category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #ODefineArgument category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #ODefineArgument
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'ODefineArgument class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'ODefineArgument class' category: 'Powerlang-Core-OCompiler-IR'!
 ODefineArgument class
 	instanceVariableNames: ''!
 
-!classDefinition: #OEndInstruction category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OEndInstruction category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OEndInstruction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OEndInstruction class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OEndInstruction class' category: 'Powerlang-Core-OCompiler-IR'!
 OEndInstruction class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJump category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJump category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OJump
 	instanceVariableNames: 'target'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJump class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJump class' category: 'Powerlang-Core-OCompiler-IR'!
 OJump class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpConditional category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpConditional category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OJumpConditional
 	instanceVariableNames: 'variable target implicitTarget'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpConditional class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpConditional class' category: 'Powerlang-Core-OCompiler-IR'!
 OJumpConditional class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpFalse category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpFalse category: 'Powerlang-Core-OCompiler-IR'!
 OJumpConditional subclass: #OJumpFalse
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpFalse class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpFalse class' category: 'Powerlang-Core-OCompiler-IR'!
 OJumpFalse class
 	instanceVariableNames: ''!
 
-!classDefinition: #OJumpTrue category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OJumpTrue category: 'Powerlang-Core-OCompiler-IR'!
 OJumpConditional subclass: #OJumpTrue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OJumpTrue class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OJumpTrue class' category: 'Powerlang-Core-OCompiler-IR'!
 OJumpTrue class
 	instanceVariableNames: ''!
 
-!classDefinition: #OLoadImplicit category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OLoadImplicit category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OLoadImplicit
 	instanceVariableNames: 'name source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OLoadImplicit class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OLoadImplicit class' category: 'Powerlang-Core-OCompiler-IR'!
 OLoadImplicit class
 	instanceVariableNames: ''!
 
-!classDefinition: #OActivationContext category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OActivationContext category: 'Powerlang-Core-OCompiler-IR'!
 OLoadImplicit subclass: #OActivationContext
 	instanceVariableNames: 'hasFrame temporaries storesPreviousSelf'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OActivationContext class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OActivationContext class' category: 'Powerlang-Core-OCompiler-IR'!
 OActivationContext class
 	instanceVariableNames: ''!
 
-!classDefinition: #OMessageSend category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OMessageSend category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OMessageSend
 	instanceVariableNames: 'receiver selector arguments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OMessageSend class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OMessageSend class' category: 'Powerlang-Core-OCompiler-IR'!
 OMessageSend class
 	instanceVariableNames: ''!
 
-!classDefinition: #OPhi category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OPhi category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OPhi
 	instanceVariableNames: 'variables blocks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPhi class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPhi class' category: 'Powerlang-Core-OCompiler-IR'!
 OPhi class
 	instanceVariableNames: ''!
 
-!classDefinition: #OPrimitiveOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OPrimitiveOperation category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OPrimitiveOperation
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OPrimitiveOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OPrimitiveOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryOperation category: 'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OBinaryOperation
 	instanceVariableNames: 'left right'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryConstantOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryConstantOperation category: 'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation subclass: #OBinaryConstantOperation
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryConstantOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryConstantOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OBinaryConstantOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OBinaryVariableOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OBinaryVariableOperation category: 'Powerlang-Core-OCompiler-IR'!
 OBinaryOperation subclass: #OBinaryVariableOperation
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OBinaryVariableOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OBinaryVariableOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OBinaryVariableOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTernaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OTernaryOperation category: 'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OTernaryOperation
 	instanceVariableNames: 'receiver left right'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTernaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTernaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OTernaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OUnaryOperation category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OUnaryOperation category: 'Powerlang-Core-OCompiler-IR'!
 OPrimitiveOperation subclass: #OUnaryOperation
 	instanceVariableNames: 'receiver'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OUnaryOperation class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUnaryOperation class' category: 'Powerlang-Core-OCompiler-IR'!
 OUnaryOperation class
 	instanceVariableNames: ''!
 
-!classDefinition: #OReturn category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OReturn category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OReturn
 	instanceVariableNames: 'source frame argumentsCount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReturn class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReturn class' category: 'Powerlang-Core-OCompiler-IR'!
 OReturn class
 	instanceVariableNames: ''!
 
-!classDefinition: #OUseVariable category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OUseVariable category: 'Powerlang-Core-OCompiler-IR'!
 OInstruction subclass: #OUseVariable
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OUseVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OUseVariable class' category: 'Powerlang-Core-OCompiler-IR'!
 OUseVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OReadVariable category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OReadVariable category: 'Powerlang-Core-OCompiler-IR'!
 OUseVariable subclass: #OReadVariable
 	instanceVariableNames: 'source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OReadVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OReadVariable class' category: 'Powerlang-Core-OCompiler-IR'!
 OReadVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OWriteVariable category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OWriteVariable category: 'Powerlang-Core-OCompiler-IR'!
 OUseVariable subclass: #OWriteVariable
 	instanceVariableNames: 'source'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OWriteVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OWriteVariable class' category: 'Powerlang-Core-OCompiler-IR'!
 OWriteVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OVariable category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OVariable category: 'Powerlang-Core-OCompiler-IR'!
 Object subclass: #OVariable
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OVariable class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OVariable class' category: 'Powerlang-Core-OCompiler-IR'!
 OVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #OTemporary category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: #OTemporary category: 'Powerlang-Core-OCompiler-IR'!
 OVariable subclass: #OTemporary
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-OCompiler-IR'!
-!classDefinition: 'OTemporary class' category: #'Powerlang-Core-OCompiler-IR'!
+!classDefinition: 'OTemporary class' category: 'Powerlang-Core-OCompiler-IR'!
 OTemporary class
 	instanceVariableNames: ''!
 
-!classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #IdentifierBinder category: 'Powerlang-Core-SCompiler'!
 Object subclass: #IdentifierBinder
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'IdentifierBinder class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'IdentifierBinder class' category: 'Powerlang-Core-SCompiler'!
 IdentifierBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #StaticBinder category: #'Powerlang-Core'!
+!classDefinition: #StaticBinder category: 'Powerlang-Core'!
 IdentifierBinder subclass: #StaticBinder
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StaticBinder class' category: #'Powerlang-Core'!
+!classDefinition: 'StaticBinder class' category: 'Powerlang-Core'!
 StaticBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #DynamicBinder category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #DynamicBinder category: 'Powerlang-Core-SCompiler'!
 IdentifierBinder subclass: #DynamicBinder
 	instanceVariableNames: 'type'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'DynamicBinder class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'DynamicBinder class' category: 'Powerlang-Core-SCompiler'!
 DynamicBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalEnvironment category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #LocalEnvironment category: 'Powerlang-Core-SCompiler'!
 Object subclass: #LocalEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'LocalEnvironment class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'LocalEnvironment class' category: 'Powerlang-Core-SCompiler'!
 LocalEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackEnvironment category: #'Powerlang-Core'!
+!classDefinition: #StackEnvironment category: 'Powerlang-Core'!
 LocalEnvironment subclass: #StackEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'StackEnvironment class' category: #'Powerlang-Core'!
+!classDefinition: 'StackEnvironment class' category: 'Powerlang-Core'!
 StackEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentEnvironment category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #ArgumentEnvironment category: 'Powerlang-Core-SCompiler'!
 StackEnvironment subclass: #ArgumentEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArgumentEnvironment class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArgumentEnvironment class' category: 'Powerlang-Core-SCompiler'!
 ArgumentEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlinedArgEnvironment category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #InlinedArgEnvironment category: 'Powerlang-Core-SCompiler'!
 StackEnvironment subclass: #InlinedArgEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'InlinedArgEnvironment class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'InlinedArgEnvironment class' category: 'Powerlang-Core-SCompiler'!
 InlinedArgEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArrayEnvironment category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #ArrayEnvironment category: 'Powerlang-Core-SCompiler'!
 LocalEnvironment subclass: #ArrayEnvironment
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArrayEnvironment class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core-SCompiler'!
 ArrayEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageInliner category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #MessageInliner category: 'Powerlang-Core-SCompiler'!
 Object subclass: #MessageInliner
 	instanceVariableNames: 'message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MessageInliner class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'MessageInliner class' category: 'Powerlang-Core-SCompiler'!
 MessageInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationResult category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationResult category: 'Powerlang-Core-SCompiler'!
 Object subclass: #SCompilationResult
 	instanceVariableNames: 'compiler error ast method'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationResult class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompilationResult class' category: 'Powerlang-Core-SCompiler'!
 SCompilationResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlock category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlock category: 'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiledBlock
 	instanceVariableNames: 'format nativeCode method'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledBlockFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlock class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlock class' category: 'Powerlang-Core-SCompiler'!
 SCompiledBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlockBuilder category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledBlockBuilder category: 'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiledBlockBuilder
 	instanceVariableNames: 'scope node'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledBlockFlags'
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockBuilder class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockBuilder class' category: 'Powerlang-Core-SCompiler'!
 SCompiledBlockBuilder class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiler category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiler category: 'Powerlang-Core-SCompiler'!
 Object subclass: #SCompiler
 	instanceVariableNames: 'errorHandler result class pools namespace'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiler class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiler class' category: 'Powerlang-Core-SCompiler'!
 SCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #ScriptScope category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #ScriptScope category: 'Powerlang-Core-SCompiler'!
 Object subclass: #ScriptScope
 	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ScriptScope class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'ScriptScope class' category: 'Powerlang-Core-SCompiler'!
 ScriptScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #BlockScope category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #BlockScope category: 'Powerlang-Core-SCompiler'!
 ScriptScope subclass: #BlockScope
 	instanceVariableNames: 'environments captured'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'BlockScope class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'BlockScope class' category: 'Powerlang-Core-SCompiler'!
 BlockScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodScope category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #MethodScope category: 'Powerlang-Core-SCompiler'!
 ScriptScope subclass: #MethodScope
 	instanceVariableNames: 'species pseudo ivars cvars pools globals'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MethodScope class' category: #'Powerlang-Core-SCompiler'!
+!classDefinition: 'MethodScope class' category: 'Powerlang-Core-SCompiler'!
 MethodScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #Binding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #Binding category: 'Powerlang-Core-SCompiler-Bindings'!
 Object subclass: #Binding
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'Binding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'Binding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #AssociationBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #AssociationBinding
 	instanceVariableNames: 'association'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'AssociationBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'AssociationBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ClassVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #ClassVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 ClassVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #GlobalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #GlobalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #GlobalBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'GlobalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'GlobalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 GlobalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ClassBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 GlobalBinding subclass: #ClassBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ClassBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ClassBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 ClassBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #PoolVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #PoolVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 AssociationBinding subclass: #PoolVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'PoolVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'PoolVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 PoolVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ConstantPoolBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ConstantPoolBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 PoolVarBinding subclass: #ConstantPoolBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ConstantPoolBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ConstantPoolBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 ConstantPoolBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #InstVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #InstVarBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #InstVarBinding
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'InstVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'InstVarBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 InstVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LiteralBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #LiteralBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #LiteralBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LiteralBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LiteralBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #FalseBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #FalseBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding subclass: #FalseBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'FalseBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'FalseBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 FalseBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TrueBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #TrueBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 LiteralBinding subclass: #TrueBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TrueBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 TrueBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #LocalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LocalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'LocalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #ArgumentBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding subclass: #ArgumentBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ArgumentBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 ArgumentBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemporaryBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #TemporaryBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding subclass: #TemporaryBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 TemporaryBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SelfBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #SelfBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #SelfBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'SelfBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 SelfBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SuperBinding category: #'Powerlang-Core'!
+!classDefinition: #SuperBinding category: 'Powerlang-Core'!
 SelfBinding subclass: #SuperBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SuperBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'SuperBinding class' category: 'Powerlang-Core'!
 SuperBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #UnresolvedBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #UnresolvedBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #UnresolvedBinding
 	instanceVariableNames: ''
 	classVariableNames: 'Default'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'UnresolvedBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'UnresolvedBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 UnresolvedBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #NilBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: #NilBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Object subclass: #NilBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'NilBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'NilBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 NilBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstcodeDecoder category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #AstcodeDecoder category: 'Powerlang-Core-SExpressions'!
 Object subclass: #AstcodeDecoder
 	instanceVariableNames: 'method stream nodeTypes bindingTypes'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeDecoder class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeDecoder class' category: 'Powerlang-Core-SExpressions'!
 AstcodeDecoder class
 	instanceVariableNames: ''!
 
-!classDefinition: #BinaryMessageOptimizer category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #BinaryMessageOptimizer category: 'Powerlang-Core-SExpressions'!
 Object subclass: #BinaryMessageOptimizer
 	instanceVariableNames: 'emitter message selector receiver argument'
 	classVariableNames: ''
 	poolDictionaries: 'AstBindingTypes AstNodeTypes'
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'BinaryMessageOptimizer class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'BinaryMessageOptimizer class' category: 'Powerlang-Core-SExpressions'!
 BinaryMessageOptimizer class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SBinding category: 'Powerlang-Core-SExpressions'!
 Object subclass: #SBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBinding class' category: 'Powerlang-Core-SExpressions'!
 SBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralBinding category: #'Powerlang-Core'!
+!classDefinition: #SLiteralBinding category: 'Powerlang-Core'!
 SBinding subclass: #SLiteralBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'SLiteralBinding class' category: 'Powerlang-Core'!
 SLiteralBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #STrueBinding category: #'Powerlang-Core'!
+!classDefinition: #STrueBinding category: 'Powerlang-Core'!
 SLiteralBinding subclass: #STrueBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'STrueBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'STrueBinding class' category: 'Powerlang-Core'!
 STrueBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFalseBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SFalseBinding category: 'Powerlang-Core-SExpressions'!
 SLiteralBinding subclass: #SFalseBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SFalseBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SFalseBinding class' category: 'Powerlang-Core-SExpressions'!
 SFalseBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLocalBinding category: #'Powerlang-Core'!
+!classDefinition: #SLocalBinding category: 'Powerlang-Core'!
 SBinding subclass: #SLocalBinding
 	instanceVariableNames: 'position environment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLocalBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'SLocalBinding class' category: 'Powerlang-Core'!
 SLocalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #STemporaryBinding category: #'Powerlang-Core'!
+!classDefinition: #STemporaryBinding category: 'Powerlang-Core'!
 SLocalBinding subclass: #STemporaryBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'STemporaryBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'STemporaryBinding class' category: 'Powerlang-Core'!
 STemporaryBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SArgumentBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SArgumentBinding category: 'Powerlang-Core-SExpressions'!
 SLocalBinding subclass: #SArgumentBinding
 	instanceVariableNames: 'inlined'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SArgumentBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SArgumentBinding class' category: 'Powerlang-Core-SExpressions'!
 SArgumentBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSelfBinding category: #'Powerlang-Core'!
+!classDefinition: #SSelfBinding category: 'Powerlang-Core'!
 SBinding subclass: #SSelfBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSelfBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'SSelfBinding class' category: 'Powerlang-Core'!
 SSelfBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSuperBinding category: #'Powerlang-Core'!
+!classDefinition: #SSuperBinding category: 'Powerlang-Core'!
 SSelfBinding subclass: #SSuperBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SSuperBinding class' category: #'Powerlang-Core'!
+!classDefinition: 'SSuperBinding class' category: 'Powerlang-Core'!
 SSuperBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SAssociationBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SAssociationBinding category: 'Powerlang-Core-SExpressions'!
 SBinding subclass: #SAssociationBinding
 	instanceVariableNames: 'index association'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssociationBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssociationBinding class' category: 'Powerlang-Core-SExpressions'!
 SAssociationBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClassVarBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SClassVarBinding category: 'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SClassVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassVarBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassVarBinding class' category: 'Powerlang-Core-SExpressions'!
 SClassVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SGlobalBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SGlobalBinding category: 'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SGlobalBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SGlobalBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SGlobalBinding class' category: 'Powerlang-Core-SExpressions'!
 SGlobalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SClassBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SClassBinding category: 'Powerlang-Core-SExpressions'!
 SGlobalBinding subclass: #SClassBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SClassBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SClassBinding class' category: 'Powerlang-Core-SExpressions'!
 SClassBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPoolVarBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SPoolVarBinding category: 'Powerlang-Core-SExpressions'!
 SAssociationBinding subclass: #SPoolVarBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SPoolVarBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPoolVarBinding class' category: 'Powerlang-Core-SExpressions'!
 SPoolVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SConstantPoolBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SConstantPoolBinding category: 'Powerlang-Core-SExpressions'!
 SPoolVarBinding subclass: #SConstantPoolBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SConstantPoolBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SConstantPoolBinding class' category: 'Powerlang-Core-SExpressions'!
 SConstantPoolBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SInstVarBinding category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SInstVarBinding category: 'Powerlang-Core-SExpressions'!
 SBinding subclass: #SInstVarBinding
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SInstVarBinding class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SInstVarBinding class' category: 'Powerlang-Core-SExpressions'!
 SInstVarBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SExpression category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SExpression category: 'Powerlang-Core-SExpressions'!
 Object subclass: #SExpression
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpression class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpression class' category: 'Powerlang-Core-SExpressions'!
 SExpression class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdenitifier category: #'Powerlang-Core'!
+!classDefinition: #SIdenitifier category: 'Powerlang-Core'!
 SExpression subclass: #SIdenitifier
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SIdenitifier class' category: #'Powerlang-Core'!
+!classDefinition: 'SIdenitifier class' category: 'Powerlang-Core'!
 SIdenitifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralVar category: #'Powerlang-Core'!
+!classDefinition: #SLiteralVar category: 'Powerlang-Core'!
 SExpression subclass: #SLiteralVar
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteralVar class' category: #'Powerlang-Core'!
+!classDefinition: 'SLiteralVar class' category: 'Powerlang-Core'!
 SLiteralVar class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteral category: #'Powerlang-Core'!
+!classDefinition: #SLiteral category: 'Powerlang-Core'!
 SLiteralVar subclass: #SLiteral
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'SLiteral class' category: #'Powerlang-Core'!
+!classDefinition: 'SLiteral class' category: 'Powerlang-Core'!
 SLiteral class
 	instanceVariableNames: ''!
 
-!classDefinition: #SAssignment category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SAssignment category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SAssignment
 	instanceVariableNames: 'assignees expression'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SAssignment class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SAssignment class' category: 'Powerlang-Core-SExpressions'!
 SAssignment class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascade category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SCascade category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SCascade
 	instanceVariableNames: 'receiver messages'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascade class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascade class' category: 'Powerlang-Core-SExpressions'!
 SCascade class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeMessage category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SCascadeMessage category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SCascadeMessage
 	instanceVariableNames: 'selector arguments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SCascadeMessage class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SCascadeMessage class' category: 'Powerlang-Core-SExpressions'!
 SCascadeMessage class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdentifier category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SIdentifier category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SIdentifier
 	instanceVariableNames: 'binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SIdentifier class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SIdentifier class' category: 'Powerlang-Core-SExpressions'!
 SIdentifier class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessage category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SMessage category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SMessage
 	instanceVariableNames: 'selector receiver arguments opcodes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SMessage class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SMessage class' category: 'Powerlang-Core-SExpressions'!
 SMessage class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPragma category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SPragma category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SPragma
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SPragma class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SPragma class' category: 'Powerlang-Core-SExpressions'!
 SPragma class
 	instanceVariableNames: ''!
 
-!classDefinition: #SReturn category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SReturn category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SReturn
 	instanceVariableNames: 'local expression'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SReturn class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SReturn class' category: 'Powerlang-Core-SExpressions'!
 SReturn class
 	instanceVariableNames: ''!
 
-!classDefinition: #SScript category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SScript category: 'Powerlang-Core-SExpressions'!
 SExpression subclass: #SScript
 	instanceVariableNames: 'statements compiledCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SScript class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SScript class' category: 'Powerlang-Core-SExpressions'!
 SScript class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBlock category: #'Powerlang-Core-SExpressions'!
+!classDefinition: #SBlock category: 'Powerlang-Core-SExpressions'!
 SScript subclass: #SBlock
 	instanceVariableNames: 'index capturedVariables inlinedArgs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SBlock class' category: #'Powerlang-Core-SExpressions'!
+!classDefinition: 'SBlock class' category: 'Powerlang-Core-SExpressions'!
 SBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #Subject category: #'Powerlang-Core'!
+!classDefinition: #Subject category: 'Powerlang-Core'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
 	classVariableNames: 'Counts'
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
-!classDefinition: 'Subject class' category: #'Powerlang-Core'!
+!classDefinition: 'Subject class' category: 'Powerlang-Core'!
 Subject class
 	instanceVariableNames: ''!
 
@@ -3793,6 +3794,15 @@ printOn: aStream
 
 	name isNil ifTrue: [^super printOn: aStream].
 	aStream nextPutAll: name! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:36:29'!
+name 
+
+	^type! !
+
+!ISAOperandType methodsFor: 'printing' stamp: 'Install-PowerLang 5/31/2021 12:38:01'!
+printOn: aStream 
+	aStream nextPutAll: type! !
 
 !InstructionPrefix methodsFor: 'printing' stamp: 'KenD 2/27/2021 13:15:20'!
 printOn: aStream 
@@ -10769,6 +10779,431 @@ initializeSegmentRegisters
 			initializeFlags.
 		self addRegister: register]! !
 
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:10:06'!
+addFlag: flagBit 
+
+	flags := flags bitOr: flagBit! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:10:59'!
+getMemoryLength 
+
+	(type includesString: '/m8') ifTrue: [^8].
+	(type includesString: '/m16') ifTrue: [^16].
+	(type includesString: '/m32') ifTrue: [^32].
+	(type includesString: '/m64') ifTrue: [^64].
+	(type includesString: '/m128') ifTrue: [^128].
+	(type includesString: ':16') ifTrue: [^0].
+	(type includesString: ':32') ifTrue: [^0].
+	(type includesString: ':64') ifTrue: [^0].
+	^length! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:11:13'!
+hasFlag: flagBit 
+
+	^flags isOnBit: flagBit! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:35:39'!
+length 
+
+	^length! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:51:43'!
+length: aString 
+
+	length := aString = '?' ifFalse: [aString asNumber]! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:36:09'!
+lengthForBits: n 
+
+	^(type beginsWith: 'moff') ifTrue: [n] ifFalse: [length]! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:36:19'!
+memoryLength 
+
+	^memoryLength! !
+
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:37:29'!
+operandFrom: anInteger 
+
+	self assert: self isMoff.
+	^MemoryOperand new displacement: anInteger; length: memoryLength! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:48:22'!
+initializeConstantFlag 
+
+	"type anyone isDigit ifTrue: [self addFlag: ConstantType]"
+	(type anySatisfy: [ :ch | ch isDigit ]) ifTrue: [self addFlag: ConstantType]! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:28:15'!
+initializeImmediateFlag 
+
+	((type includesString: 'imm') or: [type includesString: 'rel'])
+		ifTrue: [self addFlag: ImmediateType]! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:28:34'!
+initializeMemoryFlag 
+
+	self isImmediate ifTrue: [^self].
+	(#('m8' 'm16' 'm32' 'm64' 'm128' 'm256' 'm512')
+		anySatisfy: [:s | type includesString: s])
+		ifTrue: [^self addFlag: MemoryType].
+	((type includes: $m)
+		and: [(type includesString: 'mm') not]
+		and: [(type includesString: 'vm') not]
+		and: [(type includesString: 'offs') not])
+		ifTrue: [self addFlag: MemoryType]! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:28:47'!
+initializeMemoryLength 
+
+	memoryLength := self getMemoryLength! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:28:59'!
+initializeRegisterFlag 
+
+	self isImmediate ifTrue: [^self].
+	(type includesString: 'r/m') ifTrue: [^self addFlag: RegisterType].
+	(#('r8' 'r16' 'r32' 'r64' 'reg') anySatisfy: [:s | type includesString: s])
+		ifTrue: [^self addFlag: RegisterType].
+	(type includesString: 'mm') ifTrue: [^self addFlag: RegisterType].
+	(self specificRegisterNames includes: type)
+		ifTrue: [self addFlag: RegisterType]! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:29:12'!
+initializeRegisterGroupFlag 
+
+	self isImmediate ifTrue: [^self].
+	(type includesString: 'r/m') ifTrue: [^self addFlag: RegisterGP].
+	(#('r8' 'r16' 'r32' 'r64' 'reg') anySatisfy: [:s | type includesString: s])
+		ifTrue: [^self addFlag: RegisterGP].
+	(type includesString: 'mm') ifTrue: [^self addFlag: RegisterSIMD].
+	(self specificRegisterNames includes: type)
+		ifTrue: [^self addFlag: RegisterSpecific].
+	type = 'sreg' ifTrue: [^self addFlag: RegisterSegment]! !
+
+!ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:29:24'!
+initializeSegmentFlag 
+
+	^type = 'sreg' ifTrue: [self addFlag: RegisterSegment]! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:10:43'!
+constant 
+	| i |
+	i := #('0' '1' '3') indexOf: type.
+	^i > 0 ifTrue: [#[0 1 3] at: i]! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:36:57'!
+normalized 
+
+	type first = $r ifFalse: [^self].
+	type = 'rel8' ifTrue: [^self class imm8].
+	type = 'rel16' ifTrue: [^self class imm16].
+	type = 'rel32' ifTrue: [^self class imm32].
+	type = 'r32a' ifTrue: [^self class r32].
+	type = 'r32b' ifTrue: [^self class r32].
+	type = 'r64a' ifTrue: [^self class r64].
+	type = 'r64b' ifTrue: [^self class r64]! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:38:25'!
+register 
+
+	type = '<xmm0>' ifTrue: [^XMM0].
+	type = 'r8' ifTrue: [^nil].
+	^Register named: type! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:38:53'!
+registerGroup 
+
+	^flags bitAnd: RegisterGroupMask! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:39:04'!
+specificRegisterNames 
+
+	^#('rax' 'eax' 'ax' 'al' 'cl' 'dx' 'es' 'cs' 'ss' 'ds' 'fs' 'gs')! !
+
+!ISAOperandType methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:39:17'!
+type: aString 
+
+	type := aString.
+	flags := 0.
+	self
+		initializeMemoryLength;
+		initializeConstantFlag;
+		initializeImmediateFlag;
+		initializeMemoryFlag;
+		initializeRegisterFlag;
+		initializeSegmentFlag;
+		initializeRegisterGroupFlag! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:15:15'!
+hasImmediateFlag 
+
+	^self hasFlag: ImmediateType! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:29:37'!
+isConstant 
+
+	^self hasFlag: ConstantType! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:29:47'!
+isImmediate 
+
+	^self hasFlag: ImmediateType! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:29:57'!
+isMemory 
+
+	^self hasFlag: MemoryType! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:30:08'!
+isMoff 
+
+	^type beginsWith: 'moff'! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:34:22'!
+isRegister 
+
+	^self hasFlag: RegisterType! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:34:55'!
+isSegment 
+
+	^self hasFlag: RegisterSegment! !
+
+!ISAOperandType methodsFor: 'testing' stamp: 'Install-PowerLang 5/31/2021 12:35:11'!
+isSpecificRegister 
+
+	^self registerGroup = RegisterSpecific! !
+
+!ISAOperandType class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:07:06'!
+typeNames 
+
+	^'<xmm0> 128
+		0 8
+		1 8
+		3 0
+		al 8
+		dx 16
+		ax 16
+		cl 8
+		cr0-cr7 ?
+		cr8 ?
+		cs 16
+		dr0-dr7 ?
+		ds 16
+		dx 16
+		eax 32
+		dx 16
+		es 16
+		far 0
+		fs 16
+		gs 16
+		imm16 16
+		imm32 32
+		imm64 64
+		imm8 8
+		m ?
+		m108byte ?
+		m128 128
+		m16 16
+		m16&16 16
+		m16&32 ?
+		m16&64 ?
+		m16:16 16
+		m16:32 48
+		m16:64 80
+		m16int 16
+		m256 256
+		m28byte 7
+		m2byte 16
+		m32 32
+		m32&32 32
+		m32fp 32
+		m32int 32
+		m512byte 512
+		m64 64
+		m64fp 64
+		m64int 64
+		m8 8
+		m80bcd 80
+		m80fp 80
+		mem ?
+		mm 64
+		mm1 64
+		mm2 64
+		mm/m32 64
+		mm/m64 64
+		mm2/m64 64
+		moffs16 16
+		moffs32 32
+		moffs64 64
+		moffs8 8
+		p66 0
+		ptr16:16 16
+		ptr16:32 16
+		pw 0
+		r/m16 16
+		r/m32 32
+		r/m64 64
+		r/m8 8
+		r/m8 8
+		r8 8
+		r16 16
+		r16/m16 16
+		r32 32
+		r32/m16 32
+		r32/m32 32
+		r32/m8 32
+		r32a 32
+		r32b 32
+		r64 64
+		r64/m16 64
+		r64/m64 64
+		r64a 64
+		r64b 64
+		rax 64
+		reg ?
+		reg/m16 16
+		reg/m32 32
+		reg/m8 8
+		rel16 16
+		rel32 32
+		rel8 8
+		sreg 16
+		ss 16
+		st ?
+		st(0) ?
+		st(i) ?
+		vm32x 32
+		vm32y 32
+		vm64x 64
+		vm64y 64
+		xmm 128
+		xmm/m128 128
+		xmm/m32 128
+		xmm/m64 128
+		xmm0 128
+		xmm1 128
+		xmm1/m128 128
+		xmm1/m32 128
+		xmm1/m64 128
+		xmm2 128
+		xmm2/m128 128
+		xmm2/m16 128
+		xmm2/m32 128
+		xmm2/m64 128
+		xmm2/m8 128
+		xmm3 128
+		xmm3/m128 128
+		xmm3/m32 128
+		xmm3/m64 128
+		xmm4 128
+		ymm0 256
+		ymm1 256
+		ymm2 256
+		ymm2/m256 256
+		ymm3/m256 256
+		ymm4 256'! !
+
+!ISAOperandType class methodsFor: 'class initialization' stamp: 'Install-PowerLang 5/31/2021 12:32:49'!
+initialize 
+"
+	self initialize.
+"
+	self initializeTypes! !
+
+!ISAOperandType class methodsFor: 'class initialization' stamp: 'Install-PowerLang 5/31/2021 12:04:15'!
+initializeTypes 
+	| dictionary |
+	dictionary := Dictionary new.
+	self typeNames lines collect: [:s | | pair type |
+		pair := s substrings.
+		type := self new type: pair first; length: pair second.
+		dictionary at: type name put: type].
+	Types := dictionary! !
+
+!ISAOperandType class methodsFor: 'class initialization' stamp: 'Install-PowerLang 5/31/2021 12:04:36'!
+memoryTypes 
+
+	^Types select: [:t | t isMemory] in: OrderedCollection new! !
+
+!ISAOperandType class methodsFor: 'instance creation' stamp: 'Install-PowerLang 5/31/2021 12:05:15'!
+named: aString 
+
+	^Types at: aString! !
+
+!ISAOperandType class methodsFor: 'instance creation' stamp: 'Install-PowerLang 5/31/2021 12:05:58'!
+r32 
+
+	^self named: 'R32'! !
+
+!ISAOperandType class methodsFor: 'instance creation' stamp: 'Install-PowerLang 5/31/2021 12:06:17'!
+r64 
+
+	^self named: 'R64'! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:03:01'!
+imm16 
+
+	^self named: 'imm16'! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:03:12'!
+imm32 
+
+	^self named: 'imm32'! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:03:22'!
+imm8 
+
+	^self named: 'imm8'! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:03:34'!
+immediateTypes 
+
+	^Types select: [:t | t isImmediate]! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:08:31'!
+typeOfSpecialRegister: aRegister 
+
+	aRegister = RAX ifTrue: [^self named: 'RAX'].
+	aRegister = EAX ifTrue: [^self named: 'EAX'].
+	aRegister = AX ifTrue: [^self named: 'AX'].
+	aRegister = AL  ifTrue: [^self named: 'AL'].
+	aRegister = CL  ifTrue: [^self named: 'CL'].
+	aRegister = DX ifTrue: [^self named: 'DX']! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:08:53'!
+typesOfGeneralRegister: aRegister 
+	| bits associations |
+	bits := aRegister length asString.
+	associations := OrderedCollection new: 4.
+	Types do: [:type | | n |
+		n := type name.
+		n = ('r' , bits) ifTrue: [associations add: 1 -> type].
+		n = 'reg' ifTrue: [associations add: 2 -> type].
+		n = ('r/m' , bits) ifTrue: [associations add: 3 -> type].
+		n = ('r' , bits , '/m' , bits) ifTrue: [associations add: 4 -> type]].
+	^(associations sortBy: #key) collect: #value! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:09:05'!
+typesOfSIMDRegister: aRegister 
+	| s |
+	s := aRegister name.
+	^Types select: [:type | | n |
+		(#('0' '1' '3') includes: type name) not
+			and: [
+				n := type name upTo: $/.
+				n size >= 3]
+			and: [n first !!= $m]
+			and: [s includesString: n]]! !
+
+!ISAOperandType class methodsFor: 'services' stamp: 'Install-PowerLang 5/31/2021 12:09:33'!
+typesOfSegmentRegister: aRegister 
+	| type sreg |
+	type := self named: aRegister name.
+	sreg := self named: 'sreg'.
+	^{type. sreg}! !
+
 !InstructionEncoder methodsFor: 'caching' stamp: 'KenD 3/7/2021 12:09:00'!
 checkCache64 
 
@@ -11587,6 +12022,31 @@ writeOn: instruction
 
 	instruction writeRexPrefix: self value! !
 
+!REXPrefix class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:07:50'!
+b 
+
+	^1! !
+
+!REXPrefix class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:07:57'!
+r 
+
+	^REX_R! !
+
+!REXPrefix class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:08:13'!
+rex 
+
+	^REX! !
+
+!REXPrefix class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:08:05'!
+w 
+
+	^REX_W! !
+
+!REXPrefix class methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:08:32'!
+x 
+
+	^2! !
+
 !REXPrefix class methodsFor: 'class initialization' stamp: 'KenD 4/24/2021 13:02:14'!
 initializePrefixes 
 
@@ -11942,10 +12402,10 @@ initializeSignatures
 			vex := self new signature: ($. split: s).
 			Signatures at: s put: vex ]! !
 
-!VEXPrefix class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:14:29'!
+!VEXPrefix class methodsFor: 'instance creation' stamp: 'Install-PowerLang 5/31/2021 13:14:26'!
 fromStream: aStream 
 
-	^self withSignature: (aStream upTo: Space)! !
+	^self withSignature: (aStream upTo: Character space)! !
 
 !VEXPrefix class methodsFor: 'instance creation' stamp: 'KenD 5/30/2021 12:17:30'!
 withSignature: aString 
@@ -12010,11 +12470,11 @@ features
 
 	^features! !
 
-!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:37:27'!
+!InstructionSpec methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 08:06:09'!
 fromString: aString
 	| fields |
 	"fields := Tab split: aString."
-	fields := aString subStrings: Character tab asString.
+	fields := Character tab split: aString.
 	self
 		instruction: fields second;
 		opcode: fields first;
@@ -12202,10 +12662,10 @@ useful
 
 	^useful! !
 
-!InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:17:53'!
+!InstructionSpec methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 13:11:55'!
 vexPrefixFrom: aStream 
 	| vex |
-	(aStream peekForAll: 'VEX') ifTrue: [
+	^(aStream peekForAll: 'VEX') ifTrue: [
 		aStream skip: 'VEX' size negated.
 		vex := VEXPrefix fromStream: aStream.
 		prefixes add: vex]! !
@@ -32551,6 +33011,47 @@ replacePredecessor: old with: new
 	self phisDo: [:phi | phi replaceBlock: old with: new].
 	predecessors replaceAll: old with: new! !
 
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:22'!
+printAll 
+	| stream |
+	stream := '' writeStream.
+	self reversePostOrderDo: [:block | 
+		block printOn: stream.
+		stream cr].
+	^stream contents! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:34'!
+printAllNamed 
+	| stream names vars blocks |
+	stream := '' writeStream.
+	names := Dictionary new.
+	vars := 0.
+	blocks := 0.
+	self reversePostOrderDo: [:block | 
+		block instructionsDo: [:inst | 
+			names at: inst put: 'v' , vars printString.
+			vars := vars + 1].
+		names at: block put: 'B' , blocks printString.
+		blocks := blocks + 1].
+	self reversePostOrderDo: [:block | 
+		block printOn: stream using: names.
+		stream cr].
+	^stream contents! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:58'!
+printOn: aStream using: names 
+	| string |
+	string := names at: self.
+	aStream nextPutAll: '<=== ' , string , ' [' , self hash printString , '] \'.
+	predecessors size > 0 ifTrue: [
+		predecessors allButLast
+			do: [:pred | aStream
+				nextPutAll: (names at: pred ifAbsent: 'missing') , ' | '].
+		aStream nextPutAll: (names at: predecessors last ifAbsent: 'missing')].
+	aStream
+		nextPutAll: '/' , String cr , (firstInstruction printStringUsing: names)
+			, '===>'! !
+
 !OBasicBlock methodsFor: 'code generation' stamp: 'KenD 5/4/2021 07:37:27'!
 export 
 	| map name result instructions inst names ops |
@@ -32871,47 +33372,6 @@ endWithJumpTrueTo: target skipping: skipped if: condition
 
 	self endWith: OJumpTrue to: target skipping: skipped if: condition! !
 
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:22'!
-printAll 
-	| stream |
-	stream := '' writeStream.
-	self reversePostOrderDo: [:block | 
-		block printOn: stream.
-		stream cr].
-	^stream contents! !
-
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:34'!
-printAllNamed 
-	| stream names vars blocks |
-	stream := '' writeStream.
-	names := Dictionary new.
-	vars := 0.
-	blocks := 0.
-	self reversePostOrderDo: [:block | 
-		block instructionsDo: [:inst | 
-			names at: inst put: 'v' , vars printString.
-			vars := vars + 1].
-		names at: block put: 'B' , blocks printString.
-		blocks := blocks + 1].
-	self reversePostOrderDo: [:block | 
-		block printOn: stream using: names.
-		stream cr].
-	^stream contents! !
-
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:58'!
-printOn: aStream using: names 
-	| string |
-	string := names at: self.
-	aStream nextPutAll: '<=== ' , string , ' [' , self hash printString , '] \'.
-	predecessors size > 0 ifTrue: [
-		predecessors allButLast
-			do: [:pred | aStream
-				nextPutAll: (names at: pred ifAbsent: 'missing') , ' | '].
-		aStream nextPutAll: (names at: predecessors last ifAbsent: 'missing')].
-	aStream
-		nextPutAll: '/' , String cr , (firstInstruction printStringUsing: names)
-			, '===>'! !
-
 !OBasicBlock methodsFor: 'processing' stamp: 'KenD 5/4/2021 07:32:50'!
 computeLiveOutInto: liveOut andLiveInInto: liveIn 
 	| blocks changed |
@@ -33122,6 +33582,17 @@ newStartingWith: anInstruction
 
 	^self basicNew initializeWith: anInstruction! !
 
+!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:30'!
+printAtLevel: level on: aStream 
+
+	level > 8 ifTrue: [self halt].
+	level timesRepeat: [aStream nextPutAll: '--'].
+	aStream nextPutAll: block name , String cr.
+	dominated
+		reject: [:tree | tree == self]
+		thenDo: [:tree | tree printAtLevel: level + 1 on: aStream]
+! !
+
 !ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:33:35'!
 addDominated: aTree 
 
@@ -33177,17 +33648,6 @@ noticeDominators
 	dominators
 		select: [:tree | tree isImmediateDominatorOf: self]
 		thenDo: [:dominator | dominator addDominated: self]! !
-
-!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:30'!
-printAtLevel: level on: aStream 
-
-	level > 8 ifTrue: [self halt].
-	level timesRepeat: [aStream nextPutAll: '--'].
-	aStream nextPutAll: block name , String cr.
-	dominated
-		reject: [:tree | tree == self]
-		thenDo: [:tree | tree printAtLevel: level + 1 on: aStream]
-! !
 
 !ODominatorTree methodsFor: 'testing' stamp: 'KenD 5/6/2021 07:36:30'!
 isImmediateDominatorOf: aBasicBlock 
@@ -33482,6 +33942,11 @@ startsAt: operation
 
 	^definition == operation! !
 
+!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:27'!
+printString 
+
+	^'<tiling of ' , instruction printString , ' >'! !
+
 !OTiling methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:16:10'!
 beUsed 
 
@@ -33506,11 +33971,6 @@ initialize
 isUsed 
 
 	^used = true! !
-
-!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:27'!
-printString 
-
-	^'<tiling of ' , instruction printString , ' >'! !
 
 !OTiling class methodsFor: 'instance creation' stamp: 'KenD 5/29/2021 12:15:13'!
 for: instruction 
@@ -34075,17 +34535,6 @@ empty
 	last prev: begin.
 	^begin! !
 
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:33:29'!
-do: aBlock 
-
-	next do: aBlock! !
-
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:16'!
-realReverseDo: aBlock! !
-
-!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:25'!
-reverseDo: aBlock! !
-
 !OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:12'!
 printBackwardOn: aStream! !
 
@@ -34101,6 +34550,17 @@ printStringUsing: names
 	stream := '' writeStream.
 	next printForwardOn: stream using: names.
 	^stream contents! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:33:29'!
+do: aBlock 
+
+	next do: aBlock! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:16'!
+realReverseDo: aBlock! !
+
+!OBeginInstruction methodsFor: 'enumerating' stamp: 'KenD 4/26/2021 14:35:25'!
+reverseDo: aBlock! !
 
 !OBeginInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:33:51'!
 hasPrev 
@@ -34181,6 +34641,12 @@ named: aSymbol
 
 	^self new name: aSymbol! !
 
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:16'!
+printForwardOn: aStream! !
+
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:25'!
+printForwardOn: aStream using: names ! !
+
 !OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
 addLast: anInstruction 
 
@@ -34210,12 +34676,6 @@ do: aBlock ! !
 reverseDo: aBlock 
 
 	prev reverseDo: aBlock! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:16'!
-printForwardOn: aStream! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:25'!
-printForwardOn: aStream using: names ! !
 
 !OEndInstruction methodsFor: 'testing' stamp: 'KenD 4/26/2021 14:43:40'!
 hasNext 
@@ -38372,17 +38832,48 @@ initialize
 
 	Counts := IdentityDictionary new! !
 
+!Object methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 5/30/2021 14:45:16'!
+!!= anObject
+
+	^self ~= anObject! !
+
 !Object methodsFor: '*powerlang-core' stamp: 'KenD 5/5/2021 16:34:39'!
 isInstruction 
 
 	^false! !
 
-!Collection methodsFor: '*powerlang' stamp: 'KenD 5/30/2021 13:58:29'!
+!Integer methodsFor: '*powerlang' stamp: 'Install-PowerLang 5/31/2021 12:50:09'!
+isOnBit: n
+
+	^(self bitAnd: n) = n! !
+
+!Integer methodsFor: '*powerlang' stamp: 'KenD 3/8/2021 07:55:07'!
+thru: anInteger 
+
+	^Stretch from: self thru: anInteger! !
+
+!Character methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 08:03:14'!
+split: aString
+	"Answer a collection of Strings split at self -- include empty strings"
+	| delimiter parts keyStart keyStop |
+	delimiter := self asString.
+	parts _ OrderedCollection new.
+	keyStop _ 1.
+	keyStart _ 1.
+	[keyStop <= aString size] whileTrue:
+		[keyStop _ aString findDelimiters: delimiter startingAt: keyStart.
+		 (keyStart < keyStop)
+			ifTrue: [parts add: (aString copyFrom: keyStart to: (keyStop - 1))]
+			ifFalse: [parts add: ''].
+		keyStart := keyStop + 1].
+	^parts! !
+
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
 conform: evaluable
 
 	^self allSatisfy: evaluable! !
 
-!Collection methodsFor: '*powerlang' stamp: 'KenD 5/30/2021 14:06:30'!
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 14:06:30'!
 reject: rejectBlock thenDo: doBlock
 	"A utility which does not create intermediate collection"
 
@@ -38391,12 +38882,12 @@ reject: rejectBlock thenDo: doBlock
 		ifFalse: [ doBlock value: each ]
 	]! !
 
-!String methodsFor: '*powerlang' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
+!String methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
 includesString: subString
 
 	^(self findString: subString) ~= 0! !
 
-!String methodsFor: '*powerlang' stamp: 'KenD 5/30/2021 13:49:25'!
+!String methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:49:25'!
 replaceAllSubstrings: aString with: anotherString
 "
   'This-and-that-and-the-Other' replaceAllSubstrings: '-a' with: '_A'.
@@ -38422,19 +38913,31 @@ replaceAllSubstrings: aString with: anotherString
 		index := next].
 	^strm contents! !
 
-!Integer methodsFor: '*powerlang-core' stamp: 'KenD 3/8/2021 07:55:07'!
-thru: anInteger 
+!String methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 5/30/2021 14:25:33'!
+trimBlanks
 
-	^Stretch from: self thru: anInteger! !
+	^self withBlanksTrimmed! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 13:40:53'!
+peekForAll: aCollection
+
+	| n |
+	n := aCollection size.
+	^((self peek: n) hasEqualElements: aCollection)
+		ifTrue: [self skip: n];
+		yourself! !
+
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 13:44:27'!
+peek: n
+
+	| pos safe data |
+	pos := self position.
+	safe := n min: (self size - pos).
+	data := self next: safe.
+	self position: pos.
+	^data
+	! !
 SFFIDescriptor initialize!
-Register initialize!
-InstructionEncoder initialize!
-InstructionSpec initialize!
-Assembler64 initialize!
-JITAssembler64 initialize!
-MethodEvaluator initialize!
-VirtualSmalltalkRuntime initialize!
-SmalltalkInterpreter initialize!
 CharacterConstants initialize!
 SpeciesFormatMasks initialize!
 OperandTypeFlags initialize!
@@ -38450,4 +38953,13 @@ AstNodeTypes initialize!
 ClosureElementTypes initialize!
 SExpressionTypes initialize!
 SCompiledBlockFlags initialize!
+Register initialize!
+ISAOperandType initialize!
+InstructionEncoder initialize!
+InstructionSpec initialize!
+Assembler64 initialize!
+JITAssembler64 initialize!
+MethodEvaluator initialize!
+VirtualSmalltalkRuntime initialize!
+SmalltalkInterpreter initialize!
 Subject initialize!
