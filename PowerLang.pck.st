@@ -1,12 +1,12 @@
-'From Cuis 5.0 [latest update: #4624] on 3 June 2021 at 7:43:31 am'!
+'From Cuis 5.0 [latest update: #4625] on 3 June 2021 at 1:05:57 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 49!
+!provides: 'PowerLang' 1 50!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
-SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
+SystemOrganization addCategory: #'Powerlang-Compatibility-Pharo'!
 SystemOrganization addCategory: #'Powerlang-Core'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
@@ -24,7 +24,7 @@ SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
-SystemOrganization addCategory: 'Powerlang-Compatibility-Pharo'!
+SystemOrganization addCategory: #'Powerlang-Tests-SCompiler'!
 
 
 !classDefinition: #CharacterConstants category: #'Powerlang-Core'!
@@ -267,13 +267,13 @@ ByteArray variableByteSubclass: #SFFIDescriptor
 SFFIDescriptor class
 	instanceVariableNames: ''!
 
-!classDefinition: #PoolDictionary category: 'Powerlang-Compatibility-Pharo'!
+!classDefinition: #PoolDictionary category: #'Powerlang-Compatibility-Pharo'!
 Dictionary subclass: #PoolDictionary
 	instanceVariableNames: 'constant'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Compatibility-Pharo'!
-!classDefinition: 'PoolDictionary class' category: 'Powerlang-Compatibility-Pharo'!
+!classDefinition: 'PoolDictionary class' category: #'Powerlang-Compatibility-Pharo'!
 PoolDictionary class
 	instanceVariableNames: ''!
 
@@ -3287,13 +3287,13 @@ SScript subclass: #SBlock
 SBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #SmalltalkScannerTest category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
 TestCase subclass: #SmalltalkScannerTest
 	instanceVariableNames: 'scanner'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'SmalltalkScannerTest class' category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkScannerTest class' category: #'Powerlang-Tests-SCompiler'!
 SmalltalkScannerTest class
 	instanceVariableNames: ''!
 
@@ -34692,10 +34692,11 @@ poolFor: aString
 	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
 	self error: 'not found'! !
 
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 3/20/2021 14:46:58'!
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 6/3/2021 12:51:19'!
 species: aSpecies 
 
-	species ifNotNil: [^self].
+	"species ifNotNil: [^self]."
+	species ifNil: [^self].
 	species := aSpecies.
 	self initializeInstVars; initializeClassVars; initializePoolVars.
 	species superclass isNil ifTrue: [^self].
@@ -35973,10 +35974,10 @@ addStatementsTo: aMethodNode
 	token isEnd
 		ifFalse: [^self unexpectedStatementError: aMethodNode statements]! !
 
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:31:22'!
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 6/3/2021 12:52:38'!
 addTemporariesTo: aMethodNode 
 
-	aMethodNode temporaries: self temporarie! !
+	aMethodNode temporaries: self temporaries! !
 
 !SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/14/2021 12:32:26'!
 assignment 
@@ -36701,6 +36702,11 @@ isIdentifier
 
 	^false! !
 
+!SToken methodsFor: 'testing' stamp: 'KenD 6/3/2021 12:55:35'!
+isKeyword
+
+	^false! !
+
 !SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:25:20'!
 isLiteral 
 
@@ -36721,8 +36727,8 @@ isPoolLiteral
 
 	^false! !
 
-!SToken methodsFor: 'testing' stamp: 'KenD 2/21/2021 13:26:57'!
-sStringToken 
+!SToken methodsFor: 'testing' stamp: 'KenD 6/3/2021 12:54:21'!
+isStringToken 
 
 	^false! !
 
@@ -39250,15 +39256,7 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeBlock! !
 
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/2/2021 20:43:34'!
-test0xNotation 
-	| node |
-	node := SCompiler new smalltalkParser parseExpression: '0x10'.
-	self assert: node statements first value = 16.
-	node := SCompiler new smalltalkParser parseExpression: '0X10'.
-	self assert: node statements first value = 16! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/2/2021 20:43:56'!
+!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 6/2/2021 20:43:56'!
 testArrayStart 
 	| node |
 	scanner on: '#()'.
@@ -39277,11 +39275,344 @@ testArrayStart
 		assert: node value = #hello;
 		assert: node source = '#''hello'''! !
 
+!SmalltalkScannerTest methodsFor: 'characters' stamp: 'KenD 6/3/2021 12:59:11'!
+testCharacter 
+	| node |
+	scanner on: '$a$b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $a;
+		assert: node source = '$a'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $b;
+		assert: node source = '$b'! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 6/3/2021 12:59:37'!
+testColon 
+	| node |
+	scanner on: ':a'.
+	node := scanner next.
+	self
+		assert: (node is: $:);
+		assert: node source = ':'.
+	node := scanner next.
+	self
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ':='.
+	node := scanner next.
+	self
+		assert: node isAssignment;
+		assert: node source = ':='! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 6/3/2021 12:59:48'!
+testColon2 
+	| node |
+	scanner on: '::'.
+	node := scanner next.
+	self
+		assert: node class = SStringToken;
+		assert: node source = '::'! !
+
+!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:00:21'!
+testComment 
+	| node |
+	scanner on: '"comment"a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node value = 'comment';
+		assert: node source = '"comment"'.
+	scanner on: '"comment"'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node source = '"comment"';
+		assert: node position = 1.
+	scanner on: 'a"comment"'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node position = ('a' size + 1)! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 6/3/2021 13:01:41'!
+testIdentifier 
+	| node |
+	scanner on: 'a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ' a1'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a1';
+		assert: node source = 'a1'.
+	scanner on: '_a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = '_a';
+		assert: node source = '_a'.
+	scanner on: 'a_1b'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a_1b';
+		assert: node source = 'a_1b'! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 6/3/2021 13:02:31'!
+testKeyword 
+	| node node2 |
+	scanner on: 'a:'.
+	node := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'a:';
+		assert: node source = 'a:'.
+	scanner on: 'ab:cd:'.
+	node := scanner next.
+	node2 := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'ab:';
+		assert: node source = 'ab:';
+		assert: node2 isKeyword;
+		assert: node2 value = 'cd:';
+		assert: node2 source = 'cd:'! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/2/2021 20:43:34'!
+test0xNotation 
+	| node |
+	node := SCompiler new smalltalkParser parseExpression: '0x10'.
+	self assert: node statements first value = 16.
+	node := SCompiler new smalltalkParser parseExpression: '0X10'.
+	self assert: node statements first value = 16! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/3/2021 13:01:08'!
+testFloat 
+	| node |
+	scanner on: '0.1'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1;
+		assert: node source = '0.1'.
+	scanner on: '0.1e-35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1e-35;
+		assert: node source = '0.1e-35'! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/3/2021 13:01:57'!
+testInteger 
+	| node |
+	scanner on: '0 12 -35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0;
+		assert: node source = '0'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 12;
+		assert: node source = '12'.
+	node := scanner next.
+	self
+		deny: node isNumberNode;
+		assert: (node is: #'-');
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 35;
+		assert: node source = '35'! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/3/2021 13:02:14'!
+testIntegerRadix 
+	| node |
+	scanner on: '16rFA2'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 16rFA2;
+		assert: node source = '16rFA2'! !
+
 !SmalltalkScannerTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/2/2021 20:42:40'!
 setUp 
 
 	super setUp.
 	scanner := SCompiler new smalltalkScanner! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 6/3/2021 12:58:06'!
+testBinary 
+	| node |
+	scanner on: '-
+		--
+		---
+		==>
+		~!!|\/%&*+=><'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'-';
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'--';
+		assert: node source = '--'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'---';
+		assert: node source = '---'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'==>';
+		assert: node source = '==>'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'~!!|\/%&*+=><';
+		assert: node source = '~!!|\/%&*+=><'! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 6/3/2021 13:00:52'!
+testEmpty 
+
+	scanner on: ''.
+	self assert: scanner next isEnd! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 6/3/2021 13:02:59'!
+testString 
+	| node quote |
+	scanner on: '' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = '';
+		assert: node source = (String with: $' with: $').
+	scanner on: 'Hello World!!' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = 'Hello World!!';
+		assert: node source = 'Hello World!!' storeString.
+	quote := String with: $'.
+	scanner on: quote storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = quote;
+		assert: node source = quote storeString! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 6/3/2021 12:58:35'!
+testBinarySymbol 
+	| node |
+	scanner on: '#='.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node hasSymbol;
+		assert: node value = #'='! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 6/3/2021 13:00:39'!
+testDashStartingSymbol 
+	| node |
+	scanner on: '#++'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'++';
+		assert: node source = '#++'.
+	scanner on: '#//'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'//';
+		assert: node source = '#//'.
+	scanner on: '#--'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'--';
+		assert: node source = '#--'.
+	scanner on: '#+-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'+-';
+		assert: node source = '#+-'! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 6/3/2021 13:02:46'!
+testNumericSymbol 
+
+	scanner on: '#35'.
+	self assert: scanner next value = '35' asSymbol! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 6/3/2021 13:03:14'!
+testSymbol 
+	| node |
+	scanner on: '#-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-';
+		assert: node source = '#-'.
+	scanner on: '#a:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	scanner on: '#-!!'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-!!';
+		assert: node source = '#-!!'.
+	scanner on: '#a:b:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:b:;
+		assert: node source = '#a:b:'.
+	scanner on: '#a:b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	node := scanner next.
+	self assert: node value = 'b'; assert: node source = 'b'! !
+
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 6/3/2021 13:05:48'!
+testUnicodeScanning 
+	| next three tensor |
+	scanner on: '3 + 4' asWideString. "@@Expect me to FAIL@@"
+	self assert: scanner next value = 3.
+	next := scanner next.
+	self
+		assert: next value == #'+';
+		assert: scanner next value = 4.
+	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
+	three := scanner next.
+	self assert: three value = 3.
+	tensor := scanner next.
+	self assert: tensor value = 8855 asCharacter asString asSymbol! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
