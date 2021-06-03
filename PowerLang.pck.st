@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4625] on 3 June 2021 at 1:05:57 pm'!
+'From Cuis 5.0 [latest update: #4625] on 3 June 2021 at 3:55:59 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 50!
+!provides: 'PowerLang' 1 51!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -3285,6 +3285,16 @@ SScript subclass: #SBlock
 	category: 'Powerlang-Core-SExpressions'!
 !classDefinition: 'SBlock class' category: #'Powerlang-Core-SExpressions'!
 SBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkParserTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkParserTest
+	instanceVariableNames: 'parser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkParserTest class' category: #'Powerlang-Tests-SCompiler'!
+SmalltalkParserTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
@@ -36895,10 +36905,11 @@ allNodesDo: aBlock
 
 	self nodesDo: aBlock includingDeclarations: true! !
 
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:52:43'!
-nodeWithLiteral: anObject 
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 14:39:14'!
+nodeWithLiteral: anObject
 
-	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) 
+	^self nodesDetect: [:n |
+		 (n isLiteral or: [n isSelector]) 
 					and: [n value = anObject]] 
 		ifAbsent: nil
 ! !
@@ -36915,10 +36926,10 @@ nodesDo: aBlock
 
 	self nodesDo: aBlock includingDeclarations: false! !
 
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 2/21/2021 13:54:21'!
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 15:08:39'!
 nodesDo: aBlock includingDeclarations: aBoolean 
 
-	aBlock evaluateWith: self! !
+	aBlock value: self! !
 
 !SParseNode methodsFor: 'visiting' stamp: 'KenD 2/21/2021 13:48:13'!
 acceptVisitor: visitor 
@@ -37064,7 +37075,7 @@ receiver: rcvr
 
 	receiver := rcvr! !
 
-!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:20:33'!
+!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 15:52:27'!
 nodesDo: aBlock includingDeclarations: aBoolean 
 
 	super nodesDo: aBlock includingDeclarations: aBoolean.
@@ -37320,7 +37331,7 @@ beInlined
 
 	inlined := true! !
 
-!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 08:29:12'!
+!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 14:50:42'!
 nodesDo: aBlock includingDeclarations: aBoolean 
 
 	super nodesDo: aBlock includingDeclarations: aBoolean.
@@ -37399,10 +37410,10 @@ cascade: aCascadeNode
 	cascade := aCascadeNode.
 	receiver := cascade receiver! !
 
-!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 4/12/2021 16:17:16'!
+!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 15:53:33'!
 nodesDo: aBlock includingDeclarations: aBoolean 
 
-	aBlock evaluateWith: self.
+	aBlock value: self.
 	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]! !
 
 !SCascadeMessageNode methodsFor: 'initialization' stamp: 'KenD 4/12/2021 16:16:40'!
@@ -37703,7 +37714,7 @@ selectorNode
 
 	^selector! !
 
-!SMethodNode methodsFor: 'enumerating' stamp: 'KenD 6/2/2021 11:28:41'!
+!SMethodNode methodsFor: 'enumerating' stamp: 'KenD 6/3/2021 14:28:32'!
 nodesDo: aBlock includingDeclarations: aBoolean 
 
 	super nodesDo: aBlock includingDeclarations: aBoolean.
@@ -39256,6 +39267,733 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeBlock! !
 
+!SmalltalkParserTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/3/2021 13:09:12'!
+setUp 
+
+	super setUp.
+	parser := SCompiler new smalltalkParser! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 6/3/2021 13:10:03'!
+testAssignment 
+	| assignment |
+	parser on: 'a := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 1;
+		assert: assignment assignees anyOne source = 'a';
+		assert: assignment expression source = 'nil + 4'! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 6/3/2021 13:10:27'!
+testAssignment2 
+	| assignment |
+	parser on: 'a := b := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 2;
+		assert: assignment assignees first name = 'b';
+		assert: assignment assignees second name = 'a'! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 6/3/2021 13:10:39'!
+testAssignment3 
+	| node |
+	node := parser parseExpression: 'a : = 1'.
+	self
+		assert: node statements anyOne isAssign.
+	node := parser parseExpression: 'a :	= 1'.
+	self
+		assert: node statements anyOne isAssign! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 6/3/2021 13:44:02'!
+testUnderscoreAssignment 
+	| assignment |
+	parser on: 'a _ 3 + 4'.
+	parser step.
+	assignment := parser expression.
+	self assert: assignment isAssign! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 6/3/2021 13:33:41'!
+testBlock 
+	| block |
+	parser on: '[]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[]'.
+	parser on: '[x]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[x]';
+		assert: block temporaries isEmpty;
+		assert: block arguments isEmpty;
+		assert: block statements size = 1;
+		assert: block statements anyOne isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 6/3/2021 13:33:53'!
+testBlock2 
+	| block |
+	parser on: '[:i | i]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | i]';
+		assert: block arguments size = 1.
+	parser on: '[:i :j |]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i :j |]';
+		assert: block temporaries isEmpty;
+		assert: block arguments size = 2;
+		assert: block statements isEmpty;
+		assert: block arguments first isIdentifier;
+		assert: block arguments second isIdentifier! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 6/3/2021 13:34:04'!
+testBlock3 
+	| block |
+	parser on: '[:i | | a b | a + b]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | | a b | a + b]';
+		assert: block arguments size = 1;
+		assert: block temporaries size = 2.
+	parser on: '[:i ||a b|a|b]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i ||a b|a|b]';
+		assert: block temporaries size = 2;
+		assert: block arguments size = 1;
+		assert: block statements size = 1;
+		assert: block statements anyOne selector value = #'|'! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 6/3/2021 13:41:21'!
+testParseFragment 
+	| source ast |
+	source := 'm
+	self do: [:x | Object'.
+	ast := parser compiler parseFragment: source.
+	self
+		assert: ast selector == #m;
+		assert: ast statements isEmpty! !
+
+!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 6/3/2021 13:34:30'!
+testBraceNode 
+	| ast brace sum |
+	ast := parser parseExpression: '{1. 3 + 4}'.
+	brace := ast statements anyOne.
+	sum := parser parseExpression: '3 + 4'.
+	self
+		assert: brace elements size = 2;
+		assert: brace elements first value = 1;
+		assert: brace elements second class = sum statements anyOne class;
+		assert: brace elements second arguments anyOne value = 4! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:36:02'!
+testComment1 
+	| node |
+	node := parser parse: 'unary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:36:17'!
+testComment10 
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	[2. "comment3" 3]'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second statements second comment value = 'comment3'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:36:29'!
+testComment11 
+	| node |
+	node := parser parse: 'unary
+	1. "comment"'.
+	self assert: node comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:36:40'!
+testComment12 
+	| node |
+	node := parser parse: 'unary
+	[1. "comment"]'.
+	self assert: node statements anyOne comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:36:48'!
+testComment2 
+	| node |
+	node := parser parse: '+ binary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:00'!
+testComment3 
+	| node |
+	node := parser parse: 'keyword: arg
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:09'!
+testComment4 
+	| node |
+	node := parser parse: 'unary
+	^true "comment"'.
+	self
+		assert: node statements anyOne expression comment value = 'comment';
+		deny: node comment value = 'comment';
+		assert: node comment isNil! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:19'!
+testComment5 
+	| node |
+	node := parser parse: '+ binary
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:28'!
+testComment6 
+	| node |
+	node := parser parse: 'keyword: arg
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:36'!
+testComment7 
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second comment value = 'comment2'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:45'!
+testComment8 
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	^2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second expression comment value = 'comment2'! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 6/3/2021 13:37:54'!
+testComment9 
+	| node |
+	node := parser parse: 'unary
+	1. "comment2" 2'.
+	self assert: node statements second comment value = 'comment2'! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 6/3/2021 13:38:46'!
+testEmbeddedDots 
+	| node |
+	node := parser parse: 'm
+	A.B.C name.
+	self m: A.B.C.
+	^true'.
+	self
+		assert: node statements first receiver name = 'A.B.C';
+		assert: node statements second arguments anyOne name = 'A.B.C'! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 6/3/2021 13:38:57'!
+testEmbeddedDots2 
+	self
+		should: [parser parse: '
+	m
+		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		| funny.local |
+		funny.local := 1.
+		^funny.local']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
+		raise: SCompilationError! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 6/3/2021 13:42:10'!
+testPeekForIdentifier 
+	| strm |
+	strm := 'abc.de' readStream.
+	self
+		assert: (SCompiler new peekForIdentifier: strm);
+		assert: strm position = 1.
+	strm position: 3.
+	self assert: (SCompiler new peekForIdentifier: strm).
+	strm := 'a2.c' readStream.
+	strm position: 2.
+	self deny: (SCompiler new peekForIdentifier: strm)! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:34:53'!
+testByteArray 
+	| node |
+	node := parser parseExpression: '#[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'.
+	node := parser parse: 'b #[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:35:02'!
+testByteArray2 
+	| array |
+	parser on: '#[16rFE]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE];
+		assert: array source = '#[16rFE]'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:35:12'!
+testByteArray3 
+	| array |
+	parser on: '#[16rFE 2]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE 2];
+		assert: array source = '#[16rFE 2]'.
+	parser on: '#[16rFE 256 2]'.
+	parser step.
+	self should: [array := parser primary] raise: Exception! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:38:07'!
+testDashStartingSymbol1 
+	| array |
+	parser on: '#(#++)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'++').
+	parser on: '#(#-- )'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'--')! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:38:17'!
+testDashStartingSymbol2 
+	| symbol |
+	parser on: '#++'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'++'.
+	parser on: '#--'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'--'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:39:11'!
+testExpression 
+	| expression |
+	parser on: '(x)'; step.
+	expression := parser primary.
+	self
+		assert: expression isIdentifier;
+		assert: expression source = 'x'.
+	parser on: '(x + 1)'; step.
+	expression := parser primary.
+	self
+		assert: expression class == SMessageNode;
+		assert: expression selector isBinary;
+		assert: expression source = '(x + 1)'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:39:21'!
+testFloat 
+	| source node |
+	source := '3.14159265358979323846'.
+	node := parser parseExpression: source.
+	self assert: node statements anyOne source = source.
+	node := parser parse: 'm ' , source.
+	self assert: node statements anyOne source = source! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:01'!
+testLiteralArray 
+	| array |
+	parser on: '#(16rFE)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE);
+		assert: array source = '#(16rFE)'.
+	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE $a 'hello' #s #(1 2));
+		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:12'!
+testLiteralArray2 
+	| array |
+	parser on: '#(a:b:)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(#a:b:);
+		assert: array source = '#(a:b:)'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:21'!
+testLiteralKeywordArray 
+	| ast literal |
+	ast := parser parseExpression: '#(a:b: c: d:)'.
+	literal := ast statements anyOne value.
+	self
+		assert: literal isArray;
+		assert: literal size = 3;
+		assert: literal first == #a:b:;
+		assert: literal second == #c:;
+		assert: literal third == #d:! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:31'!
+testMissingPrimary 
+	| source |
+	source := 'pendingReservesAtTime: time well: index
+	i0 := startings at: index.
+	ti := self timeAt: i0.
+	dt := time - ti.
+	c := single primaryCurve.
+	^c reserves - (cumAtTime: dt)'.
+	self should: [parser parse: source] raise: Error! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:42'!
+testNegativeElementInArray 
+	| array |
+	parser on: '#(-21)'.
+	parser step.
+	array := parser primary.
+	self assert: array isLiteral.
+	parser on: '#(-21 1 -5 4)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array
+			with: -21
+			with: 1
+			with: -5
+			with: 4)! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:40:54'!
+testNegativeNumber 
+	| number |
+	parser on: '-3'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3;
+		assert: number source = '-3'.
+	parser on: '-3.14'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3.14;
+		assert: number source = '-3.14'.
+	parser on: '-3.14e-10'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -0.000000000314;
+		assert: number source = '-3.14e-10'! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:41:04'!
+testNotAFloat 
+	| method |
+	method := parser parseExpression: '0.a'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 6/3/2021 13:42:25'!
+testScientificNotation 
+	| method |
+	method := parser parseExpression: '
+	0.1e-2.
+	0.1E2'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0.001;
+		assert: method statements second value = 10! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:11:10'!
+testBinaryColon 
+	| statements binary |
+	parser on: '3:4'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '3';
+		assert: binary symbol = #':';
+		assert: binary arguments anyOne source = '4'! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:11:23'!
+testBinaryColon2 
+	| m |
+	m := parser parse: ': b ^self / b'.
+	self assert: m selector = #':'.
+	self assert: m arguments anyOne source = 'b'! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:33:05'!
+testBinaryPower 
+	| statements binary |
+	parser on: '2^3'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '2';
+		assert: binary symbol = #'^';
+		assert: binary arguments anyOne source = '3'! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:33:15'!
+testBinaryPower2 
+	| m |
+	m := parser parse: '^ n ^self raisedTo: n'.
+	self assert: m selector = #'^'.
+	self assert: m arguments anyOne source = 'n'! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:35:26'!
+testCascade 
+	| cascade statements |
+	parser on: 'r m1; m2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first source = 'r m1';
+		assert: cascade messages first selector source = 'm1';
+		assert: cascade messages second selector source = 'm2'! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:35:37'!
+testCascade2 
+	| cascade statements |
+	parser on: 'r m: 1; + 2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first selector keywords size = 1;
+		assert: cascade messages first arguments anyOne value = 1;
+		assert: cascade messages second selector isBinary;
+		assert: cascade messages second arguments anyOne value = 2! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:42:40'!
+testSelector 
+	| source ast |
+	source := 'k1: arg1 k2: arg2'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode positions first
+			= (source indexOfSubCollection: 'k1:');
+		assert: ast selectorNode positions second
+			= (source indexOfSubCollection: 'k2:');
+		assert: ast selector == #k1:k2:! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 6/3/2021 13:43:44'!
+testUnarySelector 
+	| source ast |
+	source := 'm a notNil'.
+	ast := parser parse: source.
+	self
+		assert: (ast nodeWithLiteral: #notNil) positions first
+			= (source indexOfSubCollection: 'notNil')! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 6/3/2021 13:11:52'!
+testBinaryHeader 
+	| method selector |
+	parser on: '+++ x'.
+	parser step.
+	method := parser binarySignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 1;
+		assert: method selector value == #'+++';
+		assert: method arguments size = 1.
+	parser on: 'a'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil.
+	parser on: 'a: x'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 6/3/2021 13:39:36'!
+testKeywordHeader 
+	| method selector |
+	parser on: 'x: x y: y z: z'.
+	parser step.
+	method := parser keywordSignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 3;
+		assert: method selector value == #x:y:z:;
+		assert: method arguments size = 3.
+	parser on: 'a'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil.
+	parser on: '+ x'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 6/3/2021 13:39:47'!
+testKeywordHeader2 
+	| method |
+	parser on: 'x: xx y: yy z: zz'.
+	parser step.
+	method := parser methodSignature.
+	self
+		assert: method class == SMethodNode;
+		assert: method header = 'x: xx y: yy z: zz'.
+	parser on: 'x'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = 'x'.
+	parser on: '+= arg value := value + arg'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = '+= arg'! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 6/3/2021 13:43:29'!
+testUnaryHeader 
+	| selector |
+	parser on: 'a'.
+	parser step.
+	self assert: parser token isNameToken.
+	selector := parser unarySelector.
+	self
+		assert: selector notNil;
+		assert: selector class == SSelectorNode;
+		assert: selector keywords size = 1;
+		assert: selector value == #a.
+	parser on: 'a: x'.
+	parser step.
+	self deny: parser token isNameToken.
+	parser on: '+ x'.
+	parser step.
+	self deny: parser token isNameToken! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 6/3/2021 13:41:50'!
+testParseTemporaries 
+	| temporaries |
+	temporaries := SCompiler new smalltalkParser
+		parseTemporaries:
+			'm: arg
+	| t1 t2 t3 |
+	^:= will not even parse'.
+	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 6/3/2021 13:43:03'!
+testTemporaries 
+	| temporaries |
+	parser on: '||'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| |'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| a b c |'.
+	parser step.
+	temporaries := parser temporaries.
+	self
+		assert: temporaries size = 3;
+		assert: temporaries first isIdentifier;
+		assert: temporaries first name = 'a';
+		assert: temporaries second isIdentifier;
+		assert: temporaries second name = 'b';
+		assert: temporaries third isIdentifier;
+		assert: temporaries third name = 'c'! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 6/3/2021 13:43:14'!
+testTemporaryDeclarations 
+	| temporaries |
+	parser on: '| | | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: '|| | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: 'a || b'.
+	parser step.
+	self assert: parser token value = 'a'.
+	parser step.
+	self assert: parser token value = #'||'.
+	parser step.
+	self assert: parser token value = 'b'! !
+
+!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 6/3/2021 15:32:35'!
+testAllNodesDo 
+	| source nodes |
+	source := 'rcvr msg1; msg2'.
+	parser on: source.
+	parser step.
+	nodes := OrderedCollection new.
+	parser expression allNodesDo: [:n | Transcript log: n printString . nodes add: n].
+	self assert: nodes size = 4! !
+
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 6/3/2021 13:44:36'!
+testUnicode 
+	| source ast |
+	source := 8855 asCharacter asString , ' aFreeTensor'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode position
+			= (source indexOfSubCollection: 8855 asCharacter asString);
+		assert: ast selector == 8855 asCharacter asString asSymbol! !
+
 !SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 6/2/2021 20:43:56'!
 testArrayStart 
 	| node |
@@ -39863,6 +40601,14 @@ beeCopyFrom: start to: stop
 		with: self
 		startingAt: start! !
 
+!SequenceableCollection methodsFor: '*powerlang-core' stamp: 'KenD 6/3/2021 13:48:05'!
+indexOfSubCollection: aSubCollection 
+
+	^self
+		indexOfSubCollection: aSubCollection
+		startingAt: 1
+		ifAbsent: [0]! !
+
 !String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:01'!
 arity 
 
@@ -39946,6 +40692,11 @@ replaceAllSubstrings: aString with: anotherString
 trimBlanks
 
 	^self withBlanksTrimmed! !
+
+!Symbol methodsFor: '*powerlang-core' stamp: 'KenD 6/3/2021 13:53:01'!
+isBinary 
+
+	^self precedence = 2! !
 
 !Dictionary methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:50:25'!
 removeAllSuchThat: aBlock 
