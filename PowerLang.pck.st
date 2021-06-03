@@ -1,11 +1,12 @@
-'From Cuis 5.0 [latest update: #4624] on 2 June 2021 at 11:34:19 am'!
+'From Cuis 5.0 [latest update: #4625] on 2 June 2021 at 5:00:06 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 45!
+!provides: 'PowerLang' 1 48!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
+SystemOrganization addCategory: #'Powerlang-Compatibility-Pharo'!
 SystemOrganization addCategory: #'Powerlang-Core'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
@@ -263,6 +264,16 @@ ByteArray variableByteSubclass: #SFFIDescriptor
 	category: 'Powerlang-Core-SCompiler'!
 !classDefinition: 'SFFIDescriptor class' category: #'Powerlang-Core-SCompiler'!
 SFFIDescriptor class
+	instanceVariableNames: ''!
+
+!classDefinition: #PoolDictionary category: #'Powerlang-Compatibility-Pharo'!
+Dictionary subclass: #PoolDictionary
+	instanceVariableNames: 'constant'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Compatibility-Pharo'!
+!classDefinition: 'PoolDictionary class' category: #'Powerlang-Compatibility-Pharo'!
+PoolDictionary class
 	instanceVariableNames: ''!
 
 !classDefinition: #StorageReadError category: #'Powerlang-Core-Metaphysics'!
@@ -4004,6 +4015,16 @@ compile: anRGMethod
 		forClass: class;
 		compile: anRGMethod sourceCode! !
 
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
+allSharedPoolsUsing: globals 
+	| pools class |
+	pools := Set new.
+	class := self.
+	[ class isNil ]
+		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
+			class := class superclass ].
+	^ pools! !
+
 !VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
 name 
 
@@ -4034,6 +4055,19 @@ classPool
 
 	^cvars ! !
 
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
+localPools 
+	| pools dict name pool |
+	pools := cvars associations
+		select: [ :assoc | assoc value spec name = #PoolDictionary ].
+	dict := Dictionary new.
+	pools
+		do: [ :assoc | 
+			name := assoc key asString.
+			pool := assoc value.
+			dict at: name put: (VirtualDictionary fromPool: pool) ].
+	^ dict! !
+
 !VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
 withAllSuperclasses 
 
@@ -4047,6 +4081,11 @@ withAllSuperclasses
 classPool 
 
 	^ class classPool! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
+localPools 
+
+	^ class localPools! !
 
 !VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
 allInstVarNames 
@@ -4180,6 +4219,12 @@ allSuperclasses
 	superclasses := OrderedCollection new.
 	self allSuperclassesDo: [:s | superclasses add: s].
 	^superclasses! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
+indexOfSlot: name 
+	| instVars |
+	instVars := self allInstVarNames.
+	^instVars indexOf: name ifAbsent: 0! !
 
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:58'!
 superclass 
@@ -5190,6 +5235,70 @@ initializeFFITypes
 		at: 'struct' put: 12;
 		at: 'float' put: 13;
 		at: 'double' put: 14! !
+
+!PoolDictionary methodsFor: 'adding' stamp: 'KenD 6/2/2021 16:36:13'!
+add: anAssociation 
+
+	anAssociation key isString
+		ifFalse: [self error: 'Pools are keyed with Strings'].
+	^super add: anAssociation! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:36:35'!
+at: key 
+
+	^super at: key asString reduced! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:36:46'!
+at: key ifAbsent: aBlock 
+
+	^super at: key asString reduced ifAbsent: aBlock! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:36:59'!
+at: key ifPresent: aBlock 
+
+	^super at: key asString reduced ifPresent: aBlock! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:37:10'!
+at: key put: value 
+
+	^super at: key asString put: value! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:37:20'!
+beConstant: aBoolean 
+
+	constant := aBoolean! !
+
+!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 6/2/2021 16:37:30'!
+beConstantPool 
+
+	constant := true! !
+
+!PoolDictionary methodsFor: 'initialization' stamp: 'KenD 6/2/2021 16:38:54'!
+initialize: anInteger 
+
+	super initialize: anInteger.
+	constant := false! !
+
+!PoolDictionary methodsFor: 'removing' stamp: 'KenD 6/2/2021 16:39:48'!
+removeKey: key ifAbsent: aBlock 
+
+	super removeKey: key asString reduced ifAbsent: aBlock.
+	^key! !
+
+!PoolDictionary methodsFor: 'testing' stamp: 'KenD 6/2/2021 16:37:39'!
+includesKey: key 
+
+	^super includesKey: key asString reduced! !
+
+!PoolDictionary methodsFor: 'testing' stamp: 'KenD 6/2/2021 16:39:13'!
+isConstant 
+
+	^constant! !
+
+!PoolDictionary class methodsFor: 'instance creation' stamp: 'KenD 6/2/2021 16:35:41'!
+newConstantPool 
+
+	^self new beConstantPool! !
 
 !SCompilationError methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:42:59'!
 beFatal 
@@ -18572,16 +18681,6 @@ initialize
 		 _smallIntegerByteAt: 
 		 _uShortAtOffset: #_uShortAtOffset:put:)! !
 
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
-allSharedPoolsUsing: globals 
-	| pools class |
-	pools := Set new.
-	class := self.
-	[ class isNil ]
-		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
-			class := class superclass ].
-	^ pools! !
-
 !VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:52'!
 map 
 
@@ -18606,19 +18705,6 @@ spec: anRGBehavior
 instanceSide 
 
 	^ self! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
-localPools 
-	| pools dict name pool |
-	pools := cvars associations
-		select: [ :assoc | assoc value spec name = #PoolDictionary ].
-	dict := Dictionary new.
-	pools
-		do: [ :assoc | 
-			name := assoc key asString.
-			pool := assoc value.
-			dict at: name put: (VirtualDictionary fromPool: pool) ].
-	^ dict! !
 
 !VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:45:33'!
 sharedPoolsUsing: globals 
@@ -18652,11 +18738,6 @@ createClassAssociationsWith: aVirtualSmalltalkImage
 instanceSide 
 
 	^class! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
-localPools 
-
-	^ class localPools! !
 
 !VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:09'!
 sharedPoolsUsing: globals 
@@ -21407,12 +21488,6 @@ reflectsMethodDictionary
 compiledMethodFor: selector 
 
 	^self instBehavior compiledMethodFor: selector! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
-indexOfSlot: name 
-	| instVars |
-	instVars := self allInstVarNames.
-	^instVars indexOf: name ifAbsent: 0! !
 
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:37:05'!
 localName 
@@ -38996,15 +39071,154 @@ initialize
 
 	Counts := IdentityDictionary new! !
 
+!ProtoObject methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:44:40'!
+!!== anObject 
+
+	^self ~~ anObject! !
+
 !Object methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 5/30/2021 14:45:16'!
 !!= anObject
 
 	^self ~= anObject! !
 
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:28:08'!
+deny: aBoolean
+
+	self assert: aBoolean not! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:28:24'!
+disableCode: aBlock 
+
+	"the block has been disabled"! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:28:45'!
+evaluate 
+
+	^self! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:28:56'!
+evaluateWith: anObject 
+
+	^self evaluateWithArguments: {anObject}! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:29:09'!
+evaluateWithArguments: anArray 
+
+	^self evaluate! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:29:24'!
+hashWith: a 
+
+	^self
+		hashedWith: a
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		count: 2! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:29:37'!
+hashWith: a with: b 
+
+	^ self
+		hashedWith: a
+		with: b
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		count: 3! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:29:49'!
+hashWith: a with: b with: c 
+
+	^self
+		hashedWith: a
+		with: b
+		with: c
+		with: nil
+		with: nil
+		with: nil
+		count: 4! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:30:01'!
+hashWith: a with: b with: c with: d 
+
+	^ self
+		hashedWith: a
+		with: b
+		with: c
+		with: d
+		with: nil
+		with: nil
+		count: 5! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:30:12'!
+hashWith: a with: b with: c with: d with: e 
+
+	^ self
+		hashedWith: a
+		with: b
+		with: c
+		with: d
+		with: e
+		with: nil
+		count: 6! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:31:12'!
+hashedWith: a with: b with: c with: d with: e with: f count: n 
+	| hash |
+	hash := n hashMultiply bitXor: self hash.
+	hash := hash hashMultiply bitXor: a hash.
+	n = 2 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: b hash.
+	n = 3 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: c hash.
+	n = 4 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: d hash.
+	n = 5 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: e hash.
+	n = 6 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: f hash.
+	n = 7 ifTrue: [^hash].
+	self error: 'Invalid argument count'! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:31:41'!
+isBoolean 
+
+	^false! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:31:53'!
+isEmptyOrNil 
+
+	^false
+! !
+
 !Object methodsFor: '*powerlang-core' stamp: 'KenD 5/5/2021 16:34:39'!
 isInstruction 
 
 	^false! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:32:03'!
+isSmallInteger 
+
+	^false! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:32:11'!
+isSpecies 
+
+	^false! !
+
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:32:30'!
+primitivePrintString 
+
+	^self printString! !
+
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:48:46'!
+anyone 
+
+	^self anyOne! !
 
 !Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
 conform: evaluable
@@ -39020,10 +39234,79 @@ reject: rejectBlock thenDo: doBlock
 		ifFalse: [ doBlock value: each ]
 	]! !
 
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:49:16'!
+with: anObject withAll: aCollection 
+
+	^self new add: anObject; addAll: aCollection; yourself! !
+
+!SequenceableCollection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:48:44'!
+beeCopyFrom: start 
+
+	^self beeCopyFrom: start to: self size! !
+
+!SequenceableCollection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:48:57'!
+beeCopyFrom: start to: stop 
+	| size copy |
+	size := stop - start + 1 max: 0.
+	copy := self species ofSize: size.
+	^copy
+		replaceFrom: 1
+		to: size
+		with: self
+		startingAt: start! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:01'!
+arity 
+
+	^self numArgs! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:12'!
+existingSymbol 
+
+	^Symbol findInterned: self! !
+
 !String methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
 includesString: subString
 
 	^(self findString: subString) ~= 0! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:45'!
+indexOfString: aString from: start to: stop 
+	| n limit base i |
+	n := aString size.
+	limit := stop - n.
+	base := start - 1.
+	i := 1.
+	[
+		base > limit ifTrue: [^0].
+		i <= n]
+		whileTrue: [
+			i := (self at: base + i) = (aString at: i) ifTrue: [i + 1] ifFalse: [
+				base := base + 1.
+				1]].
+	^i > 1 ifTrue: [base + 1] ifFalse: [0]! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:54:02'!
+indexOfSubcollection: aCollection startingAt: anInteger 
+	| m n i first |
+	m := aCollection size.
+	m = 0 ifTrue: [^0].
+	n := self size - m + 1.
+	i := anInteger.
+	first := aCollection at: 1.
+	[i <= n] whileTrue: [| j |
+		(self at: i) = first ifTrue: [
+			j := 2.
+			[j <= m and: [(self at: i + j - 1) = (aCollection at: j)]]
+				whileTrue: [j := j + 1].
+			j > m ifTrue: [^i]].
+		i := i + 1].
+	^0! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:54:19'!
+reduced 
+
+	^self! !
 
 !String methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:49:25'!
 replaceAllSubstrings: aString with: anotherString
@@ -39056,6 +39339,33 @@ trimBlanks
 
 	^self withBlanksTrimmed! !
 
+!Dictionary methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:50:25'!
+removeAllSuchThat: aBlock 
+	"Evaluate aBlock for each element and remove all that elements from
+	the receiver for that aBlock evaluates to true.  Use a copy to enumerate 
+	collections whose order changes when an element is removed (i.e. Sets)."
+	self copy
+		keysAndValuesDo: [:key :each | (aBlock evaluateWith: each)
+			ifTrue: [self removeKey: key]]! !
+
+!OrderedDictionary methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:33:13'!
+withIndexDo: aBlock 
+	| i |
+	i := 1.
+	self do: [:each | 
+		aBlock value: each value: i.
+		i := i + 1]! !
+
+!Stream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:50:43'!
+sizeToEnd 
+
+	^self size - self position! !
+
+!Stream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:50:55'!
+skip 
+
+	self skip: 1! !
+
 !PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 13:40:53'!
 peekForAll: aCollection
 
@@ -39064,6 +39374,63 @@ peekForAll: aCollection
 	^((self peek: n) hasEqualElements: aCollection)
 		ifTrue: [self skip: n];
 		yourself! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:42:37'!
+uint16le 
+	"Answer the next unsigned, 16-bit integer from this (binary) stream."
+
+	^ self next + (self next bitShift: 8)! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:42:52'!
+uint16le: anInteger 
+	"Store the given unsigned, 32-bit integer as little endian 
+	 on this (binary) stream."
+
+	(anInteger < 0 or: [ anInteger >= 16r10000 ])
+		ifTrue: [ self error: 'outside unsigned 16-bit integer range' ].
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2)! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:43:02'!
+uint32le 
+	"Answer the next unsigned, 32-bit integer from this (binary) stream."
+
+	^self next + (self next bitShift: 8) + (self next bitShift: 16) + (self next bitShift: 24)! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:43:14'!
+uint32le: anInteger 
+	"Store the given unsigned, 32-bit integer as little endian 
+	 on this (binary) stream."
+
+	(anInteger < 0 or: [ anInteger >= 16r100000000 ])
+		ifTrue: [ self error: 'outside unsigned 32-bit integer range' ].
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2).
+	self nextPut: (anInteger byteAt: 3).
+	self nextPut: (anInteger byteAt: 4)! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:43:28'!
+uint64le 
+	"Answer the next unsigned, 64-bit integer from this (binary) stream."
+
+	^ self next + (self next bitShift: 8) + (self next bitShift: 16)
+		+ (self next bitShift: 24) + (self next bitShift: 32)
+		+ (self next bitShift: 40) + (self next bitShift: 48)
+		+ (self next bitShift: 56)! !
+
+!PositionableStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:43:41'!
+uint64le: anInteger 
+	"Store the given unsigned, 64-bit integer as little endian 
+	 on this (binary) stream."
+
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2).
+	self nextPut: (anInteger byteAt: 3).
+	self nextPut: (anInteger byteAt: 4).
+	self nextPut: (anInteger byteAt: 5).
+	self nextPut: (anInteger byteAt: 6).
+	self nextPut: (anInteger byteAt: 7).
+	self nextPut: (anInteger byteAt: 8)! !
 
 !ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 11:20:29'!
 copyFrom: start to: end
@@ -39075,26 +39442,184 @@ copyFrom: start to: end
 	self position: startPos.
 	^result! !
 
-!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 13:44:27'!
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:36'!
 peek: n
 
-	| pos safe data |
-	pos := self position.
-	safe := n min: (self size - pos).
+	| startPos safe data |
+	startPos := self position.
+	safe := n min: (self size - startPos).
 	data := self next: safe.
-	self position: pos.
+	self position: startPos.
 	^data
 	! !
 
-!Integer methodsFor: '*powerlang' stamp: 'Install-PowerLang 5/31/2021 12:50:09'!
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:54'!
+prev 
+
+	^self position > 0
+		ifTrue: [self position: self position - 1; peek]
+		ifFalse: [self error: 'read beyond start of stream']! !
+
+!WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:58:02'!
+nextBytePut: aCollection 
+
+	^ self nextPut: aCollection! !
+
+!WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:58:18'!
+nextBytesPut: aCollection 
+
+	^self nextBytesPutAll: aCollection! !
+
+!WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:59:00'!
+nextLongPut: anInteger
+	| unsigned |
+	unsigned _ anInteger < 0
+		ifTrue: [ anInteger + (1 << 32) ]
+		ifFalse: [ anInteger ].
+	self nextULongPut: unsigned.! !
+
+!WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:59:13'!
+nextULongPut: anInteger 
+
+	1 to: 4 do: [ :i | 
+		| bi |
+		bi := anInteger byteAt: i.
+		self nextPut: bi ]! !
+
+!WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:59:36'!
+peek 
+
+	^self atEnd ifFalse: [collection at: position + 1]! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:46:44'!
+allSharedPoolsUsing: globals 
+
+	^self allSharedPools ! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:46:56'!
+indexOfSlot: instVarName 
+
+	^self instVarIndexFor: instVarName! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:47:07'!
+localPools 
+
+	^#()! !
+
+!ClassOrganizer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:48:08'!
+selectorsFor: aString 
+	| protocol |
+	protocol := self protocolNamed: aString.
+	^protocol methodSelectors! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:51:29'!
+bin 
+	"
+	255 bin
+	"
+	^self radix: 2! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:52:27'!
+bin: bits 
+	"
+	(2 bin: 7) size = 7
+	"
+	| pad bin |
+	pad := String new: bits withAll: $0.
+	bin := pad , self bin.
+	^ bin copyFrom: bin size - bits + 1 to: bin size! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:06'!
+bitShiftRight: anInteger 
+
+	^self bitShift: 0 - anInteger! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:19'!
+bitsAt: aStretch 
+	"
+	(2r001101010 bitField: (3 thru: 6)) bin = '1010'
+	(-16r40000000 bitField: (29 thru: 31)) bin = '100'
+	"
+	| shifted mask |
+	shifted := self bitShiftRight: aStretch start - 1.
+	mask := 1 bitShift: aStretch length.
+	^shifted bitAnd: mask - 1! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:32'!
+bitsAt: aStretch put: anInteger 
+	"
+	((2r001101100 bitsAt: (3 thru: 6) put: 2r1101) bitField: (3 thru: 6)) bin = '1101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (29 thru: 31)) bin = '101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (1 thru: 3)) bin = '100'
+	"
+	| shifted max |
+	shifted := anInteger bitShift: aStretch start - 1.
+	max := 1 bitShift: aStretch length.
+	anInteger < max ifFalse: [self error: 'invalid argument'].
+	^(self bitsClear: aStretch) bitOr: shifted! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:46'!
+bitsClear: aStretch 
+	"
+	(2r111100110 bitsClear: (3 thru: 6)) = 2r111000010
+	"
+	| mask |
+	mask := (1 bitShift: aStretch end) - (1 bitShift: aStretch start - 1).
+	^self bitAnd: mask bitInvert! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 5/31/2021 12:50:09'!
 isOnBit: n
 
 	^(self bitAnd: n) = n! !
 
-!Integer methodsFor: '*powerlang' stamp: 'KenD 3/8/2021 07:55:07'!
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:54:20'!
+linearFeedbackShiftRandom: key 
+	"
+	LFSR implementation (avoids 0 by definition).
+	More keys at: https://users.ece.cmu.edu/~koopman/lfsr/index.html
+	"
+
+	| shifted |
+	shifted := self bitShift: -1.
+	^ (self bitAnd: 1) = 0
+		ifTrue: [ shifted ]
+		ifFalse: [ shifted bitXor: key ]! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 3/8/2021 07:55:07'!
 thru: anInteger 
 
 	^Stretch from: self thru: anInteger! !
+
+!SmallInteger methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:49:44'!
+isSmallInteger 
+
+	^ true! !
+
+!Boolean methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:40:34'!
+isBoolean 
+
+	^ true! !
+
+!False methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:39:02'!
+and: block1 andNot: block2 
+
+	^self! !
+
+!True methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:37:43'!
+and: block1 andNot: block2 
+
+	^block1 value andNot: [block2 value]! !
+
+!True methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:37:54'!
+andNot: aBlock 
+
+	^aBlock value not
+! !
+
+!Character methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:44:43'!
+isHexDigit 
+
+	^self isDigit or: [self between: $a and: $f] or: [self between: $A and: $F]! !
 
 !Character methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 08:03:14'!
 split: aString
