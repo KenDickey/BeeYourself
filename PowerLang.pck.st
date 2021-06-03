@@ -1,12 +1,12 @@
-'From Cuis 5.0 [latest update: #4625] on 2 June 2021 at 5:00:06 pm'!
+'From Cuis 5.0 [latest update: #4624] on 3 June 2021 at 7:43:31 am'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 48!
+!provides: 'PowerLang' 1 49!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
 !requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
-SystemOrganization addCategory: #'Powerlang-Compatibility-Pharo'!
+SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: #'Powerlang-Core'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-JIT'!
@@ -24,6 +24,7 @@ SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
+SystemOrganization addCategory: 'Powerlang-Compatibility-Pharo'!
 
 
 !classDefinition: #CharacterConstants category: #'Powerlang-Core'!
@@ -266,13 +267,13 @@ ByteArray variableByteSubclass: #SFFIDescriptor
 SFFIDescriptor class
 	instanceVariableNames: ''!
 
-!classDefinition: #PoolDictionary category: #'Powerlang-Compatibility-Pharo'!
+!classDefinition: #PoolDictionary category: 'Powerlang-Compatibility-Pharo'!
 Dictionary subclass: #PoolDictionary
 	instanceVariableNames: 'constant'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Compatibility-Pharo'!
-!classDefinition: 'PoolDictionary class' category: #'Powerlang-Compatibility-Pharo'!
+!classDefinition: 'PoolDictionary class' category: 'Powerlang-Compatibility-Pharo'!
 PoolDictionary class
 	instanceVariableNames: ''!
 
@@ -338,7 +339,7 @@ AssemblerParser class
 
 !classDefinition: #NumberParser2 category: #'Powerlang-Core'!
 Object subclass: #NumberParser2
-	instanceVariableNames: ''
+	instanceVariableNames: 'stream error return'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Powerlang-Core'!
@@ -2846,6 +2847,16 @@ SParseNode subclass: #SLiteralNode
 SLiteralNode class
 	instanceVariableNames: ''!
 
+!classDefinition: #SNumberNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SLiteralNode subclass: #SNumberNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SNumberNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SNumberNode class
+	instanceVariableNames: ''!
+
 !classDefinition: #SStringNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SLiteralNode subclass: #SStringNode
 	instanceVariableNames: ''
@@ -3274,6 +3285,16 @@ SScript subclass: #SBlock
 	category: 'Powerlang-Core-SExpressions'!
 !classDefinition: 'SBlock class' category: #'Powerlang-Core-SExpressions'!
 SBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkScannerTest category: 'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkScannerTest
+	instanceVariableNames: 'scanner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkScannerTest class' category: 'Powerlang-Tests-SCompiler'!
+SmalltalkScannerTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #Subject category: #'Powerlang-Core-Metaphysics'!
@@ -5773,6 +5794,209 @@ start
 comma 
 
 	^super comma ==> [:nodes | ]! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:14:24'!
+error
+
+	^error! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:07:38'!
+error: aString at: position 
+
+	error := aString -> position.
+	return value: nil! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:11:02'!
+on: aString 
+	stream := aString readStream.
+	return := nil! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:15:06'!
+return
+
+	^return! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:28'!
+next 
+	| char |
+	return isNil ifTrue: [return := [:value | ^value]].
+	char := self nextChar.
+	char isNil ifTrue: [^self endToken].
+	char = $- ifTrue: [^self negativeNumber].
+	char = $+ ifTrue: [^self positiveNumber].
+	char isDigit ifTrue: [^self nextNumber: char].
+	^nil! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:42'!
+nextChar 
+
+	^stream skipSeparators atEnd ifFalse: [stream next]! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:54'!
+nextDigit: radix 
+	| char digit |
+	stream atEnd ifTrue: [^nil].
+	char := stream next.
+	digit := self digitFromChar: char base: radix.
+	digit isNil ifTrue: [
+		stream skip: -1.
+		^nil].
+	radix <= digit
+		ifTrue: [self error: 'digit greater than radix' at: stream position].
+	^digit! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:08'!
+nextExponent 
+	| negated exp |
+	negated := false.
+	(stream peekFor: $+) ifFalse: [negated := stream peekFor: $-].
+	exp := self nextIntegerRadix: 10.
+	negated ifTrue: [exp := exp negated].
+	^exp! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:44'!
+nextFloat: aNumber 
+	| base digit e exp |
+	digit := self nextDigit: 10.
+	digit isNil ifTrue: [
+		stream skip: -1.
+		^aNumber].
+	e := 1.
+	base := aNumber * 10 + digit.
+	[
+		digit := self nextDigit: 10.
+		digit isNil]
+		whileFalse: [
+			base := base * 10 + digit.
+			e := e + 1].
+	((stream peekFor: $E) or: [stream peekFor: $e]) ifTrue: [
+		exp := self nextExponent.
+		^(base * (10 raisedToInteger: exp - e)) asFloat].
+	(stream peekFor: $s) ifTrue: [^self nextScaledFrom: base fractionDigits: e].
+	^(base * (10 raisedToInteger: e negated)) asFloat! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:59'!
+nextIntegerRadix: radix 
+	| value valid digit |
+	value := 0.
+	valid := false.
+	[
+		digit := self nextDigit: radix.
+		digit isNil]
+		whileFalse: [
+			valid := true.
+			value := value * radix + digit].
+	valid ifFalse: [self error: 'digit missing' at: stream position + 1].
+	^value! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:12'!
+nextNumber: aCharacter 
+	| start number digit |
+	start := stream position.
+	number := aCharacter digitValue.
+	[
+		digit := self nextDigit: 10.
+		digit isNil]
+		whileFalse: [number := number * 10 + digit].
+	number := self completeNumber: number at: start.
+	^number -> (start thru: stream position)! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:27'!
+nextScaledFrom: aNumber fractionDigits: digits 
+	| scale denominator sd |
+	scale := (stream atEnd not and: [stream peek isDigit])
+		ifTrue: [self nextIntegerRadix: 10].
+	denominator := 10 raisedToInteger: digits.
+	sd := ScaledDecimal
+		numerator: aNumber
+		denominator: denominator
+		scale: scale.
+	^sd reduced! !
+
+!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:48'!
+nextValue 
+
+	^self next ifNil: [0] ifNotNil: [:assoc | assoc key]! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:05:37'!
+checkNumberEnd: position 
+	| char |
+	stream atEnd ifTrue: [^self].
+	char := stream peek.
+	char = $. ifFalse: [^self].
+	stream skip: 1.
+	stream atEnd
+		ifFalse: [stream peek isDigit
+			ifTrue: [self error: 'invalid number' at: position]].
+	stream skip: -1! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:05:54'!
+completeFloat: anInteger 
+	| tenth |
+	tenth := 10 raisedToInteger: self nextExponent.
+	^(anInteger * tenth) asFloat! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:11'!
+completeNumber: anInteger after: aCharacter 
+	aCharacter = $. ifTrue: [
+		^(stream peekFor: $s)
+			ifTrue: [self nextScaledFrom: anInteger fractionDigits: 0]
+			ifFalse: [self nextFloat: anInteger]].
+	(aCharacter = $e or: [aCharacter = $E])
+		ifTrue: [^self completeFloat: anInteger].
+	aCharacter = $r ifTrue: [^self nextIntegerRadix: anInteger].
+	aCharacter = $s ifTrue: [^self nextScaledFrom: anInteger fractionDigits: 0].
+	(anInteger = 0 and: [aCharacter = $x or: [aCharacter = $X]])
+		ifTrue: [^self nextIntegerRadix: 16].
+	stream skip: -1.
+	^anInteger! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:28'!
+completeNumber: anInteger at: start 
+	| number |
+	stream atEnd ifTrue: [^anInteger].
+	number := anInteger.
+	number := self completeNumber: anInteger after: stream next.
+	self checkNumberEnd: start.
+	^number! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:41'!
+digitFromChar: char base: radix 
+	| c |
+	char isDigit ifTrue: [^char digitValue].
+	char = $r ifTrue: [^nil].
+	char = $x ifTrue: [^nil].
+	char = $X ifTrue: [^nil].
+	c := char asUppercase.
+	(c asInteger between: $A asInteger and: $Z asInteger) ifFalse: [^nil].
+	(c !!= $E and: [radix <= c digitValue]) ifTrue: [^nil].
+	(c = $E and: [radix = 10]) ifTrue: [^nil].
+	^c digitValue! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:55'!
+endToken 
+
+	self error: 'end of stream' at: stream position! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:07:59'!
+negativeNumber 
+	| position |
+	stream atEnd ifTrue: [^nil].
+	stream peek isDigit ifFalse: [^nil].
+	position := stream position.
+	^self next key negated -> position! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:11:51'!
+positiveNumber 
+	| position |
+	stream peek isDigit ifFalse: [^nil].
+	position := stream position.
+	^self next key -> position! !
+
+!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:12:05'!
+reset 
+	stream reset.
+	return := nil! !
 
 !ABI methodsFor: 'testing' stamp: 'KenD 2/24/2021 14:40:26'!
 is32bits 
@@ -35065,6 +35289,11 @@ sourceCode
 
 	^source! !
 
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 6/3/2021 06:53:06'!
+sourceCode: aString
+
+	source := aString! !
+
 !SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/14/2021 15:17:46'!
 blockCount 
 
@@ -37024,6 +37253,21 @@ beSymbol
 acceptVisitor: visitor 
 	
 	^visitor visitLiteral: self! !
+
+!SNumberNode methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:19:00'!
+negate 
+
+	value := value negated! !
+
+!SNumberNode methodsFor: 'testing' stamp: 'KenD 6/3/2021 07:18:48'!
+isNumberNode 
+
+	^true! !
+
+!SNumberNode methodsFor: 'visiting' stamp: 'KenD 6/3/2021 07:18:37'!
+acceptVisitor: visitor 
+
+	^visitor visitNumberNode: self! !
 
 !SStringNode methodsFor: 'visiting' stamp: 'KenD 4/8/2021 08:34:49'!
 acceptVisitor: visitor 
@@ -39005,6 +39249,39 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeBlock! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/2/2021 20:43:34'!
+test0xNotation 
+	| node |
+	node := SCompiler new smalltalkParser parseExpression: '0x10'.
+	self assert: node statements first value = 16.
+	node := SCompiler new smalltalkParser parseExpression: '0X10'.
+	self assert: node statements first value = 16! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 6/2/2021 20:43:56'!
+testArrayStart 
+	| node |
+	scanner on: '#()'.
+	node := scanner next.
+	self
+		assert: (node is: #'#(');
+		assert: node source = '#('.
+	scanner on: '#['.
+	node := scanner next.
+	self
+		assert: (node is: #'#[');
+		assert: node source = '#['.
+	scanner on: '#''hello'''.
+	node := scanner next.
+	self
+		assert: node value = #hello;
+		assert: node source = '#''hello'''! !
+
+!SmalltalkScannerTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/2/2021 20:42:40'!
+setUp 
+
+	super setUp.
+	scanner := SCompiler new smalltalkScanner! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
