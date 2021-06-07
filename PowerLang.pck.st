@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4633] on 7 June 2021 at 2:22:06 pm'!
+'From Cuis 5.0 [latest update: #4633] on 7 June 2021 at 2:34:46 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 55!
+!provides: 'PowerLang' 1 56!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -43,14 +43,14 @@ postPackageInstall
 
 	self inform: 'PowerLang is PRE-alpha. Expect breakage'! !
 
-!PowerLangPackage class methodsFor: 'installing' stamp: 'KenD 6/7/2021 14:21:46'!
+!PowerLangPackage class methodsFor: 'installing' stamp: 'KenD 6/7/2021 14:34:38'!
 prePackageInstall
 
 	"We override SystemDictionary>>globals.
 	Let the user OK or bring up debugger.."
 	
 	self assert: (PopUpMenu confirm:
-				 'PowerLang override SystemDictionary>>globals; Yes->OK|No->Debug').
+				 'PowerLang overrides SystemDictionary>>globals; Yes->OK | No->Debug').
 				
 	"We may have been loaded before.  If not, capture COPY of
 	Smalltalk SystemDictionary initial bindings."
