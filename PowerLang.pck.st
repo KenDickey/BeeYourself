@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4633] on 7 June 2021 at 2:34:46 pm'!
+'From Cuis 5.0 [latest update: #4633] on 7 June 2021 at 3:56:28 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 56!
+!provides: 'PowerLang' 1 57!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -25,6 +25,8 @@ SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk'!
 SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
+SystemOrganization addCategory: 'Powerlang-Tests-Building'!
+SystemOrganization addCategory: 'Powerlang-Tests'!
 
 
 !classDefinition: #PowerLangPackage category: 'Powerlang-Core'!
@@ -379,6 +381,56 @@ TestCase subclass: #SmalltalkScannerTest
 	category: 'Powerlang-Tests-SCompiler'!
 !classDefinition: 'SmalltalkScannerTest class' category: 'Powerlang-Tests-SCompiler'!
 SmalltalkScannerTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #KernelBuilderTest category: 'Powerlang-Tests-Building'!
+TestCase subclass: #KernelBuilderTest
+	instanceVariableNames: 'builder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Building'!
+!classDefinition: 'KernelBuilderTest class' category: 'Powerlang-Tests-Building'!
+KernelBuilderTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMapTest category: 'Powerlang-Tests-Building'!
+TestCase subclass: #ObjectMapTest
+	instanceVariableNames: 'kernel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Building'!
+!classDefinition: 'ObjectMapTest class' category: 'Powerlang-Tests-Building'!
+ObjectMapTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSmalltalkImageTest category: 'Powerlang-Tests-Building'!
+TestCase subclass: #VirtualSmalltalkImageTest
+	instanceVariableNames: 'image'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Building'!
+!classDefinition: 'VirtualSmalltalkImageTest class' category: 'Powerlang-Tests-Building'!
+VirtualSmalltalkImageTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VirtualSmalltalkRuntimeTest category: 'Powerlang-Tests-Building'!
+TestCase subclass: #VirtualSmalltalkRuntimeTest
+	instanceVariableNames: 'image runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Building'!
+!classDefinition: 'VirtualSmalltalkRuntimeTest class' category: 'Powerlang-Tests-Building'!
+VirtualSmalltalkRuntimeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionTest category: 'Powerlang-Tests'!
+TestCase subclass: #SExpressionTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests'!
+!classDefinition: 'SExpressionTest class' category: 'Powerlang-Tests'!
+SExpressionTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core-Assembler-Parser'!
@@ -3161,6 +3213,16 @@ SLiteralBinding subclass: #SFalseBinding
 SFalseBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #SNilBinding category: 'Powerlang-Core-SExpressions'!
+SLiteralBinding subclass: #SNilBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SNilBinding class' category: 'Powerlang-Core-SExpressions'!
+SNilBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #STrueBinding category: 'Powerlang-Core-SExpressions'!
 SLiteralBinding subclass: #STrueBinding
 	instanceVariableNames: ''
@@ -3349,6 +3411,16 @@ SScript subclass: #SBlock
 	category: 'Powerlang-Core-SExpressions'!
 !classDefinition: 'SBlock class' category: 'Powerlang-Core-SExpressions'!
 SBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMethod category: 'Powerlang-Core-SExpressions'!
+SScript subclass: #SMethod
+	instanceVariableNames: 'pragma'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SMethod class' category: 'Powerlang-Core-SExpressions'!
+SMethod class
 	instanceVariableNames: ''!
 
 !classDefinition: #Subject category: 'Powerlang-Core-Metaphysics'!
@@ -4575,6 +4647,11 @@ printOn: aStream
 printOn: aStream 
 
 	aStream nextPutAll: 'FalseId'! !
+
+!SNilBinding methodsFor: 'printing' stamp: 'KenD 6/7/2021 14:48:36'!
+printOn: aStream 
+
+	aStream nextPutAll: 'NilId'! !
 
 !STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
 printOn: aStream 
@@ -7374,6 +7451,776 @@ testUnicodeScanning
 	self assert: three value = 3.
 	tensor := scanner next.
 	self assert: tensor value = 8855 asCharacter asString asSymbol! !
+
+!KernelBuilderTest methodsFor: 'running' stamp: 'KenD 6/7/2021 15:51:09'!
+defaultTimeLimit 
+
+	^ 60 seconds! !
+
+!KernelBuilderTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/7/2021 15:51:21'!
+setUp 
+
+	builder := KernelSegmentBuilder new
+		initialize64BitImage;
+		generateModule;
+		bootstrapModule! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:51:35'!
+test010nil 
+	| nilObj behavior |
+	nilObj := builder addGenesisObjects objects first.
+	behavior := nilObj behavior.
+	self
+		assert: nilObj equals: builder runtime nil;
+		assert: nilObj size equals: 0;
+		assert: nilObj classname equals: 'UndefinedObject';
+		assert: behavior classname equals: 'Behavior'! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:51:47'!
+test020false 
+	| f behavior |
+	f := builder addGenesisObjects objects second.
+	behavior := f behavior.
+	self
+		assert: f equals: builder runtime false;
+		assert: f size equals: 0;
+		assert: f classname equals: 'False';
+		assert: behavior classname equals: 'Behavior'! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:51:57'!
+test030true 
+	| t behavior |
+	t := builder addGenesisObjects objects third.
+	behavior := t behavior.
+	self
+		assert: t equals: builder runtime true;
+		assert: t size equals: 0;
+		assert: t classname equals: 'True';
+		assert: behavior classname equals: 'Behavior'! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:52:44'!
+test100addMethods 
+
+	builder fillClasses addGenesisObjects! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:52:38'!
+test200writeSegment 
+	| nilObj trueObj falseObj offset writer |
+	builder addGenesisObjects.
+	nilObj := builder objects first.
+	trueObj := builder objects second.
+	falseObj := builder objects third.
+	writer := builder writer.
+	writer write.
+	offset := writer objectsOffset.
+	self
+		assert: (writer offsetOf: nilObj) equals: offset + 16r08;
+		assert: (writer offsetOf: trueObj) equals: offset + 16r10;
+		assert: (writer offsetOf: falseObj) equals: offset + 16r18! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:54:29'!
+test220writeSegmentWithBase 
+	| nilObj trueObj falseObj b offset writer |
+	builder addGenesisObjects.
+	nilObj := builder objects first.
+	trueObj := builder objects second.
+	falseObj := builder objects third.
+	b := 16r1FF10000.
+	writer := builder writer
+		base: b;
+		write.
+	offset := writer objectsOffset.
+	self
+		assert: (writer offsetOf: nilObj) equals: offset + 16r08;
+		assert: (writer offsetOf: trueObj) equals: offset + 16r10;
+		assert: (writer offsetOf: falseObj) equals: offset + 16r18;
+		assert: (writer encodedReferenceTo: nilObj)
+			equals: b + offset + 16r08;
+		assert: (writer encodedReferenceTo: trueObj)
+			equals: b + offset + 16r10;
+		assert: (writer encodedReferenceTo: falseObj)
+			equals: b + offset + 16r18.
+	FileLocator temp asFileReference / 'kernel.ims'
+		binaryWriteStreamDo: [ :s | s nextPutAll: writer image ]! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:55:02'!
+test300completeSegmentWithBase 
+	| nilObj trueObj falseObj b offset writer |
+	builder fillClasses addGenesisObjects.
+	nilObj := builder objects first.
+	trueObj := builder objects second.
+	falseObj := builder objects third.
+	b := 16r1FF10000.
+	writer := builder writer
+		base: b;
+		write.
+	offset := writer objectsOffset.
+	self
+		assert: (writer offsetOf: nilObj) equals: offset + 16r08;
+		assert: (writer offsetOf: trueObj) equals: offset + 16r10;
+		assert: (writer offsetOf: falseObj) equals: offset + 16r18;
+		assert: (writer encodedReferenceTo: nilObj)
+			equals: b + offset + 16r08;
+		assert: (writer encodedReferenceTo: trueObj)
+			equals: b + offset + 16r10;
+		assert: (writer encodedReferenceTo: falseObj)
+			equals: b + offset + 16r18.
+	FileLocator temp asFileReference / 'kernel.ims'
+		binaryWriteStreamDo: [ :s | s nextPutAll: writer image ]! !
+
+!KernelBuilderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:55:42'!
+test400completeNativizedSegmentWithBase 
+	| nilObj trueObj falseObj b offset writer |
+	builder
+		fillClasses;
+		nativizeForDMR;
+		addGenesisObjects.
+	nilObj := builder objects first.
+	trueObj := builder objects second.
+	falseObj := builder objects third.
+	b := 16r1FF10000.
+	writer := builder writer
+		base: b;
+		write.
+	offset := writer objectsOffset.
+	self
+		assert: (writer offsetOf: nilObj) equals: offset + 16r08;
+		assert: (writer offsetOf: trueObj) equals: offset + 16r10;
+		assert: (writer offsetOf: falseObj) equals: offset + 16r18;
+		assert: (writer encodedReferenceTo: nilObj)
+			equals: b + offset + 16r08;
+		assert: (writer encodedReferenceTo: trueObj)
+			equals: b + offset + 16r10;
+		assert: (writer encodedReferenceTo: falseObj)
+			equals: b + offset + 16r18.
+	FileLocator temp asFileReference / 'kernel.ims'
+		binaryWriteStreamDo: [ :s | s nextPutAll: writer image ]
+		! !
+
+!ObjectMapTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/7/2021 15:48:36'!
+setUp 
+	super setUp.
+	kernel := VirtualSmalltalkImage kernelSpec! !
+
+!ObjectMapTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/7/2021 15:48:48'!
+tearDown 
+	super tearDown.
+	kernel := nil! !
+
+!ObjectMapTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:49:09'!
+test_01a 
+	| map |
+	
+	map := ObjectMap new: (kernel at: #Object).
+	self assert: map class == SlotObjectMap.
+	self assert: map size == 0.! !
+
+!ObjectMapTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:49:22'!
+test_01b 
+	| undefined fraction null frac |
+	undefined := kernel at: #UndefinedObject.
+	fraction := kernel at: #Fraction.
+	
+	null := ObjectMap new: undefined.
+	frac := ObjectMap new: fraction.
+	self assert: frac class == SlotObjectMap.
+	self assert: frac size == 2.
+	
+	frac slotAt: 1 put: null.
+	frac slotAt: 2 put: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	self assert: (frac slotNamed: 'numerator') == null.
+	self assert: (frac slotNamed: 'denominator') == frac.
+	
+	self assert: (frac numerator) == null.
+	self assert: (frac denominator) == frac.
+
+	frac slotNamed: 'numerator' put: frac.
+	frac slotNamed: 'denominator' put: null.
+	self assert: (frac slotAt: 1) == frac.
+	self assert: (frac slotAt: 2) == null.
+	self assert: (frac slotNamed: 'numerator') == frac.
+	self assert: (frac slotNamed: 'denominator') == null.
+	
+	frac numerator: null.
+	frac denominator: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	
+	self should: [ frac slotAt: 0 ] raise: Error.
+	self should: [ frac slotAt: 3 ] raise: Error.
+	self should: [ frac slotAt: 0 put: null ] raise: Error.
+	self should: [ frac slotAt: 3 put: null ] raise: Error.
+	self should: [ frac slotAt: 1 put: 1 ] raise: Error.
+	
+	self should: [ frac slotNamed: 'bogus' ] raise: Error.
+	self should: [ frac slotNamed: 'bogus' put: null] raise: Error.! !
+
+!ObjectMapTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:49:39'!
+test_01c 
+	| undefined array null indexed |
+	
+	undefined := kernel at: #UndefinedObject.
+	array := kernel at: #Array.
+	null := ObjectMap new: undefined.
+	indexed := ObjectMap new: array size: 2.
+	self assert: indexed class == SlotObjectMap.
+	self assert: indexed size == 2.
+	
+	indexed at: 1 put: null.
+	indexed at: 2 put: indexed.
+	self assert: (indexed at: 1) == null.
+	self assert: (indexed at: 2) == indexed.
+	
+	indexed at: 1 put: indexed.
+	indexed at: 2 put: null.
+	self assert: (indexed at: 1) == indexed.
+	self assert: (indexed at: 2) == null.
+	
+	self should: [ indexed at: 0 ] raise: Error.
+	self should: [ indexed at: 3 ] raise: Error.
+	self should: [ indexed at: 0 put: null ] raise: Error.
+	self should: [ indexed at: 3 put: null ] raise: Error.
+	self should: [ indexed at: 1 put: 1] raise: Error.
+	! !
+
+!VirtualSmalltalkImageTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/7/2021 14:54:49'!
+setUp 
+
+	image := VirtualSmalltalkImage fromSpec wordSize: 8; genesis! !
+
+!VirtualSmalltalkImageTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 14:55:05'!
+test010nil 
+	| nilObj class behavior |
+	nilObj := image nil.
+	class := image classNamed: #UndefinedObject.
+	behavior := class instanceBehavior.
+	self
+		assert: nilObj size equals: 0;
+		assert: nilObj behavior equals: behavior;
+		assert: (behavior slotNamed: 'class') equals: class;
+		assert: nilObj classname equals: 'UndefinedObject';
+		assert: behavior classname equals: 'Behavior';
+		assert: class name bytes asString allButLast
+			equals: 'UndefinedObject'! !
+
+!VirtualSmalltalkImageTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 14:55:15'!
+test020true 
+	| trueObj  class behavior |
+	trueObj := image true.
+	class := image classNamed: #True.
+	behavior := class instanceBehavior.
+	self
+		assert: trueObj size equals: 0;
+		assert: trueObj behavior equals: behavior;
+		assert: (behavior slotNamed: 'class') equals: class;
+		assert: trueObj classname equals: 'True';
+		assert: behavior classname equals: 'Behavior';
+		assert: class name bytes asString allButLast equals: 'True'! !
+
+!VirtualSmalltalkImageTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:28:41'!
+test030false 
+	| falseObj class behavior |
+	falseObj := image false.
+	class := image classNamed: #False.
+	behavior := class instanceBehavior.
+	self
+		assert: falseObj size equals: 0;
+		assert: falseObj behavior equals: behavior;
+		assert: (behavior slotNamed: 'class') equals: class;
+		assert: falseObj classname equals: 'False';
+		assert: behavior classname equals: 'Behavior';
+		assert: class name bytes asString allButLast equals: 'False'! !
+
+!VirtualSmalltalkImageTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:29:08'!
+test040superclasses 
+	|  proto object collection class metaproto |
+	proto := image classNamed: #ProtoObject.
+	object := image classNamed: #Object.
+	collection := image classNamed: #Collection.
+	class := image classNamed: #Class.
+	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	self
+		assert: proto superclass equals: image nil;
+		assert: object superclass equals: proto;
+		assert: collection superclass equals: object;
+		assert: metaproto superclass equals: class! !
+
+!VirtualSmalltalkImageTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:29:22'!
+test100behaviors 
+	| proto object coll class mproto mobject |
+	proto := image classNamed: #ProtoObject.
+	object := image classNamed: #Object.
+	coll := image classNamed: #Collection.
+	class := image classNamed: #Class.
+	mproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	mobject := image metaclassFor: (image => #Object) metaclass.
+	self
+		assert: proto instanceBehavior next equals: image nil;
+		assert: object instanceBehavior next equals: proto instanceBehavior;
+		assert: coll instanceBehavior next equals: object instanceBehavior;
+		assert: mproto instanceBehavior next equals: class instanceBehavior;
+		assert: mobject instanceBehavior next
+			equals: mproto instanceBehavior! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'accessing' stamp: 'KenD 6/7/2021 15:31:37'!
+==> anObject 
+
+	^image transferLiteralDeep: anObject! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:31:48'!
+assertNoLeftoverFrames 
+
+	self assert: runtime frames isEmpty! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'running' stamp: 'KenD 6/7/2021 15:32:07'!
+compile: aString in: classname during: aBlock 
+	| class selector method |
+	class := image => classname.
+	selector := class compile: aString notifying: nil.
+	method := class methodNamed: selector.
+	self assert: method notNil.
+	aBlock 		ensure: [ class removeLocalMethod: method ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'setUp/tearDown' stamp: 'KenD 6/7/2021 15:32:24'!
+setUp 
+
+	image := VirtualSmalltalkImage fromSpec
+		wordSize: 8;
+		genesis.
+	runtime := VirtualSmalltalkRuntime new image: image.! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:32:38'!
+test100yourself 
+	| result |
+	result := runtime send: #yourself to: image nil.
+	self assert: result equals: image nil! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:32:48'!
+test110compute1plus1 
+	| one result |
+	one := self ==> 1.
+	result := runtime send: #+ to: one with: {one}.
+	self assert: result equals: self ==> 2; assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:32:58'!
+test111compute1minus1 
+	| one result |
+	one := self ==> 1.
+	result := runtime send: #- to: one with: {one}.
+	self assert: result equals: self ==> 0! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:05'!
+test112compute3times4 
+	| result |
+	result := runtime send: #* to: self ==> 3 with: {self ==> 4}.
+	self assert: result equals: self ==> 12! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:15'!
+test113compute20quotient5 
+	|  result |
+
+	result := runtime send: #// to: self ==>20 with: {self ==>5}.
+	self assert: result equals: self ==>4! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:24'!
+test130sendIfTrueToFalse 
+	| result |
+	self
+		compile: 'foo ^false ifTrue: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: image nil ].
+		
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:34'!
+test131sendIfFalseToTrue 
+	| result |
+	self
+		compile: 'foo ^true ifFalse: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: image nil ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:43'!
+test132sendIfTrueToTrue 
+	| result |
+	self
+		compile: 'foo ^true ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:33:53'!
+test140sendWhileTrue 
+	| result |
+	self
+		compile: 'foo
+			 | a |
+			a := true.
+			[a] whileTrue: [a := false].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: image false ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:03'!
+test141sendToDo 
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			3 to: 4 do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:12'!
+test150compute20dividedBy5 
+	| result |
+	result := runtime send: #/ to: self ==> 20 with: {(self ==> 5)}.
+	self assert: result equals: self ==> 4;
+	assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:28'!
+test160evaluateClosure 
+	| result |
+	self
+		compile: 'foo ^[5] value'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:38'!
+test160evaluateClosureFrames 
+	| result |
+	self
+		compile: 'foo [5] value'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:47'!
+test161evaluateClosureWithArgs 
+	| result |
+	self
+		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:34:55'!
+test162evaluateClosureWithArgsAndTemps 
+	| result |
+	self
+		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:35:05'!
+test163evaluateClosureWithArgsAndMethodTemps 
+	| result |
+	self
+		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:35:16'!
+test164evaluateClosureWithArgsAndMultipleTemps 
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				s := 3.
+				^[:a | | t | 
+					t := a.
+					t := t + s.
+					t] value: 4'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:35:36'!
+test165evaluateClosureNonLocalReturn 
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				[s := 3. ^s] value.
+				s := 4.
+				^s'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 3 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:35:46'!
+test166evaluateNestedClosure 
+	| result |
+	self
+		compile: 'foo ^[ [ 7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:35:56'!
+test167evaluateNestedClosureWithArgs 
+	| result |
+	self
+		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:36:05'!
+test168evaluateNestedClosureWithTemps 
+	| result |
+	self
+		compile:
+			'foo 
+			| a |
+			a := 2.
+			^[ | b |
+				b := 3.
+				[ | c |
+				c := 4.
+				a + b + c ] value] value'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 9 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:36:20'!
+test169evaluateInlinedClosureInClosureWithMethodTemps 
+	| result |
+	self
+		compile:
+			'foo 
+			| a result |
+			a := 3.
+			[ true ifTrue: [ result := a + 4 ] ] value.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime send: #foo to: image true.
+			self assert: result equals: self ==> 7 ]! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:36:31'!
+test200createDictionary 
+	| class d |
+	class := image classNamed: #Dictionary.
+	d := runtime send: #new to: class with: {}.
+	self assert: d spec name equals: 'Dictionary'; assertNoLeftoverFrames! !
+
+!VirtualSmalltalkRuntimeTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:36:39'!
+test210addAssociationToDictionary 
+	| class d assoc |
+	class := image classNamed: #Dictionary.
+	assoc := image newAssociation: #foo -> nil.
+	d := runtime send: #new to: class with: {}.
+	runtime send: #add: to: d with: {assoc}.
+	self assert: d spec name equals: 'Dictionary';
+		assertNoLeftoverFrames! !
+
+!SExpressionTest methodsFor: 'accessing' stamp: 'KenD 6/7/2021 15:44:34'!
+libraryPath 
+
+	^'./temp/', self libraryName! !
+
+!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:42:03'!
+assertCorrectExecutionOfLibrary: filename 
+
+	self assertCorrectExecutionUsing: ' ' loading: filename! !
+
+!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:42:20'!
+assertCorrectExecutionOfTest: aSelector 
+	| method |
+	method := self nativize: aSelector
+	"code halt disassembledAmd64"! !
+
+!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:43:19'!
+assertCorrectExecutionUsing: arguments 
+	| executor |
+	executor := self executeUsing: arguments.
+	executor exitCode !!= 1
+		ifTrue: [ 
+			self
+				assert: false
+				description: (self assertionFailureReportForExecution: executor) ]
+		ifFalse: [ self assert: true ]! !
+
+!SExpressionTest methodsFor: 'generating' stamp: 'KenD 6/7/2021 15:43:47'!
+generateMinimalLibraryWithEntryPoint: selector 
+	| builder entrypoint |
+	builder := #Librarian forBuilding newLibraryBuilder.
+	entrypoint := builder
+		              filename: self libraryPath asFileReference;
+		              addAll:
+			              (self class supportMethodsUsing: builder environment);
+		              entryPoint: self class >> selector.
+	self class nativize: entrypoint using: builder environment.
+	builder generate! !
+
+!SExpressionTest methodsFor: 'generating' stamp: 'KenD 6/7/2021 15:44:23'!
+libraryName 
+
+	^ self class name , '_' , testSelector , '.psl'! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:41:46'!
+add: arg1 to: arg2 
+
+	^arg1 + arg2 ! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:44:49'!
+nativize: aSymbol 
+	| method smethod environment linker |
+	method := self class >> aSymbol.
+	smethod := SCompiler compile: method sourceCode in: self class.
+	environment := NativizationEnvironment new.
+	environment globalNamed: #Lookup put: (NativeCode new);
+	globalNamed: #LookupSuper put: (NativeCode new).
+	linker := LookupLinker new initializeFrom: environment.
+	environment addLinker: linker.
+	^ environment newExpressionNativizer nativize: smethod! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:39:47'!
+supportMethods 
+
+	^self supportSelectors
+		collect: [:selector | (self >> selector) copy classBinding: Object]! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:40:00'!
+supportMethodsUsing: anEnvironment 
+
+	^ self supportMethods collect: [ :method | 
+		  | copy |
+		  copy := method copy
+			          classBinding: Object;
+			          yourself.
+		  self nativize: copy using: anEnvironment.
+		  copy ]! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:40:12'!
+supportSelectors 
+
+	^self selectorsWithCategory: 'support'! !
+
+!SExpressionTest methodsFor: 'templates' stamp: 'KenD 6/7/2021 15:41:15'!
+templateSelectors 
+	| selectors current |
+	selectors := OrderedCollection new.
+	current := self organization.
+	current categories
+		select: [:c | c beginsWith: 'templates']
+		thenDo: [:c | selectors addAll: (current
+			selectorsFor: c)].
+	^selectors sort! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:39:17'!
+isTestSelector: selector 
+
+	^(super isTestSelector: selector)
+		or: [self templateSelectors includes: selector]! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:21'!
+performTest 
+
+	^ self assertCorrectExecutionOfTest: testSelector asSymbol ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:32'!
+test010_message 
+
+	^1 yourself ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:42'!
+test011_4minus3 
+
+	^4 - 3 ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:51'!
+test011_plus2 
+
+	^1 + 0 ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:59'!
+test020_tempVars 
+	| three four |
+	three := 3.
+	four := 4.
+	^four - three ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:11'!
+test030_messageArguments 
+
+	^self add: 1 to: 0 ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:20'!
+test100_block 
+
+	^[1] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:29'!
+test110_block 
+
+	^[4 - 3] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:39'!
+test120_blockNonLocalReturn 
+
+	[^1] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:48'!
+test130_blockTemps 
+
+	^[| three four |
+		three := 3.
+		four := 4.
+		four - three] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:46:58'!
+test140_blockArgs 
+
+	^[:arg1 :arg2 | arg2 - arg1] value: 3 value: 4 ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:47:08'!
+test145_blockArgsAndTemps 
+
+	^[:arg | | three |
+		three := 3.
+		arg - three]
+		value: 4 ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:47:17'!
+test150_blockEnvironmentTemps 
+
+	| one |
+	one := 1.
+	^[one] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:47:26'!
+test151_blockEnvironmentTemps 
+	| three |
+	three := 3.
+	^[| four |
+		four := 4.
+		four - three] value ! !
+
+!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:41:31'!
+testSelectors 
+
+	^super testSelectors asOrderedCollection addAll: self templateSelectors; yourself! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
@@ -40570,6 +41417,16 @@ valueWithin: evaluator
 
 	^evaluator falseLiteral! !
 
+!SNilBinding methodsFor: 'evaluating' stamp: 'KenD 6/7/2021 14:48:47'!
+value 
+
+	^nil! !
+
+!SNilBinding methodsFor: 'evaluating' stamp: 'KenD 6/7/2021 14:48:56'!
+valueWithin: evaluator 
+
+	^evaluator nilLiteral! !
+
 !STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
 value 
 
@@ -41221,6 +42078,49 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeBlock! !
+
+!SMethod methodsFor: 'accessing' stamp: 'KenD 6/7/2021 14:44:55'!
+offsetOfCurrentEnvironment 
+
+	^ 0! !
+
+!SMethod methodsFor: 'accessing' stamp: 'KenD 6/7/2021 14:45:05'!
+offsetOfEnvironment: anInteger 
+
+	^0! !
+
+!SMethod methodsFor: 'accessing' stamp: 'KenD 6/7/2021 14:45:19'!
+pragma 
+
+	^pragma! !
+
+!SMethod methodsFor: 'accessing' stamp: 'KenD 6/7/2021 14:45:30'!
+pragma: anSPragma 
+
+	pragma := anSPragma! !
+
+!SMethod methodsFor: 'accessing' stamp: 'KenD 6/7/2021 14:45:40'!
+primitive 
+
+	^pragma ifNotNil: [ pragma name ]! !
+
+!SMethod methodsFor: 'printing' stamp: 'KenD 6/7/2021 14:45:52'!
+printOn: aStream indent: anInteger 
+
+	aStream nextPutAll: '{MethodId. '; cr.
+	pragma ifNotNil: [ pragma printOn: aStream indent: anInteger + 1 ].
+	super printOn: aStream indent: anInteger.
+	aStream nextPutAll: '}'! !
+
+!SMethod methodsFor: 'testing' stamp: 'KenD 6/7/2021 14:44:45'!
+isMethod 
+
+	^true! !
+
+!SMethod methodsFor: 'visiting' stamp: 'KenD 6/7/2021 14:44:36'!
+acceptVisitor: visitor 
+
+	^visitor visitMethod: self! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 
