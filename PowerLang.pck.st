@@ -1,11 +1,12 @@
-'From Cuis 5.0 [latest update: #4633] on 7 June 2021 at 3:56:28 pm'!
+'From Cuis 5.0 [latest update: #4633] on 8 June 2021 at 6:34:22 am'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 57!
-!requires: 'BeeCompatibility' 1 2 nil!
+!provides: 'PowerLang' 1 59!
 !requires: 'Cuis-Base' 50 4624 nil!
+!requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
-!requires: 'Ring2' 1 1 nil!
 !requires: 'BeePParser' 1 17 nil!
+!requires: 'BeeCompatibility' 1 2 nil!
+!requires: 'Ring2' 1 1 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
 SystemOrganization addCategory: 'Powerlang-Compatibility-Pharo'!
 SystemOrganization addCategory: 'Powerlang-Core-Assembler-Intel'!
@@ -27,6 +28,7 @@ SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: 'Powerlang-Tests-Building'!
 SystemOrganization addCategory: 'Powerlang-Tests'!
+SystemOrganization addCategory: 'Powerlang-Tests-Assembler-Intel'!
 
 
 !classDefinition: #PowerLangPackage category: 'Powerlang-Core'!
@@ -431,6 +433,26 @@ TestCase subclass: #SExpressionTest
 	category: 'Powerlang-Tests'!
 !classDefinition: 'SExpressionTest class' category: 'Powerlang-Tests'!
 SExpressionTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ISAOperandTest category: 'Powerlang-Tests-Assembler-Intel'!
+TestCase subclass: #ISAOperandTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Tests-Assembler-Intel'!
+!classDefinition: 'ISAOperandTest class' category: 'Powerlang-Tests-Assembler-Intel'!
+ISAOperandTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #InstructionEncoderTest category: 'Powerlang-Tests-Assembler-Intel'!
+TestCase subclass: #InstructionEncoderTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'Registers'
+	category: 'Powerlang-Tests-Assembler-Intel'!
+!classDefinition: 'InstructionEncoderTest class' category: 'Powerlang-Tests-Assembler-Intel'!
+InstructionEncoderTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #AssemblerGrammar category: 'Powerlang-Core-Assembler-Parser'!
@@ -3445,6 +3467,14 @@ WARNING: x86 specific!
 
 !SFFIDescriptor commentStamp: '<historical>' prior: 0!
 #type : #bytes!
+
+!ISAOperandTest commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
+
+!InstructionEncoderTest commentStamp: '<historical>' prior: 0!
+Copyright (c) 2020 Aucerna.
+    See AucernaLicence.txt (MIT license) in package directory.!
 
 !AssemblerGrammar commentStamp: '<historical>' prior: 0!
 Copyright (c) 2020 Aucerna.
@@ -8221,6 +8251,1036 @@ test151_blockEnvironmentTemps
 testSelectors 
 
 	^super testSelectors asOrderedCollection addAll: self templateSelectors; yourself! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:03:14'!
+testImm32 
+	| imm32 |
+	imm32 := ISAImmediate new value: -16r80000000.
+	self assert: imm32 length = 32.
+	imm32 := ISAImmediate new value: -129.
+	self assert: imm32 length = 16.
+	imm32 := ISAImmediate new value: 128.
+	self assert: imm32 length = 16.
+	imm32 := ISAImmediate new value: 16r7FFFFFFF.
+	self assert: imm32 length = 32! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:03:23'!
+testImm8 
+	| imm8 |
+	imm8 := ISAImmediate new value: -128.
+	self assert: imm8 length = 8.
+	imm8 := ISAImmediate new value: 127.
+	self assert: imm8 length = 8! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:03:45'!
+testIndexes 
+	| table |
+	table := '0	al	ax	eax	rax
+		1	cl	cx	ecx	rcx
+		2	dl	dx	edx	rdx
+		3	bl	bx	ebx	rbx
+		4	ah	sp	esp	rsp
+		5	ch,bpl	bp	ebp	rbp
+		6	dh,sil	si	esi	rsi
+		7	bh,dil	di	edi	rdi
+		8	r8b	r8w	r8d	r8
+		9	r9b	r9w	r9d	r9
+		10	r10b	r10w	r10d	r10
+		11	r11b	r11w	r11d	r11
+		12	r12b	r12w	r12d	r12
+		13	r13b	r13w	r13d	r13
+		14	r14b	r14w	r14d	r14
+		15	r15b	r15w	r15d	r15'.
+	table lines collect: #substrings thenDo: [:array | 
+		array allButFirst withIndexDo: [:r :i | 
+			($, split: r) do: [:rg | | reg length |
+				reg := Register named: rg.
+				length := #(8 16 32 64) at: i.
+				self
+					assert: reg length = length;
+					assert: reg name = rg;
+					assert: reg index = array first asNumber]]]
+! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:04:08'!
+testMMIndexes 
+	(0 to: 7)
+		collect: [:i | ('mmx* xmm* ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
+		thenDo: [:array | 
+			array withIndexDo: [:r :i | | index reg length |
+				index := r last digitValue.
+				reg := Register named: r.
+				length := #(64 128 256) at: i.
+				self
+					assert: reg length = length;
+					assert: reg name = r;
+					assert: reg index = index]].
+	(8 to: 15)
+		collect: [:i | ('xmm*	ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
+		thenDo: [:array | 
+			array withIndexDo: [:r :i | | index reg length |
+				index := (r select: #isDigit) asInteger.
+				reg := Register named: r.
+				length := #(128 256) at: i.
+				self
+					assert: reg length = length;
+					assert: reg name = r;
+					assert: reg index = index]]! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:04:47'!
+test_VBLENDVPD_spec 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'vblendvpd';
+		operands: (Array with: XMM1 with: XMM2 with: XMM3 with: XMM4).
+	self assert: instruction spec primaryOpcode = #[16r4B]! !
+
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:05:12'!
+test_VMOVSD_spec 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'vmovsd';
+		operands: (Array with: XMM3 with: XMM2 with: XMM1).
+	self assert: instruction spec primaryOpcode = #[16r11]! !
+
+!InstructionEncoderTest methodsFor: 'service' stamp: 'KenD 6/7/2021 16:08:27'!
+encodingOf: instructionOrString equals: aByteArray 
+	| encoded result actual instruction |
+	instruction := instructionOrString isString
+		ifTrue: [AssemblerParser new parseInstruction: instructionOrString]
+		ifFalse: [instructionOrString].
+	encoded := instruction encoding64.
+	result := ISAInstructionReader new from: encoded readStream; asString.
+	actual := ISAInstructionReader new from: aByteArray readStream; asString.
+	self
+		assert: result = actual;
+		assert: aByteArray = encoded! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:09:19'!
+testCMPXCHG 
+
+	self encodingOf: 'cmpxchg rbx, rcx' equals: #[16r48 16r0F 16rB1 16rCB]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:09:14'!
+testINT3 
+
+	self encodingOf: 'int 3' equals: #[16rCC]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:09:32'!
+testINT4 
+
+	self encodingOf: 'int 4' equals: #[16rCD 16r04]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:09:53'!
+testMOVABS 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'mov';
+		operands: R11 , 16r972d70.
+	instruction operands last length: 64.
+	self
+		encodingOf: instruction
+		equals: #[16r49 16rBB 16r70 16r2D 16r97 16r00 16r00 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:10:13'!
+testMOVR11Imm 
+	| imm instruction |
+	imm := ISAImmediate new value: 16r5FF740; length: 64.
+	instruction := ISAInstruction new
+		mnemonic: 'mov';
+		operands: (Array with: R11 with: imm).
+	self
+		encodingOf: instruction
+		equals: #[16r49 16rBB 16r40 16rF7 16r5F 16r00 16r00 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:10:32'!
+testSpec_ADC_rax_imm32 
+	| instruction spec |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 256).
+	spec := instruction spec.
+	self
+		assert: spec asString = 'adc rax, imm32';
+		deny: spec isPreferred! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:10:52'!
+testSpec_ADC_rax_imm8 
+	| instruction spec |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 1).
+	spec := instruction spec.
+	self
+		assert: spec asString = 'adc r/m64, imm8';
+		assert: spec isPreferred! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:11:12'!
+testSpec_ADC_rax_mB 
+	| instruction spec |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: (MemoryOperand new base: RBX; length: 64)).
+	spec := instruction spec.
+	self
+		assert: spec asString = 'adc r64, r/m64';
+		deny: spec isPreferred
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:11:30'!
+testSpec_ADC_rax_rbx 
+	| instruction spec |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: RBX).
+	spec := instruction spec.
+	self
+		assert: spec asString = 'adc r/m64, r64';
+		assert: spec isPreferred! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:11:44'!
+testSpec_ADC_rbx_imm32 
+	| instruction spec |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RBX with: 256).
+	spec := instruction spec.
+	self
+		assert: spec asString = 'adc r/m64, imm32';
+		deny: spec isPreferred! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:11:59'!
+test_ADC_al_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 1).
+	self encodingOf: instruction equals: #[16r14 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:12:24'!
+test_ADC_al_mB 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 'bword ptr [rbx]').
+	self encodingOf: instruction equals: #[16r12 16r03]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:12:53'!
+test_ADC_al_mBD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 'bword ptr [rbx + 1]').
+	self encodingOf: instruction equals: #[16r12 16r43 16r01]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:13:20'!
+test_ADC_al_mBI 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 'bword ptr [rbx + rbp]').
+	self encodingOf: instruction equals: #[16r12 16r04 16r2B]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:13:42'!
+test_ADC_al_mBIS 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 'bword ptr [rbx + rbp * 8]').
+	self encodingOf: instruction equals: #[16r12 16r04 16rEB]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:13:58'!
+test_ADC_al_mBISD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AL with: 'byte ptr [rbx + rsi * 2 + 0x100]').
+	self
+		encodingOf: instruction
+		equals: #[16r12 16r84 16r73 16r00 16r01 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:14:24'!
+test_ADC_ax_imm16 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AX with: 256).
+	self encodingOf: instruction equals: #[16r66 16r15 16r00 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:16:09'!
+test_ADC_ax_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: AX with: 1).
+	self encodingOf: instruction equals: #[16r66 16r83 16rD0 16r01] ! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:16:28'!
+test_ADC_eax_imm32 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: EAX with: 256).
+	self encodingOf: instruction equals: #[16r15 16r00 16r01 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:16:56'!
+test_ADC_r8_mBISD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: R8 with: 'qword ptr [rbx + rcx * 8 - 1]').
+	self encodingOf: instruction equals: #[16r4C 16r13 16r44 16rCB 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:17:15'!
+test_ADC_r8_r9 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: R8 with: R9).
+	self encodingOf: instruction equals: #[16r4D 16r11 16rC8]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:17:43'!
+test_ADC_r8_rax 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: R8 with: RAX).
+	self encodingOf: instruction equals: #[16r49 16r11 16rC0]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:18:00'!
+test_ADC_rax_imm32 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 256).
+	self encodingOf: instruction equals: #[16r48 16r15 16r00 16r01 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:18:15'!
+test_ADC_rax_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 1).
+	self encodingOf: instruction equals: #[16r48 16r83 16rD0 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:18:35'!
+test_ADC_rax_mB 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 'qword ptr [rbx]').
+	self encodingOf: instruction equals: #[16r48 16r13 16r03]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:18:50'!
+test_ADC_rax_mBD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 'qword ptr [rbx + 1]').
+	self encodingOf: instruction equals: #[16r48 16r13 16r43 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:19:12'!
+test_ADC_rax_mBI 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 'qword ptr [rbx + rbp]').
+	self encodingOf: instruction equals: #[16r48 16r13 16r04 16r2B]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:19:37'!
+test_ADC_rax_mBIS 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 'qword ptr [rbx + rbp * 8]').
+	self encodingOf: instruction equals: #[16r48 16r13 16r04 16rEB]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:20:04'!
+test_ADC_rax_mBISD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: 'qword ptr [rbx + rcx * 8 - 1]').
+	self encodingOf: instruction equals: #[16r48 16r13 16r44 16rCB 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:20:18'!
+test_ADC_rax_mD 
+	| mem instruction |
+	mem := MemoryOperand new length: 64; displacement: 16r7FFFFFFF.
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: mem).
+	self
+		encodingOf: instruction
+		equals: #[16r48 16r13 16r04 16r25 16rFF 16rFF 16rFF 16r7F]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:20:37'!
+test_ADC_rax_r8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: R8).
+	self encodingOf: instruction equals: #[16r4C 16r11 16rC0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:21:06'!
+test_ADC_rax_rbx 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: RBX).
+	self encodingOf: instruction equals: #[16r48 16r11 16rD8]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:21:34'!
+test_ADC_rax_rsi 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RAX with: RSI).
+	self encodingOf: instruction equals: #[16r48 16r11 16rF0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:22:02'!
+test_ADC_rbx_rax 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RBX with: RAX).
+	self encodingOf: instruction equals: #[16r48 16r11 16rC3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:22:30'!
+test_ADC_rsi_rax 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ADC';
+		operands: (Array with: RSI with: RAX).
+	self encodingOf: instruction equals: #[16r48 16r11 16rC6]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:22:56'!
+test_ADDSS_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'addss';
+		operands: (Array with: XMM1 with: 'dword ptr [rcx]').
+	self encodingOf: instruction equals: #[16rF3 16r0F 16r58 16r09]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:23:57'!
+test_BEXTR_rsi_rcx_r8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'bextr';
+		operands: (Array with: RSI with: RCX with: R8).
+	self encodingOf: instruction equals: #[16rC4 16rE2 16rB8 16rF7 16rF1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:24:59'!
+test_BEXTR_rsi_rcx_rbx 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'bextr';
+		operands: (Array with: RSI with: RCX with: RBX).
+	self encodingOf: instruction equals: #[16rC4 16rE2 16rE0 16rF7 16rF1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:25:24'!
+test_BSWAP 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'BSWAP';
+		operands: (Array with: RCX).
+	self encodingOf: instruction equals: #[16r48 16r0F 16rC9]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:26:13'!
+test_CALL_016 
+
+	self encodingOf: 'call qword [r8]' equals: #[16r41 16rFF 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:26:23'!
+test_CALL_017 
+
+	self encodingOf: 'call qword [rax]' equals: #[16rFF 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:26:38'!
+test_CALL_r64 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'CALL';
+		operands: (Array with: RBX).
+	self encodingOf: instruction equals: #[16rFF 16rD3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:27:37'!
+test_CALL_rel32 
+	| instruction |
+	instruction := ISAInstruction new mnemonic: 'CALL'; operands: #(-9).
+	self encodingOf: instruction equals: #[16rE8 16rF7 16rFF 16rFF 16rFF]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:28:03'!
+test_CMP_m32_imm 
+	| instruction parser |
+	parser := AssemblerParser new.
+	instruction := parser parseInstruction: 'cmp dword ptr[rax-4], 0x12345678'.
+	self
+		encodingOf: instruction
+		equals: #[16r81 16r78 16rFC 16r78 16r56 16r34 16r12]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:28:19'!
+test_CMP_m32_imm8 
+	| instruction parser |
+	parser := AssemblerParser new.
+	instruction := parser parseInstruction: 'cmp dword ptr[rax-4], 0x12'.
+	self encodingOf: instruction equals: #[16r83 16r78 16rFC 16r12]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:29:05'!
+test_CVTSS2SI 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'cvtss2si';
+		operands: (Array with: EAX with: XMM1).
+	self encodingOf: instruction equals: #[16rF3 16r0F 16r2D 16rC1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:29:22'!
+test_CVTTSD2SI_145 
+
+	self
+		encodingOf: 'cvttsd2si rax, [eax]'
+		equals: #[16r67 16rF2 16r48 16rF 16r2C 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:29:35'!
+test_DEC_038 
+
+	self encodingOf: 'dec r11w' equals: #[16r66 16r41 16rFF 16rCB]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:29:45'!
+test_ENTER_imm16_0 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ENTER';
+		operands: (Array with: 8 with: 0).
+	self encodingOf: instruction equals: #[16rC8 16r08 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:29:53'!
+test_ENTER_imm16_1 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ENTER';
+		operands: (Array with: 8 with: 1).
+	self encodingOf: instruction equals: #[16rC8 16r08 16r00 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:30:02'!
+test_ENTER_imm16_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ENTER';
+		operands: (Array with: 8 with: 32).
+	self encodingOf: instruction equals: #[16rC8 16r08 16r00 16r20]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:30:13'!
+test_FSCALE 
+	| instruction |
+	instruction := ISAInstruction new mnemonic: 'fscale'.
+	self encodingOf: instruction equals: #[16rD9 16rFD]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:30:40'!
+test_FSTSW 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'fstsw';
+		operands: (Array with: 'word ptr [rdx]').
+	self encodingOf: instruction equals: #[16r9B 16rDD 16r3A]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:30:53'!
+test_IMUL_000F7C0F5C 
+
+	self
+		encodingOf: 'imul rax, rdx, 0x7543'
+		equals: #[16r48 16r69 16rC2 16r43 16r75 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:31:14'!
+test_IMUL_r64_r64_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'IMUL';
+		operands: (Array with: R9 with: R10 with: -1).
+	self encodingOf: instruction equals: #[16r4D 16r6B 16rCA 16rFF]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:31:29'!
+test_JA_rel32 
+	| instruction |
+	instruction := ISAInstruction new mnemonic: 'JA'; operands: #(16r100).
+	self encodingOf: instruction equals: #[16r0F 16r87 16r00 16r01 16r00 16r00].
+	instruction := ISAInstruction new mnemonic: 'JA'; operands: #(-16r100).
+	self encodingOf: instruction equals: #[16r0F 16r87 16r00 16rFF 16rFF 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:31:39'!
+test_JA_rel8 
+	| instruction |
+	instruction := ISAInstruction new mnemonic: 'JA'; operands: #(3).
+	self encodingOf: instruction equals: #[16r77 16r03].
+	instruction := ISAInstruction new mnemonic: 'JA'; operands: #(-3).
+	self encodingOf: instruction equals: #[16r77 16rFD]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:31:49'!
+test_JBE_rel8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'JBE';
+		operands: (Array with: 16rD).
+	self encodingOf: instruction equals: #[16r76 16r0D]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:32:09'!
+test_LDMXCSR 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'ldmxcsr';
+		operands: (Array with: 'dword ptr [rdx]').
+	self encodingOf: instruction equals: #[16r0F 16rAE 16r12]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:32:21'!
+test_LEA_000A56EEEC 
+
+	self
+		encodingOf: 'lea rax, qword [rax + rdx * 4]'
+		equals: #[16r48 16r8D 16r4 16r90]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:32:32'!
+test_LEA_000ABC86B8 
+
+	self
+		encodingOf: 'lea rax, qword [rax + rdx * 8]'
+		equals: #[16r48 16r8D 16r4 16rD0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:32:42'!
+test_LEA_000B62FF0C 
+
+	self
+		encodingOf: 'lea rsp, qword [rsp + rdx * 4]'
+		equals: #[16r48 16r8D 16r24 16r94]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:32:50'!
+test_LEA_000BC897D8 
+
+	self
+		encodingOf: 'lea rsp, qword [rsp + rdx * 8]'
+		equals: #[16r48 16r8D 16r24 16rD4]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:33:03'!
+test_LEA_000D6FDCF7 
+
+	self
+		encodingOf: 'lea rsp, qword [rsp + rcx * 8]'
+		equals: #[16r48 16r8D 16r24 16rCC]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:33:14'!
+test_LEA_000EA0A51B 
+
+	self
+		encodingOf: 'lea rsp, qword [rsp + rcx * 4]'
+		equals: #[16r48 16r8D 16r24 16r8C]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:33:27'!
+test_LOCK_DEC_0000758F4B 
+
+	self encodingOf: 'lock dec qword [rax]' equals: #[16rF0 16r48 16rFF 16r8]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:33:40'!
+test_LOCK_INC_00042D40A1 
+
+	self encodingOf: 'lock inc qword [rax]' equals: #[16rF0 16r48 16rFF 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:34:04'!
+test_MOVAPD_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'movapd';
+		operands: (Array with: XMM1 with: 'xmmword ptr [rbx]').
+	self encodingOf: instruction equals: #[16r66 16r0F 16r28 16r0B]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:34:18'!
+test_MOVSS_090 
+
+	self
+		encodingOf: 'movss dword ptr [eax], xmm0'
+		equals: #[16r67 16rF3 16rF 16r11 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:34:58'!
+test_MOVSS_rip 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'movss';
+		operands: (Array with: XMM1 with: 'dword ptr [rip + 0x4]').
+	self
+		encodingOf: instruction
+		equals: #[16rF3 16r0F 16r10 16r0D 16r04 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:35:08'!
+test_MOV_001 
+
+	self
+		encodingOf: 'mov rax, 0x102030405060708'
+		equals: #[16r48 16rB8 16r8 16r7 16r6 16r5 16r4 16r3 16r2 16r1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:35:19'!
+test_MOV_002 
+
+	self
+		encodingOf: 'mov [eax+0x10], ax'
+		equals: #[16r67 16r66 16r89 16r40 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:35:37'!
+test_MOV_003 
+
+	self
+		encodingOf: 'mov [eax+0x1000], ebx'
+		equals: #[16r67 16r89 16r98 16r0 16r10 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:35:49'!
+test_MOV_004 
+
+	self
+		encodingOf: 'mov [ebp+eax+0x40], esi'
+		equals: #[16r67 16r89 16r74 16r5 16r40]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:02'!
+test_MOV_005 
+
+	self
+		encodingOf: 'mov qword [ebp+edi+0x1000], 0x10'
+		equals: #[16r67 16r48 16rC7 16r84 16r3D 16r0 16r10 16r0 16r0 16r10 16r0 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:13'!
+test_MOV_006 
+	self
+		encodingOf: 'mov byte [esp], 0x10'
+		equals: #[16r67 16rC6 16r4 16r24 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:23'!
+test_MOV_007 
+
+	self encodingOf: 'mov [eax], rax' equals: #[16r67 16r48 16r89 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:32'!
+test_MOV_008 
+
+	self encodingOf: 'mov [r12], eax' equals: #[16r41 16r89 16r4 16r24]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:46'!
+test_MOV_009 
+
+	self
+		encodingOf: 'mov [r13+r12+0x200], eax'
+		equals: #[16r43 16r89 16r84 16r25 16r0 16r2 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:36:58'!
+test_MOV_010 
+
+	self
+		encodingOf: 'mov [r8*4+0x670], sil'
+		equals: #[16r42 16r88 16r34 16r85 16r70 16r6 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:06'!
+test_MOV_013 
+
+	self
+		encodingOf: 'mov rax, 0x10000'
+		equals: #[16r48 16rC7 16rC0 16r0 16r0 16r1 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:16'!
+test_MOV_065 
+
+	self encodingOf: 'mov al, r11b' equals: #[16r44 16r88 16rD8]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:29'!
+test_MOV_066 
+
+	self encodingOf: 'mov sil, al' equals: #[16r40 16r88 16rC6]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:40'!
+test_MOV_067 
+
+	self encodingOf: 'mov r11b, dil' equals: #[16r41 16r88 16rFB]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:50'!
+test_MOV_124 
+
+	self encodingOf: 'mov [rax-0x1], eax' equals: #[16r89 16r40 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:37:59'!
+test_MOV_128 
+
+	self
+		encodingOf: 'mov [0x10], rax'
+		equals: #[16r48 16r89 16r4 16r25 16r10 16r0 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:38:08'!
+test_MOV_129 
+
+	self
+		encodingOf: 'mov rax, [0x10]'
+		equals: #[16r48 16r8B 16r4 16r25 16r10 16r0 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:38:19'!
+test_MOV_130 
+
+	self
+		encodingOf: 'mov rax, 0x102030405060708'
+		equals: #[16r48 16rB8 16r8 16r7 16r6 16r5 16r4 16r3 16r2 16r1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:38:27'!
+test_MOV_135 
+
+	self
+		encodingOf: 'mov rax, [0x100]'
+		equals: #[16r48 16r8B 16r4 16r25 16r0 16r1 16r0 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:38:43'!
+test_MOV_eax_ax_mBD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'word [ eax+0x10 ]' with: AX).
+	self encodingOf: instruction equals: #[16r67 16r66 16r89 16r40 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:39:10'!
+test_MOV_fs 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [fs:0x18]' with: R9).
+	self
+		encodingOf: instruction
+		equals: #[16r64 16r4C 16r89 16r0C 16r25 16r18 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:39:36'!
+test_MOV_fs_r9 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: FS with: R9).
+	self encodingOf: instruction equals: #[16r49 16r8E 16rE1]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:18:43'!
+test_MOV_mRD_reg 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr[rax+0x10]' with: RDX).
+	self encodingOf: instruction equals: #[16r48 16r89 16r50 16r10]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:20:10'!
+test_MOV_m_r9 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [0x8]' with: R9).
+	self
+		encodingOf: instruction
+		equals: #[16r4C 16r89 16r0C 16r25 16r08 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:21:44'!
+test_MOV_na_r9_mD_0 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [0x0]' with: R9).
+	self
+		encodingOf: instruction
+		equals: #[16r4C 16r89 16r0C 16r25 16r00 16r00 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:21:59'!
+test_MOV_r13 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'byte ptr [r13]' with: 17).
+	self encodingOf: instruction equals: #[16r41 16rC6 16r45 16r00 16r11]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:22:15'!
+test_MOV_r13_rax_mB 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [r13]' with: RAX).
+	self encodingOf: instruction equals: #[16r49 16r89 16r45 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:22:29'!
+test_MOV_r13_rax_mBIS 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [r13 + rbx * 2]' with: RAX).
+	self encodingOf: instruction equals: #[16r49 16r89 16r44 16r5D 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:22:45'!
+test_MOV_r8_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: CL with: -1).
+	self encodingOf: instruction equals: #[16rB1 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:22:59'!
+test_MOV_rax_eax_mBD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'dword [ rax+0x10 ]' with: EAX).
+	self encodingOf: instruction equals: #[16r89 16r40 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:23:20'!
+test_MOV_rax_moffset 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: RAX with: 16r1122334455667788).
+	self
+		encodingOf: instruction
+		equals: #[16r48 16rB8 16r88 16r77 16r66 16r55 16r44 16r33 16r22 16r11]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:23:34'!
+test_MOV_rip_rax_mBD 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'MOV';
+		operands: (Array with: 'qword ptr [rip + 0x200]' with: RAX).
+	self
+		encodingOf: instruction
+		equals: #[16r48 16r89 16r05 16r00 16r02 16r00 16r00]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:23:47'!
+test_PMOVMKSB_136 
+
+	self
+		encodingOf: 'pmovmskb r12d, xmm14'
+		equals: #[16r66 16r45 16rF 16rD7 16rE6]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:23:57'!
+test_PSLLW_139 
+
+	self
+		encodingOf: 'psllw xmm12, 0x23'
+		equals: #[16r66 16r41 16rF 16r71 16rF4 16r23]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:24:06'!
+test_PSRLW_137 
+
+	self
+		encodingOf: 'psrlw xmm10, 0x10'
+		equals: #[16r66 16r41 16rF 16r71 16rD2 16r10]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:24:21'!
+test_PUSH_r64 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'PUSH';
+		operands: (Array with: R8).
+	self encodingOf: instruction equals: #[16r41 16r50]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:24:29'!
+test_RET 
+	| instruction |
+	instruction := ISAInstruction new mnemonic: 'RET'.
+	self encodingOf: instruction equals: #[16rC3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:24:38'!
+test_RET_068 
+
+	self encodingOf: 'ret 0x10' equals: #[16rC2 16r10 16r0]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:24:48'!
+test_RET_imm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'RET';
+		operands: (Array with: 256).
+	self encodingOf: instruction equals: #[16rC2 16r00 16r01]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:25:30'!
+test_ROUNDPD_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'roundpd';
+		operands: (Array with: XMM1 with: XMM2 with: 3).
+	self encodingOf: instruction equals: #[16r66 16r0F 16r3A 16r09 16rCA 16r03]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:25:54'!
+test_SAL_m64_1 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'SAL';
+		operands: (Array with: 'qword ptr [rbx]' with: 1).
+	self encodingOf: instruction equals: #[16r48 16rD1 16r23]
+! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:26:26'!
+test_SAL_r64_1 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'SAL';
+		operands: (Array with: RBX with: 1).
+	self encodingOf: instruction equals: #[16r48 16rD1 16rE3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:27:00'!
+test_SAL_r64_cl 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'SAL';
+		operands: (Array with: RBX with: CL).
+	self encodingOf: instruction equals: #[16r48 16rD3 16rE3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:27:42'!
+test_SHRD_r64_r64_cl 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'SHRD';
+		operands: (Array with: RBX with: RSI with: CL).
+	self encodingOf: instruction equals: #[16r48 16r0F 16rAD 16rF3]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:28:21'!
+test_SHRD_r64_r64_imm8 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'SHRD';
+		operands: (Array with: RBX with: RSI with: -1).
+	self encodingOf: instruction equals: #[16r48 16r0F 16rAC 16rF3 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:28:47'!
+test_STMXCSR 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'stmxcsr';
+		operands: (Array with: 'dword ptr [rdx]').
+	self encodingOf: instruction equals: #[16r0F 16rAE 16r1A]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:29:34'!
+test_VBLENDPD_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'vblendpd';
+		operands: (Array with: XMM1 with: XMM2 with: XMM3 with: -1).
+	self encodingOf: instruction equals: #[16rC4 16rE3 16r69 16r0D 16rCB 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:30:20'!
+test_VBLENDVPD_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'vblendvpd';
+		operands: (Array with: XMM1 with: XMM2 with: XMM3 with: XMM4).
+	self encodingOf: instruction equals: #[16rC4 16rE3 16r69 16r4B 16rCB 16r40]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:30:56'!
+test_VPSLLD_xmm 
+	| instruction |
+	instruction := ISAInstruction new
+		mnemonic: 'vpslld';
+		operands: (Array with: XMM1 with: XMM2 with: -1).
+	self encodingOf: instruction equals: #[16rC5 16rF1 16r72 16rF2 16rFF]! !
+
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:31:10'!
+test_XCHG_057 
+
+	self encodingOf: 'xchg [eax], sil' equals: #[16r67 16r40 16r86 16r30]! !
 
 !AssemblerGrammar methodsFor: 'private' stamp: 'KenD 2/25/2021 12:29:43'!
 comma 
