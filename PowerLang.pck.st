@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4633] on 9 June 2021 at 1:22:03 pm'!
+'From Cuis 5.0 [latest update: #4633] on 9 June 2021 at 3:20:48 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 62!
+!provides: 'PowerLang' 1 63!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -7138,15 +7138,16 @@ testAllNodesDo
 	parser expression allNodesDo: [:n | Transcript log: n printString . nodes add: n].
 	self assert: nodes size = 4! !
 
-!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 6/3/2021 13:44:36'!
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 6/9/2021 14:30:24'!
 testUnicode 
-	| source ast |
+"	| source ast |
 	source := 8855 asCharacter asString , ' aFreeTensor'.
 	ast := parser parse: source.
 	self
 		assert: ast selectorNode position
 			= (source indexOfSubCollection: 8855 asCharacter asString);
-		assert: ast selector == 8855 asCharacter asString asSymbol! !
+		assert: ast selector == 8855 asCharacter asString asSymbol"
+	self flag: #Unicode! !
 
 !SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 6/2/2021 20:43:56'!
 testArrayStart 
@@ -7491,10 +7492,10 @@ testSymbol
 	node := scanner next.
 	self assert: node value = 'b'; assert: node source = 'b'! !
 
-!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 6/3/2021 13:05:48'!
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 6/9/2021 14:31:06'!
 testUnicodeScanning 
-	| next three tensor |
-	scanner on: '3 + 4' asWideString. "@@Expect me to FAIL@@"
+"	| next three tensor |
+	scanner on: '3 + 4' asWideString.
 	self assert: scanner next value = 3.
 	next := scanner next.
 	self
@@ -7504,7 +7505,9 @@ testUnicodeScanning
 	three := scanner next.
 	self assert: three value = 3.
 	tensor := scanner next.
-	self assert: tensor value = 8855 asCharacter asString asSymbol! !
+	self assert: tensor value = 8855 asCharacter asString asSymbol"
+	
+	self flag: #Unicode! !
 
 !KernelBuilderTest methodsFor: 'running' stamp: 'KenD 6/7/2021 15:51:09'!
 defaultTimeLimit 
@@ -8296,25 +8299,25 @@ testImm8
 	imm8 := ISAImmediate new value: 127.
 	self assert: imm8 length = 8! !
 
-!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:03:45'!
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/9/2021 15:07:59'!
 testIndexes 
 	| table |
-	table := '0	al	ax	eax	rax
-		1	cl	cx	ecx	rcx
-		2	dl	dx	edx	rdx
-		3	bl	bx	ebx	rbx
-		4	ah	sp	esp	rsp
-		5	ch,bpl	bp	ebp	rbp
-		6	dh,sil	si	esi	rsi
-		7	bh,dil	di	edi	rdi
-		8	r8b	r8w	r8d	r8
-		9	r9b	r9w	r9d	r9
-		10	r10b	r10w	r10d	r10
-		11	r11b	r11w	r11d	r11
-		12	r12b	r12w	r12d	r12
-		13	r13b	r13w	r13d	r13
-		14	r14b	r14w	r14d	r14
-		15	r15b	r15w	r15d	r15'.
+	table := '0	AL	AX	EAX	RAX
+		1	CL	CX	ECX	RCX
+		2	DL	DX	EDX	RDX
+		3	BL	BX	EBX	RBX
+		4	AH	SP	ESP	RSP
+		5	CH,BPL	BP	EBP	RBP
+		6	DH,SIL	SI	ESI	RSI
+		7	BH,DIL	DI	EDI	RDI
+		8	R8B	R8W	R8D	R8
+		9	R9B	R9W	R9D	R9
+		10	R10B	R10W	R10D	R10
+		11	R11B	R11W	R11D	R11
+		12	R12B	R12W	R12D	R12
+		13	R13B	R13W	R13D	R13
+		14	R14B	R14W	R14D	R14
+		15	R15B	R15W	R15D	R15'.
 	table lines collect: #substrings thenDo: [:array | 
 		array allButFirst withIndexDo: [:r :i | 
 			($, split: r) do: [:rg | | reg length |
@@ -8326,7 +8329,7 @@ testIndexes
 					assert: reg index = array first asNumber]]]
 ! !
 
-!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:04:08'!
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/9/2021 15:18:34'!
 testMMIndexes 
 	(0 to: 7)
 		collect: [:i | ('mmx* xmm* ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
@@ -8337,18 +8340,18 @@ testMMIndexes
 				length := #(64 128 256) at: i.
 				self
 					assert: reg length = length;
-					assert: reg name = r;
+					assert: reg name = r asUppercase;
 					assert: reg index = index]].
 	(8 to: 15)
 		collect: [:i | ('xmm*	ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
 		thenDo: [:array | 
 			array withIndexDo: [:r :i | | index reg length |
-				index := (r select: #isDigit) asInteger.
+				index := (r select: #isDigit) findPositiveInteger.
 				reg := Register named: r.
 				length := #(128 256) at: i.
 				self
 					assert: reg length = length;
-					assert: reg name = r;
+					assert: reg name = r asUppercase ;
 					assert: reg index = index]]! !
 
 !ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:04:47'!
@@ -10893,12 +10896,11 @@ value
 
 	^value! !
 
-!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:04:20'!
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 6/9/2021 15:00:16'!
 value: anInteger 
 
 	value := anInteger.
-	length := self defaultLength
-	^value! !
+	length := self defaultLength! !
 
 !ISAImmediate methodsFor: 'services' stamp: 'KenD 3/8/2021 11:03:39'!
 template 
@@ -11458,12 +11460,12 @@ YMM: i
 
 	^self named: 'YMM' , i asString! !
 
-!Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:08:34'!
+!Register class methodsFor: 'accessing' stamp: 'KenD 6/9/2021 15:08:58'!
 named: aString 
 "
 	Register named: 'rax'
 "
-	^Registers at: aString asLowercase ifAbsent: nil! !
+	^Registers at: aString asUppercase ifAbsent: nil! !
 
 !Register class methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:09:17'!
 segment: index 
@@ -41424,7 +41426,12 @@ isComment
 
 	^true! !
 
-!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 2/23/2021 14:29:21'!
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 6/9/2021 14:27:36'!
+binding: aBinding 
+
+	binding := aBinding! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:29:21'!
 name: aString 
 
 	name := aString reduced! !
@@ -41455,8 +41462,8 @@ emitLoadAusing: anAstcodeEncoder
 
 	binding emitLoadAusing: anAstcodeEncoder! !
 
-!SIdentifierNode methodsFor: 'initialization' stamp: 'KenD 2/23/2021 14:26:31'!
-nitialize 
+!SIdentifierNode methodsFor: 'initialization' stamp: 'KenD 6/9/2021 14:28:48'!
+initialize 
 
 	super initialize.
 	binding := UnresolvedBinding default! !
@@ -43987,6 +43994,19 @@ thru: anInteger
 
 	^Stretch from: self thru: anInteger! !
 
+!SmallInteger methodsFor: '*powerlang-core' stamp: 'KenD 6/9/2021 14:43:44'!
+byteAt: n
+	"Treat me as a byte array"
+	(n = 1) ifTrue: [
+		"Negate, but watch case where I am 'SmallInteger minval'"
+		^ self < 0
+			ifTrue: [ -255 - self bitAnd: 255 ]
+			ifFalse: [ self bitAnd: 255 ]
+	].
+	^ self < 0
+		ifTrue: [  (-256 - self bitShift: -8) + 1 byteAt: n - 1 ] 
+		ifFalse: [ (self bitShift: 8 -  (n bitShift: 3)) bitAnd: 255 ]! !
+
 !SmallInteger methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:49:44'!
 isSmallInteger 
 
@@ -44017,6 +44037,11 @@ split: aString
 anyone 
 
 	^self anyOne! !
+
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/9/2021 15:03:53'!
+collect: collectBlock thenDo: doBlock
+	
+	^self do: [ :each | doBlock value: (collectBlock value: each)]! !
 
 !Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
 conform: evaluable
