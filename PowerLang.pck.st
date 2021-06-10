@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4633] on 9 June 2021 at 3:20:48 pm'!
+'From Cuis 5.0 [latest update: #4633] on 10 June 2021 at 1:17:58 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 63!
+!provides: 'PowerLang' 1 64!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -8096,28 +8096,6 @@ libraryPath
 
 	^'./temp/', self libraryName! !
 
-!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:42:03'!
-assertCorrectExecutionOfLibrary: filename 
-
-	self assertCorrectExecutionUsing: ' ' loading: filename! !
-
-!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:42:20'!
-assertCorrectExecutionOfTest: aSelector 
-	| method |
-	method := self nativize: aSelector
-	"code halt disassembledAmd64"! !
-
-!SExpressionTest methodsFor: 'assertions' stamp: 'KenD 6/7/2021 15:43:19'!
-assertCorrectExecutionUsing: arguments 
-	| executor |
-	executor := self executeUsing: arguments.
-	executor exitCode !!= 1
-		ifTrue: [ 
-			self
-				assert: false
-				description: (self assertionFailureReportForExecution: executor) ]
-		ifFalse: [ self assert: true ]! !
-
 !SExpressionTest methodsFor: 'generating' stamp: 'KenD 6/7/2021 15:43:47'!
 generateMinimalLibraryWithEntryPoint: selector 
 	| builder entrypoint |
@@ -8140,6 +8118,28 @@ add: arg1 to: arg2
 
 	^arg1 + arg2 ! !
 
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/10/2021 13:15:56'!
+assertCorrectExecutionOfLibrary: filename 
+
+	self assertCorrectExecutionUsing: ' ' loading: filename! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/10/2021 13:16:09'!
+assertCorrectExecutionOfTest: aSelector 
+	| method |
+	method := self nativize: aSelector
+	"code halt disassembledAmd64"! !
+
+!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/10/2021 13:16:29'!
+assertCorrectExecutionUsing: arguments 
+	| executor |
+	executor := self executeUsing: arguments.
+	executor exitCode !!= 1
+		ifTrue: [ 
+			self
+				assert: false
+				description: (self assertionFailureReportForExecution: executor) ]
+		ifFalse: [ self assert: true ]! !
+
 !SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:44:49'!
 nativize: aSymbol 
 	| method smethod environment linker |
@@ -8151,45 +8151,6 @@ nativize: aSymbol
 	linker := LookupLinker new initializeFrom: environment.
 	environment addLinker: linker.
 	^ environment newExpressionNativizer nativize: smethod! !
-
-!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:39:47'!
-supportMethods 
-
-	^self supportSelectors
-		collect: [:selector | (self >> selector) copy classBinding: Object]! !
-
-!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:40:00'!
-supportMethodsUsing: anEnvironment 
-
-	^ self supportMethods collect: [ :method | 
-		  | copy |
-		  copy := method copy
-			          classBinding: Object;
-			          yourself.
-		  self nativize: copy using: anEnvironment.
-		  copy ]! !
-
-!SExpressionTest methodsFor: 'support' stamp: 'KenD 6/7/2021 15:40:12'!
-supportSelectors 
-
-	^self selectorsWithCategory: 'support'! !
-
-!SExpressionTest methodsFor: 'templates' stamp: 'KenD 6/7/2021 15:41:15'!
-templateSelectors 
-	| selectors current |
-	selectors := OrderedCollection new.
-	current := self organization.
-	current categories
-		select: [:c | c beginsWith: 'templates']
-		thenDo: [:c | selectors addAll: (current
-			selectorsFor: c)].
-	^selectors sort! !
-
-!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:39:17'!
-isTestSelector: selector 
-
-	^(super isTestSelector: selector)
-		or: [self templateSelectors includes: selector]! !
 
 !SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:45:21'!
 performTest 
@@ -8274,10 +8235,49 @@ test151_blockEnvironmentTemps
 		four := 4.
 		four - three] value ! !
 
-!SExpressionTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 15:41:31'!
+!SExpressionTest class methodsFor: 'accessing' stamp: 'KenD 6/10/2021 13:11:41'!
 testSelectors 
 
 	^super testSelectors asOrderedCollection addAll: self templateSelectors; yourself! !
+
+!SExpressionTest class methodsFor: 'testing' stamp: 'KenD 6/10/2021 13:13:46'!
+isTestSelector: selector 
+
+	^(super isTestSelector: selector)
+		or: [self templateSelectors includes: selector]! !
+
+!SExpressionTest class methodsFor: 'support' stamp: 'KenD 6/10/2021 13:14:34'!
+supportMethods 
+
+	^self supportSelectors
+		collect: [:selector | (self >> selector) copy classBinding: Object]! !
+
+!SExpressionTest class methodsFor: 'support' stamp: 'KenD 6/10/2021 13:14:41'!
+supportMethodsUsing: anEnvironment 
+
+	^ self supportMethods collect: [ :method | 
+		  | copy |
+		  copy := method copy
+			          classBinding: Object;
+			          yourself.
+		  self nativize: copy using: anEnvironment.
+		  copy ]! !
+
+!SExpressionTest class methodsFor: 'support' stamp: 'KenD 6/10/2021 13:14:50'!
+supportSelectors 
+
+	^self selectorsWithCategory: 'support'! !
+
+!SExpressionTest class methodsFor: 'templates' stamp: 'KenD 6/10/2021 13:15:02'!
+templateSelectors 
+	| selectors current |
+	selectors := OrderedCollection new.
+	current := self organization.
+	current categories
+		select: [:c | c beginsWith: 'templates']
+		thenDo: [:c | selectors addAll: (current
+			selectorsFor: c)].
+	^selectors sort! !
 
 !ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:03:14'!
 testImm32 
@@ -42665,6 +42665,12 @@ genericLoadReceiver
 
 	emitter nextPut: LoadRvisitingReceiverId ! !
 
+!BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 6/10/2021 12:24:05'!
+loadArgument 
+	self hasImmediateArgument
+		ifTrue: [argument emitLoadAusing: emitter]
+		ifFalse: [self genericLoadArgument] ! !
+
 !BinaryMessageOptimizer methodsFor: 'codeGeneration' stamp: 'KenD 2/27/2021 12:52:36'!
 loadOperands 
 	| strict push |
@@ -43584,6 +43590,72 @@ printOn: aStream indent: anInteger
 		do: [:statement | statement printOn: aStream indent: anInteger + 1]
 		separatedBy: [aStream nextPutAll: '.'; cr]! !
 
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:35:31'!
+capturedVariables 
+
+	^capturedVariables! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:39:27'!
+capturedVariables: aCollection 
+
+	capturedVariables := aCollection! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:36:05'!
+capturesHome 
+
+	^compiledCode capturesHome! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:36:14'!
+index 
+
+	^index! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:36:24'!
+index: anInteger 
+
+	index := anInteger! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:36:53'!
+inlinedArgs 
+
+	^ inlinedArgs! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:37:03'!
+inlinedArgs: anArray 
+
+	inlinedArgs:= anArray ! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:37:33'!
+offsetOfCurrentEnvironment 
+
+	^ 2! !
+
+!SBlock methodsFor: 'accessing' stamp: 'KenD 6/10/2021 12:37:46'!
+offsetOfEnvironment: anInteger 
+
+	(anInteger = 1 and: [ self capturesHome ]) ifTrue: [ ^ 0 ].
+	^ 2! !
+
+!SBlock methodsFor: 'initialization' stamp: 'KenD 6/10/2021 12:36:42'!
+initialize 
+
+	capturedVariables := #()! !
+
+!SBlock methodsFor: 'printing' stamp: 'KenD 6/10/2021 12:38:06'!
+printOn: aStream indent: anInteger 
+	aStream
+		tab: anInteger;
+		nextPutAll: '{BlockId. capturedVariables: ';
+		print: capturedVariables;
+		cr.
+	super printOn: aStream indent: anInteger.
+	aStream nextPutAll: '}'! !
+
+!SBlock methodsFor: 'testing' stamp: 'KenD 6/10/2021 12:37:22'!
+isInlined 
+
+	^compiledCode isNil! !
+
 !SBlock methodsFor: 'visiting' stamp: 'KenD 4/12/2021 14:34:39'!
 acceptVisitor: visitor 
 
@@ -43831,6 +43903,11 @@ isInstruction
 
 	^false! !
 
+!Object methodsFor: '*powerlang-core' stamp: 'KenD 6/10/2021 12:15:05'!
+isRegister
+
+	^false! !
+
 !Object methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:32:03'!
 isSmallInteger 
 
@@ -43890,10 +43967,13 @@ allSharedPoolsUsing: globals
 
 	^self allSharedPools ! !
 
-!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:46:56'!
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/10/2021 12:53:29'!
 indexOfSlot: instVarName 
-
-	^self instVarIndexFor: instVarName! !
+	self flag: #KenD_Revisit.
+	"^self instVarIndexFor: instVarName"
+	
+	"Nota Bene: returns zero on failure; use nil?"
+	^self instVarNames findFirst: [ :name | name = instVarName ]! !
 
 !ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:47:07'!
 localPools 
