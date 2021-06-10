@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4633] on 10 June 2021 at 1:17:58 pm'!
+'From Cuis 5.0 [latest update: #4633] on 10 June 2021 at 1:37:10 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 64!
+!provides: 'PowerLang' 1 65!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -9782,6 +9782,11 @@ label
 
 	^(self labelName , $: asParser) flatten! !
 
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 6/10/2021 13:25:27'!
+labelName 
+
+	^($@ asParser , #word asParser plus) flatten! !
+
 !AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:32:47'!
 memory 
 
@@ -9872,6 +9877,11 @@ segment
 sib 
 
 	^self sib1 / self sib3 / self sib2! !
+
+!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 6/10/2021 13:29:17'!
+sib1 
+
+	^self displacement / self constant! !
 
 !AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:36:49'!
 sib2 
