@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4636] on 16 June 2021 at 7:45:18 am'!
+'From Cuis 5.0 [latest update: #4636] on 16 June 2021 at 1:02:47 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 68!
+!provides: 'PowerLang' 1 69!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -3948,10 +3948,10 @@ printOn: aStream
 		aStream nextPutAll: '0x'; nextPutAll: displ abs hex].
 	aStream nextPut: $]! !
 
-!Register methodsFor: 'accessing' stamp: 'KenD 3/28/2021 15:24:17'!
+!Register methodsFor: 'accessing' stamp: 'KenD 6/16/2021 12:30:24'!
 name 
 
-	^name! !
+	^name asLowercase ! !
 
 !Register methodsFor: 'printing' stamp: 'KenD 3/28/2021 15:25:31'!
 printOn: aStream 
@@ -5605,7 +5605,7 @@ test_constant
 		assert: parser parse: '12' to: 12;
 		assert: parser parse: '0xFEED' to: 16rFEED! !
 
-!AssemblerParserTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:37:46'!
+!AssemblerParserTest methodsFor: 'testing' stamp: 'KenD 6/16/2021 13:01:24'!
 test_displacement 
 	| parser |
 	parser := AssemblerParser new displacement.
@@ -5614,7 +5614,7 @@ test_displacement
 		assert: parser parse: ' - 12' to: -12;
 		assert: parser parse: ' + 0xFEED' to: 16rFEED;
 		assert: parser parse: ' - 0xCAFE' to: -16rCAFE;
-		assert: parser parse: '+0xfeed' to: 16rFEED! !
+		assert: parser parse: '+0xFEED' to: 16rFEED! !
 
 !AssemblerParserTest methodsFor: 'testing' stamp: 'KenD 6/8/2021 06:37:58'!
 test_imm_decimal 
@@ -9914,7 +9914,7 @@ bitLengthOf: anInteger
 		ifTrue: [^128].
 	^nil! !
 
-!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:03'!
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 6/16/2021 12:55:26'!
 decimal 
 
 	^super decimal ==> [:node | node asInteger]! !
@@ -9927,11 +9927,11 @@ displacement
 			ifTrue: [nodes second negated]
 			ifFalse: [nodes second]]! !
 
-!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:28'!
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 6/16/2021 12:34:13'!
 hex 
 
 	^super hex
-		==> [:nodes | Integer readFrom: nodes second readStream radix: 16]! !
+		==> [:nodes | Integer readFrom: nodes second readStream base: 16]! !
 
 !AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:42:45'!
 immD 
@@ -44171,6 +44171,16 @@ indexOfSubCollection: aSubCollection
 arity 
 
 	^self numArgs! !
+
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/16/2021 12:55:03'!
+asInteger
+	"Answer the Integer created by interpreting the receiver as the string 
+	representation of a number."
+	| stream |
+	stream := self readStream.
+	[(stream atEnd not) and: [stream peek isDigit not]]
+		whileTrue: [ stream next ]. "Skip leading whitespace"
+	^Integer readFrom: self readStream! !
 
 !String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:12'!
 existingSymbol 
