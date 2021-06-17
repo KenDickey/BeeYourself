@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4636] on 17 June 2021 at 12:51:39 pm'!
+'From Cuis 5.0 [latest update: #4636] on 17 June 2021 at 1:53:45 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 70!
+!provides: 'PowerLang' 1 71!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -4077,9 +4077,9 @@ printOn: aStream
 			aStream space; nextPutAll: hex]]
 ! !
 
-!OctalStructure methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:01:56'!
+!OctalStructure methodsFor: 'printing' stamp: 'KenD 6/17/2021 13:45:08'!
 printOn: aStream 
-	| hi mid lo |
+"	| hi mid lo |
 	hi := self hi printPaddedWith: $0 to: 2 base: 2.
 	mid := self mid printPaddedWith: $0 to: 3 base: 2.
 	lo := self lo printPaddedWith: $0 to: 3 base: 2.
@@ -4088,7 +4088,12 @@ printOn: aStream
 		nextPut: $.;
 		nextPutAll: mid;
 		nextPut: $.;
-		nextPutAll: lo! !
+		nextPutAll: lo"
+	self hi printOn: aStream base: 2 length: 2 padded: true.
+	aStream nextPut: $. .
+	self mid printOn: aStream base: 2 length: 3 padded: true. 
+	aStream nextPut: $. .
+	self lo printOn: aStream base: 2 length: 3 padded: true.! !
 
 !ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
 methods 
@@ -8808,7 +8813,7 @@ testMOVR11Imm
 		encodingOf: instruction
 		equals: #[16r49 16rBB 16r40 16rF7 16r5F 16r00 16r00 16r00 16r00 16r00]! !
 
-!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:10:32'!
+!InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/17/2021 13:24:44'!
 testSpec_ADC_rax_imm32 
 	| instruction spec |
 	instruction := ISAInstruction new
@@ -8816,7 +8821,7 @@ testSpec_ADC_rax_imm32
 		operands: (Array with: RAX with: 256).
 	spec := instruction spec.
 	self
-		assert: spec asString = 'adc rax, imm32';
+		assert: spec asString asLowercase = 'adc rax, imm32';
 		deny: spec isPreferred! !
 
 !InstructionEncoderTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:10:52'!
@@ -19713,10 +19718,10 @@ from: aStream
 
 	contents := SIB new on: aStream next! !
 
-!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:43'!
+!ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 6/17/2021 13:26:01'!
 displacementFrom: aStream
 
-	self notYetImplemented ! !
+	self flag:  #notYetImplemented ! !
 
 !ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:30:57'!
 from: aStream 
@@ -43995,12 +44000,12 @@ selectorsFor: aString
 	protocol := self protocolNamed: aString.
 	^protocol methodSelectors! !
 
-!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:51:29'!
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:49:31'!
 bin 
 	"
 	255 bin
 	"
-	^self radix: 2! !
+	^self printStringBase: 2! !
 
 !Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:52:27'!
 bin: bits 
@@ -44136,7 +44141,7 @@ reject: rejectBlock thenDo: doBlock
 		ifFalse: [ doBlock value: each ]
 	]! !
 
-!Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:49:16'!
+!Collection class methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:20:37'!
 with: anObject withAll: aCollection 
 
 	^self new add: anObject; addAll: aCollection; yourself! !
@@ -44164,6 +44169,19 @@ indexOfSubCollection: aSubCollection
 		indexOfSubCollection: aSubCollection
 		startingAt: 1
 		ifAbsent: [0]! !
+
+!ArrayedCollection class methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:20:02'!
+with: anObject withAll: aCollection
+
+"
+	Array with: 1 withAll: #(2 3 4).
+"
+	| newArray |
+	newArray := self new: aCollection size + 1.
+	newArray at: 1 put: anObject.
+	newArray
+		replaceFrom: 2 to: newArray size  with: aCollection.
+	^newArray ! !
 
 !String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:01'!
 arity 
