@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4636] on 16 June 2021 at 1:02:47 pm'!
+'From Cuis 5.0 [latest update: #4636] on 17 June 2021 at 12:51:39 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 69!
+!provides: 'PowerLang' 1 70!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -8687,7 +8687,7 @@ testImm8
 	imm8 := ISAImmediate new value: 127.
 	self assert: imm8 length = 8! !
 
-!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/9/2021 15:07:59'!
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/17/2021 12:21:08'!
 testIndexes 
 	| table |
 	table := '0	AL	AX	EAX	RAX
@@ -8713,14 +8713,14 @@ testIndexes
 				length := #(8 16 32 64) at: i.
 				self
 					assert: reg length = length;
-					assert: reg name = rg;
+					assert: reg name = rg asLowercase ;
 					assert: reg index = array first asNumber]]]
 ! !
 
-!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/9/2021 15:18:34'!
+!ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/17/2021 12:26:30'!
 testMMIndexes 
 	(0 to: 7)
-		collect: [:i | ('mmx* xmm* ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
+		collect: [:i | ('MMX* XMM* YMM*' replaceAllSubstrings: '*' with: i asString) substrings]
 		thenDo: [:array | 
 			array withIndexDo: [:r :i | | index reg length |
 				index := r last digitValue.
@@ -8728,10 +8728,10 @@ testMMIndexes
 				length := #(64 128 256) at: i.
 				self
 					assert: reg length = length;
-					assert: reg name = r asUppercase;
+					assert: reg name asUppercase = r asUppercase;
 					assert: reg index = index]].
 	(8 to: 15)
-		collect: [:i | ('xmm*	ymm*' replaceAllSubstrings: '*' with: i asString) substrings]
+		collect: [:i | ('XMM*	YMM*' replaceAllSubstrings: '*' with: i asString) substrings]
 		thenDo: [:array | 
 			array withIndexDo: [:r :i | | index reg length |
 				index := (r select: #isDigit) findPositiveInteger.
@@ -8739,7 +8739,7 @@ testMMIndexes
 				length := #(128 256) at: i.
 				self
 					assert: reg length = length;
-					assert: reg name = r asUppercase ;
+					assert: reg name asUppercase = r asUppercase ;
 					assert: reg index = index]]! !
 
 !ISAOperandTest methodsFor: 'testing' stamp: 'KenD 6/7/2021 16:04:47'!
@@ -9752,11 +9752,6 @@ hex
 
 	^'0x' asParser , #hex asParser plus! !
 
-!AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:36:38'!
-ib1 
-
-	^self displacement / self constant! !
-
 !AssemblerGrammar methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:31:49'!
 index 
 
@@ -10065,7 +10060,7 @@ sib3
 			scale: nodes second;
 			displacement: nodes third]! !
 
-!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:48:04'!
+!AssemblerParser methodsFor: 'accessing' stamp: 'KenD 6/17/2021 12:50:24'!
 signInteger: anInteger 
 
 	anInteger < 0 ifTrue: [^anInteger].
@@ -10075,6 +10070,7 @@ signInteger: anInteger
 	anInteger < 16r10000 ifTrue: [^anInteger - 16r10000].
 	anInteger < 16r80000000 ifTrue: [^anInteger].
 	anInteger < 16r100000000 ifTrue: [^anInteger - 16r100000000].
+self flag: #ARM64VM_BUG.
 	anInteger < 16r8000000000000000 ifTrue: [^anInteger].
 	anInteger < 16r10000000000000000
 		ifTrue: [^anInteger - 16r10000000000000000].
@@ -10814,7 +10810,7 @@ length
 
 	^length! !
 
-!ISAOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:38:41'!
+!ISAOperand methodsFor: 'accessing' stamp: 'KenD 6/17/2021 12:27:04'!
 length: anInteger 
 
 	length := anInteger! !
@@ -10873,7 +10869,7 @@ bytes
 		v := v bitShift: -8].
 	^bytes! !
 
-!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:17'!
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 6/17/2021 12:50:11'!
 defaultLength 
 
 	value < -168000000000000000 ifTrue: [^128].
@@ -10883,8 +10879,10 @@ defaultLength
 	value < 16r80 ifTrue: [^8].
 	value < 16r8000 ifTrue: [^16].
 	value < 16r80000000 ifTrue: [^32].
-	value < 16r8000000000000000 ifTrue: [^64].
-	^128! !
+	self flag: #ARM64VM_BUG.
+	^64
+"	value < 16r8000000000000000 ifTrue: [^64].
+	^128"! !
 
 !ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:30'!
 hash 
