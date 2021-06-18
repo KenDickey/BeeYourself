@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4587] on 30 May 2021 at 12:42:52 pm'!
+'From Cuis 5.0 [latest update: #4638] on 18 June 2021 at 12:55:21 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 3!
+!provides: 'BeeCompatibility' 1 4!
 SystemOrganization addCategory: #BeeCompatibility!
 
 
@@ -226,4 +226,9 @@ targetOS
 targetWordSizeInBits
 
 	^WordSizeInBits ! !
+
+!TargetOSPlatform class methodsFor: 'instance creation' stamp: 'KenD 6/18/2021 12:28:07'!
+current
+
+	^self new initialize.! !
 TargetOSPlatform initialize!
