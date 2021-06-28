@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4636] on 17 June 2021 at 1:53:45 pm'!
+'From Cuis 5.0 [latest update: #4648] on 28 June 2021 at 2:22:24 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 71!
+!provides: 'PowerLang' 1 73!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -4801,9 +4801,11 @@ initialize
 	RegisterSegment _ 512.
 	RegisterSpecific _ 768.! !
 
-!Prefixes class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 13:09:35'!
+!Prefixes class methodsFor: 'class initialization' stamp: 'KenD 6/28/2021 11:27:54'!
 initialize 
-
+"
+	self initialize.
+"
 	LOCK := LegacyPrefix basicNew
 		instVarAt: 1 put: 'LOCK';
 		instVarAt: 2 put: 1;
@@ -10874,7 +10876,7 @@ bytes
 		v := v bitShift: -8].
 	^bytes! !
 
-!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 6/17/2021 12:50:11'!
+!ISAImmediate methodsFor: 'accessing' stamp: 'KenD 6/22/2021 13:38:01'!
 defaultLength 
 
 	value < -168000000000000000 ifTrue: [^128].
@@ -10884,10 +10886,8 @@ defaultLength
 	value < 16r80 ifTrue: [^8].
 	value < 16r8000 ifTrue: [^16].
 	value < 16r80000000 ifTrue: [^32].
-	self flag: #ARM64VM_BUG.
-	^64
-"	value < 16r8000000000000000 ifTrue: [^64].
-	^128"! !
+	value < 16r8000000000000000 ifTrue: [^64].
+	^128! !
 
 !ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:30'!
 hash 
@@ -11510,14 +11510,16 @@ ymm: i
 
 	^self named: 'YMM' , i asString! !
 
-!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:09'!
+!Register class methodsFor: 'class initialization' stamp: 'KenD 6/28/2021 14:17:29'!
 addRegister: aRegister 
 
-	Registers at: aRegister name put: aRegister! !
+	Registers at: aRegister name asUppercase put: aRegister! !
 
-!Register class methodsFor: 'class initialization' stamp: 'KenD 3/28/2021 15:05:23'!
+!Register class methodsFor: 'class initialization' stamp: 'Install-PowerLang 6/28/2021 14:06:36'!
 initialize 
-
+"
+	self initialize.
+"
 	self initializeRegisters; initializeFamilies! !
 
 !Register class methodsFor: 'class initialization' stamp: 'Install-PowerLang 4/25/2021 10:39:07'!
@@ -12661,9 +12663,11 @@ isVex
 
 	^false! !
 
-!InstructionPrefix class methodsFor: 'class initialization' stamp: 'KenD 2/27/2021 13:11:03'!
+!InstructionPrefix class methodsFor: 'class initialization' stamp: 'KenD 6/28/2021 12:56:14'!
 initializePrefixes 
-
+"
+	self initializePrefixes
+"
 	self == InstructionPrefix
 		ifTrue: [ self allSubclasses do: #initializePrefixes ].
 	self compileAll.
@@ -12857,7 +12861,7 @@ x
 
 	^2! !
 
-!REXPrefix methodsFor: 'evaluating' stamp: 'KenD 4/24/2021 13:06:08'!
+!REXPrefix methodsFor: 'evaluating' stamp: 'KenD 6/28/2021 12:34:40'!
 value 
 
 	self == REX_W ifTrue: [^16r48].
@@ -12921,9 +12925,11 @@ x
 
 	^2! !
 
-!REXPrefix class methodsFor: 'class initialization' stamp: 'KenD 4/24/2021 13:02:14'!
+!REXPrefix class methodsFor: 'class initialization' stamp: 'KenD 6/28/2021 11:23:05'!
 initializePrefixes 
-
+"
+	self initializePrefixes
+"
 	#('REX' 'REX_W' 'REX_R')
 		do: [ :s | 
 			| rex |
