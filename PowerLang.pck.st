@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4648] on 28 June 2021 at 2:22:24 pm'!
+'From Cuis 5.0 [latest update: #4648] on 28 June 2021 at 7:46:46 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 73!
+!provides: 'PowerLang' 1 74!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -44194,15 +44194,14 @@ arity
 
 	^self numArgs! !
 
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/16/2021 12:55:03'!
+!String methodsFor: '*powerlang-core' stamp: 'KenD 6/28/2021 19:44:35'!
 asInteger
-	"Answer the Integer created by interpreting the receiver as the string 
-	representation of a number."
+
 	| stream |
-	stream := self readStream.
-	[(stream atEnd not) and: [stream peek isDigit not]]
-		whileTrue: [ stream next ]. "Skip leading whitespace"
-	^Integer readFrom: self readStream! !
+ 	stream := self readStream.
+ 	[(stream atEnd not) and: [stream peek isDigit not]]
+ 		whileTrue: [ stream next ]. "Skip leading whitespace"
+	^Integer readFrom: stream! !
 
 !String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:12'!
 existingSymbol 
