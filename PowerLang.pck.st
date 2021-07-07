@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4658] on 7 July 2021 at 3:52:31 pm'!
+'From Cuis 5.0 [latest update: #4658] on 7 July 2021 at 4:08:45 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 75!
+!provides: 'PowerLang' 1 76!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -4293,10 +4293,10 @@ printOn: aStream
 
 	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
 
-!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 4/12/2021 10:45:19'!
+!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:14'!
 printOn: aStream 
 
-	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
+	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
 
 !ObjectHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:48'!
 printOn: aStream 
@@ -4323,10 +4323,10 @@ isFixed
 
 	^self isArrayed not! !
 
-!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 3/27/2021 08:29:19'!
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:55'!
 printOn: aStream 
 
-	aStream nextPutAll: 'FH with: ' , String cr , frame printString! !
+	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
 
 !EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
 compile: anRGMethod 
@@ -4500,21 +4500,21 @@ subclasses
 		ifTrue: [#()]
 		ifFalse: [instance subclasses collect: [:class | class class]]! !
 
-!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:48:23'!
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:04:02'!
 printOn: aStream 
 
-	aStream nextPutAll: 'SFMirror(' , String cr , handle printString , ')'! !
+	aStream nextPutAll: 'SFMirror(' , String newLineString , handle printString , ')'! !
 
 !OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
 name 
 
 	^'#' , self hash printString! !
 
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:47'!
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:24'!
 printOn: aStream 
 
 	aStream
-		nextPutAll: '<=== ' , self name , String cr , firstInstruction asString
+		nextPutAll: '<=== ' , self name , String newLineString , firstInstruction asString
 			, '===>'! !
 
 !ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:43'!
@@ -4522,11 +4522,11 @@ printOn: aStream
 
 	self printAtLevel: 1 on: aStream! !
 
-!OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 5/5/2021 16:45:49'!
+!OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:50'!
 printOn: aStream 
 	| rangesStrings |
-	rangesStrings := (ranges collect: #printString) gather: [:x | x , String cr].
-	aStream nextPutAll: 'CLR: ' , String cr , rangesStrings! !
+	rangesStrings := (ranges collect: #printString) gather: [:x | x , String newLineString ].
+	aStream nextPutAll: 'CLR: ' , String newLineString , rangesStrings! !
 
 !OSimpleLiveRange methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:29:38'!
 printOn: aStream 
@@ -30134,7 +30134,7 @@ printAllNamed
 		stream newLine].
 	^stream contents! !
 
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 5/4/2021 07:53:58'!
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:04:10'!
 printOn: aStream using: names 
 	| string |
 	string := names at: self.
@@ -30145,7 +30145,7 @@ printOn: aStream using: names
 				nextPutAll: (names at: pred ifAbsent: 'missing') , ' | '].
 		aStream nextPutAll: (names at: predecessors last ifAbsent: 'missing')].
 	aStream
-		nextPutAll: '/' , String cr , (firstInstruction printStringUsing: names)
+		nextPutAll: '/' , String newLineString , (firstInstruction printStringUsing: names)
 			, '===>'! !
 
 !OBasicBlock methodsFor: 'code generation' stamp: 'KenD 5/4/2021 07:37:27'!
