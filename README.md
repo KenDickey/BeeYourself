@@ -86,7 +86,15 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 ## Look, Ma, no compiler
 
 Should be able to port by cross-compiling nativizer for new platform and cross/pre-nativise the loader.  Let loader nativise methods during load.  Simple port w/o running a compiler.
-
 --
+
+#Playtime:
+
+```Smalltalk
+Feature require: 'PowerLang'.
+
+SCompiler compile:  'foo [true ifTrue: [^self]]' in: UndefinedObject.
+(SCompiler forClass: UndefinedObject) smalltalkCompiler  compileMethod:   'foo [true ifTrue: [^self]]' .
+```
 
 ** "What is a System?  Simply a set of things that are interconnected in ways that produce distinct patterns of behavior." _Doughnut Economics_, Kate Raworth.
