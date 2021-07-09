@@ -86,9 +86,9 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 ## Look, Ma, no compiler
 
 Should be able to port by cross-compiling nativizer for new platform and cross/pre-nativise the loader.  Let loader nativise methods during load.  Simple port w/o running a compiler.
---
 
-#Playtime:
+
+## Playtime:
 
 ```Smalltalk
 Feature require: 'PowerLang'.
