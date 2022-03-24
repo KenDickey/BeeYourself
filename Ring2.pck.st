@@ -1,9 +1,9 @@
-'From Cuis 6.0 [latest update: #5095] on 24 March 2022 at 1:57:05 pm'!
+'From Cuis 6.0 [latest update: #5095] on 24 March 2022 at 2:13:59 pm'!
 'Description Code Metamodel (used by Powerlang/Bee-DMR)
 
 Ported from https://github.com/pavel-krivanek/Ring2
   but without support for Traits'!
-!provides: 'Ring2' 1 7!
+!provides: 'Ring2' 1 8!
 SystemOrganization addCategory: 'Ring2-Core-Kernel'!
 SystemOrganization addCategory: 'Ring2-Core'!
 SystemOrganization addCategory: 'Ring2-Core-Environment'!
@@ -109,6 +109,16 @@ RGObject subclass: #RGElement
 RGElement class
 	instanceVariableNames: ''!
 
+!classDefinition: #RGComment category: 'Ring2-Core-Kernel'!
+RGElement subclass: #RGComment
+	instanceVariableNames: 'content author time'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGComment class' category: 'Ring2-Core-Kernel'!
+RGComment class
+	instanceVariableNames: ''!
+
 !classDefinition: #RGMethod category: 'Ring2-Core-Kernel'!
 RGElement subclass: #RGMethod
 	instanceVariableNames: 'sourceCode package author time tags'
@@ -159,6 +169,16 @@ RGElement subclass: #RGVariable
 RGVariable class
 	instanceVariableNames: ''!
 
+!classDefinition: #RGClassVariable category: 'Ring2-Core-Kernel'!
+RGVariable subclass: #RGClassVariable
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGClassVariable class' category: 'Ring2-Core-Kernel'!
+RGClassVariable class
+	instanceVariableNames: ''!
+
 !classDefinition: #RGPoolVariable category: 'Ring2-Core-Kernel'!
 RGVariable subclass: #RGPoolVariable
 	instanceVariableNames: ''
@@ -187,6 +207,16 @@ RGObject subclass: #RGLayout
 	category: 'Ring2-Core-Kernel'!
 !classDefinition: 'RGLayout class' category: 'Ring2-Core-Kernel'!
 RGLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGEmptyLayout category: 'Ring2-Core-Kernel'!
+RGLayout subclass: #RGEmptyLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGEmptyLayout class' category: 'Ring2-Core-Kernel'!
+RGEmptyLayout class
 	instanceVariableNames: ''!
 
 !classDefinition: #RGPackageDefinition category: 'Ring2-Core-Kernel'!
@@ -321,6 +351,9 @@ Example:
 
 !
 
+!RGComment commentStamp: '<historical>' prior: 0!
+RGComment is a first-class representation of class's comments!
+
 !RGMethod commentStamp: '<historical>' prior: 0!
 RG2Method is a concrete representation of methods. It can be used to build browser for methods that are not in the image. It is polymorphic with CompiledMethod. 
 
@@ -395,6 +428,9 @@ Example:
 		->  Point
 !
 
+!RGClassVariable commentStamp: '<historical>' prior: 0!
+A class variable definition!
+
 !RGPackageDefinition commentStamp: '<historical>' prior: 0!
 RGPackageDefinition is the representation for packages.
 A package manages classes, methods and children packages as elements.
@@ -424,6 +460,14 @@ postCopy
 name 
 
 	^ (self backend nameFor: self) orDefaultForUnresolved ! !
+
+!RGComment methodsFor: 'printing' stamp: 'KenD 3/24/2022 14:08:07'!
+printOn: aStream 
+
+	self parent name ifNotNil: [
+		aStream nextPutAll: self parent name;
+				  nextPutAll: ' ' ].
+	aStream nextPutAll: self name asString! !
 
 !RGMethod methodsFor: 'backward compatibility' stamp: 'KenD 3/23/2022 12:28:30'!
 category 
@@ -872,6 +916,156 @@ named: aString
 package
 
 	^ self parent package! !
+
+!RGComment methodsFor: 'accessing' stamp: 'KenD 3/24/2022 14:06:14'!
+fullName 
+	
+	^ (self parent name, ' comment') asSymbol! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:04:04'!
+author 
+
+	^ self backend forBehavior classCommentAuthorFor: self! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:04:13'!
+author: aString 
+
+	self backend forBehavior setClassCommentAuthorFor: self to: aString.
+	
+	self announcer behaviorCommentModified: self parent.! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:04:26'!
+content 
+
+	^ self backend forBehavior classCommentContentFor: self! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:04:35'!
+content: aString 
+
+	self backend forBehavior setClassCommentContentFor: self to: aString.
+	
+	self announcer behaviorCommentModified: self parent.
+! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:08:37'!
+prvtAuthor 
+
+	^ author value! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:08:49'!
+prvtAuthor: aString 
+
+	^ author := aString! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:09:00'!
+prvtContent 
+
+	^ content value! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:09:15'!
+prvtContent: aString 
+
+	^ content := aString! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:09:32'!
+prvtResolvableProperties 
+
+	^ super pvtResolvableProperties, { 
+		#content -> content. 
+		#author -> author. 
+		#time -> time. 
+	}! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:09:44'!
+prvtTime 
+
+	^ time value! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:09:56'!
+prvtTime: aDateAndTime 
+
+	^ time := aDateAndTime! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:10:48'!
+time 
+
+	^ self backend forBehavior classCommentTimeFor: self! !
+
+!RGComment methodsFor: 'accessing - backend' stamp: 'KenD 3/24/2022 14:11:00'!
+time: aDateAndTime 
+
+	self backend forBehavior setClassCommentTimeFor: self to: aDateAndTime.
+	
+	self announcer behaviorCommentModified: self parent.! !
+
+!RGComment methodsFor: 'backward compatibility' stamp: 'KenD 3/24/2022 14:10:34'!
+sourceCode 
+
+	^ self content   ! !
+
+!RGComment methodsFor: 'default model values' stamp: 'KenD 3/24/2022 14:05:00'!
+defaultAuthor 
+
+	^ ''! !
+
+!RGComment methodsFor: 'default model values' stamp: 'KenD 3/24/2022 14:05:08'!
+defaultContent 
+
+	^ ''! !
+
+!RGComment methodsFor: 'default model values' stamp: 'KenD 3/24/2022 14:05:29'!
+defaultParentStub 
+
+	^ self defaultClassStub! !
+
+!RGComment methodsFor: 'default model values' stamp: 'KenD 3/24/2022 14:05:39'!
+defaultTime 
+
+	^ DateAndTime new! !
+
+!RGComment methodsFor: 'initialization' stamp: 'KenD 3/24/2022 14:06:35'!
+initialize 
+
+	super initialize.
+	
+	content := self unresolvedValue: self defaultContent.	
+	author := self unresolvedValue: self defaultAuthor.	
+	time := self unresolvedValue: self defaultTime.	! !
+
+!RGComment methodsFor: 'initialization' stamp: 'KenD 3/24/2022 14:06:51'!
+initializeUnresolved 
+
+	super initializeUnresolved.
+	
+	content := self unresolvedValue: self defaultContent.	
+	author := self unresolvedValue: self defaultAuthor.	
+	time := self unresolvedValue: self defaultTime.	! !
+
+!RGComment methodsFor: 'managing container' stamp: 'KenD 3/24/2022 14:03:39'!
+addoptToParentStub 
+
+	super addoptToParentStub.
+
+	self environment backend createUnresolvedClassGroupFor: self parent! !
+
+!RGComment methodsFor: 'resolving' stamp: 'KenD 3/24/2022 14:07:43'!
+makeResolved 
+
+	super makeResolved.
+	
+	content := self content markAsRingResolved.
+	author := self author markAsRingResolved.
+	time := self time markAsRingResolved.! !
+
+!RGComment methodsFor: 'testing' stamp: 'KenD 3/24/2022 14:07:17'!
+isComment 
+
+	^ true! !
+
+!RGComment methodsFor: 'testing' stamp: 'KenD 3/24/2022 14:07:27'!
+isEmptyOrNil 
+
+	^ self content isEmptyOrNil ! !
 
 !RGMethod methodsFor: 'accessing' stamp: 'KenD 3/23/2022 12:25:06'!
 argumentNames
@@ -1329,6 +1523,25 @@ isVariableDefinition
 
 	^ true! !
 
+!RGClassVariable methodsFor: 'managing container' stamp: 'KenD 3/24/2022 14:12:32'!
+addoptToParentStub 
+
+	super addoptToParentStub.
+	self environment backend createUnresolvedClassGroupFor: self parent.
+	self parent addClassVariable: self.! !
+
+!RGClassVariable methodsFor: 'managing container' stamp: 'KenD 3/24/2022 14:12:52'!
+defaultParentStub 
+
+	^ self defaultClassStub! !
+
+!RGClassVariable methodsFor: 'printing' stamp: 'KenD 3/24/2022 14:13:20'!
+definitionString 
+
+	"TODO: special class variables?"
+
+	^ self name printString! !
+
 !RGPoolVariable methodsFor: 'managing container' stamp: 'KenD 3/23/2022 13:33:48'!
 addoptToParentStub 
 
@@ -1450,6 +1663,16 @@ isWordLayout
 sFixedLayout 
 
 	^ false! !
+
+!RGEmptyLayout methodsFor: 'accessing' stamp: 'KenD 3/24/2022 14:01:03'!
+layoutName 
+
+	^ #EmptyLayout! !
+
+!RGEmptyLayout methodsFor: 'testing' stamp: 'KenD 3/24/2022 14:00:52'!
+isEmptyLayout 
+
+	^ true! !
 
 !RGPackageDefinition methodsFor: 'accessing' stamp: 'KenD 3/23/2022 13:38:18'!
 categories 
