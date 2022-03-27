@@ -1,13 +1,23 @@
-'From Cuis 6.0 [latest update: #5095] on 24 March 2022 at 2:13:59 pm'!
+'From Cuis 6.0 [latest update: #5095] on 27 March 2022 at 4:08:51 pm'!
 'Description Code Metamodel (used by Powerlang/Bee-DMR)
 
 Ported from https://github.com/pavel-krivanek/Ring2
   but without support for Traits'!
-!provides: 'Ring2' 1 8!
+!provides: 'Ring2' 1 13!
 SystemOrganization addCategory: 'Ring2-Core-Kernel'!
 SystemOrganization addCategory: 'Ring2-Core'!
 SystemOrganization addCategory: 'Ring2-Core-Environment'!
 
+
+!classDefinition: #RGBadInstantiationError category: 'Ring2-Core-Kernel'!
+Error subclass: #RGBadInstantiationError
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBadInstantiationError class' category: 'Ring2-Core-Kernel'!
+RGBadInstantiationError class
+	instanceVariableNames: ''!
 
 !classDefinition: #RGIncompatibleBehaviorTypeError category: 'Ring2-Core-Kernel'!
 Error subclass: #RGIncompatibleBehaviorTypeError
@@ -69,6 +79,16 @@ Error subclass: #RGWrongEnvironment
 RGWrongEnvironment class
 	instanceVariableNames: ''!
 
+!classDefinition: #RGBehaviorFactory category: 'Ring2-Core-Kernel'!
+Object subclass: #RGBehaviorFactory
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBehaviorFactory class' category: 'Ring2-Core-Kernel'!
+RGBehaviorFactory class
+	instanceVariableNames: ''!
+
 !classDefinition: #RGStampParser category: 'Ring2-Core-Kernel'!
 Object subclass: #RGStampParser
 	instanceVariableNames: ''
@@ -97,6 +117,36 @@ Object subclass: #RGObject
 	category: 'Ring2-Core'!
 !classDefinition: 'RGObject class' category: 'Ring2-Core'!
 RGObject class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGBehaviorStrategy category: 'Ring2-Core-Kernel'!
+RGObject subclass: #RGBehaviorStrategy
+	instanceVariableNames: 'owner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBehaviorStrategy class' category: 'Ring2-Core-Kernel'!
+RGBehaviorStrategy class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGBehavior category: 'Ring2-Core-Kernel'!
+RGBehaviorStrategy subclass: #RGBehavior
+	instanceVariableNames: 'superclass localMethods traitComposition metaclass tagsForMethods tags'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBehavior class' category: 'Ring2-Core-Kernel'!
+RGBehavior class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGBehaviorStrategyUser category: 'Ring2-Core-Kernel'!
+RGObject subclass: #RGBehaviorStrategyUser
+	instanceVariableNames: 'behaviorStrategy'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBehaviorStrategyUser class' category: 'Ring2-Core-Kernel'!
+RGBehaviorStrategyUser class
 	instanceVariableNames: ''!
 
 !classDefinition: #RGElement category: 'Ring2-Core-Kernel'!
@@ -157,6 +207,16 @@ RGIndexedSlot subclass: #RGInstanceVariableSlot
 	category: 'Ring2-Core-Kernel'!
 !classDefinition: 'RGInstanceVariableSlot class' category: 'Ring2-Core-Kernel'!
 RGInstanceVariableSlot class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGUnknownSlot category: 'Ring2-Core-Kernel'!
+RGSlot subclass: #RGUnknownSlot
+	instanceVariableNames: 'expression'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGUnknownSlot class' category: 'Ring2-Core-Kernel'!
+RGUnknownSlot class
 	instanceVariableNames: ''!
 
 !classDefinition: #RGVariable category: 'Ring2-Core-Kernel'!
@@ -259,6 +319,26 @@ Object subclass: #RGEnvironmentBackend
 RGEnvironmentBackend class
 	instanceVariableNames: ''!
 
+!classDefinition: #RGReadOnlyBackend category: 'Ring2-Core-Environment'!
+RGEnvironmentBackend subclass: #RGReadOnlyBackend
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Environment'!
+!classDefinition: 'RGReadOnlyBackend class' category: 'Ring2-Core-Environment'!
+RGReadOnlyBackend class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGReadOnlyImageBackend category: 'Ring2-Core-Environment'!
+RGReadOnlyBackend subclass: #RGReadOnlyImageBackend
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Environment'!
+!classDefinition: 'RGReadOnlyImageBackend class' category: 'Ring2-Core-Environment'!
+RGReadOnlyImageBackend class
+	instanceVariableNames: ''!
+
 !classDefinition: #RGEnvironmentQueryInterface category: 'Ring2-Core-Environment'!
 Object subclass: #RGEnvironmentQueryInterface
 	instanceVariableNames: 'environment behaviorsDictionary'
@@ -270,9 +350,26 @@ RGEnvironmentQueryInterface class
 	instanceVariableNames: ''!
 
 
+!RGBehaviorFactory commentStamp: '<historical>' prior: 0!
+My subclasses are very simple factories that serve as entry point to create different kind of behaviors. There should be no instances of me.
+
+The behaviors are composition of a RGBehavior instances and a strategy that describes a kind of the behavior. The behavior factory only create sach pairs so for example my subclass RGClass creates a composition of RGBehavior instance with a RGClassStrategy.!
+
 !RGObject commentStamp: '<historical>' prior: 0!
 I am the root class of the Ring meta-model definitions.
 A Ring definition has a name, properties and knows its environment!
+
+!RGBehavior commentStamp: '<historical>' prior: 0!
+An RGBehavior is an abstract definition for class-alike entities (e.g. classes, traits)
+
+Instance Variables
+	methods:		<Collection>
+	protocols:		<Collection>
+	superclass:		<Object>!
+
+!RGBehaviorStrategyUser commentStamp: '<historical>' prior: 0!
+I am an abstract behavior that has a behavior strategy and and delegates all messages to it.
+!
 
 !RGElement commentStamp: '<historical>' prior: 0!
 RG2Element is the abstract class for representing elements of a class-alike definition (i.e., methods, variables, comment).
@@ -461,6 +558,341 @@ name
 
 	^ (self backend nameFor: self) orDefaultForUnresolved ! !
 
+!RGBehaviorStrategy methodsFor: 'accessing - parallel hierarchy' stamp: 'KenD 3/27/2022 13:16:53'!
+instanceSide 
+
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'accessing - parallel hierarchy' stamp: 'KenD 3/27/2022 13:22:57'!
+theMetaClass
+
+	self flag: #deprecated.
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'accessing - parallel hierarchy' stamp: 'KenD 3/27/2022 13:23:14'!
+theNonMetaClass
+
+	self flag: #deprecated.
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:08:26'!
+allClassVarNames 
+
+	self subclassResponsibility! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:10:49'!
+bindingOf: varName 
+
+	^ self owner isRootInEnvironment
+		ifFalse: [self owner superclass bindingOf: varName]
+		ifTrue: [ nil ]! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:11:03'!
+category 
+
+	self subclassResponsibility ! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:11:11'!
+category: aString 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:11:44'!
+classVarNames 
+
+	^#()! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:12:49'!
+classVariablesString 
+
+	^ String new! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:13:25'!
+comment 
+
+	self subclassResponsibility! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:13:34'!
+comment: anRGComment 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:17:10'!
+instanceVariablesString 
+
+	^ String new! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:18:29'!
+kindOfSubclass 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:26'!
+sharedPools 
+
+	^ OrderedCollection new! !
+
+!RGBehaviorStrategy methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:17:53'!
+isMeta 
+	"By default a non-meta class is considered"
+
+	^ false! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:14:49'!
+environment 
+
+	^ self owner environment! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:16:16'!
+instSize 
+
+	^ 0! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:16:26'!
+instVarNames 
+
+	^ OrderedCollection new! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:11:30'!
+superclass 
+
+	^ self backend forBehavior superclassFor: self! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:11:49'!
+superclass: anRGBehavior 
+
+	self announceDefinitionChangeDuring: [ 
+		self backend forBehavior setSuperclassFor: self to: anRGBehavior ].! !
+
+!RGBehavior methodsFor: 'accessing class hierarchy' stamp: 'KenD 3/27/2022 14:48:42'!
+inheritsFrom: aClass 
+	"Answer whether the argument, aClass, is on the receiver's superclass 
+	chain."
+
+	| aSuperclass |
+	aSuperclass := self superclass.
+	[aSuperclass == nil]
+		whileFalse: 
+			[aSuperclass == aClass ifTrue: [^true].
+			aSuperclass := aSuperclass superclass].
+	^false! !
+
+!RGBehavior methodsFor: 'accessing class hierarchy' stamp: 'KenD 3/27/2022 15:11:14'!
+subclasses 
+
+	| result |
+	result := IdentitySet new.
+	self environment behaviorsDo: [ :each |
+		(each superclass == self) ifTrue: [ result add: each] ].
+	^ result asArray! !
+
+!RGBehavior methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 14:12:08'!
+classVariablesString 
+	"Answer a string of my class variable names separated by spaces."
+
+	^ self behaviorStrategy classVariablesString! !
+
+!RGBehavior methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 15:09:15'!
+sharedPoolsString 
+	"Answer a string of my class variable names separated by spaces."
+
+	"TODO: check validity"
+	^String streamContents: [ :stream | 
+		self sharedPools 
+			do: [ :each | stream nextPutAll: each name]
+			separatedBy: [ stream space ] ]! !
+
+!RGBehavior methodsFor: 'printing' stamp: 'KenD 3/27/2022 14:58:27'!
+printOn: aStream 
+
+	aStream nextPutAll: self name! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:48:14'!
+includesSelector: aString 
+
+	^ self selectors includes: aString! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:57:13'!
+methods 
+
+	| methodsFromTraits methodsDict |
+	"TODO: make nicer"
+	"^ self propertyNamed: #methods ifAbsentPut: [ "
+	methodsFromTraits := self traitComposition methods collect:  [ :each | each copy parent: self ].
+	methodsDict := Dictionary new.
+	methodsFromTraits do: [ :each |
+		methodsDict at: each name put: each ].
+	self localMethodsDo: [ :each |
+		methodsDict at: each name put: each ].
+	^ methodsDict values asArray"]"! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 15:09:00'!
+selectors 
+
+	^ self methods collect: #name! !
+
+!RGBehavior methodsFor: 'queries - other' stamp: 'KenD 3/27/2022 14:09:49'!
+allInstVarNames 
+	"Answer an Array of the names of the receiver's instance variables. The 
+	Array ordering is the order in which the variables are stored and 
+	accessed by the interpreter."
+
+	| vars |
+	(self superclass == self or: [ self superclass isNil ])
+		ifTrue: [vars := self instVarNames copy]	"Guarantee a copy is answered."
+		ifFalse: [vars := self superclass allInstVarNames , self instVarNames].
+	^vars! !
+
+!RGBehavior methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 14:46:50'!
+hasMethods 
+	"validates the existance of methods"
+
+	^ self methods notEmpty! !
+
+!RGBehavior methodsFor: 'testing' stamp: 'KenD 3/27/2022 14:46:15'!
+hasComment 
+
+	^ self comment isEmptyOrNil not! !
+
+!RGBehavior methodsFor: 'testing' stamp: 'KenD 3/27/2022 14:49:55'!
+isBehavior 
+
+	^ true! !
+
+!RGBehavior methodsFor: 'testing' stamp: 'KenD 3/27/2022 14:51:53'!
+isPointers 
+
+	^ self isBits not! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:50:07'!
+isBits 
+
+	^ self layout isBitsLayout! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:50:15'!
+isBytes 
+
+	^ self layout isByteLayout ! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:51:31'!
+isEphemeronClass 
+
+	^ self layout isEphemeronLayout! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:51:41'!
+isImmediateClass 
+
+	^ self layout isImmediateLayout ! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:53:48'!
+isVariable 
+
+	"is the definition a variable class?"
+
+	^ self layout isVariableLayout! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:54:12'!
+isWeak 
+
+	^ self layout isWeakLayout! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:54:22'!
+isWords 
+
+	^ self layout isWordLayout! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:59:35'!
+instSize 
+
+	^ self behaviorStrategy instSize! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:59:46'!
+instVarNames 
+
+	^ self behaviorStrategy instVarNames
+! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:59:54'!
+instanceSide 
+
+	^ self behaviorStrategy instanceSide! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 12:59:01'!
+definition 
+
+	^ self behaviorStrategy definition! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 13:05:56'!
+theMetaClass 
+
+	^ self behaviorStrategy theMetaClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 13:06:07'!
+theNonMetaClass 
+
+	^ self behaviorStrategy theNonMetaClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'printing' stamp: 'KenD 3/27/2022 13:00:52'!
+instanceVariablesString 
+
+	^ self behaviorStrategy instanceVariablesString! !
+
+!RGBehaviorStrategyUser methodsFor: 'printing' stamp: 'KenD 3/27/2022 13:05:43'!
+storeOn: aStream 
+
+	^ self behaviorStrategy storeOn: aStream! !
+
+!RGBehaviorStrategyUser methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 13:01:34'!
+isMeta 
+	"By default a non-meta class is considered"
+
+	^ self behaviorStrategy isMeta! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:54:29'!
+allClassVarNames 
+
+	^ self behaviorStrategy allClassVarNames! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:56:29'!
+bindingOf: varName 
+
+	^ self behaviorStrategy bindingOf: varName! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:56:38'!
+category 
+
+	^ self behaviorStrategy category! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:56:48'!
+category: aString 
+
+	^ self behaviorStrategy category: aString! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:09'!
+classVarNames 
+
+	^ self behaviorStrategy classVarNames! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:58:11'!
+comment 
+
+	^ self behaviorStrategy comment! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:58:19'!
+comment: anRGComment 
+
+	^ self behaviorStrategy comment: anRGComment! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:05:01'!
+sharedPools 
+
+	^ self behaviorStrategy sharedPools! !
+
+!RGBehaviorStrategyUser methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:02:17'!
+kindOfSubclass 
+
+	^ self behaviorStrategy kindOfSubclass! !
+
 !RGComment methodsFor: 'printing' stamp: 'KenD 3/24/2022 14:08:07'!
 printOn: aStream 
 
@@ -502,6 +934,12 @@ bindingOf: aSymbol
 	result := behavior ifNotNil: [ GlobalVariable key: aSymbol value: behavior].
 	self globalVariablesBindings at: aSymbol put: result.
 	^ result! !
+
+!GlobalVariable methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:25:41'!
+asRingMinimalDefinitionIn: anRGEnvironment 
+
+	^ anRGEnvironment backend definitionFor: self ifAbsentRegister: [
+		RGGlobalVariable named: self key asSymbol parent: anRGEnvironment].! !
 
 !RGEnvironmentBackend methodsFor: 'accessing' stamp: 'KenD 3/24/2022 13:40:27'!
 environment 
@@ -557,6 +995,64 @@ property: propertySymbol target: targetDefinition source: sourceDefinition
 		target: targetDefinition;
 		source: sourceDefinition;
 		signal.! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:26:34'!
+named: aString 
+
+	^ (RGBehavior named: aString behaviorStrategy: self newStrategy)
+		yourself! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:27:34'!
+named: aString parent: anRGObject 
+
+	^ (RGBehavior 
+		named: aString 
+		parent: anRGObject 
+		behaviorStrategy: (self newStrategyFor: anRGObject environment))
+		yourself! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:27:44'!
+newStrategy 
+
+	self subclassResponsibility ! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:27:53'!
+newStrategyFor: anRGEnvironment 
+
+	^ self newStrategy! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:28:17'!
+parent: anRGObject 
+
+	^ (RGBehavior 
+		parent: anRGObject 
+		behaviorStrategy: (self newStrategyFor: anRGObject environment))
+		yourself! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:28:31'!
+unnamed 
+
+	^ RGBehavior unnamedWithBehaviorStrategy: self newStrategy! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:28:43'!
+unresolved 
+
+	^ RGBehavior unresolvedWithBehaviorStrategy: self newStrategy! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:29:10'!
+unresolvedNamed: aString withParent: anRGDefintion 
+
+	^ RGBehavior 
+		unresolvedNamed: aString 
+		withParent: anRGDefintion 
+		behaviorStrategy: (self newStrategyFor: anRGDefintion environment)! !
+
+!RGBehaviorFactory class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:29:38'!
+unresolvedWithParent: anRGDefintion 
+
+	^ RGBehavior 
+		unresolvedWithParent: anRGDefintion 
+		behaviorStrategy: (self newStrategyFor: anRGDefintion environment) ! !
 
 !RGStampParser methodsFor: 'parsing' stamp: 'KenD 3/23/2022 13:21:59'!
 authorForStamp: aString 
@@ -911,6 +1407,1151 @@ named: aString
 	^self new
 		name: aString;
 		yourself! !
+
+!RGBehaviorStrategy methodsFor: 'accessing' stamp: 'KenD 3/27/2022 13:11:30'!
+classSide 
+
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'accessing' stamp: 'KenD 3/27/2022 13:19:19'!
+owner 
+
+	^ owner! !
+
+!RGBehaviorStrategy methodsFor: 'accessing' stamp: 'KenD 3/27/2022 13:19:26'!
+owner: anObject 
+
+	owner := anObject! !
+
+!RGBehaviorStrategy methodsFor: 'class variables' stamp: 'KenD 3/27/2022 13:12:10'!
+classVariableDefinitionString 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'copying' stamp: 'KenD 3/27/2022 13:13:57'!
+copyForBehaviorDefinitionPostCopy 
+
+	super postCopy.! !
+
+!RGBehaviorStrategy methodsFor: 'copying' stamp: 'KenD 3/27/2022 13:14:07'!
+copyForBehaviorDefinitionWithOwner: aNewOwner 
+
+	^ self shallowCopy 
+		owner: aNewOwner;
+		copyForBehaviorDefinitionPostCopy! !
+
+!RGBehaviorStrategy methodsFor: 'default model values' stamp: 'KenD 3/27/2022 13:14:38'!
+defaultMetaClass 
+
+	^ self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'initialization' stamp: 'KenD 3/27/2022 13:15:54'!
+initializeUnresolved
+
+	"empty"! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:08:06'!
+addClassVariable: anRGInstanceVariableDefinition 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:08:17'!
+addSharedPool: anRGPoolVariable 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:08:35'!
+allClassVariables 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:10:21'!
+baseBehavior 
+
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:10:28'!
+baseClass 
+
+	^ self owner! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:10:36'!
+baseClass: anRGClass 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:12:21'!
+classVariables 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:12:31'!
+classVariables: aCollectionOfSymbols 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:12:40'!
+classVariablesDo: aBlock 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:13:01'!
+cleanClassVariables 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:13:16'!
+cleanSharedPools 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:15:03'!
+incompatibleBehaviorType 
+
+	RGIncompatibleBehaviorTypeError signal! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:16:06'!
+innerBindingOf: aSymbol 
+
+	^ nil! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:17:03'!
+instanceVariables: aCollectionOfSymbols 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:20:36'!
+referencedBehaviors 
+
+	^ { self owner superclass. self owner metaclass} " , 
+		self owner traitComposition referencedBehaviors"! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:20:46'!
+referencedPackages 
+
+	^ Array new! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:00'!
+removeClassVariable: anRGInstanceVariableDefinition 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:09'!
+removeSharedPool: anRGPoolVariable 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:17'!
+sharedPoolNames 
+
+	^ OrderedCollection new! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:34'!
+sharedPools: aCollectionOfSymbols 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 13:21:42'!
+sharedPoolsDo: aBlock 
+
+	self incompatibleBehaviorType! !
+
+!RGBehaviorStrategy methodsFor: 'resolving' stamp: 'KenD 3/27/2022 13:19:05'!
+makeResolved 
+
+	"do nothing"! !
+
+!RGBehaviorStrategy methodsFor: 'resolving' stamp: 'KenD 3/27/2022 13:19:44'!
+prvtResolvableProperties 
+
+	^ OrderedCollection new! !
+
+!RGBehaviorStrategy methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:17:31'!
+isClass 
+
+	^ false! !
+
+!RGBehaviorStrategy methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:17:39'!
+isClassStrategy 
+
+	^ false! !
+
+!RGBehaviorStrategy methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:18:03'!
+isMetaclass 
+	
+	^ false! !
+
+!RGBehaviorStrategy methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:18:13'!
+isMetaclassStrategy 
+	
+	^ false! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:08:59'!
+allSlots 
+
+	^ OrderedCollection new! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:09:11'!
+announceDefinitionChangeDuring: aBlock 
+
+	self owner announceDefinitionChangeDuring: aBlock! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:09:57'!
+backend 
+
+	^ self owner backend forBehavior! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:21:54'!
+sibling 
+
+	^ self subclassResponsibility ! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:22:05'!
+storeName 
+
+	self subclassResponsibility ! !
+
+!RGBehaviorStrategy methodsFor: 'utilities' stamp: 'KenD 3/27/2022 13:23:29'!
+unresolvedValue: aDefaultValue 
+
+	^ self owner unresolvedValue: aDefaultValue! !
+
+!RGBehaviorStrategy methodsFor: 'visiting' stamp: 'KenD 3/27/2022 13:07:24'!
+acceptVisitor: aVisitor 
+
+	self subclassResponsibility! !
+
+!RGBehaviorStrategy class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 13:07:00'!
+unresolved 
+
+	^ self basicNew! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:08:32'!
+addLocalMethod: anRGMethod 
+
+	self backend forBehavior addLocalMethod: anRGMethod to: self.
+	
+	self announcer methodAdded: anRGMethod.! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:08:45'!
+addMethodTag: aSymbol 
+
+	self announceDefinitionChangeDuring: [ 
+		self backend forBehavior addMethodTag: aSymbol to: self. ].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:08:55'!
+addProtocol: aSymbol 
+
+	self addMethodTag: aSymbol
+! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:12:39'!
+cleanLocalMethods 
+
+	| oldMethods |
+	
+	oldMethods := self localMethods.
+
+	self backend forBehavior cleanLocalMethodsFor: self.
+
+	self cleanProtocols.
+	
+	oldMethods do: [ :each |
+		self announcer methodRemoved: each ]! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:12:54'!
+cleanProtocols 
+	
+	self cleanTagsForMethods! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:13:05'!
+cleanTags 
+
+	self announceDefinitionChangeDuring: [ 
+		self cleanTagsWithoutAnnouncemnt ].
+! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:13:16'!
+cleanTagsForMethods 
+
+	self backend forPackage cleanTagsForMethodsFor: self
+! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:13:27'!
+cleanTagsWithoutAnnouncemnt 
+
+	self backend forBehavior cleanClassTagsFor: self.! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:13:35'!
+compiler 
+
+	^ self class compiler! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:55:01'!
+localMethodsDo: aBlock 
+
+	self backend forBehavior localMethodsFor: self do: aBlock! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:56:23'!
+metaclass 
+
+	^ self backend forBehavior metaclassFor: self! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:56:34'!
+metaclass: anRGMetaclass 
+
+	self backend forBehavior setMetaclassFor: self to: anRGMetaclass.! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 14:57:51'!
+name: aString 
+
+	| oldName subclassesWithOldDefinitions |
+	
+	oldName := self name.
+	
+	subclassesWithOldDefinitions := (self subclasses reject: #isMeta) collect: [ :each | 
+		each -> each copyForBehaviorDefinition ].
+	
+	self announceDefinitionChangeDuring: [ 
+		super name: aString ].
+	
+	self announcer behaviorRenamed: self from: oldName.
+
+	subclassesWithOldDefinitions do: [ :assoc |
+		self announcer behaviorDefinitionChangedFrom: assoc value to: assoc key.
+		self announcer behaviorModificationAppliedTo: assoc key.
+		self announcer behaviorParentRenamed: assoc key from: oldName ].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:08:22'!
+removeLocalMethod: anRGMethod 
+
+	(anRGMethod package = self package)
+		ifFalse: [ anRGMethod package removeExtensionMethod:  anRGMethod ].
+		
+	self backend forBehavior removeLocalMethod: anRGMethod from: self.
+	
+	self announcer methodRemoved: anRGMethod.
+! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:08:35'!
+removeMethodTag: aSymbol 
+
+	self backend forPackage removeMethodTag: aSymbol from: self.
+	
+	self localMethodsDo: [ :method | 
+		method untagFrom: aSymbol ].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:08:46'!
+removeProtocol: aSymbol 
+
+	self removeMethodTag: aSymbol.! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:12:01'!
+tagWith: aSymbol 
+
+	self announceDefinitionChangeDuring: [ 
+		self backend forBehavior tagClass: self with: aSymbol.
+		self package addClassTag: aSymbol.
+	].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:13:16'!
+tagsDo: aBlock 
+
+	self backend forBehavior tagsForClass: self do: aBlock! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:13:50'!
+tagsForMethodsDo: aBlock 
+
+	self backend forBehavior tagsForMethodsFor: self do: aBlock! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:14:54'!
+unresolveName 
+
+	| oldName subclassesWithOldDefinitions |
+	
+	oldName := self name.
+	
+	subclassesWithOldDefinitions := (self subclasses reject: #isMeta) collect: [ :each | 
+		each -> each copyForBehaviorDefinition ].
+	
+	self announceDefinitionChangeDuring: [ 
+		super unresolveName ].
+	
+	self announcer behaviorRenamed: self from: oldName.
+
+	subclassesWithOldDefinitions do: [ :assoc |
+		self announcer behaviorDefinitionChangedFrom: assoc value to: assoc key.
+		self announcer behaviorModificationAppliedTo: assoc key.
+		self announcer behaviorParentRenamed: assoc key from: oldName ].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:15:09'!
+unresolveSuperclass 
+
+	self announceDefinitionChangeDuring: [ 
+		self prvtSuperclass: (RGUnresolvedValue recursive) ].! !
+
+!RGBehavior methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:15:20'!
+untagFrom: aSymbol 
+
+	self backend forPackage untagClass: self from: aSymbol! !
+
+!RGBehavior methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 14:11:58'!
+classVariablesBindings 
+
+	^ self propertyNamed: #classVariablesBindings ifAbsentPut: [ IdentityDictionary new.]! !
+
+!RGBehavior methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 14:18:02'!
+definitionForNautilus 
+
+	^ self definition! !
+
+!RGBehavior methodsFor: 'accessing - model' stamp: 'KenD 3/27/2022 15:12:58'!
+tags 
+
+	^ self tagsSet asArray ! !
+
+!RGBehavior methodsFor: 'accessing - model' stamp: 'KenD 3/27/2022 15:13:33'!
+tagsForMethods 
+	"Retrieves the traits defined in the receiver"
+
+	| allTags |
+	allTags := self defaultTagsForMethods.
+	self tagsForMethodsDo: [ :each | allTags add: each].
+	^ allTags asArray! !
+
+!RGBehavior methodsFor: 'accessing - model' stamp: 'KenD 3/27/2022 15:14:03'!
+tagsForMethodsSet 
+	"Retrieves the traits defined in the receiver"
+
+	| allTags |
+	allTags := self defaultTagsForMethods.
+	self tagsForMethodsDo: [ :each | allTags add: each].
+	^ allTags! !
+
+!RGBehavior methodsFor: 'accessing - model' stamp: 'KenD 3/27/2022 15:14:14'!
+tagsSet 
+
+	| allTags |
+	allTags := self defaultTags.
+	self tagsDo: [ :each | allTags add: each].
+	^ allTags ! !
+
+!RGBehavior methodsFor: 'announcements' stamp: 'KenD 3/27/2022 14:10:16'!
+announceDefinitionChangeDuring: aBlock 
+
+	| oldVersion |
+
+	self announcer isSuspended ifTrue: [ 
+		aBlock value. 
+		^ self ]	.
+		
+	self announcer  suspendAllWhile: [ 
+		oldVersion := self copyForBehaviorDefinition.].
+	aBlock value.
+	self announcer 	behaviorDefinitionChangedFrom: oldVersion to: self.
+	self announcer behaviorModificationAppliedTo: self.
+! !
+
+!RGBehavior methodsFor: 'asYetUnclassified' stamp: 'KenD 3/27/2022 14:10:53'!
+asYetUnclassifiedProtocolName 
+
+	^ 'as yet unclassified' asSymbol! !
+
+!RGBehavior methodsFor: 'copying' stamp: 'KenD 3/27/2022 14:16:15'!
+copyForBehaviorDefinitionPostCopy 
+
+	| behaviorStrategy |
+	super copyForBehaviorDefinitionPostCopy.
+	
+	superclass := self superclass shallowCopy. "we need the superclass name"
+	"traitComposition := self traitComposition copyForBehaviorDefinition."
+	tagsForMethods := self tagsForMethods copy asSet.
+	tags := self tags copy asSet.
+	self flag: #behaviorStrategy .
+	behaviorStrategy := behaviorStrategy copyForBehaviorDefinitionWithOwner: self
+! !
+
+!RGBehavior methodsFor: 'default model values' stamp: 'KenD 3/27/2022 14:16:50'!
+defaultLayout 
+
+	^ self defaultFixedLayoutStubIn: self.! !
+
+!RGBehavior methodsFor: 'default model values' stamp: 'KenD 3/27/2022 14:17:04'!
+defaultLocalMethods 
+
+	^ Set new! !
+
+!RGBehavior methodsFor: 'default model values' stamp: 'KenD 3/27/2022 14:17:36'!
+defaultTags 
+
+	^ Set new! !
+
+!RGBehavior methodsFor: 'default model values' stamp: 'KenD 3/27/2022 14:17:45'!
+defaultTagsForMethods 
+
+	^ Set new! !
+
+!RGBehavior methodsFor: 'documentation' stamp: 'KenD 3/27/2022 14:46:03'!
+extensions 
+
+	^ self localMethods select: [ :each | each package ~= self package ]! !
+
+!RGBehavior methodsFor: 'initialization' stamp: 'KenD 3/27/2022 14:49:22'!
+initialize 
+
+	super initialize.
+	
+	"use unresolved value for superclass to avoid infinite recursion. It needs to be set later"
+	superclass := RGUnresolvedValue recursive.
+	metaclass := RGUnresolvedValue recursive.
+	localMethods := self unresolvedValue: self defaultLocalMethods.
+	"traitComposition := self unresolvedValue: self defaultTraitComposition."
+	tagsForMethods := self unresolvedValue: self defaultTagsForMethods.	
+	tags := self unresolvedValue: self defaultTags.	! !
+
+!RGBehavior methodsFor: 'initialization' stamp: 'KenD 3/27/2022 14:49:44'!
+initializeUnresolved 
+
+	super initializeUnresolved.
+
+	superclass := self. "will be set later"
+	metaclass := self. "will be set later"
+	localMethods := self unresolvedValue: self defaultLocalMethods.
+	"traitComposition := self unresolvedValue: self defaultTraitComposition."
+	tagsForMethods := self unresolvedValue: self defaultTagsForMethods.	
+	tags := self unresolvedValue: self defaultTags.	! !
+
+!RGBehavior methodsFor: 'managing container' stamp: 'KenD 3/27/2022 14:09:20'!
+addoptToParentStub 
+
+	self isRingResolved ifFalse: [ ^ self ].
+
+	super addoptToParentStub.
+
+	self parent prvtAddBehavior: self.! !
+
+!RGBehavior methodsFor: 'managing container' stamp: 'KenD 3/27/2022 14:17:21'!
+defaultParentStub 
+
+	^ self defaultEnvironmentStub! !
+
+!RGBehavior methodsFor: 'printing' stamp: 'KenD 3/27/2022 15:09:33'!
+slotDefinitionString 
+	"Answer a string that contains an executable description of my Slots"
+
+	"^self slots ifNotEmpty: [self slots asString] ifEmpty: ['{}']"
+	
+	^String streamContents: [ :str | | special |
+		str nextPutAll: '{ '.
+		self slots do: [:slot |
+				str nextPutAll: slot definitionString.
+				special := slot isSpecial]				
+			separatedBy: [ 
+				str nextPutAll: '. '.  
+				special ifTrue: [ str cr;tab;tab;tab;tab ]].
+		str nextPutAll: ' }'. ]! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:18:38'!
+ensureLocalMethodNamed: aSymbol 
+
+	^ self localMethodNamed: aSymbol ifAbsent: [ 
+		| newMethod |
+		newMethod := RGMethod named: aSymbol asSymbol parent: self.
+		self addLocalMethod: newMethod.
+		newMethod].! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:19:54'!
+ensureUnresolvedLocalMethod 
+
+	| newMethod |
+	newMethod := RGMethod parent: self.
+	self addLocalMethod: newMethod.
+	^ newMethod! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:54:33'!
+localMethodNamed: aSymbol ifAbsent: aBlock 
+
+	self localMethodsDo: [ :each | (each name = aSymbol) ifTrue: [^ each]].
+	
+	^ aBlock value.! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:54:43'!
+localMethods 
+
+	^ self localMethodsSet asArray! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:55:13'!
+localMethodsSet 
+
+	| methods |
+	
+	methods := self defaultLocalMethods.
+	self localMethodsDo: [ :each | methods add: each ].
+	^ methods! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:55:27'!
+localSelectors 
+
+	^ self localMethods collect: #name! !
+
+!RGBehavior methodsFor: 'queries - methods' stamp: 'KenD 3/27/2022 14:56:48'!
+methodNamed: aSymbol 
+
+	| allMethods |
+	allMethods := IdentitySet new.
+	self methods do: [ :each | each name = aSymbol ifTrue: [^ each]].
+	^ nil! !
+
+!RGBehavior methodsFor: 'queries - protocols' stamp: 'KenD 3/27/2022 14:19:39'!
+ensureProtocolNamed: aSymbol 
+ 
+	^ self ensureMethodTagNamed: aSymbol! !
+
+!RGBehavior methodsFor: 'queries - protocols' stamp: 'KenD 3/27/2022 14:58:42'!
+protocols 
+
+	| methodTags |
+	
+	methodTags := self tagsForMethods.
+	^	methodTags
+		ifEmpty: [ 
+			self methods 
+				ifEmpty: [ OrderedCollection new ]
+				ifNotEmpty: [  OrderedCollection with: self class asYetUnclassifiedProtocolName   ].
+			]
+		ifNotEmpty: [ methodTags  ]! !
+
+!RGBehavior methodsFor: 'queries - tags' stamp: 'KenD 3/27/2022 14:19:14'!
+ensureMethodTagNamed: aSymbol 
+
+	^ self tagsForMethods detect: [ :each | each asSymbol = aSymbol ] ifNone: [ 
+		self addMethodTag: aSymbol.
+		aSymbol ]! !
+
+!RGBehavior methodsFor: 'queries - tags' stamp: 'KenD 3/27/2022 14:53:30'!
+isTaggedWith: aSymbol 
+
+	^self tags includes: aSymbol ! !
+
+!RGBehavior methodsFor: 'queries - tags' stamp: 'KenD 3/27/2022 14:57:29'!
+methodsTaggedWith: aSymbol 
+
+	^ self localMethods select: [ :each | each isTaggedWith: aSymbol ]! !
+
+!RGBehavior methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 14:47:02'!
+hasResolvedSuperclass 
+
+	^ self hasResolved: #superclass! !
+
+!RGBehavior methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 14:47:58'!
+hasTraitComposition 
+	"Traits not supported"
+
+	^ false "	self traitComposition transformations isEmpty not"! !
+
+!RGBehavior methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 14:52:08'!
+isReferencedIn: anRGMethod 
+
+	^ (anRGMethod ast variableNodes select: #isGlobal) anySatisfy: [ :each | each name = self name ] ! !
+
+!RGBehavior methodsFor: 'queries - testing' stamp: 'KenD 3/27/2022 14:53:07'!
+isRootInEnvironment 
+		
+	^ self superclass == self or: [ self superclass isNil ] ! !
+
+!RGBehavior methodsFor: 'resolving' stamp: 'KenD 3/27/2022 14:56:07'!
+makeResolved 
+
+	superclass := self superclass markAsRingResolved.
+	localMethods := self localMethodsSet markAsRingResolved.
+	"traitComposition := self traitComposition markAsRingResolved."
+	metaclass := self metaclass markAsRingResolved.
+	tagsForMethods := self tagsForMethodsSet markAsRingResolved.
+	tags := self tagsSet markAsRingResolved.
+	
+	super makeResolved.! !
+
+!RGBehavior methodsFor: 'slots' stamp: 'KenD 3/27/2022 15:10:05'!
+slots 	
+		
+	^ self layout slots ! !
+
+!RGBehavior methodsFor: 'slots' stamp: 'KenD 3/27/2022 15:16:06'!
+usesSpecialSlot 
+	"return true if we define something else than InstanceVariableSlots"
+
+	^ self slots anySatisfy: [ :each | each isSpecial ]! !
+
+!RGBehavior methodsFor: 'testing' stamp: 'KenD 3/27/2022 14:11:31'!
+canMergeWith: anRGObject visited: visitedDefinitions 
+
+	| newVisited |
+
+	(visitedDefinitions includes: self) ifTrue: [ ^ true ].
+	
+	(self isRingFullyResolved or: [ anRGObject isRingFullyResolved]) ifTrue: [^ true].
+
+	(super canMergeWith: anRGObject visited: visitedDefinitions) ifFalse: [ ^ false ].
+
+	newVisited := visitedDefinitions copyWith: self.
+	
+	self superclass ~~ self ifTrue: [ 
+		(self superclass canMergeWith: anRGObject superclass visited: newVisited) ifFalse: [ ^ false ]].
+
+	self metaclass ~~ self ifTrue: [ 
+		(self metaclass canMergeWith: anRGObject metaclass visited: newVisited) ifFalse: [ ^ false ]].
+	
+	^ true.! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:50:24'!
+isCompiledMethod 
+
+	^ self layout isCompiledMethodLayout ! !
+
+!RGBehavior methodsFor: 'testing - layouts' stamp: 'KenD 3/27/2022 14:50:34'!
+isEphemeron 
+
+	^ self layout isEphemeronLayout! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:04:01'!
+prvtMetaclass: anRGMetaclass 
+
+	self environment verifyOwnership: anRGMetaclass.
+
+	^ metaclass := anRGMetaclass! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:04:17'!
+prvtRemoveLocalMethod: anRGMethod 
+
+	self environment verifyOwnership: anRGMethod.
+	
+	localMethods remove: anRGMethod.! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:03:41'!
+prvtRemoveMethodTag: aSymbol 
+	
+	tagsForMethods remove: aSymbol.
+	
+	"TODO:Announce"! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:06:12'!
+prvtTagWith: aSymbol 
+	
+	tags isRingResolved ifFalse: [ 
+		self prvtCleanTags  ].
+	
+	tags add: aSymbol.	! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:06:37'!
+prvtTags: aCollection 
+
+	^ tags := aCollection! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:06:51'!
+prvtTagsDo: aBlock 
+
+	^ tags value do: aBlock! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:07:11'!
+prvtTagsForMethodsDo: aBlock 
+
+	^ tagsForMethods value do: aBlock! !
+
+!RGBehavior methodsFor: 'private - backend access' stamp: 'KenD 3/27/2022 15:07:59'!
+prvtUntagFrom: aSymbol 
+	
+	(tags value includes: aSymbol)
+		ifTrue: [ tags remove: aSymbol ].
+	
+	"TODO:Announce"! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 14:59:53'!
+prvtAddLocalMethod: anRGMethod 
+
+	self environment verifyOwnership: anRGMethod.
+	
+	localMethods isRingResolved ifFalse: [ 
+		self prvtCleanLocalMethods ].
+
+	(self hasResolved: #tagsForMethods) 
+		ifFalse: [ self prvtCleanTagsForMethods ].
+
+	anRGMethod tags do: [ :aTag |
+		self prvtAddMethodTag: aTag ].
+
+	localMethods add: anRGMethod.	! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:00:23'!
+prvtAddMethodTag: aSymbol 
+	
+	tagsForMethods isRingResolved ifFalse: [ 
+		self prvtCleanTagsForMethods  ].
+	
+	tagsForMethods add: aSymbol.! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:01:13'!
+prvtCleanLocalMethods 
+
+	localMethods := self defaultLocalMethods.
+	! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:01:29'!
+prvtCleanTags 
+
+	tags := self defaultTags.
+		
+	"TODO:Announce if not empty"! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:01:44'!
+prvtCleanTagsForMethods 
+
+	tagsForMethods := self defaultTagsForMethods.
+		
+	"TODO:Announce if not empty"! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:01:58'!
+prvtLocalMethods: aCollection 
+
+	"use only for low-level copying"
+	localMethods := aCollection! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:02:16'!
+prvtLocalMethodsDo: aBlock 
+
+	^ localMethods value do: aBlock! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:04:55'!
+prvtResolvableProperties 
+
+	^ super prvtResolvableProperties, { 
+		#superclass -> superclass. 
+		#localMethods -> localMethods. 
+		#traitComposition -> traitComposition.  
+		#metaclass -> metaclass.  
+		#tagsForMethods -> tagsForMethods. 
+ 		#tags -> tags. 
+    	}, self behaviorStrategy prvtResolvableProperties! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:05:39'!
+prvtSuperclass 
+
+	^ superclass value! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:05:55'!
+prvtSuperclass: anRGBehavior 
+
+	anRGBehavior ifNotNil: [ 
+		self environment verifyOwnership: anRGBehavior.].
+
+	^ superclass := anRGBehavior! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:07:27'!
+prvtTraitComposition 
+
+	^ traitComposition value! !
+
+!RGBehavior methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:07:45'!
+prvtTraitComposition: anRGTraitComposition 
+
+	self environment verifyOwnership: anRGTraitComposition.
+
+	^ traitComposition := anRGTraitComposition! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:04:45'!
+badInstantiationError 
+
+	RGBadInstantiationError signal: 'I cannot be instantiated this way because every RGBehavior must know its proper behavior strategy. Please use a subclass of RGBehaviorFactory or my methods like #newClass'! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:05:00'!
+named: aString 
+
+	^ self badInstantiationError! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:05:25'!
+named: aName behaviorStrategy: anRGBehaviorStrategy 
+
+	| aBehavior |
+	
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		initialize.
+	anRGBehaviorStrategy initialize.
+	^ aBehavior
+		prvtName: aName asSymbol;
+		yourself		! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:05:34'!
+named: aString parent: anRGObject 
+
+	^ self badInstantiationError! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:05:53'!
+named: aName parent: anRGObject behaviorStrategy: anRGBehaviorStrategy 
+	
+	| aBehavior |
+
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		parent: anRGObject;
+		initialize.
+	anRGBehaviorStrategy initialize.
+	^ aBehavior
+		prvtName: aName asSymbol;
+		yourself		! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:06:04'!
+newClass 
+
+	^ self unnamedWithBehaviorStrategy: RGClassStrategy basicNew! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:06:26'!
+newMetaclass 
+
+	^ self unnamedWithBehaviorStrategy: RGMetaclassStrategy basicNew! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:06:49'!
+parent: anRGObject behaviorStrategy: anRGBehaviorStrategy 
+	
+	| aBehavior |
+
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		parent: anRGObject;
+		initialize.
+	anRGBehaviorStrategy initialize.
+	^ aBehavior! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:07:05'!
+unnamedWithBehaviorStrategy: anRGBehaviorStrategy 
+
+	| aBehavior |
+	
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		initialize.
+	anRGBehaviorStrategy initialize.
+	^ aBehavior! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:07:37'!
+unresolvedNamed: aName 
+withParent: anRGObject 
+behaviorStrategy: anRGBehaviorStrategy 
+	
+	| aBehavior |
+
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		parent: anRGObject;
+		initializeUnresolved.
+	anRGBehaviorStrategy initializeUnresolved.
+	^ aBehavior
+		prvtName: aName asSymbol;
+		yourself		! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:07:51'!
+unresolvedWithBehaviorStrategy: anRGBehaviorStrategy 
+
+	| aBehavior |
+	
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		initializeUnresolved.
+	anRGBehaviorStrategy initializeUnresolved.
+	^ aBehavior! !
+
+!RGBehavior class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 14:08:03'!
+unresolvedWithParent: anRGObject behaviorStrategy: anRGBehaviorStrategy 
+	
+	| aBehavior |
+
+	aBehavior := self basicNew
+		behaviorStrategy: anRGBehaviorStrategy;
+		parent: anRGObject;
+		initializeUnresolved.
+	anRGBehaviorStrategy initializeUnresolved.
+	^ aBehavior! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:55:36'!
+baseClass 
+
+	^ self behaviorStrategy baseClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:55:45'!
+baseClass: anRGClass 
+
+	^ self behaviorStrategy baseClass: anRGClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:55:58'!
+behaviorStrategy 
+
+	^ behaviorStrategy! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 12:56:11'!
+behaviorStrategy: anObject 
+
+	| needsInitialization |
+	
+	needsInitialization := behaviorStrategy isNil.
+	behaviorStrategy := anObject.
+	behaviorStrategy owner: self.
+	needsInitialization ifTrue: [ 
+		behaviorStrategy initializeUnresolved ].! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing' stamp: 'KenD 3/27/2022 13:00:06'!
+instanceVariables: aCollectionOfSymbols 
+
+	^ self behaviorStrategy instanceVariables: aCollectionOfSymbols! !
+
+!RGBehaviorStrategyUser methodsFor: 'accessing - definition' stamp: 'KenD 3/27/2022 13:04:51'!
+sharedPoolNames 
+
+	^ self behaviorStrategy sharedPoolNames! !
+
+!RGBehaviorStrategyUser methodsFor: 'queries - other' stamp: 'KenD 3/27/2022 12:55:21'!
+baseBehavior 
+
+	^ self behaviorStrategy baseBehavior! !
+
+!RGBehaviorStrategyUser methodsFor: 'resolving' stamp: 'KenD 3/27/2022 13:03:08'!
+makeResolved 
+
+	self behaviorStrategy makeResolved.
+	super makeResolved.! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:54:04'!
+addClassVariable: anRGInstanceVariableDefinition 
+
+	^ self behaviorStrategy addClassVariable: anRGInstanceVariableDefinition ! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:54:14'!
+addSharedPool: anRGPoolVariable 
+
+	^ self behaviorStrategy addSharedPool: anRGPoolVariable! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:54:43'!
+allClassVariables 
+
+	^ self behaviorStrategy allClassVariables! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:54:53'!
+allSlots 
+
+	^ self behaviorStrategy allSlots! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:56:56'!
+classSide 
+
+	^ self behaviorStrategy classSide! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:17'!
+classVariableDefinitionString 
+
+	^ self behaviorStrategy classVariableDefinitionString! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:28'!
+classVariables 
+
+	^ self behaviorStrategy classVariables! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:36'!
+classVariables: aCollectionOfSymbols 
+
+	^ self behaviorStrategy classVariables: aCollectionOfSymbols! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:46'!
+classVariablesDo: aBlock 
+
+	^ self behaviorStrategy classVariablesDo: aBlock! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:57:54'!
+cleanClassVariables 
+
+	^ self behaviorStrategy cleanClassVariables! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:58:03'!
+cleanSharedPools 
+
+	^ self behaviorStrategy cleanSharedPools! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:58:28'!
+defaultMetaClass 
+
+	^ self behaviorStrategy defaultMetaClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 12:59:13'!
+innerBindingOf: aSymbol 
+
+	^ self behaviorStrategy innerBindingOf: aSymbol! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:02:34'!
+layout 
+
+	^ self behaviorStrategy layout! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:02:42'!
+layout: anRGLayout 
+
+	^ self behaviorStrategy layout: anRGLayout! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:03:27'!
+package 
+
+	^ self behaviorStrategy package! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:03:36'!
+package: anRGPackageDefinition 
+
+	^ self behaviorStrategy package: anRGPackageDefinition! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:03:47'!
+referencedBehaviors 
+
+	^ self behaviorStrategy referencedBehaviors! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:03:57'!
+referencedPackages 
+
+	^ self behaviorStrategy referencedPackages! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:04:10'!
+removeClassVariable: anRGInstanceVariableDefinition 
+
+	^ self behaviorStrategy removeClassVariable: anRGInstanceVariableDefinition! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:04:19'!
+removeSharedPool: anRGPoolVariable 
+
+	^ self behaviorStrategy removeSharedPool: anRGPoolVariable! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:05:10'!
+sharedPools: aCollectionOfSymbols 
+
+	^ self behaviorStrategy sharedPools: aCollectionOfSymbols! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:05:20'!
+sharedPoolsDo: aBlock 
+
+	^ self behaviorStrategy sharedPoolsDo: aBlock! !
+
+!RGBehaviorStrategyUser methodsFor: 'strategy' stamp: 'KenD 3/27/2022 13:05:29'!
+sibling 
+
+	^ self behaviorStrategy sibling! !
+
+!RGBehaviorStrategyUser methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:01:03'!
+isClass 
+
+	^ self behaviorStrategy isClass! !
+
+!RGBehaviorStrategyUser methodsFor: 'testing' stamp: 'KenD 3/27/2022 13:01:54'!
+isMetaclass 
+
+	^ self behaviorStrategy isMetaclass! !
+
+!RGBehaviorStrategyUser methodsFor: 'visiting' stamp: 'KenD 3/27/2022 12:52:31'!
+acceptVisitor: aVisitor 
+	
+	^ self behaviorStrategy acceptVisitor: aVisitor! !
 
 !RGElement methodsFor: 'accessing' stamp: 'KenD 3/23/2022 08:08:11'!
 package
@@ -1483,6 +3124,66 @@ isSpecial
 
 	^ false! !
 
+!RGUnknownSlot methodsFor: 'prvt - backend interface' stamp: 'KenD 3/27/2022 15:31:47'!
+prvtExpression 
+
+	^ expression value! !
+
+!RGUnknownSlot methodsFor: 'prvt - backend interface' stamp: 'KenD 3/27/2022 15:32:00'!
+prvtExpression: aString 
+
+	^ expression := aString! !
+
+!RGUnknownSlot methodsFor: 'prvt - backend interface' stamp: 'KenD 3/27/2022 15:32:17'!
+prvtResolvableProperties 
+
+	^ super prvtResolvableProperties, { 
+		#expression -> expression. 
+	}! !
+
+!RGUnknownSlot methodsFor: 'resolving' stamp: 'KenD 3/27/2022 15:31:12'!
+makeResolved 
+
+	super makeResolved.
+	
+	expression := self expression markAsRingResolved.! !
+
+!RGUnknownSlot methodsFor: 'initialization' stamp: 'KenD 3/27/2022 15:30:43'!
+initialize 
+
+	super initialize.
+	
+	expression := self unresolvedValue: self defaultExpression.! !
+
+!RGUnknownSlot methodsFor: 'initialization' stamp: 'KenD 3/27/2022 15:30:54'!
+initializeUnresolved 
+
+	super initializeUnresolved.
+	
+	expression := self unresolvedValue: self defaultExpression.! !
+
+!RGUnknownSlot methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:30:06'!
+expression 
+
+	^ self backend forBehavior expressionFor: self! !
+
+!RGUnknownSlot methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 15:30:15'!
+expression: aString 
+
+	self parent parent announceDefinitionChangeDuring: [ 
+		self backend forBehavior setExpressionFor: self to: aString ].! !
+
+!RGUnknownSlot methodsFor: 'private - backend interface' stamp: 'KenD 3/27/2022 15:29:36'!
+definitionString 
+
+	^ String streamContents: [ :aStream |
+		aStream nextPutAll: '#'; nextPutAll: self name; nextPutAll: ' => '; nextPutAll: self expression ]! !
+
+!RGUnknownSlot methodsFor: 'default model values' stamp: 'KenD 3/27/2022 15:29:11'!
+defaultExpression 
+
+	'InstanceVariableSlot named: #slotOfUnknownType'! !
+
 !RGVariable methodsFor: 'accessing' stamp: 'KenD 3/23/2022 13:07:16'!
 definitionString 
 	"non special globals are defined by the symbol"
@@ -1541,6 +3242,11 @@ definitionString
 	"TODO: special class variables?"
 
 	^ self name printString! !
+
+!RGClassVariable methodsFor: 'testing' stamp: 'KenD 3/27/2022 12:49:44'!
+isClassVariable 
+
+	^ true! !
 
 !RGPoolVariable methodsFor: 'managing container' stamp: 'KenD 3/23/2022 13:33:48'!
 addoptToParentStub 
@@ -2936,6 +4642,661 @@ for: anRGEnvironment
 		environment: anRGEnvironment;
 		yourself.! !
 
+!RGReadOnlyBackend methodsFor: 'accessing' stamp: 'KenD 3/27/2022 15:44:33'!
+readOnlyError 
+
+	self error: 'read-only environment'! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:38:24'!
+addLocalMethod: anRGMethod to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:39:00'!
+addProtocol: anRGProtocolDefinition to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:41:08'!
+cleanLocalMethodsFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:41:53'!
+cleanProtocolsFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:46:11'!
+removeLocalMethod: anRGMethod from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:46:47'!
+removeProtocol: anRGProtocolDefinition from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:46:56'!
+removeSharedPool: anRGPoolVariable from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:48:57'!
+setLayoutFor: anRGBehavior to: anRGLayout 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 15:50:47'!
+setSuperclassFor: anRGBehavior to: anObject 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:36:57'!
+addClassVariable: anRGInstanceVariableDefinition to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:38:37'!
+addMethodTag: aSymbol to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:39:12'!
+addSharedPool: anRGPoolVariable to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:39:56'!
+cleanClassTagsFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:40:12'!
+cleanClassVariablesFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:42:08'!
+cleanSharedPoolsFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:45:10'!
+removeClassVariable: anRGInstanceVariableDefinition from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:46:23'!
+removeMethodTag: aSymbol from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:48:20'!
+setCommentFor: anRGBehavior to: anRGComment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:50:14'!
+setPackageFor: anRGBehavior to: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:51:00'!
+tagClass: anRGBehavior with: aSymbol 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:51:09'!
+tagMethod: anRGMethod with: aSymbol 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:51:18'!
+untagClass: anRGBehavior from: aSymbol 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:51:29'!
+untagMethod: anRGMethod from: aSymbol 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:47:50'!
+setClassCommentAuthorFor: anRGComment to: aString 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:47:59'!
+setClassCommentContentFor: anRGComment to: anObject 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:48:08'!
+setClassCommentTimeFor: anRGComment to: aDateAndTime 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class description' stamp: 'KenD 3/27/2022 15:38:07'!
+addInstanceVariable: anRGInstanceVariableDefinition to: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class description' stamp: 'KenD 3/27/2022 15:40:56'!
+cleanInstanceVariablesFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class description' stamp: 'KenD 3/27/2022 15:45:58'!
+removeInstanceVariable: anRGInstanceVariableDefinition from: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'class description' stamp: 'KenD 3/27/2022 15:49:16'!
+setMetaClassFor: anRGBehavior to: anRGMetaclass 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:36:14'!
+addBehavior: anRGBehavior to: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:37:32'!
+addGlobalVariable: anRGGlobalVariable to: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:38:48'!
+addPackage: anRGPackageDefinition to: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:39:44'!
+cleanBehaviorsFor: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:40:45'!
+cleanGlobalVariablesFor: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:41:41'!
+cleanPackagesFor: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:44:46'!
+removeBehavior: anRGBehavior from: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:45:46'!
+removeGlobalVariable: anRGGlobalVariable from: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:46:35'!
+removePackage: anRGPackageDefinition from: anRGEnvironment 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'general' stamp: 'KenD 3/27/2022 15:50:03'!
+setNameFor: anRGObject to: aString 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'metaclass' stamp: 'KenD 3/27/2022 15:47:26'!
+setBaseClassFor: anRGBehavior to: anRGClass 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:41:29'!
+cleanMethodTagsFor: anRGMethod 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:42:40'!
+cleanTagsForMethodsFor: anRGBehavior 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:49:27'!
+setMethodPackageFor: anRGMethod to: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:49:37'!
+setMethodStampFor: anRGMethod to: anObject 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:50:26'!
+setProtocolFor: anRGMethod to: anObject 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:50:36'!
+setSourceCodeFor: anRGMethod to: anObject 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:36:39'!
+addClassTag: aSymbol to: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:37:08'!
+addDefinedBehavior: anRGBehavior to: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:37:21'!
+addExtensionMethod: anRGMethod to: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:40:23'!
+cleanDefinedBehaviorsFor: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:40:34'!
+cleanExtensionMethodsFor: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:42:29'!
+cleanTagsForClassesFor: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:44:58'!
+removeClassTag: aSymbol from: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:45:21'!
+removeDefinedBehavior: anRGBehavior from: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:45:34'!
+removeExtensionMethod: anRGMethod from: anRGPackageDefinition 
+
+	self readOnlyError.! !
+
+!RGReadOnlyBackend methodsFor: 'pointer layout' stamp: 'KenD 3/27/2022 15:39:33'!
+addSlot: anRGSlot to: anRGLayout 
+
+	self readOnlyError ! !
+
+!RGReadOnlyBackend methodsFor: 'pointer layout' stamp: 'KenD 3/27/2022 15:42:17'!
+cleanSlotsFor: anRGLayout 
+
+	self readOnlyError ! !
+
+!RGReadOnlyBackend methodsFor: 'pointer layout' stamp: 'KenD 3/27/2022 15:47:08'!
+removeSlot: anRGSlot from: anRGLayout 
+
+	self readOnlyError ! !
+
+!RGReadOnlyBackend methodsFor: 'slot' stamp: 'KenD 3/27/2022 15:48:41'!
+setExpressionFor: anRGUnknownSlot to: aString 
+
+	self readOnlyError! !
+
+!RGReadOnlyBackend methodsFor: 'unresolved objects' stamp: 'KenD 3/27/2022 15:43:09'!
+createNewUnresolvedClass 
+
+	self readOnlyError 
+"	| unresolvedValue |
+	
+	unresolvedValue := RGUnresolvedValue new.
+	unresolvedValue default: unresolvedValue.
+	^ unresolvedValue."! !
+
+!RGReadOnlyBackend methodsFor: 'unresolved objects' stamp: 'KenD 3/27/2022 15:43:22'!
+createNewUnresolvedMetaclassFor: anRGBehavior 
+
+	self readOnlyError 
+	"^ RGUnresolvedValue recursive"! !
+
+!RGReadOnlyBackend methodsFor: 'unresolved objects' stamp: 'KenD 3/27/2022 15:43:33'!
+createNewUnresolvedMetaclassMetaclassFor: anRGBehavior 
+
+	self readOnlyError 
+	"| unresolvedValue |
+	
+	unresolvedValue := RGUnresolvedValue new.
+	unresolvedValue default: unresolvedValue.
+	^ unresolvedValue."! !
+
+!RGReadOnlyBackend class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 15:35:46'!
+for: anRGEnvironment 
+
+	^ self new 
+		environment: anRGEnvironment;
+		yourself.! !
+
+!RGReadOnlyImageBackend methodsFor: 'accessing' stamp: 'KenD 3/27/2022 15:57:36'!
+definitionFor: anObject 
+
+	^ self definitionFor: anObject ifAbsentRegister: [ anObject ensureRingDefinitionIn: self environment ]! !
+
+!RGReadOnlyImageBackend methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:03:24'!
+realBehaviorFor: anRGBehavior 
+
+	"TODO: should we cache the definition?"
+	^ Smalltalk classOrTraitNamed: anRGBehavior name asSymbol! !
+
+!RGReadOnlyImageBackend methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:03:38'!
+realMethodFor: anRGMethod 
+
+	"TODO: should we cache the definition?"
+	^ ((self realBehaviorFor: anRGMethod parent) >> anRGMethod selector)! !
+
+!RGReadOnlyImageBackend methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:04:08'!
+realPackageFor: anRGPackageDefinition 
+
+	^ RPackageOrganizer default 
+		packageNamed: anRGPackageDefinition name 
+		ifAbsent: [nil].! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:00:45'!
+layoutFor: anRGBehavior 
+
+	| realClass realLayout def |
+	
+	realClass := self realBehaviorFor: anRGBehavior.
+	realLayout := realClass classLayout.
+	def := self 	definitionFor: realLayout ifAbsentRegister: [ 
+			realLayout asRingMinimalDefinitionIn: anRGBehavior environment ].
+	^ def! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:00:58'!
+localMethodsFor: anRGBehavior do: aBlock 
+
+	(self realBehaviorFor: anRGBehavior) localMethods do: [:method |
+		| def |
+		def := self definitionFor: method ifAbsentRegister: [
+			method asRingMinimalDefinitionIn: anRGBehavior environment].
+		aBlock value: def]
+! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:01:29'!
+metaclassFor: anRGBehavior 
+
+	| realBehavior realMetaclass def |
+	
+	realBehavior := self realBehaviorFor: anRGBehavior.
+	realMetaclass := realBehavior class.
+	def := self 	definitionFor: realMetaclass ifAbsentRegister: [ 
+			realMetaclass asRingMinimalDefinitionIn: anRGBehavior environment ].
+	^ def! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:05:59'!
+superclassFor: anRGBehavior 
+
+	| realClass realSuperclass def |
+	
+	realClass := self realBehaviorFor: anRGBehavior.
+	realSuperclass := realClass superclass.
+	realSuperclass ifNil: [ realSuperclass := realClass ].
+	def := self 	definitionFor: realSuperclass ifAbsentRegister: [ 
+			realSuperclass asRingMinimalDefinitionIn: anRGBehavior environment ].
+	^ def
+! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:06:42'!
+tagsForClass: anRGBehavior do: aBlock 
+
+	| realClass |
+	
+	realClass := self realBehaviorFor: anRGBehavior.
+	realClass tags do: [:tag | aBlock value: tag ]! !
+
+!RGReadOnlyImageBackend methodsFor: 'behavior' stamp: 'KenD 3/27/2022 16:07:37'!
+traitCompositionFor: anRGBehavior 
+
+	| realClass realTraitComposition def |
+	
+	realClass := self realBehaviorFor: anRGBehavior.
+	realTraitComposition := realClass traitComposition.
+	def := self 	definitionFor: realTraitComposition ifAbsentRegister: [ 
+			realTraitComposition asRingMinimalDefinitionIn: anRGBehavior environment ].
+	^ def! !
+
+!RGReadOnlyImageBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:54:45'!
+categoryFor: anRGBehavior 
+
+	^ (self realBehaviorFor: anRGBehavior) category! !
+
+!RGReadOnlyImageBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:55:41'!
+classVariablesFor: anRGBehavior do: aBlock 
+
+	| realClass |
+	realClass := self realBehaviorFor: anRGBehavior.
+	realClass classVariables do: [ :classVariable | 
+		| def |
+		def := RGClassVariable named: classVariable key parent: anRGBehavior.
+		aBlock value: def. ]! !
+
+!RGReadOnlyImageBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 15:56:02'!
+commentFor: anRGBehavior 
+
+	^  (self realBehaviorFor: anRGBehavior) 
+			asRingMinimalCommentDefinitionIn: self environment! !
+
+!RGReadOnlyImageBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 16:02:38'!
+packageFor: anRGBehavior 
+
+	^ (self realBehaviorFor: anRGBehavior) package 
+			asRingMinimalDefinitionIn: anRGBehavior environment.! !
+
+!RGReadOnlyImageBackend methodsFor: 'class' stamp: 'KenD 3/27/2022 16:04:43'!
+sharedPoolsFor: anRGBehavior do: aBlock 
+
+	^ anRGBehavior behaviorStrategy prvtSharedPoolsDo: aBlock! !
+
+!RGReadOnlyImageBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:55:05'!
+classCommentAuthorFor: anRGComment 
+
+	^ RGStampParser authorForStamp: (self realBehaviorFor: anRGComment parent) organization commentStamp.! !
+
+!RGReadOnlyImageBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:55:17'!
+classCommentContentFor: anRGComment 
+
+	^ (self realBehaviorFor: anRGComment parent) organization classComment.! !
+
+!RGReadOnlyImageBackend methodsFor: 'class comment' stamp: 'KenD 3/27/2022 15:55:26'!
+classCommentTimeFor: anRGComment 
+
+	^ RGStampParser timeForStamp: (self realBehaviorFor: anRGComment parent) organization commentStamp.! !
+
+!RGReadOnlyImageBackend methodsFor: 'class description' stamp: 'KenD 3/27/2022 16:01:17'!
+metaClassFor: anRGBehavior 
+
+	| realClass realMetaclass def |
+	
+	realClass := self realBehaviorFor: anRGBehavior.
+	realMetaclass := realClass class.
+	def := self 	definitionFor: realMetaclass ifAbsentRegister: [ 
+			realMetaclass asRingMinimalDefinitionIn: anRGBehavior environment ].
+	^ def! !
+
+!RGReadOnlyImageBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:54:16'!
+behaviorsFor: anRGEnvironment do: aBlock 
+
+	SystemNavigation default allBehaviors do: [:each |
+		| def | 
+		def := self definitionFor: each ifAbsentRegister: [each asRingMinimalDefinitionIn: anRGEnvironment].
+		aBlock value: def.].! !
+
+!RGReadOnlyImageBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 15:58:44'!
+globalVariablesFor: anRGEnvironment do: aBlock 
+
+	Smalltalk globals associations do: [:each |
+		| def | 
+		def := self 
+				definitionFor: each 
+				ifAbsentRegister: [each asRingMinimalDefinitionIn: anRGEnvironment].
+		aBlock value: def.].! !
+
+!RGReadOnlyImageBackend methodsFor: 'environment' stamp: 'KenD 3/27/2022 16:03:05'!
+packagesFor: anRGEnvironment do: aBlock 
+
+	RPackageOrganizer default packagesDo: [:each |
+		| def | 
+		def := self 
+			definitionFor: each 
+			ifAbsentRegister: [each asRingMinimalDefinitionIn: anRGEnvironment].
+		aBlock value: def.].! !
+
+!RGReadOnlyImageBackend methodsFor: 'general' stamp: 'KenD 3/27/2022 16:02:20'!
+nameFor: anRGObject 
+
+	^ anRGObject prvtName! !
+
+!RGReadOnlyImageBackend methodsFor: 'initialization' stamp: 'KenD 3/27/2022 16:00:27'!
+initialize 
+
+	super initialize.
+	
+	providedDefinitions := IdentityDictionary new.! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:52:56'!
+astFor: anRGMethod 
+
+	^  anRGMethod astFromSource! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:53:08'!
+authorFor: anRGMethod 
+
+	^ RGStampParser authorForStamp: (self realMethodFor: anRGMethod) stamp! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 15:59:46'!
+hasSourceCodeFor: anRGMethod 
+
+	^ (self realMethodFor: anRGMethod) sourceCode! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 16:01:58'!
+methodPackageFor: anRGMethod 
+
+	^ (self realMethodFor: anRGMethod) package 
+			asRingMinimalDefinitionIn: anRGMethod environment.! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 16:05:37'!
+sourceCodeFor: anRGMethod  
+
+	^ (self realMethodFor: anRGMethod) sourceCode! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 16:07:00'!
+tagsForMethod: anRGMethod do: aBlock 
+
+	| realMethod |
+	
+	realMethod := self realMethodFor: anRGMethod.
+	{ realMethod protocol } do: aBlock.! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 16:07:14'!
+tagsForMethodsFor: anRGBehavior do: aBlock 
+
+	(self realBehaviorFor: anRGBehavior) protocols do: aBlock! !
+
+!RGReadOnlyImageBackend methodsFor: 'method' stamp: 'KenD 3/27/2022 16:07:24'!
+timeFor: anRGMethod 
+
+	^ RGStampParser timeForStamp: (self realMethodFor: anRGMethod) stamp! !
+
+!RGReadOnlyImageBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:57:10'!
+definedBehaviorsFor: anRGPackageDefinition do: aBlock 
+
+	| realPackage |
+	
+	realPackage := self realPackageFor: anRGPackageDefinition.
+	realPackage ifNotNil: [ 
+		realPackage definedClassesDo: [:behaviorName |
+			| def cls | 
+			cls := Smalltalk classOrTraitNamed: behaviorName.
+			def := self definitionFor: cls ifAbsentRegister: [cls 
+				asRingMinimalDefinitionIn: anRGPackageDefinition environment].
+			aBlock value: def.]]! !
+
+!RGReadOnlyImageBackend methodsFor: 'package' stamp: 'KenD 3/27/2022 15:58:09'!
+extensionMethodsFor: anRGPackageDefinition do: aBlock 
+
+	| realPackage |
+	
+	realPackage := self realPackageFor: anRGPackageDefinition.
+	realPackage ifNotNil: [ 
+		realPackage extensionMethods do: [:aCompiledMethod |
+			| def | 
+			def := self definitionFor: aCompiledMethod ifAbsentRegister: [aCompiledMethod asRingMinimalDefinitionIn: anRGPackageDefinition environment].
+			aBlock value: def.]]! !
+
+!RGReadOnlyImageBackend methodsFor: 'pointer layout' stamp: 'KenD 3/27/2022 16:05:22'!
+slotsFor: anRGLayout do: aBlock 
+	| realClass |
+	realClass := self realBehaviorFor: anRGLayout parent.
+	realClass classLayout slots
+		do: [ :each | 
+			| def |
+			def := self
+				definitionFor: each
+				ifAbsentRegister: [ 
+					each asRingMinimalDefinitionIn: anRGLayout environment ].
+			aBlock value: def ]! !
+
+!RGReadOnlyImageBackend methodsFor: 'resolving' stamp: 'KenD 3/27/2022 15:59:08'!
+hasFullyResolved: anRGObject 
+
+	^ true! !
+
+!RGReadOnlyImageBackend methodsFor: 'resolving' stamp: 'KenD 3/27/2022 15:59:20'!
+hasFullyUnresolved: anRGObject 
+		
+	^ false! !
+
+!RGReadOnlyImageBackend methodsFor: 'resolving' stamp: 'KenD 3/27/2022 15:59:33'!
+hasResolved: anRGObject 
+
+	^ true! !
+
+!RGReadOnlyImageBackend methodsFor: 'resolving' stamp: 'KenD 3/27/2022 16:04:26'!
+resolvedPropertiesFor: anRGObject 
+
+	^ anRGObject prvtResolvableProperties collect: #key! !
+
+!RGReadOnlyImageBackend methodsFor: 'resolving' stamp: 'KenD 3/27/2022 16:08:03'!
+unresolvedPropertiesFor: anRGObject 
+
+	^ Dictionary new.! !
+
+!RGReadOnlyImageBackend methodsFor: 'slot' stamp: 'KenD 3/27/2022 15:57:54'!
+expressionFor: anRGUnknownSlot 
+
+	| realClass realSlot |
+	
+	realClass := self realBehaviorFor: anRGUnknownSlot parent parent.
+	realSlot := realClass slotNamed: anRGUnknownSlot name.
+	^ (realSlot printString copyAfter: $>) trimBoth! !
+
+!RGReadOnlyImageBackend methodsFor: 'unresolved objects' stamp: 'KenD 3/27/2022 15:56:27'!
+createUnresolvedClassGroupFor: anRGBehavior 
+
+	^ 	anRGBehavior isMeta
+		ifFalse: [ anRGBehavior ]
+		ifTrue: [ anRGBehavior metaclass].! !
+
+!RGReadOnlyImageBackend class methodsFor: 'instance creation' stamp: 'KenD 3/27/2022 15:52:28'!
+for: anRGEnvironment 
+
+	^ self new 
+		environment: anRGEnvironment;
+		yourself.! !
+
 !RGEnvironmentQueryInterface methodsFor: 'accessing' stamp: 'KenD 3/23/2022 14:26:53'!
 allClasses 
 
@@ -3130,3 +5491,92 @@ for: anRGEnvironment
 	^ self new 
 		environment: anRGEnvironment;
 		yourself.! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:18:35'!
+isRGObject 
+
+	^ false! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:18:43'!
+isRGUnresolvedValue 
+
+	^ false! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:18:52'!
+isRingFullyResolved 
+
+	^ true! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:19:00'!
+isRingFullyUnresolved 
+
+	^ false! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:19:08'!
+isRingResolved 
+
+	^ true! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:19:19'!
+markAsRingResolved 
+
+	"do nothing"! !
+
+!Object methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:19:27'!
+orDefaultForUnresolved 
+
+	^ self! !
+
+!Class methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:21:19'!
+asRingMinimalCommentDefinitionIn: anRGEnvironment 
+
+	^ anRGEnvironment backend definitionFor: ('classComment:', self name) asSymbol ifAbsentRegister: [
+		RGComment parent: (self asRingMinimalDefinitionIn: anRGEnvironment).
+	]. ! !
+
+!Class methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:22:59'!
+asRingMinimalDefinitionIn: anRGEnvironment 
+
+	^ anRGEnvironment backend definitionFor: self ifAbsentRegister: [
+		RGClass named: self name asSymbol parent: anRGEnvironment]. ! !
+
+!Class methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:23:12'!
+ensureRingDefinitionIn: anRGEnvironment 
+
+	^ anRGEnvironment ask behaviors 
+		detect: [:each | each name = self name] 
+		ifNone: [ 
+			| behaviorModel |
+			behaviorModel := self asRingMinimalDefinitionIn: anRGEnvironment.
+			anRGEnvironment addBehavior: behaviorModel.
+			behaviorModel]! !
+
+!Metaclass methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:20:24'!
+asRingMinimalDefinitionIn: anRGEnvironment 
+
+	^ RGMetaclass named: self name parent: anRGEnvironment.! !
+
+!CompiledMethod methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:24:19'!
+asRingMinimalDefinitionIn: anRGEnvironment 
+
+	^ anRGEnvironment backend definitionFor: self ifAbsentRegister: [
+		RGMethod 
+			named: self selector asSymbol 
+			parent: (self methodClass asRingMinimalDefinitionIn: anRGEnvironment)
+	 ]! !
+
+!CompiledMethod methodsFor: '*Ring2-Core' stamp: 'KenD 3/27/2022 15:24:41'!
+ensureRingDefinitionIn: anRGEnvironment 
+
+	| parentModel |
+	
+	parentModel := (self methodClass ensureRingDefinitionIn: anRGEnvironment).
+	
+	^ parentModel methods 
+		detect: [:each | each selector = self selector]
+		ifNone: [ 
+			| methodModel |
+			methodModel := self asRingMinimalDefinitionIn: anRGEnvironment.
+			parentModel addLocalMethod: methodModel.
+			methodModel ]	
+! !
