@@ -1,9 +1,9 @@
-'From Cuis 6.0 [latest update: #5095] on 27 March 2022 at 4:08:51 pm'!
+'From Cuis 6.0 [latest update: #5095] on 27 March 2022 at 4:34:05 pm'!
 'Description Code Metamodel (used by Powerlang/Bee-DMR)
 
 Ported from https://github.com/pavel-krivanek/Ring2
   but without support for Traits'!
-!provides: 'Ring2' 1 13!
+!provides: 'Ring2' 1 14!
 SystemOrganization addCategory: 'Ring2-Core-Kernel'!
 SystemOrganization addCategory: 'Ring2-Core'!
 SystemOrganization addCategory: 'Ring2-Core-Environment'!
@@ -277,6 +277,76 @@ RGLayout subclass: #RGEmptyLayout
 	category: 'Ring2-Core-Kernel'!
 !classDefinition: 'RGEmptyLayout class' category: 'Ring2-Core-Kernel'!
 RGEmptyLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGObjectLayout category: 'Ring2-Core-Kernel'!
+RGLayout subclass: #RGObjectLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGObjectLayout class' category: 'Ring2-Core-Kernel'!
+RGObjectLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGBitsLayout category: 'Ring2-Core-Kernel'!
+RGObjectLayout subclass: #RGBitsLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGBitsLayout class' category: 'Ring2-Core-Kernel'!
+RGBitsLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGCompiledMethodLayout category: 'Ring2-Core-Kernel'!
+RGObjectLayout subclass: #RGCompiledMethodLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGCompiledMethodLayout class' category: 'Ring2-Core-Kernel'!
+RGCompiledMethodLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGImmediateLayout category: 'Ring2-Core-Kernel'!
+RGObjectLayout subclass: #RGImmediateLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGImmediateLayout class' category: 'Ring2-Core-Kernel'!
+RGImmediateLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGPointerLayout category: 'Ring2-Core-Kernel'!
+RGLayout subclass: #RGPointerLayout
+	instanceVariableNames: 'slots'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGPointerLayout class' category: 'Ring2-Core-Kernel'!
+RGPointerLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGEphemeronLayout category: 'Ring2-Core-Kernel'!
+RGPointerLayout subclass: #RGEphemeronLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGEphemeronLayout class' category: 'Ring2-Core-Kernel'!
+RGEphemeronLayout class
+	instanceVariableNames: ''!
+
+!classDefinition: #RGFixedLayout category: 'Ring2-Core-Kernel'!
+RGPointerLayout subclass: #RGFixedLayout
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ring2-Core-Kernel'!
+!classDefinition: 'RGFixedLayout class' category: 'Ring2-Core-Kernel'!
+RGFixedLayout class
 	instanceVariableNames: ''!
 
 !classDefinition: #RGPackageDefinition category: 'Ring2-Core-Kernel'!
@@ -913,6 +983,11 @@ printOn: aStream
 		aStream nextPutAll: self parent name;
 				  nextPutAll: '>>' ].
 	aStream print: self selector! !
+
+!RGPointerLayout methodsFor: 'queries - slots' stamp: 'KenD 3/27/2022 16:19:13'!
+instVarNames 
+
+	^ self slots collect: #name! !
 
 !RGEnvironment methodsFor: 'accessing' stamp: 'KenD 3/24/2022 13:02:24'!
 environment 
@@ -3377,6 +3452,196 @@ layoutName
 
 !RGEmptyLayout methodsFor: 'testing' stamp: 'KenD 3/24/2022 14:00:52'!
 isEmptyLayout 
+
+	^ true! !
+
+!RGObjectLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:24:48'!
+layoutName 
+
+	^ #ObjectLayout! !
+
+!RGObjectLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:24:59'!
+slots 
+
+	"only for API compatibility purposes"
+	^ Array new! !
+
+!RGObjectLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:24:23'!
+isObjectLayout 
+
+	^ true! !
+
+!RGBitsLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:32:15'!
+layoutName 
+
+	^ #BitsLayout! !
+
+!RGBitsLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:32:29'!
+isBitsLayout 
+
+	^ true! !
+
+!RGBitsLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:32:24'!
+isVariableLayout 
+
+	^ true! !
+
+!RGCompiledMethodLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:31:25'!
+layoutName 
+
+	^ #CompiledMethodLayout! !
+
+!RGCompiledMethodLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:30:48'!
+isBitsLayout 
+
+	^ true! !
+
+!RGCompiledMethodLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:30:56'!
+isByteLayout 
+
+	^ true! !
+
+!RGCompiledMethodLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:31:05'!
+isCompiledMethodLayout 
+
+	^ true! !
+
+!RGCompiledMethodLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:31:15'!
+isVariableLayout 
+
+	^ true! !
+
+!RGImmediateLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:27:01'!
+layoutName 
+
+	^ #ImmediateLayout! !
+
+!RGImmediateLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:26:51'!
+isImmediateLayout 
+
+	^ true! !
+
+!RGPointerLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:20:03'!
+layoutName 
+
+	^ #PointerLayout! !
+
+!RGPointerLayout methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 16:12:09'!
+addSlot: anRGSlot 
+
+	self parent announceDefinitionChangeDuring: [ 
+		self backend forBehavior addSlot: anRGSlot to: self ].! !
+
+!RGPointerLayout methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 16:12:45'!
+cleanSlots 
+
+	self parent announceDefinitionChangeDuring: [ 
+		self backend forBehavior cleanSlotsFor: self ].! !
+
+!RGPointerLayout methodsFor: 'accessing - backend' stamp: 'KenD 3/27/2022 16:23:13'!
+slotsDo: aBlock 
+
+	self backend forBehavior slotsFor: self do: aBlock! !
+
+!RGPointerLayout methodsFor: 'default model values' stamp: 'KenD 3/27/2022 16:16:54'!
+defaultSlots 
+
+	^ OrderedCollection new! !
+
+!RGPointerLayout methodsFor: 'initialization' stamp: 'KenD 3/27/2022 16:16:30'!
+initialize 
+
+	super initialize.
+	slots := self unresolvedValue: self defaultSlots.! !
+
+!RGPointerLayout methodsFor: 'initialization' stamp: 'KenD 3/27/2022 16:18:43'!
+initializeUnresolved 
+
+	super initializeUnresolved.
+	slots := self unresolvedValue: self defaultSlots.! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:21:27'!
+prvtAddSlot: anRGSlot 
+
+	self environment verifyOwnership: anRGSlot.
+	
+	slots isRingResolved ifFalse: [ 
+		self prvtCleanSlots  ].
+	
+	slots add: anRGSlot.	! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:21:44'!
+prvtCleanSlots 
+
+	slots := self defaultSlots.! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:21:58'!
+prvtRemoveSlot: anRGSlot 
+
+	self environment verifyOwnership: anRGSlot.
+	
+	slots remove: anRGSlot.! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:22:13'!
+prvtResolvableProperties 
+
+	^ super prvtResolvableProperties, { 
+		#slots -> slots. 
+	}! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:22:25'!
+prvtSlotsDo: aBlock 
+
+	slots value do: aBlock! !
+
+!RGPointerLayout methodsFor: 'prvt - backend access' stamp: 'KenD 3/27/2022 16:22:37'!
+removeSlot: anRGSlot 
+
+	self parent announceDefinitionChangeDuring: [ 
+		self backend forBehavior removeSlot: anRGSlot from: self ].! !
+
+!RGPointerLayout methodsFor: 'queries - slots' stamp: 'KenD 3/27/2022 16:12:32'!
+allSlots 
+
+	^ self slots! !
+
+!RGPointerLayout methodsFor: 'queries - slots' stamp: 'KenD 3/27/2022 16:22:56'!
+slots 
+
+	| allSlots |
+	allSlots := OrderedCollection new.
+	self slotsDo: [ :each | allSlots add: each].
+	^ allSlots asArray! !
+
+!RGPointerLayout methodsFor: 'resolving' stamp: 'KenD 3/27/2022 16:20:26'!
+makeResolved 
+
+	super makeResolved.
+	
+	slots := self slots asOrderedCollection markAsRingResolved.! !
+
+!RGPointerLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:19:46'!
+isPointerLayout 
+
+	^ true! !
+
+!RGEphemeronLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:28:42'!
+layoutName 
+
+	^ #EphemeronLayout! !
+
+!RGEphemeronLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:28:52'!
+isEphemeronLayout 
+
+	^ true! !
+
+!RGFixedLayout methodsFor: 'accessing' stamp: 'KenD 3/27/2022 16:28:03'!
+layoutName 
+
+	^ #FixedLayout! !
+
+!RGFixedLayout methodsFor: 'testing types' stamp: 'KenD 3/27/2022 16:27:54'!
+isFixedLayout 
 
 	^ true! !
 
