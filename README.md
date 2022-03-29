@@ -48,6 +48,26 @@ Regs+Mem <<=====>> Objects+ivars/slots
 
 Instructions <<=====>> Operations/[Macro]Opcodes
 
+## Possible Register Usage
+````
+Bee      Aarch64     RISCV
+---      -------     -----
+IP        -           -
+SP        SP*        X2
+FP        R29        X8
+R         R0/R1      X10/X11
+M         R19        X19
+S         R20        X20
+E         R21        X21
+A         R2-7       X12-17
+T         R9-12      X28-31
+V         R22        X22
+G         R23        X23
+nil       R24        X24
+true      R25        X25
+false     R26        X26
+
+````
 
 ## Visualize & Explain Runtime Structures & Strategies
 
