@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5095] on 29 March 2022 at 3:13:57 pm'!
-'Description '!
-!provides: 'Bee' 1 0!
+'From Cuis 6.0 [latest update: #5095] on 30 March 2022 at 12:19:08 pm'!
+'Description Bee Transliterator'!
+!provides: 'Bee' 1 5!
 !requires: 'BeeCompatibility' 1 4 nil!
 SystemOrganization addCategory: 'Bee-CodeSpecs-Porting'!
 SystemOrganization addCategory: 'Bee-CodeSpecs'!
@@ -14,6 +14,116 @@ Object subclass: #ImageModuleBuilder
 	category: 'Bee-CodeSpecs-Porting'!
 !classDefinition: 'ImageModuleBuilder class' category: 'Bee-CodeSpecs-Porting'!
 ImageModuleBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #BeeModuleBuilder category: 'Bee-CodeSpecs-Porting'!
+ImageModuleBuilder subclass: #BeeModuleBuilder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'BeeModuleBuilder class' category: 'Bee-CodeSpecs-Porting'!
+BeeModuleBuilder class
+	instanceVariableNames: ''!
+
+!classDefinition: #ModuleTransliterator category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #ModuleTransliterator
+	instanceVariableNames: 'module rules'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'ModuleTransliterator class' category: 'Bee-CodeSpecs-Porting'!
+ModuleTransliterator class
+	instanceVariableNames: ''!
+
+!classDefinition: #TonelModuleExporter category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #TonelModuleExporter
+	instanceVariableNames: 'module path compatible'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'TonelModuleExporter class' category: 'Bee-CodeSpecs-Porting'!
+TonelModuleExporter class
+	instanceVariableNames: ''!
+
+!classDefinition: #TonelModuleImporter category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #TonelModuleImporter
+	instanceVariableNames: 'module path metadata'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'TonelModuleImporter class' category: 'Bee-CodeSpecs-Porting'!
+TonelModuleImporter class
+	instanceVariableNames: ''!
+
+!classDefinition: #TransliterationRule category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #TransliterationRule
+	instanceVariableNames: 'scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'TransliterationRule class' category: 'Bee-CodeSpecs-Porting'!
+TransliterationRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodFilterRule category: 'Bee-CodeSpecs-Porting'!
+TransliterationRule subclass: #MethodFilterRule
+	instanceVariableNames: 'block'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'MethodFilterRule class' category: 'Bee-CodeSpecs-Porting'!
+MethodFilterRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #RefactoringRule category: 'Bee-CodeSpecs-Porting'!
+TransliterationRule subclass: #RefactoringRule
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'RefactoringRule class' category: 'Bee-CodeSpecs-Porting'!
+RefactoringRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassRemoveRule category: 'Bee-CodeSpecs-Porting'!
+RefactoringRule subclass: #ClassRemoveRule
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'ClassRemoveRule class' category: 'Bee-CodeSpecs-Porting'!
+ClassRemoveRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #ConversionRule category: 'Bee-CodeSpecs-Porting'!
+RefactoringRule subclass: #ConversionRule
+	instanceVariableNames: 'original new'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'ConversionRule class' category: 'Bee-CodeSpecs-Porting'!
+ConversionRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #IdentifierRenameRule category: 'Bee-CodeSpecs-Porting'!
+ConversionRule subclass: #IdentifierRenameRule
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'IdentifierRenameRule class' category: 'Bee-CodeSpecs-Porting'!
+IdentifierRenameRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #TransliterationScope category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #TransliterationScope
+	instanceVariableNames: 'module class method'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'TransliterationScope class' category: 'Bee-CodeSpecs-Porting'!
+TransliterationScope class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodSpec category: 'Bee-CodeSpecs'!
@@ -66,6 +176,17 @@ SpeciesSpec subclass: #MetaclassSpec
 MetaclassSpec class
 	instanceVariableNames: ''!
 
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:16'!
+definition 
+	| names |
+	names := (module classes collect: #name) sort.
+	^OrderedDictionary new
+		at: #name put: self moduleName asSymbol;
+		at: #requires
+		put: module dependencies keys asArray sort;
+		at: #classes put: names asArray;
+		yourself! !
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 3/29/2022 14:31:20'!
 category 
@@ -418,6 +539,751 @@ specFromSource: aString species: aSpeciesSpec
 		classBinding: aSpeciesSpec;
 		source: aString;
 		category: 'unclassified'! !
+
+!BeeModuleBuilder methodsFor: 'private' stamp: 'KenD 3/30/2022 09:59:16'!
+specFromClass: aClass 
+	| class metaclass n |
+	class := ClassSpec new.
+	metaclass := self specFromMetaclass: aClass class: class.
+	n := aClass superclass ifNotNil: [:s | s name].
+	class
+		module: module;
+		metaclass: metaclass;
+		name: aClass name;
+		supername: n;
+		ivars: aClass instVarNames asOrderedCollection;
+		cvars: aClass classVariables;
+		sharedPools: aClass sharedPools.
+	aClass instancesAreArrayed ifTrue: [class beArrayed].
+	aClass instancesHavePointers ifFalse: [class beBytes].
+	^class! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:55:19'!
+addAllMethodsFrom: aClass into: aClassSpec 
+
+	self addAllMethodsFrom: aClass project: aClass project into: aClassSpec! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:55:31'!
+addAllMethodsFrom: aClass project: aBeeProject into: aClassSpec 
+	| instance meta |
+	instance := aBeeProject methodsOf: aClass.
+	meta := aBeeProject methodsOf: aClass class.
+	self
+		addMethods: instance into: aClassSpec;
+		addMethods: meta into: aClassSpec metaclass! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:55:45'!
+addMethod: aCompiledMethod 
+	| class spec |
+	class := self ensureClass: aCompiledMethod classBinding instanceClass.
+	aCompiledMethod classBinding isMetaclass ifTrue: [class := class metaclass].
+	spec := self specFromMethod: aCompiledMethod species: class.
+	class addMethod: spec! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:55:57'!
+addMethods: aCollection 
+
+	(aCollection groupBy: #classBinding) keysAndValuesDo: [:class :methods | | spec |
+		spec := self ensureClass: class instanceClass.
+		class isMetaclass ifTrue: [spec := spec metaclass].
+		self addMethods: methods into: spec]! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:56:08'!
+addProject: aBeeProject 
+
+	self addClasses: aBeeProject classes; addMethods: aBeeProject extensions! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:58:34'!
+loadExtensionsFromImage 
+
+	module extendedClasses copy do: [:spec | self loadExtensionFromImage: spec]! !
+
+!BeeModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 09:58:20'!
+oadExtensionFromImage: aClassSpec 
+	| class supername |
+	class := Smalltalk at: aClassSpec name asSymbol ifAbsent: [^self].
+	supername := class superclass ifNotNil: [:s | s name].
+	aClassSpec
+		name: class name;
+		supername: supername;
+		ivars: class instVarNames asOrderedCollection;
+		cvars: class classVariables;
+		sharedPools: class sharedPools.
+	aClassSpec metaclass ivars: class class instVarNames asOrderedCollection! !
+
+!BeeModuleBuilder methodsFor: 'services' stamp: 'KenD 3/30/2022 09:57:36'!
+calculateDependencies 
+	| imports projects map extensions |
+	self addSubclassifiedClasses.
+	imports := module requiredImports.
+	projects := imports associations groupBy: [:a | | global |
+		global := Smalltalk at: a key asSymbol ifAbsent: [
+			Transcript
+				print: 'Global ' , a key printString
+					, ' is being referenced but was not found in Smalltalk globals';
+				cr.
+			nil].
+		global isSpecies
+			ifTrue: [global project name]
+			ifFalse: [global imageSegment ifNotNil: [:p | p name]]].
+	self ignoredProjects do: [:d | projects removeKey: d ifAbsent: nil].
+	map := projects collect: [:group | Dictionary withAll: group].
+	module addImports: imports keys; addDependencies: map.
+	extensions := Dictionary new.
+	module extendedClasses do: [:spec | 
+		Smalltalk at: spec name asSymbol ifPresent: [:class | | deps methods |
+			deps := extensions 
+						at: class project name 
+						ifAbsentPut: [Dictionary new].
+			methods := deps 
+						at: spec name 
+						ifAbsentPut: [OrderedCollection new].
+			methods addAll: spec methods]].
+	module addDependencies: extensions! !
+
+!BeeModuleBuilder methodsFor: 'services' stamp: 'KenD 3/30/2022 09:57:51'!
+ignoredProjects 
+
+	^ self class ignoredProjects! !
+
+!BeeModuleBuilder methodsFor: 'services' stamp: 'KenD 3/30/2022 09:58:03'!
+leaveOnlyProject: aBeeProject 
+	| target |
+	target := OrderedCollection new.
+	module allMethodsDo: [:m | | class |
+		class := Smalltalk at: m classBinding name asSymbol.
+		(aBeeProject includesClass: class selector: m selector)
+			ifFalse: [target add: m]].
+	target do: [:m | m classBinding removeSelector: m selector]! !
+
+!BeeModuleBuilder class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 09:53:54'!
+fromClass: aClass 
+
+	^self new name: aClass name; addClass: aClass; module! !
+
+!BeeModuleBuilder class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 09:54:07'!
+fromMethod: aCompiledMethod 
+
+	^self new
+		name: aCompiledMethod selector asString;
+		addMethod: aCompiledMethod;
+		module! !
+
+!BeeModuleBuilder class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 09:54:18'!
+fromProject: aBeeProject 
+
+	^self new
+		name: aBeeProject name;
+		addProject: aBeeProject;
+		calculateDependencies;
+		module! !
+
+!BeeModuleBuilder class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 09:54:35'!
+ignoredProjects 
+
+	^#('extensions' nil)! !
+
+!BeeModuleBuilder class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 09:54:46'!
+new 
+
+	^ super new initialize! !
+
+!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 3/30/2022 10:04:56'!
+module 
+
+	^ module! !
+
+!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 3/30/2022 10:05:06'!
+module: aModuleSpec 
+
+	module := aModuleSpec! !
+
+!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 3/30/2022 10:12:07'!
+rules
+	"Probably unused"
+	
+	^ rules! !
+
+!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 3/30/2022 10:10:40'!
+rules: newRules
+	"Probably unused"
+	
+	rules := newRules! !
+
+!ModuleTransliterator methodsFor: 'actions' stamp: 'KenD 3/30/2022 10:09:03'!
+transliterate 
+
+	rules do: [:rule | rule applyTo: module].
+	module cleanDependencies; removeEmptyExtensions! !
+
+!ModuleTransliterator methodsFor: 'actions' stamp: 'KenD 3/30/2022 10:09:14'!
+transliterate: aModuleSpec 
+
+	module := aModuleSpec.
+	self transliterate! !
+
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 10:03:59'!
+addRule: aTransliterationRule 
+
+	rules add: aTransliterationRule! !
+
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 10:04:09'!
+addRules: aCollection 
+
+	rules addAll: aCollection! !
+
+!ModuleTransliterator methodsFor: 'initialization' stamp: 'KenD 3/30/2022 10:04:32'!
+initialize 
+
+	rules := OrderedCollection new! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:05:41'!
+removeClass: aString 
+	| rule |
+	rule := ClassRemoveRule name: aString.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:05:52'!
+removeInstVar: ivar in: classname 
+	| rule |
+	rule := RemoveInstVarRule named: ivar in: classname.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:06:14'!
+removeMethodsSuchThat: aBlock 
+
+	self removeMethodsSuchThat: aBlock class: nil module: nil! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:06:28'!
+removeMethodsSuchThat: aBlock class: classname module: modulename 
+	| rule |
+	rule := (MethodFilterRule on: aBlock)
+		module: modulename;
+		class: classname.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:06:51'!
+removePackage: aString 
+	| rule |
+	rule := PackageRemoveRule name: aString.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:07:02'!
+removeSelectors: selectors 
+
+	self removeSelectors: selectors class: nil module: nil! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:07:14'!
+removeSelectors: selectors class: classname 
+
+	^ self removeSelectors: selectors class: classname module: nil! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:07:25'!
+removeSelectors: selectors class: classname module: modulename 
+	| rule |
+	rule := (MethodFilterRule on: [:m | selectors includes: m selector])
+		module: modulename;
+		class: classname.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:07:37'!
+removeSelectors: selectors module: modulename 
+
+	^ self removeSelectors: selectors class: nil module: modulename! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:07:47'!
+renameIdentifier: from to: to 
+
+	self renameIdentifier: from to: to class: nil module: nil! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:08:01'!
+renameIdentifier: from to: to class: classname 
+
+	self renameIdentifier: from to: to class: classname module: nil! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:08:22'!
+renameIdentifier: from
+to: to
+class: classname
+module: modulename 
+	| rule |
+	rule := IdentifierRenameRule from: from to: to.
+	rule class: classname; module: modulename.
+	self addRule: rule! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 3/30/2022 10:08:33'!
+renameSelector: aString to: anotherString 
+	| rule |
+	rule := SelectorRenameRule from: aString to: anotherString.
+	self addRule: rule! !
+
+!ModuleTransliterator class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 10:03:26'!
+new 
+
+	^ super new initialize! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:23'!
+compatible: aBoolean 
+
+	compatible := aBoolean! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:33'!
+copyright 
+
+	^'Copyright (c) ' , Date today year asString , ' Quorum Software.'! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:15'!
+license 
+
+	^'See (MIT) license in root directory.'! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:27'!
+module: aModuleSpec 
+
+	module := aModuleSpec! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:37'!
+moduleFolder 
+
+	^path \ self exportedName! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:57:06'!
+path: aFilename 
+
+	path := aFilename asFilename! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:50:42'!
+export 
+
+	self
+		createFolder;
+		exportMetadata;
+		exportClasses;
+		exportExtendedClasses! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:23'!
+exportClass: aClassSpec 
+	| filename |
+	filename := self filenameForClass: aClassSpec.
+	self withFileNamed: filename do: [:stream | | writer |
+		stream truncate.
+		self flag: #TonelWriter.
+		writer := TonelWriter on: stream.
+		writer
+			category: self moduleName;
+			class: aClassSpec;
+			methods: (aClassSpec metaMethods sortBy: #selector)
+				& (aClassSpec methods sortBy: #selector);
+			write]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:37'!
+exportClasses 
+
+	module classes do: [:class | self exportClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:49'!
+exportEmptyClass: aClassSpec 
+	| filename |
+	filename := self filenameForClass: aClassSpec.
+	self withFileNamed: filename do: [:stream | | writer |
+		writer := TonelWriter on: stream.
+		writer
+			category: self moduleName;
+			class: aClassSpec;
+			methods: #();
+			write]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:52:02'!
+exportEmptyClasses 
+
+	module classes do: [:class | self exportEmptyClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:24'!
+exportExtendedClass: aClassSpec 
+	| filename |
+	filename := self filenameForExtension: aClassSpec.
+	self withFileNamed: filename do: [:stream | 
+		stream truncate.
+		self flag: #TonelWriter.
+		(TonelWriter on: stream)
+			writeMethods: (aClassSpec metaMethods sortBy: #selector)
+				& (aClassSpec methods sortBy: #selector)]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:39'!
+exportExtendedClasses 
+
+	module extendedClasses do: [:class | self exportExtendedClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:45'!
+exportMetadata 
+	| package |
+	package := self moduleFolder \ 'package.st'.
+	self flag: #STONWriter.
+	self withFileNamed: package do: [:stream | 
+		stream nextPutAll: 'Package '.
+		(STONWriter on: stream) writeMap: self definition]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:58'!
+exportPseudoTonel 
+
+	compatible := false.
+	self export! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:00'!
+createFolder 
+
+	self moduleFolder createPath! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:21'!
+exportedName 
+
+	^ module name copy replace: Character space with: $\! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:34'!
+filenameForClass: aClassSpec 
+	| name |
+	name := aClassSpec name asFilename.
+	compatible ifTrue: [name := name appendExtension: 'class'].
+	^self moduleFolder \ name appendExtension: 'st'! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:52'!
+filenameForExtension: aClassSpec 
+	| name |
+	name := aClassSpec name asFilename.
+	compatible ifTrue: [name := name appendExtension: 'extension'].
+	^self moduleFolder \ name appendExtension: 'st'! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:56:49'!
+moduleName 
+
+	^self exportedName asFilename entityName! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:57:22'!
+withFileNamed: aFilename do: aBlock 
+	| stream |
+	stream := aFilename asFile writeStream.
+	stream
+		truncate;
+		eol: String lf;
+		nextPut: $";
+		crtab;
+		nextPutAll: self copyright;
+		crtab;
+		nextPutAll: self license;
+		cr;
+		nextPut: $";
+		cr;
+		cr.
+	[aBlock evaluateWith: stream] ensure: [stream close]! !
+
+!TonelModuleExporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:48:56'!
+new 
+
+	^ super new initialize! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:31'!
+module 
+
+	^ module! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:40'!
+module: aModuleSpec 
+
+	module := aModuleSpec! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:56'!
+path: aFilename 
+
+	path := aFilename! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:41:27'!
+import 
+
+	self importMetadata; importClasses; importExtendedClasses! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:42:45'!
+importClass: aString 
+	| filename reader definition pointers variable class metasclass stream |
+	filename := path \ aString withExtension: 'st'.
+	filename exists ifFalse: [
+		filename := path \ aString withFullExtension: 'class.st'.
+		filename exists
+			ifFalse: [self error: 'Cannot find file for class ' , aString]].
+	stream := filename asFile readStream.
+	self flag: #TonelReader.
+	reader := TonelReader on: stream.
+	[reader read] ensure: [stream close].
+	definition := reader definition.
+	variable := pointers := true.
+	definition at: #type ifPresent: [:type | 
+		variable := true.
+		type = #bytes ifTrue: [pointers := false]].
+	class := ClassSpec new
+		module: module;
+		name: (definition at: #name) asString;
+		supername: (definition at: #superclass ifAbsent: nil) asString;
+		ivars: (definition at: #instVars ifAbsent: #());
+		cvarNames: (definition at: #classVars ifAbsent: #());
+		sharedPools: (definition at: #pools ifAbsent: #());
+		isVariable: variable;
+		isPointers: pointers.
+	metasclass := MetaclassSpec new
+		module: module;
+		instanceClass: class;
+		ivars: (definition at: #classInstVars ifAbsent: #()).
+	class metaclass: metasclass.
+	module addClass: class.
+	reader methods do: [:m | self importMethod: m]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:07'!
+importClasses 
+
+	(metadata at: #classes) do: [:name | self importClass: name]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:21'!
+importExtendedClass: aString 
+	| filename stream reader definition class metaclass |
+	filename := path \ aString withExtension: 'st'.
+	filename exists ifFalse: [
+		filename := path \ aString withFullExtension: 'extension.st'.
+		filename exists
+			ifFalse: [self error: 'Cannot find file for extended class ' , aString]].
+	stream := filename asFile readStream.
+	reader := TonelReader on: stream.
+	[reader read] ensure: [stream close].
+	definition := reader definition.
+	class := ClassSpec new
+		module: module;
+		name: (definition at: #name) asString.
+	metaclass := MetaclassSpec new module: module; instanceClass: class.
+	class metaclass: metaclass.
+	module addClassExtension: class.
+	reader methods do: [:m | self importMethod: m]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:36'!
+importExtendedClasses 
+	| classes filenames candidates |
+	classes := metadata at: #classes.
+	filenames := path asDirectory fileNamesWithExtension: 'st'.
+	candidates := filenames collect: [:s | s asFilename fileNameOnly].
+	candidates := candidates
+		reject: [:n | n = 'package' or: [classes includes: n]].
+	candidates do: [:n | self importExtendedClass: n]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:44:16'!
+importMetadata 
+	| stream name |
+	stream := (path \ 'package.st') asFile readStream.
+	stream throughAll: 'Package '.
+	self flag: #STONReader.
+	metadata := (STONReader on: stream) parseMap.
+	name := (metadata at: #name) replace: $- with: Character space.
+	module name: name asString! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:46:12'!
+importMethod: aDictionary 
+	| classname selector category class signature body source method |
+	classname := aDictionary at: #class.
+	selector := aDictionary at: #selector.
+	category := aDictionary at: #category.
+	class := module resolveClass: classname.
+	class isNil ifTrue: [
+		self
+			error: 'Cannot find class for method ' , classname , ' >> #'
+				, selector asString].
+	signature := aDictionary at: #signature.
+	body := aDictionary at: #body.
+	source := signature dosToUnix unixToMac , String cr
+		, body dosToUnix unixToMac.
+	method := MethodSpec new
+		module: module;
+		classBinding: class;
+		selector: selector;
+		category: category;
+		source: source.
+	class addMethod: method! !
+
+!TonelModuleImporter methodsFor: 'initialization' stamp: 'KenD 3/30/2022 11:38:30'!
+initialize 
+	
+	super initialize.
+	module := ModuleSpec new! !
+
+!TonelModuleImporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:37:04'!
+new 
+
+	^ super new initialize! !
+
+!TransliterationRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:04:10'!
+class: aString 
+
+	scope class: aString! !
+
+!TransliterationRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:05:15'!
+module: aString 
+
+	scope module: aString! !
+
+!TransliterationRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:05:24'!
+scope 
+
+	^scope! !
+
+!TransliterationRule methodsFor: 'actions' stamp: 'KenD 3/30/2022 12:03:14'!
+applyTo: aModuleSpec 
+
+	(self appliesTo: aModuleSpec) ifFalse: [^self].
+	self basicApplyTo: aModuleSpec! !
+
+!TransliterationRule methodsFor: 'initialization' stamp: 'KenD 3/30/2022 12:05:01'!
+initialize 
+
+	scope := TransliterationScope new! !
+
+!TransliterationRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:03:45'!
+basicApplyTo: aModuleSpec
+
+	"Empty"! !
+
+!TransliterationRule methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:02:55'!
+appliesTo: aModuleSpec 
+
+	^scope includesModule: aModuleSpec name! !
+
+!TransliterationRule class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 12:02:04'!
+new 
+
+	^ super new initialize! !
+
+!MethodFilterRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:17:41'!
+block: aClosure 
+
+	block := aClosure! !
+
+!MethodFilterRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:17:54'!
+basicApplyTo: aModuleSpec 
+
+	aModuleSpec allClassesDo: [:c | | candidates |
+		(scope includesClass: c name) ifTrue: [
+			candidates := c methods, c metaclass methods select: block.
+			candidates do: #removeFromClass]]! !
+
+!MethodFilterRule class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 12:17:07'!
+on: aClosure 
+
+	^ self new block: aClosure! !
+
+!ClassRemoveRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:14:08'!
+name: aString 
+
+	name := aString! !
+
+!ClassRemoveRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:13:53'!
+basicApplyTo: aModuleSpec 
+	(aModuleSpec definesClassNamed: name) 
+		ifTrue: [aModuleSpec removeClass: name].
+	(aModuleSpec extendsClassNamed: name)
+		ifTrue: [aModuleSpec removeExtendedClass: name].
+	(aModuleSpec subclassifiesClassNamed: name)
+		ifTrue: [aModuleSpec
+			removeSubclassesOf: name;
+			removeSubclassifiedClass: name].
+	aModuleSpec dependencies do: [:dict | 
+		dict do: [:refs | 
+			refs copy do: [:ref | 
+				(ref class == MethodSpec and: [ref referencesIdentifier: name]) 
+				  ifTrue: [
+					ref removeFromClass.
+					refs remove: ref].
+				ref class == ClassSpec ifTrue: [refs remove: ref]]]].
+	aModuleSpec allMethods
+		select: [:m | m referencesIdentifier: name]
+		thenDo: [:m | m removeFromClass]! !
+
+!ConversionRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:09:26'!
+new
+
+	^ new! !
+
+!ConversionRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:09:35'!
+new: aString 
+
+	new := aString! !
+
+!ConversionRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:10:04'!
+original 
+
+	^original! !
+
+!ConversionRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:10:13'!
+original: anObject 
+
+	original := anObject! !
+
+!ConversionRule class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 12:08:55'!
+from: old to: new 
+
+	^ self new original: old; new: new! !
+
+!IdentifierRenameRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:15:50'!
+basicApplyTo: aModuleSpec 
+	| class |
+	class := aModuleSpec resolveClass: original.
+	class ifNotNil: [
+		class subclasses do: [:s | s supername: new].
+		class name: new].
+	aModuleSpec allMethodsDo: [:m | self applyToMethod: m].
+	aModuleSpec allClassesDo: [:c | | cvars |
+		c instVarNames replace: original with: new.
+		cvars := c classVariables.
+		cvars at: original ifPresent: [:v | 
+			cvars
+				removeKey: original;
+				at: new put: v].
+		c sharedPools replace: original asSymbol with: new asSymbol]! !
+
+!IdentifierRenameRule methodsFor: 'actions' stamp: 'KenD 3/30/2022 12:15:22'!
+applyToMethod: aMethodSpec 
+	| ast var code |
+	ast := aMethodSpec ast ifNil: [^self].
+	var := ast variableNamed: original.
+	var isNil ifTrue: [^self].
+	code := aMethodSpec sourceCode.
+	var sourceIntervals
+		reverseDo: [:s | code := code replace: original at: s start with: new].
+	aMethodSpec source: code! !
+
+!TransliterationScope methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:59:33'!
+class: aString 
+
+	class := aString
+! !
+
+!TransliterationScope methodsFor: 'testing' stamp: 'KenD 3/30/2022 11:59:49'!
+includesClass: aString 
+
+	^class isNil or: [class = aString]
+! !
+
+!TransliterationScope methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:00:01'!
+includesMethod: aSymbol 
+
+	^method isNil or: [method = aSymbol]! !
+
+!TransliterationScope methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:00:15'!
+includesModule: aString 
+
+	^ module isNil or: [module = aString]! !
+
+!TransliterationScope methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:00:26'!
+method: aSymbol 
+
+	method := aSymbol! !
+
+!TransliterationScope methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:00:35'!
+module: aString 
+
+	module := aString! !
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 3/29/2022 14:31:47'!
 classBinding 
