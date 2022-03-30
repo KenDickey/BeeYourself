@@ -1,10 +1,20 @@
-'From Cuis 6.0 [latest update: #5095] on 30 March 2022 at 12:19:08 pm'!
+'From Cuis 6.0 [latest update: #5095] on 30 March 2022 at 12:49:15 pm'!
 'Description Bee Transliterator'!
-!provides: 'Bee' 1 5!
+!provides: 'Bee' 1 7!
 !requires: 'BeeCompatibility' 1 4 nil!
 SystemOrganization addCategory: 'Bee-CodeSpecs-Porting'!
 SystemOrganization addCategory: 'Bee-CodeSpecs'!
 
+
+!classDefinition: #ModuleTransliteratorTest category: 'Bee-CodeSpecs-Porting'!
+TestCase subclass: #ModuleTransliteratorTest
+	instanceVariableNames: 'module transliterator builder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'ModuleTransliteratorTest class' category: 'Bee-CodeSpecs-Porting'!
+ModuleTransliteratorTest class
+	instanceVariableNames: ''!
 
 !classDefinition: #ImageModuleBuilder category: 'Bee-CodeSpecs-Porting'!
 Object subclass: #ImageModuleBuilder
@@ -26,6 +36,16 @@ ImageModuleBuilder subclass: #BeeModuleBuilder
 BeeModuleBuilder class
 	instanceVariableNames: ''!
 
+!classDefinition: #PharoModuleBuilder category: 'Bee-CodeSpecs-Porting'!
+ImageModuleBuilder subclass: #PharoModuleBuilder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'PharoModuleBuilder class' category: 'Bee-CodeSpecs-Porting'!
+PharoModuleBuilder class
+	instanceVariableNames: ''!
+
 !classDefinition: #ModuleTransliterator category: 'Bee-CodeSpecs-Porting'!
 Object subclass: #ModuleTransliterator
 	instanceVariableNames: 'module rules'
@@ -34,6 +54,16 @@ Object subclass: #ModuleTransliterator
 	category: 'Bee-CodeSpecs-Porting'!
 !classDefinition: 'ModuleTransliterator class' category: 'Bee-CodeSpecs-Porting'!
 ModuleTransliterator class
+	instanceVariableNames: ''!
+
+!classDefinition: #RejectMethodRule category: 'Bee-CodeSpecs-Porting'!
+Object subclass: #RejectMethodRule
+	instanceVariableNames: 'scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'RejectMethodRule class' category: 'Bee-CodeSpecs-Porting'!
+RejectMethodRule class
 	instanceVariableNames: ''!
 
 !classDefinition: #TonelModuleExporter category: 'Bee-CodeSpecs-Porting'!
@@ -114,6 +144,46 @@ ConversionRule subclass: #IdentifierRenameRule
 	category: 'Bee-CodeSpecs-Porting'!
 !classDefinition: 'IdentifierRenameRule class' category: 'Bee-CodeSpecs-Porting'!
 IdentifierRenameRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #PackageRenameRule category: 'Bee-CodeSpecs-Porting'!
+ConversionRule subclass: #PackageRenameRule
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'PackageRenameRule class' category: 'Bee-CodeSpecs-Porting'!
+PackageRenameRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #SelectorRenameRule category: 'Bee-CodeSpecs-Porting'!
+ConversionRule subclass: #SelectorRenameRule
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'SelectorRenameRule class' category: 'Bee-CodeSpecs-Porting'!
+SelectorRenameRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #PackageRemoveRule category: 'Bee-CodeSpecs-Porting'!
+RefactoringRule subclass: #PackageRemoveRule
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'PackageRemoveRule class' category: 'Bee-CodeSpecs-Porting'!
+PackageRemoveRule class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveInstVarRule category: 'Bee-CodeSpecs-Porting'!
+RefactoringRule subclass: #RemoveInstVarRule
+	instanceVariableNames: 'ivar classname'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-CodeSpecs-Porting'!
+!classDefinition: 'RemoveInstVarRule class' category: 'Bee-CodeSpecs-Porting'!
+RemoveInstVarRule class
 	instanceVariableNames: ''!
 
 !classDefinition: #TransliterationScope category: 'Bee-CodeSpecs-Porting'!
@@ -380,6 +450,153 @@ sharedPools
 superclass 
 
 	^ class superclass ifNotNil: [:c | c metaclass]! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:23:44'!
+builderClass 
+	self flag: #PharoModuleBuilder.
+	^ PharoModuleBuilder! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:25:51'!
+est020removeInstVar 
+	| extensions point |
+	builder
+		addMethod: Point >> #x;
+		addMethod: Point >> #y.
+	transliterator removeInstVar: 'x' in: 'Point'; transliterate.
+	extensions := module extendedClasses.
+	point := extensions first.
+	self
+		assert: extensions size equals: 1;
+		assert: point name equals: 'Point';
+		assert: point methods size equals: 1;
+		assert: point methods first selector equals: #y! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:23:58'!
+setUp 
+
+	module := ModuleSpec new name: 'TestModule'.
+	transliterator := ModuleTransliterator new module: module.
+	builder := self builderClass new module: module! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:24:10'!
+test001doNothing 
+
+	builder addMethod: ModuleTransliteratorTest >> #test001doNothing.
+	transliterator transliterate.
+	self
+		assert: module name equals: 'TestModule';
+		assert: module classes size equals: 0;
+		assert: module extendedClasses size equals: 1;
+		assert: module extendedClasses first name equals: 'ModuleTransliteratorTest'! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:24:24'!
+test002filterMethod 
+	| extensions class |
+	builder
+		addMethod: self class >> #test001doNothing;
+		addMethod: self class >> #test002filterMethod.
+	extensions := module extendedClasses.
+	class := extensions first.
+	transliterator
+		removeMethodsSuchThat: [:m | m selector beginsWith: 'test002'];
+		transliterate.
+	self
+		assert: module name equals: 'TestModule';
+		assert: extensions size equals: 1;
+		assert: class name equals: 'ModuleTransliteratorTest';
+		assert: class methods size equals: 1;
+		assert: class methods first selector equals: #test001doNothing! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:25:25'!
+test010removeClass 
+	| extensions test |
+	builder
+		addMethod: self class >> #test001doNothing;
+		addMethod: self class >> #test010removeClass;
+		addMethodCompiling: '& anInteger 	^self bitAnd: anInteger' in: LargePositiveInteger "LargeInteger";
+		addMethodCompiling: 'abs   ^self' in: LargePositiveInteger;
+		addClassDefinition: LargeNegativeInteger;
+		calculateDependencies.
+	transliterator removeClass: 'LargeInteger'; transliterate.
+	extensions := module extendedClasses.
+	test := extensions first.
+	self
+		assert: module classes size equals: 0;
+		assert: extensions size equals: 1;
+		assert: test name equals: 'ModuleTransliteratorTest';
+		assert: test methods size equals: 1;
+		assert: test methods first selector equals: #test001doNothing! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:26:05'!
+test030renameInstVar 
+	| extensions point x source |
+	builder
+		addMethod: Point >> #x;
+		addMethod: Point >> #y.
+	transliterator
+		renameIdentifier: 'x' to: 'z' class: 'Point';
+		transliterate.
+	extensions := module extendedClasses.
+	point := extensions first.
+	x := point methods first.
+	source := x ast statements first source.
+	self
+		assert: extensions size equals: 1;
+		assert: point name equals: 'Point';
+		assert: point instVarNames asArray equals: #('z' 'y');
+		assert: point methods size equals: 2;
+		assert: x selector equals: #x;
+		deny: (source includesString: 'x');
+		assert: (source includesString: 'z')! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:26:41'!
+test031renameClassVar 
+	| spec extensions source large method |
+	spec := builder addClassExtension: LargePositiveInteger.
+	spec cvarNames: #('Base' 'DigitLength').
+	builder
+		addMethodCompiling: 'digitAt: index put: integer
+	| valid |
+	valid := integer bitAnd: Base - 1.
+	self uShortAtOffset: index - 1 * DigitLength put: valid' in: LargePositiveInteger.
+	transliterator
+		renameIdentifier: 'Base' to: 'Foo' class: 'LargeInteger';
+		transliterate.
+	extensions := module extendedClasses.
+	large := extensions first.
+	method := large methods first.
+	source := method ast source.
+	self
+		assert: large classVarNames asArray sort equals: #('DigitLength' 'Foo');
+		deny: (source includesString: 'Base');
+		assert: (source includesString: 'Foo')! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:26:53'!
+test032renamePoolVar 
+	| spec pool extensions character method source |
+	spec := builder addClassExtension: Character.
+	pool := PoolDictionary new at: 'Cr' put: 1; yourself.
+	spec classVariables at: 'Characters' put: pool.
+	builder addMethodCompiling: 'cr	^Cr' in: Character class.
+	transliterator renameIdentifier: 'Cr' to: 'Foo'; transliterate.
+	extensions := module extendedClasses.
+	character := extensions first.
+	method := character metaclass methods first.
+	source := method ast source.
+	self
+		deny: (source includesString: 'Cr');
+		assert: (source includesString: 'Foo')! !
+
+!ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:27:04'!
+test033renameSharedPool 
+	| spec |
+	spec := builder addClassDefinition: Character.
+	spec sharedPools add: #CharacterConstants.
+	transliterator
+		renameIdentifier: 'CharacterConstants' to: 'Characters';
+		transliterate.
+	self
+		assert: module classes first sharedPools asArray sort equals: #(#'Characters')! !
 
 !ImageModuleBuilder methodsFor: 'accessing' stamp: 'KenD 3/29/2022 14:15:09'!
 module 
@@ -688,6 +905,51 @@ new
 
 	^ super new initialize! !
 
+!PharoModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 12:37:10'!
+addMethod: aCompiledMethod 
+	| class spec |
+	class := self ensureClass: aCompiledMethod methodClass instanceSide.
+	aCompiledMethod methodClass isMeta ifTrue: [class := class metaclass].
+	spec := self specFromMethod: aCompiledMethod species: class.
+	class addMethod: spec! !
+
+!PharoModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 12:37:22'!
+calculateDependencies 
+	| imports extensions |
+	self addSubclassifiedClasses.
+	imports := module requiredImports.
+	module addImports: imports keys.
+	extensions := Dictionary new.
+	module extendedClasses do: [:spec | 
+		Smalltalk at: spec name asSymbol ifPresent: [:class | | deps methods |
+			deps := extensions at: class package name ifAbsentPut: [Dictionary new].
+			methods := deps at: spec name ifAbsentPut: [OrderedCollection new].
+			methods addAll: spec methods]].
+	module addDependencies: extensions! !
+
+!PharoModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 12:37:35'!
+compilerFor: aSpeciesSpec 
+
+	^(SCompiler forClass: aSpeciesSpec) namespace: module! !
+
+!PharoModuleBuilder methodsFor: 'adding / removing' stamp: 'KenD 3/30/2022 12:37:46'!
+specFromClass: aClass 
+	| class metaclass n |
+	class := ClassSpec new.
+	metaclass := self specFromMetaclass: aClass class: class.
+	n := aClass superclass ifNotNil: [:s | s name].
+	class
+		module: module;
+		metaclass: metaclass;
+		name: aClass name;
+		supername: n;
+		ivars: aClass instVarNames asOrderedCollection;
+		cvars: aClass classPool;
+		sharedPools: aClass sharedPools.
+	aClass isVariable ifTrue: [class beArrayed].
+	aClass isBytes ifTrue: [class beBytes].
+	^class! !
+
 !ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 3/30/2022 10:04:56'!
 module 
 
@@ -821,6 +1083,11 @@ renameSelector: aString to: anotherString
 new 
 
 	^ super new initialize! !
+
+!RejectMethodRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:44:50'!
+scope: aBlock 
+
+	scope := aBlock! !
 
 !TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:23'!
 compatible: aBoolean 
@@ -1252,6 +1519,92 @@ applyToMethod: aMethodSpec
 	var sourceIntervals
 		reverseDo: [:s | code := code replace: original at: s start with: new].
 	aMethodSpec source: code! !
+
+!PackageRenameRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:43:48'!
+basicApplyTo: aModuleSpec 
+	| deps references |
+	aModuleSpec name = original ifTrue: [aModuleSpec name: new].
+	deps := aModuleSpec dependencies.
+	references := deps at: original ifAbsent: [^self].
+	deps
+		removeKey: original;
+		at: new put: references! !
+
+!SelectorRenameRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:48:27'!
+applyToMethod: aMethodSpec 
+	| ast found |
+	ast := aMethodSpec ast.
+	found := aMethodSpec selector == original.
+	found ifTrue: [
+		aMethodSpec selector: new.
+		ast selectorNode symbol: new].
+	ast
+		messagesDo: [:m | m selector symbol == original ifTrue: [found := true]].
+	found ifFalse: [^self].
+	ast replaceSelector: original with: new.
+	aMethodSpec source: ast format! !
+
+!SelectorRenameRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:48:41'!
+basicApplyTo: aModuleSpec 
+
+	aModuleSpec allMethodsDo: [:m | self applyToMethod: m]! !
+
+!PackageRemoveRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:42:21'!
+name: aString 
+
+	name := aString! !
+
+!PackageRemoveRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:42:08'!
+basicApplyTo: aModuleSpec 
+	| dict |
+	dict := aModuleSpec dependencies at: name ifAbsent: [^self].
+	dict do: [:refs | 
+		refs do: [:ref | 
+			ref class == MethodSpec ifTrue: [aModuleSpec removeMethod: ref].
+			ref class == ClassSpec ifTrue: [aModuleSpec removeClass: ref]]].
+	aModuleSpec dependencies removeKey: name! !
+
+!PackageRemoveRule class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 12:42:51'!
+name: aString 
+
+	^ self new name: aString! !
+
+!RemoveInstVarRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:47:04'!
+classname 
+
+	^ classname! !
+
+!RemoveInstVarRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:47:13'!
+classname: aString 
+
+	classname := aString! !
+
+!RemoveInstVarRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:47:26'!
+ivar
+
+	^ ivar! !
+
+!RemoveInstVarRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:47:35'!
+ivar: aString 
+
+	ivar := aString! !
+
+!RemoveInstVarRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:46:48'!
+basicApplyTo: aModuleSpec 
+	| class all |
+	class := aModuleSpec resolveClass: classname.
+	class ifNil: [^self].
+	all := aModuleSpec withAllSubclasses: class.
+	all do: [:c | 
+		c methods copy
+			select: [:m | m usesInstanceVariableNamed: ivar]
+			thenDo: [:m | aModuleSpec removeMethod: m]].
+	class instVarNames remove: ivar ifAbsent: nil.! !
+
+!RemoveInstVarRule methodsFor: 'private' stamp: 'KenD 3/30/2022 12:46:27'!
+named: aString in: aClassname 
+
+	^ self new ivar: aString; classname: aClassname! !
 
 !TransliterationScope methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:59:33'!
 class: aString 
@@ -1938,3 +2291,8 @@ supername
 isMetaclass 
 
 	^ true! !
+
+!Compiler methodsFor: '*Bee-CodeSpecs-Porting' stamp: 'KenD 3/30/2022 12:29:16'!
+parseMethod: aString 
+
+	^ self parse: aString! !
