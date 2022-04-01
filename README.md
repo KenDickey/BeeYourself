@@ -117,4 +117,10 @@ SCompiler compile:  'foo [true ifTrue: [^self]]' in: UndefinedObject.
 (SCompiler forClass: UndefinedObject) smalltalkCompiler  compileMethod:   'foo [true ifTrue: [^self]]' .
 ```
 
+## Licences
+
+- See LICENCES directory: Acuerna, JavierPimas (Quorum Software) and Cuis -- all MIT.
+- Packages typically specify copyright but unspecified => Cuis.
+
 ** "What is a System?  Simply a set of things that are interconnected in ways that produce distinct patterns of behavior." _Doughnut Economics_, Kate Raworth.
+
