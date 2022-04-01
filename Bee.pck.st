@@ -1,6 +1,8 @@
-'From Cuis 6.0 [latest update: #5095] on 30 March 2022 at 12:49:15 pm'!
-'Description Bee Transliterator'!
-!provides: 'Bee' 1 7!
+'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:19:24 am'!
+'Description Bee Transliterator
+
+Original code Copyright LICENCES/JavierPimas'!
+!provides: 'Bee' 1 8!
 !requires: 'BeeCompatibility' 1 4 nil!
 SystemOrganization addCategory: 'Bee-CodeSpecs-Porting'!
 SystemOrganization addCategory: 'Bee-CodeSpecs'!

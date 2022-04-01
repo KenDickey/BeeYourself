@@ -1,7 +1,9 @@
-'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 12:48:19 pm'!
+'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:20:35 am'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
-See https://github.com/powerlang/bee-dmr/tree/master/PetitParser'!
-!provides: 'BeePParser' 1 17!
+See https://github.com/powerlang/bee-dmr/tree/master/PetitParser
+
+Original code Copyright LICENCES/Acuerna'!
+!provides: 'BeePParser' 1 18!
 !requires: 'PetitParser' 1 2 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!

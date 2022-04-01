@@ -1,6 +1,8 @@
-'From Cuis 5.0 [latest update: #4687] on 26 August 2021 at 12:00:46 pm'!
-'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.'!
-!provides: 'PowerLang' 1 77!
+'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:21:05 am'!
+'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
+
+Original code Copyright LICENCES/Acuerna'!
+!provides: 'PowerLang' 1 78!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
