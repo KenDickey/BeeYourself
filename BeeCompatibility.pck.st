@@ -1,36 +1,36 @@
-'From Cuis 5.0 [latest update: #4638] on 18 June 2021 at 12:55:21 pm'!
+'From Cuis 6.0 [latest update: #5107] on 19 April 2022 at 3:23:02 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 4!
-SystemOrganization addCategory: #BeeCompatibility!
+!provides: 'BeeCompatibility' 1 9!
+SystemOrganization addCategory: 'BeeCompatibility'!
 
 
-!classDefinition: #PSharedPool category: #BeeCompatibility!
+!classDefinition: #PSharedPool category: 'BeeCompatibility'!
 SharedPool subclass: #PSharedPool
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeeCompatibility'!
-!classDefinition: 'PSharedPool class' category: #BeeCompatibility!
+!classDefinition: 'PSharedPool class' category: 'BeeCompatibility'!
 PSharedPool class
 	instanceVariableNames: ''!
 
-!classDefinition: #Stretch category: #BeeCompatibility!
+!classDefinition: #Stretch category: 'BeeCompatibility'!
 Object subclass: #Stretch
 	instanceVariableNames: 'start end'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeeCompatibility'!
-!classDefinition: 'Stretch class' category: #BeeCompatibility!
+!classDefinition: 'Stretch class' category: 'BeeCompatibility'!
 Stretch class
 	instanceVariableNames: ''!
 
-!classDefinition: #TargetOSPlatform category: #BeeCompatibility!
+!classDefinition: #TargetOSPlatform category: 'BeeCompatibility'!
 Object subclass: #TargetOSPlatform
 	instanceVariableNames: ''
 	classVariableNames: 'CPU OS WordSizeInBits'
 	poolDictionaries: ''
 	category: 'BeeCompatibility'!
-!classDefinition: 'TargetOSPlatform class' category: #BeeCompatibility!
+!classDefinition: 'TargetOSPlatform class' category: 'BeeCompatibility'!
 TargetOSPlatform class
 	instanceVariableNames: ''!
 
@@ -231,4 +231,88 @@ targetWordSizeInBits
 current
 
 	^self new initialize.! !
+
+!False methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 10:55:15'!
+and: block1 andNot: block2 
+
+	^ self! !
+
+!False methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 10:54:53'!
+andNot: aBlock 
+
+	^ self! !
+
+!False methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 11:00:52'!
+asParameter 
+	"Answer machine value for falsity"
+	^ 0! !
+
+!True methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 10:57:00'!
+andNot: aBlock 
+	
+	^ aBlock value not! !
+
+!True methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 10:59:03'!
+asParameter 
+	"Answer machine value for truth"
+	^ 1! !
+
+!UndefinedObject methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 11:02:35'!
+asParameter 
+	"Answer machine value for 'no value'"
+	^ 0! !
+
+!Behavior methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:24:21'!
+_instancesAreArrayed
+
+	^ self isVariable ! !
+
+!Behavior methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:23:46'!
+_instancesHavePointers
+
+	^ self isPointers ! !
+
+!String methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 10:43:38'!
+arity
+	"Answer number of arguments I have as a selector or -1"
+	^ self numArgs! !
+
+!String methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 12:25:55'!
+trimBlanks
+
+	^ self withBlanksTrimmed! !
+
+!Array methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:44:01'!
+& otherArray
+	| combinedArray offset |
+	combinedArray := Array new: (self size + otherArray size).
+	1 to: self size do: [ :index | combinedArray at: index put: (self at: index) ].
+	offset := self size.
+	1 to: otherArray size do: [ :index | combinedArray at: index + offset put: (otherArray at: index) ].
+	^ combinedArray! !
+
+!CompiledMethod methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 15:02:12'!
+classBinding
+
+	^ self methodClass! !
+
+!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:49:24'!
+copyFrom: start to: finish
+
+	^ collection copyFrom: start to: finish! !
+
+!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 15:21:39'!
+nextWordOrNumber
+	"Take next non-separators as a 'word' and return it"
+	| word |
+	word := ''.
+	[self atEnd]
+		whileFalse:
+		[| aChar |
+		aChar := self next.
+		aChar isSeparator 
+			ifTrue: [ word := word , aChar asString ]
+			ifFalse: [^ self position: self position-1]
+		].
+	^ word! !
 TargetOSPlatform initialize!
