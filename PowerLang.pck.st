@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:21:05 am'!
+'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 8:58:43 am'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 78!
+!provides: 'PowerLang' 1 79!
 !requires: 'Cuis-Base' 50 4624 nil!
 !requires: 'PetitTests' 1 2 nil!
 !requires: 'PetitParser' 1 14 nil!
@@ -43941,37 +43941,6 @@ primitivePrintString
 
 	^self printString! !
 
-!Boolean methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 07:04:59'!
-andNot: aBlock
-
-	self subclassResponsibility ! !
-
-!Boolean methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:40:34'!
-isBoolean 
-
-	^ true! !
-
-!False methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:39:02'!
-and: block1 andNot: block2 
-
-	^self! !
-
-!False methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 07:05:27'!
-andNot: aBlock
-
-	^ self! !
-
-!True methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:37:43'!
-and: block1 andNot: block2 
-
-	^block1 value andNot: [block2 value]! !
-
-!True methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:37:54'!
-andNot: aBlock 
-
-	^aBlock value not
-! !
-
 !Behavior methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:51:39'!
 configureCompiler: aCompiler! !
 
@@ -44110,27 +44079,6 @@ isSmallInteger
 
 	^ true! !
 
-!Character methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:44:43'!
-isHexDigit 
-
-	^self isDigit or: [self between: $a and: $f] or: [self between: $A and: $F]! !
-
-!Character methodsFor: '*powerlang-core' stamp: 'KenD 5/31/2021 08:03:14'!
-split: aString
-	"Answer a collection of Strings split at self -- include empty strings"
-	| delimiter parts keyStart keyStop |
-	delimiter := self asString.
-	parts _ OrderedCollection new.
-	keyStop _ 1.
-	keyStart _ 1.
-	[keyStop <= aString size] whileTrue:
-		[keyStop _ aString findDelimiters: delimiter startingAt: keyStart.
-		 (keyStart < keyStop)
-			ifTrue: [parts add: (aString copyFrom: keyStart to: (keyStop - 1))]
-			ifFalse: [parts add: ''].
-		keyStart := keyStop + 1].
-	^parts! !
-
 !Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:48:46'!
 anyone 
 
@@ -44197,98 +44145,10 @@ with: anObject withAll: aCollection
 		replaceFrom: 2 to: newArray size  with: aCollection.
 	^newArray ! !
 
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:01'!
-arity 
-
-	^self numArgs! !
-
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/28/2021 19:44:35'!
-asInteger
-
-	| stream |
- 	stream := self readStream.
- 	[(stream atEnd not) and: [stream peek isDigit not]]
- 		whileTrue: [ stream next ]. "Skip leading whitespace"
-	^Integer readFrom: stream! !
-
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:12'!
-existingSymbol 
-
-	^Symbol findInterned: self! !
-
-!String methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 4/25/2021 07:43:45'!
-includesString: subString
-
-	^(self findString: subString) ~= 0! !
-
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:53:45'!
-indexOfString: aString from: start to: stop 
-	| n limit base i |
-	n := aString size.
-	limit := stop - n.
-	base := start - 1.
-	i := 1.
-	[
-		base > limit ifTrue: [^0].
-		i <= n]
-		whileTrue: [
-			i := (self at: base + i) = (aString at: i) ifTrue: [i + 1] ifFalse: [
-				base := base + 1.
-				1]].
-	^i > 1 ifTrue: [base + 1] ifFalse: [0]! !
-
-!String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:54:02'!
-indexOfSubcollection: aCollection startingAt: anInteger 
-	| m n i first |
-	m := aCollection size.
-	m = 0 ifTrue: [^0].
-	n := self size - m + 1.
-	i := anInteger.
-	first := aCollection at: 1.
-	[i <= n] whileTrue: [| j |
-		(self at: i) = first ifTrue: [
-			j := 2.
-			[j <= m and: [(self at: i + j - 1) = (aCollection at: j)]]
-				whileTrue: [j := j + 1].
-			j > m ifTrue: [^i]].
-		i := i + 1].
-	^0! !
-
 !String methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:54:19'!
 reduced 
 
 	^self! !
-
-!String methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:49:25'!
-replaceAllSubstrings: aString with: anotherString
-"
-  'This-and-that-and-the-Other' replaceAllSubstrings: '-a' with: '_A'.
-  ==> 'This_And-that_And-the-Other' 
-"
-	| string strm index fragment n |
-	string := aString asString.
-	string isEmpty ifTrue: [^self].
-	index := self findString: string.
-	index = 0 ifTrue: [^self].
-	strm := self asString class new writeStream.
-	fragment := self copyFrom: 1 to: index - 1.
-	strm nextPutAll: fragment.
-	n := string size.
-	[index > 0] whileTrue: [| next limit |
-		next :=  self  findSubstring: string
-					in: self  
-					startingAt: index + n 
-					matchTable: CaseSensitiveOrder.
-		limit := next = 0 ifTrue: [self size + 1] ifFalse: [next].
-		fragment := self copyFrom: index + n - 1 + 1 to: limit - 1.
-		strm nextPutAll: anotherString; nextPutAll: fragment.
-		index := next].
-	^strm contents! !
-
-!String methodsFor: '*powerlang-core' stamp: 'Install-PowerLang 5/30/2021 14:25:33'!
-trimBlanks
-
-	^self withBlanksTrimmed! !
 
 !Symbol methodsFor: '*powerlang-core' stamp: 'KenD 6/3/2021 13:53:01'!
 isBinary 
