@@ -1,9 +1,10 @@
-'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:20:35 am'!
+'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 9:58:29 am'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
 See https://github.com/powerlang/bee-dmr/tree/master/PetitParser
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'BeePParser' 1 18!
+!provides: 'BeePParser' 1 19!
+!requires: 'BeeCompatibility' 1 11 nil!
 !requires: 'PetitParser' 1 2 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!
@@ -387,11 +388,6 @@ parseOn: aStream
 !PPSequencedChoiceParser methodsFor: 'operations' stamp: 'KenD 2/12/2021 08:58:01'!
 & aRule 
 	^self copyWith: aRule! !
-
-!Character methodsFor: '*BeePParser' stamp: 'KenD 2/16/2021 12:39:58'!
-isASCIILetter
-
-	^'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' includes: self! !
 
 !Character methodsFor: '*BeePParser' stamp: 'KenD 2/9/2021 15:52:41'!
 parserTo: aCharacter 

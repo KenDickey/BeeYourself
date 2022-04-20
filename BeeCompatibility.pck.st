@@ -1,7 +1,7 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 8:58:53 am'!
+'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 9:58:17 am'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 10!
-!requires: 'SqueakCompatibility' 1 34 nil!
+!provides: 'BeeCompatibility' 1 11!
+!requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 
 
@@ -289,10 +289,15 @@ _instancesHavePointers
 
 	^ self isPointers ! !
 
-!Character methodsFor: '*BeeCompatibility' stamp: 'KenD 6/2/2021 12:44:43'!
-isHexDigit 
+!Character methodsFor: '*BeeCompatibility' stamp: 'KenD 2/16/2021 12:39:58'!
+isASCIILetter
 
-	^self isDigit or: [self between: $a and: $f] or: [self between: $A and: $F]! !
+	^'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' includes: self! !
+
+!Character methodsFor: '*BeeCompatibility' stamp: 'KenD 2/14/2021 18:46:33'!
+isHexDigit
+
+	^'0123456789abcdefABCDEF' includes: self! !
 
 !Character methodsFor: '*BeeCompatibility' stamp: 'KenD 5/31/2021 08:03:14'!
 split: aString
