@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 9:58:17 am'!
+'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 12:52:32 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 11!
+!provides: 'BeeCompatibility' 1 12!
 !requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 

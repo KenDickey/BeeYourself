@@ -1,7 +1,7 @@
-'From Cuis 5.0 [latest update: #4530] on 16 February 2021 at 12:48:15 pm'!
+'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 12:52:25 pm'!
 'Description See http://scg.unibe.ch/research/helvetia/petitparser'!
-!provides: 'PetitParser' 1 14!
-!requires: 'SqueakCompatibility' 1 27 nil!
+!provides: 'PetitParser' 1 16!
+!requires: 'BeeCompatibility' 1 12 nil!
 SystemOrganization addCategory: 'PetitParser-Core'!
 SystemOrganization addCategory: 'PetitParser-Tools'!
 SystemOrganization addCategory: 'PetitParser-Parsers'!
@@ -2428,11 +2428,6 @@ asParser
 	"Answer a parser that accepts the receiving character."
 	
 	^ PPLiteralObjectParser on: self! !
-
-!Character methodsFor: '*petitparser-core-operators' stamp: 'KenD 2/14/2021 18:46:33'!
-isHexDigit
-
-	^'0123456789abcdefABCDEF' includes: self! !
 
 !BlockClosure methodsFor: '*petitparser-core-converting' stamp: 'lr 11/29/2011 20:48'!
 asParser
