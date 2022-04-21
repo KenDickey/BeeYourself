@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 12:52:32 pm'!
+'From Cuis 6.0 [latest update: #5107] on 21 April 2022 at 8:46:50 am'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 12!
+!provides: 'BeeCompatibility' 1 13!
 !requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 
@@ -408,12 +408,12 @@ classBinding
 
 	^ self methodClass! !
 
-!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:49:24'!
+!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 07:59:56'!
 copyFrom: start to: finish
 
-	^ collection copyFrom: start to: finish! !
+	^ collection copyFrom: start to: (finish min: readLimit)! !
 
-!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 15:21:39'!
+!PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/20/2022 14:23:38'!
 nextWordOrNumber
 	"Take next non-separators as a 'word' and return it"
 	| word |
@@ -423,8 +423,8 @@ nextWordOrNumber
 		[| aChar |
 		aChar := self next.
 		aChar isSeparator 
-			ifTrue: [ word := word , aChar asString ]
-			ifFalse: [^ self position: self position-1]
+			ifFalse: [ word := word , aChar asString ]
+			ifTrue: [ self position: self position-1. ^ word ]
 		].
 	^ word! !
 TargetOSPlatform initialize!
