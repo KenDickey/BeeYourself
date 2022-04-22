@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 22 April 2022 at 3:30:55 pm'!
+'From Cuis 6.0 [latest update: #5107] on 22 April 2022 at 4:18:57 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 16!
+!provides: 'BeeCompatibility' 1 17!
 !requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 
@@ -289,6 +289,11 @@ _instancesHavePointers
 
 	^ self isPointers ! !
 
+!Metaclass methodsFor: '*BeeCompatibility' stamp: 'KenD 4/22/2022 16:14:43'!
+isMetaclass
+
+	^ self isMeta ! !
+
 !Character methodsFor: '*BeeCompatibility' stamp: 'KenD 2/16/2021 12:39:58'!
 isASCIILetter
 
@@ -412,6 +417,13 @@ withoutSeparators
 	offset := self size.
 	1 to: otherArray size do: [ :index | combinedArray at: index + offset put: (otherArray at: index) ].
 	^ combinedArray! !
+
+!Array methodsFor: '*BeeCompatibility' stamp: 'KenD 4/22/2022 16:12:51'!
+collect: aBlock in: aCollection
+
+	1 to: self size do:
+		[:index | aCollection add: (aBlock value: (self at: index))].
+	^ aCollection! !
 
 !CompiledMethod methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 15:02:12'!
 classBinding
