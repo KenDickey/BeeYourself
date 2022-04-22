@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 21 April 2022 at 6:10:26 pm'!
+'From Cuis 6.0 [latest update: #5107] on 22 April 2022 at 3:30:55 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 14!
+!provides: 'BeeCompatibility' 1 16!
 !requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 
@@ -394,6 +394,16 @@ trimBlanks
 
 	^self withBlanksTrimmed! !
 
+!String methodsFor: '*BeeCompatibility' stamp: 'KenD 4/22/2022 15:27:34'!
+withoutLineSeparators
+	
+	^self reject: [ :aCharacter | aCharacter isLineSeparator ]! !
+
+!String methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 12:34:22'!
+withoutSeparators
+	
+	^self reject: [ :aCharacter | aCharacter isSeparator ]! !
+
 !Array methodsFor: '*BeeCompatibility' stamp: 'KenD 4/19/2022 14:44:01'!
 & otherArray
 	| combinedArray offset |
@@ -408,9 +418,9 @@ classBinding
 
 	^ self methodClass! !
 
-!CompiledMethod methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 12:39:38'!
+!CompiledMethod methodsFor: '*BeeCompatibility' stamp: 'KenD 4/22/2022 14:44:37'!
 source
-
+	"Answer source for method, including the signature"
 	^ self getSource ! !
 
 !PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 07:59:56'!
