@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 21 April 2022 at 8:46:50 am'!
+'From Cuis 6.0 [latest update: #5107] on 21 April 2022 at 6:10:26 pm'!
 'Description Bee compatibile!!'!
-!provides: 'BeeCompatibility' 1 13!
+!provides: 'BeeCompatibility' 1 14!
 !requires: 'SqueakCompatibility' 1 30 nil!
 SystemOrganization addCategory: 'BeeCompatibility'!
 
@@ -407,6 +407,11 @@ trimBlanks
 classBinding
 
 	^ self methodClass! !
+
+!CompiledMethod methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 12:39:38'!
+source
+
+	^ self getSource ! !
 
 !PositionableStream methodsFor: '*BeeCompatibility' stamp: 'KenD 4/21/2022 07:59:56'!
 copyFrom: start to: finish
