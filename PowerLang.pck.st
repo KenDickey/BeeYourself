@@ -1,14 +1,12 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 8:58:43 am'!
+'From Cuis 6.0 [latest update: #5130] on 2 May 2022 at 12:39:54 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 79!
-!requires: 'Cuis-Base' 50 4624 nil!
-!requires: 'PetitTests' 1 2 nil!
-!requires: 'PetitParser' 1 14 nil!
-!requires: 'BeePParser' 1 17 nil!
+!provides: 'PowerLang' 1 80!
 !requires: 'BeeCompatibility' 1 2 nil!
-!requires: 'Ring2' 1 1 nil!
+!requires: 'Cuis-Base' 60 5130 nil!
+!requires: 'CodeSpecs' 1 1 nil!
+!requires: 'BeePParser' 1 17 nil!
 SystemOrganization addCategory: 'Powerlang-Core'!
 SystemOrganization addCategory: 'Powerlang-Compatibility-Pharo'!
 SystemOrganization addCategory: 'Powerlang-Core-Assembler-Intel'!
@@ -3895,894 +3893,6 @@ Copyright (c) 2020 Aucerna.
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
-format 
-
-	^format! !
-
-!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:49:58'!
-printOn: aStream 
-
-	aStream nextPutAll: self classBinding name; nextPutAll: '>>'; print: selector; newLine.
-	source
-		ifNotNil: [ aStream
-				newLine;
-				nextPutAll: source ]! !
-
-!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:31'!
-compile: aString 
-
-	^self compile: aString in: UndefinedObject! !
-
-!ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
-printOn: aStream 
-
-	aStream nextPutAll: mnemonic.
-	operands isNil ifTrue: [^self].
-	operands
-		do: [:op | aStream space; nextPutAll: op asString]
-		separatedBy: [aStream nextPut: $,]! !
-
-!ISAImmediate methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:03:25'!
-printOn: aStream 
-	| v |
-	v := value isNil ifTrue: ['???'] ifFalse: [value hex].
-	aStream nextPutAll: v! !
-
-!MemoryOperand methodsFor: 'printing' stamp: 'KenD 3/19/2021 16:39:24'!
-printOn: aStream 
-	| sign displ |
-	aStream nextPutAll: self lengthString; nextPutAll: ' ['.
-	segment notNil ifTrue: [
-		segment printOn: aStream.
-		aStream nextPut: $:].
-	base notNil ifTrue: [base printOn: aStream].
-	index notNil ifTrue: [
-		base notNil ifTrue: [aStream nextPutAll: ' + '].
-		index printOn: aStream.
-		scale isNil
-			ifFalse: [aStream nextPutAll: ' * '; nextPutAll: scale asString]].
-	displ := self displacementValue.
-	displ !!= 0 ifTrue: [
-		(base notNil or: [index notNil]) ifTrue: [
-			sign := displ > 0 ifTrue: [' + '] ifFalse: [' - '].
-			aStream nextPutAll: sign].
-		aStream nextPutAll: '0x'; nextPutAll: displ abs hex].
-	aStream nextPut: $]! !
-
-!Register methodsFor: 'accessing' stamp: 'KenD 6/16/2021 12:30:24'!
-name 
-
-	^name asLowercase ! !
-
-!Register methodsFor: 'printing' stamp: 'KenD 3/28/2021 15:25:31'!
-printOn: aStream 
-
-	name isNil ifTrue: [^super printOn: aStream].
-	aStream nextPutAll: name! !
-
-!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:36:29'!
-name 
-
-	^type! !
-
-!ISAOperandType methodsFor: 'printing' stamp: 'Install-PowerLang 5/31/2021 12:38:01'!
-printOn: aStream 
-	aStream nextPutAll: type! !
-
-!InstructionPrefix methodsFor: 'printing' stamp: 'KenD 2/27/2021 13:15:20'!
-printOn: aStream 
-
-	(name includes: Character space)
-		ifTrue: [
-			aStream
-				nextPut: ${;
-				nextPutAll: name;
-				nextPut: $}]
-		ifFalse: [aStream nextPutAll: name]! !
-
-!InstructionPrefix methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:14:47'!
-name 
-
-	^name! !
-
-!VEXPrefix methodsFor: 'printing' stamp: 'KenD 5/30/2021 12:20:49'!
-printOn: aStream 
-
-	signature isNil ifTrue: [^super printOn: aStream].
-	signature
-		do: [:s | aStream nextPutAll: s]
-		separatedBy: [aStream nextPut: $.]! !
-
-!InstructionSpec methodsFor: 'printing' stamp: 'KenD 3/7/2021 13:16:59'!
-printOn: aStream 
-
-	instruction isNil ifTrue: [^super printOn: aStream].
-	aStream nextPutAll: instruction! !
-
-!OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:34:55'!
-name 
-
-	^name! !
-
-!OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:36:17'!
-selectors 
-
-	^selectors! !
-
-!OperandEncoding methodsFor: 'printing' stamp: 'KenD 4/25/2021 11:36:00'!
-printOn: aStream 
-
-	name isNil ifTrue: [^super printOn: aStream].
-	aStream nextPutAll: name! !
-
-!Assembler64 methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:00'!
-printOn: aStream 
-
-	aStream print: self class; newLine; newLine;
-		nextPutAll: memory bytes disassembledAmd64! !
-
-!NativeCodeReference methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:18:27'!
-printOn: aStream 
-
-	aStream nextPutAll: 'Ref to '; print: target! !
-
-!RelocationFixup methodsFor: 'printing' stamp: 'KenD 4/24/2021 12:46:29'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: self class name;
-		nextPut: $:;
-		space;
-		nextPutAll: target printString! !
-
-!ISAOpcodeReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:38:44'!
-printOn: aStream 
-
-	contents contents
-		do: [:byte | aStream nextPutAll: byte hex]
-		separatedBy: [aStream nextPut: $.]
-! !
-
-!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:47'!
-printOn: aStream 
-
-	self printLegacyOn: aStream.
-	legacy size > 0 ifTrue: [aStream space].
-	rex notNil ifTrue: [
-		self printRexOn: aStream.
-		aStream space].
-	vex notNil ifTrue: [self printVexOn: aStream]! !
-
-!ISAInstructionReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:33:03'!
-printOn: aStream 
-
-	aStream nextPutAll: prefixes.
-	prefixes size > 0 ifTrue: [aStream nextPutAll: '| '].
-	aStream nextPutAll: opcode.
-	aStream nextPutAll: ' | '.
-	modrm notNil ifTrue: [modrm printOn: aStream].
-	sib notNil ifTrue: [
-		aStream nextPutAll: ' | '.
-		sib printOn: aStream].
-	displacement notNil ifTrue: [
-		aStream nextPutAll: ' |'.
-		displacement do: [:byte | | hex |
-			hex := byte hex.
-			hex size = 1 ifTrue: [hex := '0' , hex].
-			aStream space; nextPutAll: hex]].
-	immediate notNil ifTrue: [
-		aStream nextPutAll: ' |'.
-		immediate do: [:byte | | hex |
-			hex := byte hex.
-			hex size = 1 ifTrue: [hex := '0' , hex].
-			aStream space; nextPutAll: hex]]
-! !
-
-!OctalStructure methodsFor: 'printing' stamp: 'KenD 6/17/2021 13:45:08'!
-printOn: aStream 
-"	| hi mid lo |
-	hi := self hi printPaddedWith: $0 to: 2 base: 2.
-	mid := self mid printPaddedWith: $0 to: 3 base: 2.
-	lo := self lo printPaddedWith: $0 to: 3 base: 2.
-	aStream
-		nextPutAll: hi;
-		nextPut: $.;
-		nextPutAll: mid;
-		nextPut: $.;
-		nextPutAll: lo"
-	self hi printOn: aStream base: 2 length: 2 padded: true.
-	aStream nextPut: $. .
-	self mid printOn: aStream base: 2 length: 3 padded: true. 
-	aStream nextPut: $. .
-	self lo printOn: aStream base: 2 length: 3 padded: true.! !
-
-!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
-methods 
-
-	^methods! !
-
-!ImageSegmentBuilder methodsFor: 'compiling' stamp: 'KenD 3/4/2021 08:16:47'!
-compile: anRGMethod 
-
-	^runtime compile: anRGMethod! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:27:12'!
->> aSymbol 
-
-	^bootstrapper spec at: aSymbol! !
-
-!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
-methods 
-
-	^methods! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
-isBytes 
-
-	^ false! !
-
-!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:00'!
-isPointers 
-
-	^ false! !
-
-!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
-printOn: aStream 
-
-	spec ifNil: [ ^ super printOn: aStream ].
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: self contentsString;
-		nextPutAll: '>>'! !
-
-!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
-isBytes 
-
-	^true! !
-
-!SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: spec name withArticle;
-		nextPutAll: '>>'! !
-
-!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:50:51'!
-isPointers 
-
-	^true! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:22'!
-allInstVarNames 
-
-	| c |
-	^ spec properties
-		at: #allInstVarNames
-		ifAbsentPut: [ spec isMeta
-				ifTrue: [ c := spec environment at: #Class.
-					c allInstVarNames , spec allInstVarNames ]
-				ifFalse: [ spec allInstVarNames ] ]! !
-
-!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:50:36'!
-instSize 
-
-	| c |
-	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
-		ifTrue: [ c := spec environment at: #Class.
-			
-			c instSize + spec instSize ]
-		ifFalse: [ spec instSize ]]! !
-
-!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:58:39'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: value printString;
-		nextPutAll: '>>'! !
-
-!SmalltalkBootstrapper methodsFor: 'services' stamp: 'KenD 3/2/2021 13:03:02'!
-compile: anRGMethod 
-
-	^builder compile: anRGMethod! !
-
-!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:28'!
-printOn: aStream 
-
- 	self backtrace
-		do: [ :frame | 
-			frame do: [ :elem | elem printOn: aStream ]
-				   separatedBy: [ aStream nextPutAll: '. ' ].
-			aStream newLine ]
-! !
-
-!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:57:32'!
-compile: anRGMethod 
-	| compiler spec class |
-	compiler := SCompiler namespace: globals.
-	spec := anRGMethod parent.
-	class := self virtualSpeciesFor: spec.
-	^ compiler
-		forClass: class;
-		compile: anRGMethod sourceCode! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
-allSharedPoolsUsing: globals 
-	| pools class |
-	pools := Set new.
-	class := self.
-	[ class isNil ]
-		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
-			class := class superclass ].
-	^ pools! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
-name 
-
-	^spec name! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:11'!
-superclass 
-
-	^superclass! !
-
-!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:20'!
-superclass: aVirtualClass 
-
-	superclass := aVirtualClass! !
-
-!VirtualSpecies methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:41:37'!
-printOn: aStream 
-
-	aStream nextPut: $<; print: spec; nextPut: $>! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:12'!
-allInstVarNames 
-
-	^ spec allInstVarNames! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:54'!
-classPool 
-
-	^cvars ! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:46'!
-instanceSide 
-
-	^ self! !
-
-!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
-localPools 
-	| pools dict name pool |
-	pools := cvars associations
-		select: [ :assoc | assoc value spec name = #PoolDictionary ].
-	dict := Dictionary new.
-	pools
-		do: [ :assoc | 
-			name := assoc key asString.
-			pool := assoc value.
-			dict at: name put: (VirtualDictionary fromPool: pool) ].
-	^ dict! !
-
-!VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
-withAllSuperclasses 
-
-	^ superclass ifNil:
-	 [ OrderedCollection with: self ]
-		ifNotNil:  [ superclass withAllSuperclasses
-				addFirst: self;
-				yourself ]! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:18'!
-classPool 
-
-	^ class classPool! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:50'!
-instanceSide 
-
-	^class! !
-
-!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
-localPools 
-
-	^ class localPools! !
-
-!VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
-allInstVarNames 
-
-	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
-
-!MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
-printOn: aStream 
-
-	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
-
-!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:14'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
-
-!ObjectHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:48'!
-printOn: aStream 
-	| format size bytes |
-	format := runtime objectFormat.
-	format print: oid on: aStream.
-	self isBytes
-		ifFalse: [ ^ self ].
-	size := self size min: 128.
-	size < 30
-		ifTrue: [ aStream nextPutAll: ': ' ]
-		ifFalse: [ aStream newLine ].
-	bytes := format bytesOf: oid count: size.
-	aStream print: bytes
-! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:04'!
-isBytes 
-
-	^runtime objectFormat isBytes: oid! !
-
-!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:14'!
-isFixed 
-
-	^self isArrayed not! !
-
-!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:55'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
-
-!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
-compile: anRGMethod 
-	| compiler method |
-	compiler := SCompiler namespace: globals.
-	method := compiler
-		forClass: anRGMethod parent;
-		compile: anRGMethod sourceCode.
-	^ method! !
-
-!ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
-printOn: aStream 
-
-	aStream nextPutAll: 'Shape of '; nextPutAll: name! !
-
-!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:24:03'!
-name 
-
-	^name! !
-
-!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:45:57'!
-printOn: aStream 
-	aStream
-		nextPutAll: self class name withArticle;
-		newLine;
-		print: method classBinding;
-		nextPutAll: '>>';
-		print: method selector;
-		newLine.
-	aStream
-		nextPutAll: 'rcvr -> ';
-		print: receiver _gate handle;
-		newLine.
-	arguments
-		withIndexDo: [ :a :i | 
-			aStream
-				nextPutAll: 'arg ';
-				print: i;
-				nextPutAll: ' -> ';
-				print: a _gate;
-				newLine ].
-	aStream nextPutAll: method source! !
-
-!ObjectMirror methodsFor: 'printing' stamp: 'KenD 2/27/2021 09:10:14'!
-printOn: aStream 
-	| description |
-	self reflectsInteger
-		ifTrue: [ ^ aStream
-				nextPutAll: 'SMI (';
-				print: self asLocalInteger;
-				nextPut: $) ].
-	description := [ self reflectedClass localName withArticle ]
-		on: Error
-		do: [ 'broken class' ].
-	aStream
-		nextPutAll:
-			self class name withArticle , '(' , handle printString , ', '
-				, description , ')'! !
-
-!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
-methodDictionary 
-	| slot |
-	slot := handle slotAt: 1.
-	^self methodDictionaryMirrorOn: slot! !
-
-!CompiledMethodMirror methodsFor: 'printing' stamp: 'KenD 3/2/2021 12:36:32'!
-printOn: aStream 
-	| signature |
-	signature := ([ self fullName ]
-						on: StorageReadError
-						do: [ handle printString ]).
-	aStream
-		nextPutAll:
-			'a CMMirror ('
-			; nextPutAll: signature; nextPut: $)! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:33:14'!
-allInstVarNames 
-
-	^(self withAllSuperclasses reversed 
-		gather: [:class | class instVarNames]) asArray! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:34:21'!
-allSuperclasses 
-	| superclasses |
-	superclasses := OrderedCollection new.
-	self allSuperclassesDo: [:s | superclasses add: s].
-	^superclasses! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
-indexOfSlot: name 
-	| instVars |
-	instVars := self allInstVarNames.
-	^instVars indexOf: name ifAbsent: 0! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:58'!
-superclass 
-	| name |
-	name := self getInstVarNamed: #superclass.
-	^name asSpeciesMirror! !
-
-!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:39:22'!
-withAllSuperclasses 
-
-	^ OrderedCollection new
-		add: self;
-		addAll: self allSuperclasses; yourself! !
-
-!SpeciesMirror methodsFor: 'iterating' stamp: 'KenD 3/1/2021 16:34:37'!
-allSuperclassesDo: aBlock 
-	| superclass |
-	superclass := self superclass.
-	superclass reflectsNil ifTrue: [^self].
-	aBlock value: superclass.
-	superclass allSuperclassesDo: aBlock	! !
-
-!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:55'!
-instSize 
-	"optimize: 
-	self isPointers
-		ifTrue: [	(self getInstVarNamed: #format) asLocalInteger & InstSize ]
-		ifFalse: [ 0 ]"
-
-	| vars s parents |
-	vars := self getInstVarNamed: #instanceVariables.
-	s := self superclass.
-	parents := s reflectsNil
-		ifTrue: [ 0 ]
-		ifFalse: [ s instSize ].
-	^ parents + vars slotSize! !
-
-!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:36:16'!
-instVarNames 
-	| instVars |
-	instVars := self getInstVarNamed: #instanceVariables.
-	instVars reflectsNil ifTrue: [^#()].
-	^instVars reflectsBytesObject
-		ifTrue: [instVars asLocalString substrings]
-		ifFalse: [instVars asLocalArray collect: #asLocalString]
-! !
-
-!SpeciesMirror methodsFor: 'printing' stamp: 'KenD 3/1/2021 16:37:49'!
-printOn: aStream 
-	| name | 
-	super printOn: aStream.
-	name := [self localName] on: Error do: ['Broken'].
-	aStream nextPutAll: '[' , name , ']'! !
-
-!SpeciesMirror methodsFor: 'testing' stamp: 'KenD 3/1/2021 16:36:42'!
-isPointers 
-	^ (self getInstVarNamed: #format) asLocalInteger 
-		anyMask: self pointersFlag! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:00'!
-name 
-	| name |
-	name := self getInstVarNamed: #name.
-	^name asStringMirror! !
-
-!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:21'!
-subclasses 
-	| subclasses |
-	subclasses := self getInstVarNamed: #subclasses.
-	^subclasses reflectsNil ifTrue: [Array new] ifFalse: [subclasses]! !
-
-!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:51:47'!
-subclasses 
-	| instance |
-	instance := self instanceClass.
-	^instance reflectsNil
-		ifTrue: [#()]
-		ifFalse: [instance subclasses collect: [:class | class class]]! !
-
-!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:04:02'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SFMirror(' , String newLineString , handle printString , ')'! !
-
-!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
-name 
-
-	^'#' , self hash printString! !
-
-!OBasicBlock methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:24'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: '<=== ' , self name , String newLineString , firstInstruction asString
-			, '===>'! !
-
-!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:43'!
-printOn: aStream 
-
-	self printAtLevel: 1 on: aStream! !
-
-!OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:50'!
-printOn: aStream 
-	| rangesStrings |
-	rangesStrings := (ranges collect: #printString) gather: [:x | x , String newLineString ].
-	aStream nextPutAll: 'CLR: ' , String newLineString , rangesStrings! !
-
-!OSimpleLiveRange methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:29:38'!
-printOn: aStream 
-
-	aStream nextPutAll: 'LR of: ' , definition printString! !
-
-!OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
-printOn: aStream 
-	aStream
-		nextPutAll: '[op #' 
-			, name printString , 
-			'@' 
-			, instruction printString
-			, ']'! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:35'!
-definition 
-
-	^instruction atOperand: name! !
-
-!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:33'!
-name 
-
-	^name! !
-
-!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:16'!
-printOn: aStream 
-
-	aStream nextPutAll: self printString! !
-
-!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:49'!
-printOn: aStream 
-"
-	prev printBackwardOn: aStream.
-	aStrem nextPutAll: '-> '
-"
-	aStream
-		nextPutAll: self basicPrintString
-"	next printForwardOn: aStream cr"! !
-
-!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:25'!
-printOn: aStream 
-
-	aStream nextPutAll: '[' , self hash printString , '] '.
-	next printForwardOn: aStream! !
-
-!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:27'!
-name 
-
-	^name! !
-
-!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:37'!
-printOn: aStream 
-	"
-	prev printBackwardOn: aStream
-	"! !
-
-!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:30'!
-name 
-
-	^name! !
-
-!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:37:54'!
-name 
-
-	^name! !
-
-!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:12'!
-binding 
-
-	^binding! !
-
-!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:30:25'!
-name 
-
-	^binding name! !
-
-!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
-printOn: aStream 
-
-	self printOn: aStream indent: 0! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
-format 
-
-	^ format! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:33:02'!
-compile: aString 
-
-	result := self smalltalkCompiler compileMethod: aString.
-	^result method! !
-
-!Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
-printOn: aStream 
-
-	aStream nextPutAll: name; nextPutAll: ' ('.
-	super printOn: aStream.
-	aStream nextPutAll: ')'! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
-name 
-
-	^name! !
-
-!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
-name 
-
-	^'false'! !
-
-!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
-name 
-
-	^'true'! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
-environment 
-
-	^environment index! !
-
-!SelfBinding methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:25:02'!
-name 
-
-	^'self'! !
-
-!SuperBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:32:36'!
-name 
-
-	^'super'! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
-comment 
-
-	^comments notNil ifTrue: [comments anyOne]! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:24:21'!
-binding 
-
-	^binding! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:28:51'!
-name 
-
-	^name! !
-
-!SMethodNode methodsFor: 'printing' stamp: 'KenD 8/26/2021 12:00:04'!
-printOn: aStream
-
-	aStream
-		nextPutAll: self compiler sourceCode! !
-
-!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:06'!
-name 
-
-	^name! !
-
-!SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
-name 
-
-	^self printString! !
-
-!SInstVarBinding methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:19:27'!
-printOn: aStream 
-
-	aStream nextPutAll: 'InstVarId. '; nextPutAll: index printString! !
-
-!SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
-printOn: aStream 
-
-	aStream nextPutAll: 'FalseId'! !
-
-!SNilBinding methodsFor: 'printing' stamp: 'KenD 6/7/2021 14:48:36'!
-printOn: aStream 
-
-	aStream nextPutAll: 'NilId'! !
-
-!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
-printOn: aStream 
-
-	aStream nextPutAll: 'TrueId'! !
-
-!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
-environment 
-
-	^environment! !
-
-!SArgumentBinding methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:15:56'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: 'SArgument ';
-		print: position;
-		nextPutAll: ' @ env ';
-		print: environment! !
-
-!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
-printOn: aStream 
-
-	aStream
-		nextPutAll: 'STemporary ';
-		print: position;
-		nextPutAll: ' @ env ';
-		print: environment! !
-
-!SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SelfId'! !
-
-!SSuperBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:44:28'!
-printOn: aStream 
-
-	aStream nextPutAll: 'SuperId'! !
-
-!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
-printOn: aStream 
-
-	self printOn: aStream indent: 0! !
-
-!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:16'!
-isVariable 
-
-	^true! !
-
-!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:17:50'!
-binding 
-
-	^binding! !
-
-!SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:03'!
-binding 
-
-	^binding! !
-
-!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:10:17'!
-isVariable 
-
-	^true! !
-
-!SPragma methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:03:30'!
-name 
-
-	^ name! !
-
-!Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:41'!
-printOn: aStream 
-
-	aStream nextPutAll: '{'; print: gate; nextPutAll: '}'! !
-
 !CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 5/31/2021 15:35:17'!
 initialize 
 "
@@ -5146,6 +4256,11 @@ environmentCount: anInteger
 
 	format := format bitsAt: EnvCount put: anInteger! !
 
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:23'!
+format 
+
+	^format! !
+
 !SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 4/7/2021 14:17:31'!
 format: anInteger 
 
@@ -5236,6 +4351,15 @@ gtDisplayOn: stream
 		nextPutAll: self classBinding name;
 		nextPutAll: '>>';
 		print: selector! !
+
+!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:49:58'!
+printOn: aStream 
+
+	aStream nextPutAll: self classBinding name; nextPutAll: '>>'; print: selector; newLine.
+	source
+		ifNotNil: [ aStream
+				newLine;
+				nextPutAll: source ]! !
 
 !SCompiledMethod methodsFor: 'initialization' stamp: 'KenD 4/7/2021 14:20:09'!
 initialize 
@@ -7802,6 +6926,11 @@ test210addAssociationToDictionary
 	runtime send: #add: to: d with: {assoc}.
 	self assert: d spec name equals: 'Dictionary';
 		assertNoLeftoverFrames! !
+
+!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:31'!
+compile: aString 
+
+	^self compile: aString in: UndefinedObject! !
 
 !ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:44'!
 compile: aString in: aClass 
@@ -10498,6 +9627,15 @@ wordSizeShift
 
 	^2! !
 
+!ISAInstruction methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:22:02'!
+printOn: aStream 
+
+	aStream nextPutAll: mnemonic.
+	operands isNil ifTrue: [^self].
+	operands
+		do: [:op | aStream space; nextPutAll: op asString]
+		separatedBy: [aStream nextPut: $,]! !
+
 !ISAInstruction methodsFor: 'templates' stamp: 'KenD 3/8/2021 11:23:53'!
 updateTemplate: anISAInstruction 
 	| arity array |
@@ -10873,6 +10011,12 @@ new
 
 	^super new initialize! !
 
+!ISAImmediate methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:03:25'!
+printOn: aStream 
+	| v |
+	v := value isNil ifTrue: ['???'] ifFalse: [value hex].
+	aStream nextPutAll: v! !
+
 !ISAImmediate methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:01:01'!
 bytes 
 	| bytes v |
@@ -10971,6 +10115,27 @@ lengthString
 	length = 8 ifTrue: [^'byte ptr'].
 	self assert: false.
 	^''! !
+
+!MemoryOperand methodsFor: 'printing' stamp: 'KenD 3/19/2021 16:39:24'!
+printOn: aStream 
+	| sign displ |
+	aStream nextPutAll: self lengthString; nextPutAll: ' ['.
+	segment notNil ifTrue: [
+		segment printOn: aStream.
+		aStream nextPut: $:].
+	base notNil ifTrue: [base printOn: aStream].
+	index notNil ifTrue: [
+		base notNil ifTrue: [aStream nextPutAll: ' + '].
+		index printOn: aStream.
+		scale isNil
+			ifFalse: [aStream nextPutAll: ' * '; nextPutAll: scale asString]].
+	displ := self displacementValue.
+	displ !!= 0 ifTrue: [
+		(base notNil or: [index notNil]) ifTrue: [
+			sign := displ > 0 ifTrue: [' + '] ifFalse: [' - '].
+			aStream nextPutAll: sign].
+		aStream nextPutAll: '0x'; nextPutAll: displ abs hex].
+	aStream nextPut: $]! !
 
 !MemoryOperand methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:33:26'!
 base 
@@ -11349,6 +10514,11 @@ index: anInteger
 
 	index := anInteger! !
 
+!Register methodsFor: 'accessing' stamp: 'KenD 6/16/2021 12:30:24'!
+name 
+
+	^name asLowercase ! !
+
 !Register methodsFor: 'accessing' stamp: 'Install-PowerLang 4/25/2021 11:02:50'!
 name: aString 
 	name := aString asUppercase ! !
@@ -11371,6 +10541,12 @@ registerGroup
 w 
 
 	^family at: 2! !
+
+!Register methodsFor: 'printing' stamp: 'KenD 3/28/2021 15:25:31'!
+printOn: aStream 
+
+	name isNil ifTrue: [^super printOn: aStream].
+	aStream nextPutAll: name! !
 
 !Register methodsFor: 'encoding' stamp: 'KenD 3/28/2021 15:26:59'!
 rm 
@@ -11701,11 +10877,20 @@ memoryLength
 
 	^memoryLength! !
 
+!ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:36:29'!
+name 
+
+	^type! !
+
 !ISAOperandType methodsFor: 'accessing' stamp: 'Install-PowerLang 5/31/2021 12:37:29'!
 operandFrom: anInteger 
 
 	self assert: self isMoff.
 	^MemoryOperand new displacement: anInteger; length: memoryLength! !
+
+!ISAOperandType methodsFor: 'printing' stamp: 'Install-PowerLang 5/31/2021 12:38:01'!
+printOn: aStream 
+	aStream nextPutAll: type! !
 
 !ISAOperandType methodsFor: 'initialization' stamp: 'Install-PowerLang 5/31/2021 12:48:22'!
 initializeConstantFlag 
@@ -12641,6 +11826,22 @@ initializeCache
 
 	Cache := Dictionary new! !
 
+!InstructionPrefix methodsFor: 'printing' stamp: 'KenD 2/27/2021 13:15:20'!
+printOn: aStream 
+
+	(name includes: Character space)
+		ifTrue: [
+			aStream
+				nextPut: ${;
+				nextPutAll: name;
+				nextPut: $}]
+		ifFalse: [aStream nextPutAll: name]! !
+
+!InstructionPrefix methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:14:47'!
+name 
+
+	^name! !
+
 !InstructionPrefix methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:14:56'!
 name: aString 
 
@@ -13046,6 +12247,14 @@ ss
 
 	^self new name: 'ss:'; value: 16r36! !
 
+!VEXPrefix methodsFor: 'printing' stamp: 'KenD 5/30/2021 12:20:49'!
+printOn: aStream 
+
+	signature isNil ifTrue: [^super printOn: aStream].
+	signature
+		do: [:s | aStream nextPutAll: s]
+		separatedBy: [aStream nextPut: $.]! !
+
 !VEXPrefix methodsFor: 'accessing' stamp: 'KenD 5/30/2021 12:19:30'!
 length 
 
@@ -13311,6 +12520,12 @@ peekFrom: aStream
 	aStream peek = 16rC4 ifTrue: [^aStream next: 3].
 	aStream peek = 16rC5 ifTrue: [^aStream next: 2].
 	^nil! !
+
+!InstructionSpec methodsFor: 'printing' stamp: 'KenD 3/7/2021 13:16:59'!
+printOn: aStream 
+
+	instruction isNil ifTrue: [^super printOn: aStream].
+	aStream nextPutAll: instruction! !
 
 !InstructionSpec methodsFor: 'accessing' stamp: 'KenD 3/7/2021 13:08:02'!
 arity 
@@ -13783,15 +12998,31 @@ descriptions: aCollection
 		(d includesString: 'offs') ifTrue: [immediate := true].
 		(d includesString: 'imm') ifTrue: [immediate := true]]! !
 
+!OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:34:55'!
+name 
+
+	^name! !
+
 !OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:35:04'!
 name: aString 
 
 	name := aString! !
 
+!OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:36:17'!
+selectors 
+
+	^selectors! !
+
 !OperandEncoding methodsFor: 'accessing' stamp: 'KenD 4/25/2021 11:36:25'!
 selectors: aCollection 
 
 	selectors := aCollection! !
+
+!OperandEncoding methodsFor: 'printing' stamp: 'KenD 4/25/2021 11:36:00'!
+printOn: aStream 
+
+	name isNil ifTrue: [^super printOn: aStream].
+	aStream nextPutAll: name! !
 
 !OperandEncoding methodsFor: 'private' stamp: 'KenD 4/25/2021 11:12:55'!
 encodeAOperand1: operand 
@@ -14638,6 +13869,12 @@ initializeEncodings
 				thenDo: [ :s | self compile: s , ' instruction' ].
 			Encodings add: oe ].
 	Encodings := Encodings asArray! !
+
+!Assembler64 methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:00'!
+printOn: aStream 
+
+	aStream print: self class; newLine; newLine;
+		nextPutAll: memory bytes disassembledAmd64! !
 
 !Assembler64 methodsFor: 'accessing' stamp: 'KenD 2/24/2021 15:48:02'!
 addressLength 
@@ -19282,6 +18519,11 @@ applyFixupsWith: solver
 
 	fixups do: [:fixup | fixup patch: self with: solver]! !
 
+!NativeCodeReference methodsFor: 'printing' stamp: 'KenD 3/20/2021 15:18:27'!
+printOn: aStream 
+
+	aStream nextPutAll: 'Ref to '; print: target! !
+
 !NativeCodeReference methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:16:28'!
 beAbsolute 
 
@@ -19489,6 +18731,15 @@ writeLong: long at: location
 		nextLongPut: long;
 		position: previous! !
 
+!RelocationFixup methodsFor: 'printing' stamp: 'KenD 4/24/2021 12:46:29'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: self class name;
+		nextPut: $:;
+		space;
+		nextPutAll: target printString! !
+
 !RelocationFixup methodsFor: 'accessing' stamp: 'KenD 4/24/2021 12:44:47'!
 addressSize 
 
@@ -19611,6 +18862,14 @@ from: aStream
 
 	contents := aStream atEnd ifFalse: [ModRM new on: aStream next]! !
 
+!ISAOpcodeReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:38:44'!
+printOn: aStream 
+
+	contents contents
+		do: [:byte | aStream nextPutAll: byte hex]
+		separatedBy: [aStream nextPut: $.]
+! !
+
 !ISAOpcodeReader methodsFor: 'accessing' stamp: 'KenD 3/8/2021 11:38:12'!
 from: aStream 
 	| byte octets |
@@ -19629,6 +18888,16 @@ printLegacyOn: aStream
 	legacy contents
 		do: [:p | aStream nextPutAll: p asString]
 		separatedBy: [aStream space]! !
+
+!ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:43:47'!
+printOn: aStream 
+
+	self printLegacyOn: aStream.
+	legacy size > 0 ifTrue: [aStream space].
+	rex notNil ifTrue: [
+		self printRexOn: aStream.
+		aStream space].
+	vex notNil ifTrue: [self printVexOn: aStream]! !
 
 !ISAPrefixReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:44:02'!
 printRexOn: aStream 
@@ -19732,6 +19001,31 @@ from: aStream
 
 	contents := SIB new on: aStream next! !
 
+!ISAInstructionReader methodsFor: 'printing' stamp: 'KenD 3/8/2021 11:33:03'!
+printOn: aStream 
+
+	aStream nextPutAll: prefixes.
+	prefixes size > 0 ifTrue: [aStream nextPutAll: '| '].
+	aStream nextPutAll: opcode.
+	aStream nextPutAll: ' | '.
+	modrm notNil ifTrue: [modrm printOn: aStream].
+	sib notNil ifTrue: [
+		aStream nextPutAll: ' | '.
+		sib printOn: aStream].
+	displacement notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		displacement do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]].
+	immediate notNil ifTrue: [
+		aStream nextPutAll: ' |'.
+		immediate do: [:byte | | hex |
+			hex := byte hex.
+			hex size = 1 ifTrue: [hex := '0' , hex].
+			aStream space; nextPutAll: hex]]
+! !
+
 !ISAInstructionReader methodsFor: 'accessing' stamp: 'KenD 6/17/2021 13:26:01'!
 displacementFrom: aStream
 
@@ -19779,6 +19073,24 @@ sibFrom: aStream
 hasSib 
 
 	^modrm notNil and: [modrm mod = 0]! !
+
+!OctalStructure methodsFor: 'printing' stamp: 'KenD 6/17/2021 13:45:08'!
+printOn: aStream 
+"	| hi mid lo |
+	hi := self hi printPaddedWith: $0 to: 2 base: 2.
+	mid := self mid printPaddedWith: $0 to: 3 base: 2.
+	lo := self lo printPaddedWith: $0 to: 3 base: 2.
+	aStream
+		nextPutAll: hi;
+		nextPut: $.;
+		nextPutAll: mid;
+		nextPut: $.;
+		nextPutAll: lo"
+	self hi printOn: aStream base: 2 length: 2 padded: true.
+	aStream nextPut: $. .
+	self mid printOn: aStream base: 2 length: 3 padded: true. 
+	aStream nextPut: $. .
+	self lo printOn: aStream base: 2 length: 3 padded: true.! !
 
 !OctalStructure methodsFor: 'accessing' stamp: 'KenD 3/20/2021 15:00:10'!
 hi 
@@ -19945,6 +19257,11 @@ image
 
 	^ image! !
 
+!ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:19'!
+methods 
+
+	^methods! !
+
 !ImageSegmentBuilder methodsFor: 'accessing' stamp: 'KenD 3/4/2021 08:22:26'!
 module 
 
@@ -19973,6 +19290,11 @@ writer
 		module: module;
 		wordSize: image wordSize;
 		yourself! !
+
+!ImageSegmentBuilder methodsFor: 'compiling' stamp: 'KenD 3/4/2021 08:16:47'!
+compile: anRGMethod 
+
+	^runtime compile: anRGMethod! !
 
 !ImageSegmentBuilder methodsFor: 'codeGeneration' stamp: 'KenD 3/4/2021 08:23:04'!
 nativizeForDMR 
@@ -20545,6 +19867,11 @@ objectsOffset
 "
 	^40! !
 
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:27:12'!
+>> aSymbol 
+
+	^bootstrapper spec at: aSymbol! !
+
 !LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:14:22'!
 bootstrapper: aSmalltalkBootstrapper 
 
@@ -20582,6 +19909,11 @@ globalLookupMethods
 methodFor: selector 
 
 	^methods detect: [:m | m selector == selector]! !
+
+!LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:16:41'!
+methods 
+
+	^methods! !
 
 !LookupNativizer methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:19:53'!
 otherLookupMethods 
@@ -20645,8 +19977,18 @@ newNativizationEnvironment
 		completeInitialization
 ! !
 
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:45'!
+isBytes 
+
+	^ false! !
+
 !ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:31:52'!
 isImmediate 
+
+	^ false! !
+
+!ObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:32:00'!
+isPointers 
 
 	^ false! !
 
@@ -20828,6 +20170,20 @@ new: anRGBehavior size: size
 	class := self classFor: anRGBehavior.
 	^ class new initializeAs: anRGBehavior sized: size! !
 
+!ByteObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 14:12:25'!
+printOn: aStream 
+
+	spec ifNil: [ ^ super printOn: aStream ].
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: self contentsString;
+		nextPutAll: '>>'! !
+
+!ByteObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 14:11:57'!
+isBytes 
+
+	^true! !
+
 !ByteObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2021 14:11:26'!
 initialize 
 
@@ -20940,6 +20296,30 @@ new: anRGBehavior valued: bytes
 	
 	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes! !
 
+!SlotObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:51:15'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: spec name withArticle;
+		nextPutAll: '>>'! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:50:51'!
+isPointers 
+
+	^true! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:22'!
+allInstVarNames 
+
+	| c |
+	^ spec properties
+		at: #allInstVarNames
+		ifAbsentPut: [ spec isMeta
+				ifTrue: [ c := spec environment at: #Class.
+					c allInstVarNames , spec allInstVarNames ]
+				ifFalse: [ spec allInstVarNames ] ]! !
+
 !SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:45:45'!
 arrayedSize 
 
@@ -21025,6 +20405,16 @@ headerHash: anInteger
 
 	hash := anInteger! !
 
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:50:36'!
+instSize 
+
+	| c |
+	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
+		ifTrue: [ c := spec environment at: #Class.
+			
+			c instSize + spec instSize ]
+		ifFalse: [ spec instSize ]]! !
+
 !SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:51:28'!
 size 
 	"Return the size if this object, that this, the value of
@@ -21103,6 +20493,14 @@ new: anRGBehavior size: size withAll: value
 	| obj |
 	obj := self new: anRGBehavior size: size.
 	^obj atAllPut: value; yourself! !
+
+!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:58:39'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: value printString;
+		nextPutAll: '>>'! !
 
 !SmallintObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2021 13:58:25'!
 isImmediate 
@@ -21225,6 +20623,11 @@ load: aClassDefinition
 new 
 
 	^self basicNew initialize! !
+
+!SmalltalkBootstrapper methodsFor: 'services' stamp: 'KenD 3/2/2021 13:03:02'!
+compile: anRGMethod 
+
+	^builder compile: anRGMethod! !
 
 !SmalltalkBootstrapper methodsFor: 'accessing' stamp: 'KenD 3/2/2021 13:02:37'!
 builder: anImageSegmentBuilder 
@@ -21580,6 +20983,16 @@ nativizer
 undermethods 
 
 	^builder undermethods! !
+
+!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:28'!
+printOn: aStream 
+
+ 	self backtrace
+		do: [ :frame | 
+			frame do: [ :elem | elem printOn: aStream ]
+				   separatedBy: [ aStream nextPutAll: '. ' ].
+			aStream newLine ]
+! !
 
 !MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
 argumentAt: index in: anInteger 
@@ -22823,6 +22236,16 @@ kernelSpec
 
 	^ KernelSpec ifNil: [ KernelSpec := self newKernelSpec ]! !
 
+!VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:57:32'!
+compile: anRGMethod 
+	| compiler spec class |
+	compiler := SCompiler namespace: globals.
+	spec := anRGMethod parent.
+	class := self virtualSpeciesFor: spec.
+	^ compiler
+		forClass: class;
+		compile: anRGMethod sourceCode! !
+
 !VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:58:00'!
 declareGlobals: anObjectMap 
 	| assocs |
@@ -23224,6 +22647,16 @@ initialize
 		 _smallIntegerByteAt: 
 		 _uShortAtOffset: #_uShortAtOffset:put:)! !
 
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:39'!
+allSharedPoolsUsing: globals 
+	| pools class |
+	pools := Set new.
+	class := self.
+	[ class isNil ]
+		whileFalse: [ pools addAll: (class sharedPoolsUsing: globals).
+			class := class superclass ].
+	^ pools! !
+
 !VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:40:52'!
 map 
 
@@ -23233,6 +22666,11 @@ map
 map: anObjectMap 
 	
 	map := anObjectMap ! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:14'!
+name 
+
+	^spec name! !
 
 !VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:41:53'!
 spec 
@@ -23244,6 +22682,49 @@ spec: anRGBehavior
 
 	spec := anRGBehavior! !
 
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:11'!
+superclass 
+
+	^superclass! !
+
+!VirtualSpecies methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:42:20'!
+superclass: aVirtualClass 
+
+	superclass := aVirtualClass! !
+
+!VirtualSpecies methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:41:37'!
+printOn: aStream 
+
+	aStream nextPut: $<; print: spec; nextPut: $>! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:12'!
+allInstVarNames 
+
+	^ spec allInstVarNames! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:43:54'!
+classPool 
+
+	^cvars ! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:46'!
+instanceSide 
+
+	^ self! !
+
+!VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:44:59'!
+localPools 
+	| pools dict name pool |
+	pools := cvars associations
+		select: [ :assoc | assoc value spec name = #PoolDictionary ].
+	dict := Dictionary new.
+	pools
+		do: [ :assoc | 
+			name := assoc key asString.
+			pool := assoc value.
+			dict at: name put: (VirtualDictionary fromPool: pool) ].
+	^ dict! !
+
 !VirtualClass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:45:33'!
 sharedPoolsUsing: globals 
 	| pools dicts |
@@ -23254,6 +22735,15 @@ sharedPoolsUsing: globals
 	^ dicts
 		select: [ :d | d spec name = #PoolDictionary ]
 		thenCollect: [ :d | VirtualDictionary fromPool: d ]! !
+
+!VirtualClass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 12:46:13'!
+withAllSuperclasses 
+
+	^ superclass ifNil:
+	 [ OrderedCollection with: self ]
+		ifNotNil:  [ superclass withAllSuperclasses
+				addFirst: self;
+				yourself ]! !
 
 !VirtualClass methodsFor: 'service' stamp: 'KenD 4/8/2021 12:44:33'!
 createClassAssociationsWith: aVirtualSmalltalkImage 
@@ -23267,15 +22757,35 @@ class: aVirtualClass
 
 	class := aVirtualClass! !
 
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:18'!
+classPool 
+
+	^ class classPool! !
+
 !VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:40'!
 createClassAssociationsWith: aVirtualSmalltalkImage 
 
 	self notYetImplemented ! !
 
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:19:50'!
+instanceSide 
+
+	^class! !
+
+!VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:00'!
+localPools 
+
+	^ class localPools! !
+
 !VirtualMetaclass methodsFor: 'accessing' stamp: 'KenD 4/8/2021 14:20:09'!
 sharedPoolsUsing: globals 
 
 	^class sharedPoolsUsing: globals! !
+
+!VirtualMetaclass methodsFor: 'enumerating' stamp: 'KenD 4/8/2021 14:18:59'!
+allInstVarNames 
+
+	^(spec environment at: #Class) allInstVarNames, spec allInstVarNames! !
 
 !Bridge methodsFor: 'initialization' stamp: 'KenD 2/28/2021 13:04:31'!
 initialize 
@@ -23577,6 +23087,11 @@ slotAt: index
 	slot := handle slotAt: index.
 	^self maneuvererOn: slot! !
 
+!MirageGate methodsFor: 'printing' stamp: 'KenD 3/2/2021 13:01:12'!
+printOn: aStream 
+
+	aStream nextPutAll: 'mirage gate on: ' , handle printString! !
+
 !MirageGate methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:58:46'!
 classBinding 
 
@@ -23676,6 +23191,11 @@ objectHandleOn: objectId
 
 	^ ObjectHandle on: objectId within: runtime! !
 
+!CuisStFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:14'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
+
 !CuisStFrameHandle methodsFor: 'accessing' stamp: 'KenD 4/12/2021 10:44:23'!
 currentIp 
 
@@ -23707,6 +23227,21 @@ on: frame within: runtime
 
 	^self new frame: frame; runtime: runtime! !
 
+!ObjectHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:48'!
+printOn: aStream 
+	| format size bytes |
+	format := runtime objectFormat.
+	format print: oid on: aStream.
+	self isBytes
+		ifFalse: [ ^ self ].
+	size := self size min: 128.
+	size < 30
+		ifTrue: [ aStream nextPutAll: ': ' ]
+		ifFalse: [ aStream newLine ].
+	bytes := format bytesOf: oid count: size.
+	aStream print: bytes
+! !
+
 !ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 08:55:45'!
 = anObject 
 
@@ -23716,6 +23251,16 @@ on: frame within: runtime
 isArrayed 
 
 	^runtime objectFormat isArrayed: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:04'!
+isBytes 
+
+	^runtime objectFormat isBytes: oid! !
+
+!ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:14'!
+isFixed 
+
+	^self isArrayed not! !
 
 !ObjectHandle methodsFor: 'testing' stamp: 'KenD 3/11/2021 11:39:24'!
 isInteger 
@@ -23944,6 +23489,11 @@ isLocal
 
 	^true! !
 
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:55'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FH with: ' , String newLineString , frame printString! !
+
 !PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 3/27/2021 08:28:09'!
 currentIp 
 
@@ -23984,6 +23534,15 @@ lookup: aSymbol on: aSubject
 lookup: aSymbol on: aSubject 
 
 	^ aSubject _gate handle oid class lookupSelector: aSymbol! !
+
+!EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:33:53'!
+compile: anRGMethod 
+	| compiler method |
+	compiler := SCompiler namespace: globals.
+	method := compiler
+		forClass: anRGMethod parent;
+		compile: anRGMethod sourceCode.
+	^ method! !
 
 !EmulationLookup methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:34:06'!
 compiledMethodFor: anRGMethod 
@@ -24388,6 +23947,11 @@ largeSizeOf: oid
 
 	^ storage uint32of: oid atOffset: LargeSizeOffset! !
 
+!ObjectShape methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:24:29'!
+printOn: aStream 
+
+	aStream nextPutAll: 'Shape of '; nextPutAll: name! !
+
 !ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:22:45'!
 indexOf: ivarName 
 	
@@ -24397,6 +23961,11 @@ indexOf: ivarName
 indexOf: ivarName be: i 
 
 	fields at: ivarName put: i! !
+
+!ObjectShape methodsFor: 'accessing' stamp: 'KenD 2/22/2021 13:24:03'!
+name 
+
+	^name! !
 
 !ObjectShape methodsFor: 'initialization' stamp: 'KenD 2/22/2021 13:23:18'!
 initialize 
@@ -24674,6 +24243,29 @@ forSimulating: aModuleSpec memory: aByteArray
 new 
 
 	^self basicNew initialize! !
+
+!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:45:57'!
+printOn: aStream 
+	aStream
+		nextPutAll: self class name withArticle;
+		newLine;
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		newLine.
+	aStream
+		nextPutAll: 'rcvr -> ';
+		print: receiver _gate handle;
+		newLine.
+	arguments
+		withIndexDo: [ :a :i | 
+			aStream
+				nextPutAll: 'arg ';
+				print: i;
+				nextPutAll: ' -> ';
+				print: a _gate;
+				newLine ].
+	aStream nextPutAll: method source! !
 
 !SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
 isitReturn: anSReturn 
@@ -25484,6 +25076,22 @@ on: handle
 
 	^self new handle: handle! !
 
+!ObjectMirror methodsFor: 'printing' stamp: 'KenD 2/27/2021 09:10:14'!
+printOn: aStream 
+	| description |
+	self reflectsInteger
+		ifTrue: [ ^ aStream
+				nextPutAll: 'SMI (';
+				print: self asLocalInteger;
+				nextPut: $) ].
+	description := [ self reflectedClass localName withArticle ]
+		on: Error
+		do: [ 'broken class' ].
+	aStream
+		nextPutAll:
+			self class name withArticle , '(' , handle printString , ', '
+				, description , ')'! !
+
 !ObjectMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 14:25:55'!
 at: index 
 	| slot |
@@ -25791,6 +25399,12 @@ instanceClass
 				ifTrue: [ self error: 'behavior does not have a class' ] ].
 	self error: 'could not find the class corresponding to this behavior'! !
 
+!BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/25/2021 13:48:13'!
+methodDictionary 
+	| slot |
+	slot := handle slotAt: 1.
+	^self methodDictionaryMirrorOn: slot! !
+
 !BehaviorMirror methodsFor: 'nativizing' stamp: 'KenD 2/25/2021 13:46:39'!
 compiledMethodFor: aSymbol 
 	| method next |
@@ -25814,6 +25428,17 @@ structureType
 structureType 
 
 	^ #CompiledBlock! !
+
+!CompiledMethodMirror methodsFor: 'printing' stamp: 'KenD 3/2/2021 12:36:32'!
+printOn: aStream 
+	| signature |
+	signature := ([ self fullName ]
+						on: StorageReadError
+						do: [ handle printString ]).
+	aStream
+		nextPutAll:
+			'a CMMirror ('
+			; nextPutAll: signature; nextPut: $)! !
 
 !CompiledMethodMirror methodsFor: 'accessing' stamp: 'KenD 3/2/2021 12:31:58'!
 argumentCount 
@@ -26017,10 +25642,29 @@ reflectsMethodDictionary
 
 	^true! !
 
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:33:14'!
+allInstVarNames 
+
+	^(self withAllSuperclasses reversed 
+		gather: [:class | class instVarNames]) asArray! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:34:21'!
+allSuperclasses 
+	| superclasses |
+	superclasses := OrderedCollection new.
+	self allSuperclassesDo: [:s | superclasses add: s].
+	^superclasses! !
+
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:01'!
 compiledMethodFor: selector 
 
 	^self instBehavior compiledMethodFor: selector! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:35:16'!
+indexOfSlot: name 
+	| instVars |
+	instVars := self allInstVarNames.
+	^instVars indexOf: name ifAbsent: 0! !
 
 !SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:37:05'!
 localName 
@@ -26044,11 +25688,69 @@ structureType
 
 	^#Species! !
 
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:38:58'!
+superclass 
+	| name |
+	name := self getInstVarNamed: #superclass.
+	^name asSpeciesMirror! !
+
+!SpeciesMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:39:22'!
+withAllSuperclasses 
+
+	^ OrderedCollection new
+		add: self;
+		addAll: self allSuperclasses; yourself! !
+
+!SpeciesMirror methodsFor: 'iterating' stamp: 'KenD 3/1/2021 16:34:37'!
+allSuperclassesDo: aBlock 
+	| superclass |
+	superclass := self superclass.
+	superclass reflectsNil ifTrue: [^self].
+	aBlock value: superclass.
+	superclass allSuperclassesDo: aBlock	! !
+
 !SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:38'!
 instBehavior 
 	| name |
 	name := self getInstVarNamed: #instanceBehavior.
 	^name asBehaviorMirror! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:35:55'!
+instSize 
+	"optimize: 
+	self isPointers
+		ifTrue: [	(self getInstVarNamed: #format) asLocalInteger & InstSize ]
+		ifFalse: [ 0 ]"
+
+	| vars s parents |
+	vars := self getInstVarNamed: #instanceVariables.
+	s := self superclass.
+	parents := s reflectsNil
+		ifTrue: [ 0 ]
+		ifFalse: [ s instSize ].
+	^ parents + vars slotSize! !
+
+!SpeciesMirror methodsFor: 'nativizing' stamp: 'KenD 3/1/2021 16:36:16'!
+instVarNames 
+	| instVars |
+	instVars := self getInstVarNamed: #instanceVariables.
+	instVars reflectsNil ifTrue: [^#()].
+	^instVars reflectsBytesObject
+		ifTrue: [instVars asLocalString substrings]
+		ifFalse: [instVars asLocalArray collect: #asLocalString]
+! !
+
+!SpeciesMirror methodsFor: 'printing' stamp: 'KenD 3/1/2021 16:37:49'!
+printOn: aStream 
+	| name | 
+	super printOn: aStream.
+	name := [self localName] on: Error do: ['Broken'].
+	aStream nextPutAll: '[' , name , ']'! !
+
+!SpeciesMirror methodsFor: 'testing' stamp: 'KenD 3/1/2021 16:36:42'!
+isPointers 
+	^ (self getInstVarNamed: #format) asLocalInteger 
+		anyMask: self pointersFlag! !
 
 !ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:44:05'!
 classVariables 
@@ -26072,15 +25774,35 @@ localName
 
 	^self name asLocalString! !
 
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:00'!
+name 
+	| name |
+	name := self getInstVarNamed: #name.
+	^name asStringMirror! !
+
 !ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:10'!
 structureType 
 
 	^#Class! !
 
+!ClassMirror methodsFor: 'accessing' stamp: 'KenD 3/1/2021 16:45:21'!
+subclasses 
+	| subclasses |
+	subclasses := self getInstVarNamed: #subclasses.
+	^subclasses reflectsNil ifTrue: [Array new] ifFalse: [subclasses]! !
+
 !MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:50:40'!
 classVariables 
 
 	^self instanceClass classVariables! !
+
+!MetaclassMirror methodsFor: 'accessing' stamp: 'KenD 3/19/2021 16:51:47'!
+subclasses 
+	| instance |
+	instance := self instanceClass.
+	^instance reflectsNil
+		ifTrue: [#()]
+		ifFalse: [instance subclasses collect: [:class | class class]]! !
 
 !MetaclassMirror methodsFor: 'constants' stamp: 'KenD 3/19/2021 16:50:55'!
 instanceClass 
@@ -26102,6 +25824,11 @@ localName
 structureType 
 
 	^#Metaclass! !
+
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:04:02'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SFMirror(' , String newLineString , handle printString , ')'! !
 
 !StackFrameMirror methodsFor: 'meta accessing' stamp: 'KenD 4/8/2021 08:47:19'!
 argumentAt: index 
@@ -34195,6 +33922,11 @@ movePhisTo: otherBlock
 		dest := inst.
 		inst := next]! !
 
+!OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:46:55'!
+name 
+
+	^'#' , self hash printString! !
+
 !OBasicBlock methodsFor: 'accessing' stamp: 'KenD 5/4/2021 07:47:28'!
 phiWithArgument: instruction 
 
@@ -34248,6 +33980,13 @@ printAllNamed
 		block printOn: stream using: names.
 		stream newLine].
 	^stream contents! !
+
+!OBasicBlock methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:24'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: '<=== ' , self name , String newLineString , firstInstruction asString
+			, '===>'! !
 
 !OBasicBlock methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:04:10'!
 printOn: aStream using: names 
@@ -34804,6 +34543,11 @@ printAtLevel: level on: aStream
 		thenDo: [:tree | tree printAtLevel: level + 1 on: aStream]
 ! !
 
+!ODominatorTree methodsFor: 'printing' stamp: 'KenD 5/6/2021 07:37:43'!
+printOn: aStream 
+
+	self printAtLevel: 1 on: aStream! !
+
 !ODominatorTree methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:33:35'!
 addDominated: aTree 
 
@@ -34893,6 +34637,12 @@ isUsedBy: anInstruction
 new 
 
 	^self basicNew initialize! !
+
+!OComposedLiveRange methodsFor: 'printing' stamp: 'KenD 7/7/2021 16:03:50'!
+printOn: aStream 
+	| rangesStrings |
+	rangesStrings := (ranges collect: #printString) gather: [:x | x , String newLineString ].
+	aStream nextPutAll: 'CLR: ' , String newLineString , rangesStrings! !
 
 !OComposedLiveRange methodsFor: 'accessing' stamp: 'KenD 5/5/2021 16:42:41'!
 add: range 
@@ -35041,6 +34791,11 @@ valued: value
 
 	^self new value: value! !
 
+!OSimpleLiveRange methodsFor: 'printing' stamp: 'KenD 5/29/2021 09:29:38'!
+printOn: aStream 
+
+	aStream nextPutAll: 'LR of: ' , definition printString! !
+
 !OSimpleLiveRange methodsFor: 'accessing' stamp: 'KenD 5/29/2021 09:26:04'!
 addUseFrom: operation at: block 
 
@@ -35153,6 +34908,15 @@ startsAt: operation
 
 	^definition == operation! !
 
+!OOperand methodsFor: 'printing' stamp: 'KenD 2/24/2021 14:10:49'!
+printOn: aStream 
+	aStream
+		nextPutAll: '[op #' 
+			, name printString , 
+			'@' 
+			, instruction printString
+			, ']'! !
+
 !OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:07:54'!
 addUse: anOperand 
 
@@ -35163,6 +34927,11 @@ addUse: anOperand
 at: anInstruction named: operandName 
 
 	^self new instruction: anInstruction; name: operandName! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:35'!
+definition 
+
+	^instruction atOperand: name! !
 
 !OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:08:54'!
 disolveReplacingWith: otherInstruction 
@@ -35175,6 +34944,11 @@ disolveReplacingWith: otherInstruction
 instruction 
 
 	^instruction! !
+
+!OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:33'!
+name 
+
+	^name! !
 
 !OOperand methodsFor: 'accessing' stamp: 'KenD 2/24/2021 14:09:41'!
 name: operandName 
@@ -35239,6 +35013,11 @@ usesDo: aBlock
 
 	aBlock value: self.
 	nextUse ifNotNil: [nextUse usesDo: aBlock]! !
+
+!OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:16'!
+printOn: aStream 
+
+	aStream nextPutAll: self printString! !
 
 !OTiling methodsFor: 'printing' stamp: 'KenD 5/29/2021 12:19:27'!
 printString 
@@ -35319,6 +35098,16 @@ printForwardOn: aStream using: names
 		newLine.
 	next printForwardOn: aStream using: names
 ! !
+
+!OInstruction methodsFor: 'printing' stamp: 'KenD 3/11/2021 13:56:49'!
+printOn: aStream 
+"
+	prev printBackwardOn: aStream.
+	aStrem nextPutAll: '-> '
+"
+	aStream
+		nextPutAll: self basicPrintString
+"	next printForwardOn: aStream cr"! !
 
 !OInstruction methodsFor: 'accessing' stamp: 'KenD 3/11/2021 13:36:07'!
 addLast: anInstruction 
@@ -35836,6 +35625,12 @@ empty
 !OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:12'!
 printBackwardOn: aStream! !
 
+!OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:25'!
+printOn: aStream 
+
+	aStream nextPutAll: '[' , self hash printString , '] '.
+	next printForwardOn: aStream! !
+
 !OBeginInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:34:44'!
 printOn: aStream using: names 
 
@@ -35901,6 +35696,11 @@ containing: initialBlock
 
 	^self new firstBlock: initialBlock! !
 
+!ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:27'!
+name 
+
+	^name! !
+
 !ODefineArgument methodsFor: 'accessing' stamp: 'KenD 5/6/2021 07:30:37'!
 name: aSymbol 
 
@@ -35944,6 +35744,12 @@ printForwardOn: aStream! !
 
 !OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:25'!
 printForwardOn: aStream using: names ! !
+
+!OEndInstruction methodsFor: 'printing' stamp: 'KenD 4/26/2021 14:44:37'!
+printOn: aStream 
+	"
+	prev printBackwardOn: aStream
+	"! !
 
 !OEndInstruction methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:42:56'!
 addLast: anInstruction 
@@ -36216,6 +36022,11 @@ basicAcceptVisitor: aVisitor
 atOperand: operandName put: instruction 
 
 	source := instruction! !
+
+!OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:30'!
+name 
+
+	^name! !
 
 !OLoadImplicit methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:54:41'!
 name: aSymbol 
@@ -36608,6 +36419,11 @@ from: block2
 withAll: operations in: blocks 
 
 	^self new variables: operations; blocks: blocks copy! !
+
+!OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:37:54'!
+name 
+
+	^name! !
 
 !OPrimitiveOperation methodsFor: 'accessing' stamp: 'KenD 4/26/2021 14:38:05'!
 name: selector 
@@ -37006,6 +36822,11 @@ basicAcceptVisitor: aVisitor
 
 	^aVisitor visitReturn: self! !
 
+!OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:12'!
+binding 
+
+	^binding! !
+
 !OUseVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 08:02:21'!
 binding: aBinding 
 
@@ -37066,6 +36887,11 @@ source: identifier
 atOperand: name put: instruction 
 
 	source := instruction! !
+
+!OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:30:25'!
+name 
+
+	^binding name! !
 
 !OWriteVariable methodsFor: 'accessing' stamp: 'KenD 5/29/2021 12:31:13'!
 source 
@@ -37148,6 +36974,11 @@ isConstant
 source: aParseNode 
 
 	^self new binding: aParseNode binding! !
+
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:46'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
 
 !IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/3/2021 10:43:59'!
 printOn: aStream indent: anInteger 
@@ -37615,6 +37446,11 @@ environmentCount: anInteger
 
 	format := format bitsAt: EnvCount put: anInteger! !
 
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:12'!
+format 
+
+	^ format! !
+
 !SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 4/7/2021 13:57:22'!
 id 
 
@@ -37705,6 +37541,12 @@ scope
 scope: aScope
 
 	scope := aScope! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:33:02'!
+compile: aString 
+
+	result := self smalltalkCompiler compileMethod: aString.
+	^result method! !
 
 !SCompiler methodsFor: 'services' stamp: 'KenD 4/7/2021 14:34:17'!
 newScope 
@@ -39088,6 +38930,13 @@ initializePseudoVars
 		at: 'false' put: FalseBinding new;
 		at: 'self' put: SelfBinding new! !
 
+!Binding methodsFor: 'printing' stamp: 'KenD 2/24/2021 11:15:28'!
+printOn: aStream 
+
+	aStream nextPutAll: name; nextPutAll: ' ('.
+	super printOn: aStream.
+	aStream nextPutAll: ')'! !
+
 !Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:07:26'!
 declaration 
 
@@ -39097,6 +38946,11 @@ declaration
 literal
 
 	^nil! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:36'!
+name 
+
+	^name! !
 
 !Binding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:14:52'!
 name: aString 
@@ -39353,6 +39207,11 @@ isLiteral
 
 	^true! !
 
+!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/3/2021 13:06:55'!
+name 
+
+	^'false'! !
+
 !FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 13:07:44'!
 value 
 
@@ -39362,6 +39221,11 @@ value
 encodeUsing: anAstcodeEmitter 
 
 	anAstcodeEmitter encodeFalse! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:37:20'!
+name 
+
+	^'true'! !
 
 !TrueBinding methodsFor: 'codeGeneration' stamp: 'KenD 4/8/2021 12:37:10'!
 encodeUsing: anAstcodeEmitter 
@@ -39382,6 +39246,11 @@ declaration
 declaration: anIdentifierNode 
 
 	declaration := anIdentifierNode! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:55:52'!
+environment 
+
+	^environment index! !
 
 !LocalBinding methodsFor: 'accessing' stamp: 'KenD 2/25/2021 12:56:04'!
 environmentIndex 
@@ -39505,6 +39374,11 @@ isTemporary
 
 	^true! !
 
+!SelfBinding methodsFor: 'accessing' stamp: 'KenD 2/27/2021 13:25:02'!
+name 
+
+	^'self'! !
+
 !SelfBinding methodsFor: 'actions' stamp: 'KenD 2/27/2021 13:23:18'!
 beReferencedFrom: aScriptNode 
 
@@ -39529,6 +39403,11 @@ canBeAssigned
 isSelf 
 
 	^true! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 12:32:36'!
+name 
+
+	^'super'! !
 
 !SuperBinding methodsFor: 'emitCode' stamp: 'KenD 4/8/2021 12:32:04'!
 encodeUsing: anAstcodeEmitter 
@@ -40960,6 +40839,11 @@ isBinary: aCharacter
 			includes: aCharacter].
 	^code > 255! !
 
+!SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:05'!
+comment 
+
+	^comments notNil ifTrue: [comments anyOne]! !
+
 !SToken methodsFor: 'printing' stamp: 'KenD 2/21/2021 13:17:45'!
 comments 
 
@@ -41444,10 +41328,20 @@ isComment
 
 	^true! !
 
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:24:21'!
+binding 
+
+	^binding! !
+
 !SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 6/9/2021 14:27:36'!
 binding: aBinding 
 
 	binding := aBinding! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:28:51'!
+name 
+
+	^name! !
 
 !SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:29:21'!
 name: aString 
@@ -42007,6 +41901,12 @@ acceptVisitor: visitor
 
 	^visitor visitBlock: self! !
 
+!SMethodNode methodsFor: 'printing' stamp: 'KenD 8/26/2021 12:00:04'!
+printOn: aStream
+
+	aStream
+		nextPutAll: self compiler sourceCode! !
+
 !SMethodNode methodsFor: 'accessing' stamp: 'KenD 6/2/2021 11:25:09'!
 compiler: aSmalltalkCompiler 
 
@@ -42218,6 +42118,11 @@ acceptVisitor: visitor
 info 
 
 	^info! !
+
+!SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:06'!
+name 
+
+	^name! !
 
 !SPragmaNode methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:09:16'!
 primitive: anInteger name: aString 
@@ -42751,6 +42656,11 @@ on: aMessageNode using: anAstcodeEmitter
 
 	^self new emitter: anAstcodeEmitter; message: aMessageNode ! !
 
+!SBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 13:20:09'!
+name 
+
+	^self printString! !
+
 !SBinding methodsFor: 'decoding' stamp: 'KenD 2/24/2021 13:17:44'!
 decodeUsing: anAstcodeDecoder 
 
@@ -42906,6 +42816,11 @@ decodeUsing: anAstcodeDecoder
 
 	^ anAstcodeDecoder decodeConstantPoolVar! !
 
+!SInstVarBinding methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:19:27'!
+printOn: aStream 
+
+	aStream nextPutAll: 'InstVarId. '; nextPutAll: index printString! !
+
 !SInstVarBinding methodsFor: 'accessing' stamp: 'KenD 4/13/2021 09:18:27'!
 index 
 
@@ -42946,6 +42861,11 @@ decodeUsing: anAstcodeDecoder
 
 	^self new! !
 
+!SFalseBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:20:25'!
+printOn: aStream 
+
+	aStream nextPutAll: 'FalseId'! !
+
 !SFalseBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:20:40'!
 value 
 	
@@ -42955,6 +42875,11 @@ value
 valueWithin: evaluator 
 
 	^evaluator falseLiteral! !
+
+!SNilBinding methodsFor: 'printing' stamp: 'KenD 6/7/2021 14:48:36'!
+printOn: aStream 
+
+	aStream nextPutAll: 'NilId'! !
 
 !SNilBinding methodsFor: 'evaluating' stamp: 'KenD 6/7/2021 14:48:47'!
 value 
@@ -42966,6 +42891,11 @@ valueWithin: evaluator
 
 	^evaluator nilLiteral! !
 
+!STrueBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:18:53'!
+printOn: aStream 
+
+	aStream nextPutAll: 'TrueId'! !
+
 !STrueBinding methodsFor: 'evaluating' stamp: 'KenD 4/8/2021 12:19:04'!
 value 
 
@@ -42975,6 +42905,11 @@ value
 valueWithin: evaluator 
 
 	^evaluator trueLiteral! !
+
+!SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:09'!
+environment 
+
+	^environment! !
 
 !SLocalBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:01:21'!
 environment: anInteger 
@@ -42996,6 +42931,15 @@ isInStack
 
 	self assert: false.
 	^ environment = 0! !
+
+!SArgumentBinding methodsFor: 'printing' stamp: 'KenD 4/12/2021 13:15:56'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'SArgument ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
 
 !SArgumentBinding methodsFor: 'evaluating' stamp: 'KenD 4/12/2021 13:15:10'!
 assign: value within: evaluator 
@@ -43022,6 +42966,15 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeArgument! !
 
+!STemporaryBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:55:38'!
+printOn: aStream 
+
+	aStream
+		nextPutAll: 'STemporary ';
+		print: position;
+		nextPutAll: ' @ env ';
+		print: environment! !
+
 !STemporaryBinding methodsFor: 'accessing' stamp: 'KenD 4/8/2021 08:54:46'!
 assign: value within: evaluator 
 
@@ -43047,6 +43000,11 @@ decodeUsing: anAstcodeDecoder
 
 	^anAstcodeDecoder decodeTemporary! !
 
+!SSelfBinding methodsFor: 'printing' stamp: 'KenD 3/17/2021 15:57:37'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SelfId'! !
+
 !SSelfBinding methodsFor: 'accessing' stamp: 'KenD 3/17/2021 15:57:54'!
 valueWithin: evaluator 
 
@@ -43062,6 +43020,11 @@ decodeUsing: anAstcodeDecoder
 
 	^self new! !
 
+!SSuperBinding methodsFor: 'printing' stamp: 'KenD 4/8/2021 08:44:28'!
+printOn: aStream 
+
+	aStream nextPutAll: 'SuperId'! !
+
 !SSuperBinding methodsFor: 'testing' stamp: 'KenD 4/8/2021 08:44:02'!
 isSelf 
 
@@ -43071,6 +43034,11 @@ isSelf
 isSuper 
 
 	^true! !
+
+!SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:29'!
+printOn: aStream 
+
+	self printOn: aStream indent: 0! !
 
 !SExpression methodsFor: 'printing' stamp: 'KenD 2/22/2021 13:06:44'!
 printOn: aStream indent: anInteger 
@@ -43300,6 +43268,16 @@ isTemporary
 
 	^binding isTemporary! !
 
+!SIdenitifier methodsFor: 'testing' stamp: 'KenD 2/23/2021 14:20:16'!
+isVariable 
+
+	^true! !
+
+!SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:17:50'!
+binding 
+
+	^binding! !
+
 !SIdenitifier methodsFor: 'accessing' stamp: 'KenD 2/23/2021 14:18:01'!
 binding: aBinding 
 
@@ -43323,6 +43301,11 @@ printOn: aStream indent: anInteger
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeIdentifier! !
+
+!SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:03'!
+binding 
+
+	^binding! !
 
 !SIdentifier methodsFor: 'accessing' stamp: 'KenD 4/13/2021 08:59:13'!
 binding: aBinding 
@@ -43373,6 +43356,11 @@ isSuper
 isTemporary 
 
 	^binding isTemporary! !
+
+!SIdentifier methodsFor: 'testing' stamp: 'KenD 4/13/2021 09:10:17'!
+isVariable 
+
+	^true! !
 
 !SIdentifier methodsFor: 'printing' stamp: 'KenD 4/13/2021 09:10:38'!
 printOn: aStream indent: anInteger 
@@ -43518,6 +43506,11 @@ acceptVisitor: visitor
 decodeUsing: anAstcodeDecoder 
 
 	^anAstcodeDecoder decodeMessage! !
+
+!SPragma methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:03:30'!
+name 
+
+	^ name! !
 
 !SPragma methodsFor: 'accessing' stamp: 'KenD 5/29/2021 13:03:43'!
 name: aString 
@@ -43726,6 +43719,11 @@ isMethod
 acceptVisitor: visitor 
 
 	^visitor visitMethod: self! !
+
+!Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:41'!
+printOn: aStream 
+
+	aStream nextPutAll: '{'; print: gate; nextPutAll: '}'! !
 
 !Subject methodsFor: 'printing' stamp: 'KenD 4/8/2021 12:27:52'!
 printString 

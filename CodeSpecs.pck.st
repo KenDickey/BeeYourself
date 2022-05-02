@@ -1,10 +1,10 @@
-'From Cuis 6.0 [latest update: #5117] on 1 May 2022 at 3:47:12 pm'!
+'From Cuis 6.0 [latest update: #5130] on 2 May 2022 at 12:49:11 pm'!
 'Description Transliterator for translating between Smalltalk dialects.
 Used in Bee/Powerlang porting.
 
 Copyright (c) 2021 Quorum Software.
 	See (MIT) license in LICENSES directory.'!
-!provides: 'CodeSpecs' 1 1!
+!provides: 'CodeSpecs' 1 2!
 !requires: 'BeeCompatibility' 1 19 nil!
 SystemOrganization addCategory: 'CodeSpecs'!
 SystemOrganization addCategory: 'CodeSpecs-Porting-Rules'!
@@ -363,215 +363,6 @@ Copyright (c) 2021 Quorum Software.
 	See (MIT) license in root directory.
 !
 
-!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
-category
-	^self isExtension
-		ifTrue: ['*' , (module name readStream upToLast: $-)]
-		ifFalse: [category]
-! !
-
-!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
-category: aString
-	category := aString
-! !
-
-!MethodSpec methodsFor: 'printing' stamp: 'KenD 5/1/2022 12:18:05'!
-printOn: aStream
-	aStream nextPutAll: class name asString , '>>#' , selector asString
-! !
-
-!ModuleSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:16:33'!
-printOn: aStream
-	aStream
-		nextPut: $<;
-		print: name;
-		nextPutAll: '> module'
-! !
-
-!ModuleSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:16:33'!
-name
-	^name
-! !
-
-!SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
-removeCategory: aSymbol
-	methods removeAllSuchThat: [:m | m category == aSymbol]
-! !
-
-!SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
-removeSelector: aSymbol
-	methods removeAllSuchThat: [:m | m selector == aSymbol]
-! !
-
-!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
-allInstVarNames
-	^(self withAllSuperclasses reversed gather: [:c | c instVarNames]) asArray
-! !
-
-!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
-allSuperclasses
-	| superclasses |
-	superclasses := OrderedCollection new.
-	self allSuperclassesDo: [:s | superclasses add: s].
-	^superclasses
-! !
-
-!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
-withAllSuperclasses
-	^OrderedCollection with: self withAll: self allSuperclasses
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-allSubclasses
-	| all |
-	all := OrderedCollection new.
-	self allSubclassesDo: [:cls | all add: cls].
-	^all
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-allSubclassesDo: aBlock
-	self subclasses do: [:class | 
-		aBlock value: class.
-		class allSubclassesDo: aBlock]
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-instVarNames
-	^instanceVariables
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-methods
-	^methods
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-selectors
-	^methods collect: #selector
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-subclasses
-	^module allClasses select: [:c | c supername = self name]
-! !
-
-!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
-withAllSubclasses
-	^OrderedCollection with: self withAll: self allSubclasses
-! !
-
-!SpeciesSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:13:10'!
-hasMethods
-	^methods notEmpty
-! !
-
-!SpeciesSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:13:10'!
-isMetaclass
-	^false
-! !
-
-!SpeciesSpec methodsFor: 'printing' stamp: 'KenD 5/1/2022 12:13:10'!
-printOn: aStream
-	aStream nextPutAll: '<' , self name , '>'
-! !
-
-!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
-isPointers
-	^pointers
-! !
-
-!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
-isVariable
-	^variable
-! !
-
-!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
-name
-	^name
-! !
-
-!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
-sharedPools
-	^sharedPools
-! !
-
-!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
-superclass
-	supername ifNil: [^nil].
-	^module resolveClass: supername
-! !
-
-!ClassSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:15:24'!
-hasMethods
-	^super hasMethods or: [metaclass hasMethods]
-! !
-
-!ClassSpec methodsFor: 'enumerating' stamp: 'KenD 5/1/2022 12:15:24'!
-allSuperclassesDo: aBlock
-	| s |
-	supername isNil ifTrue: [^self].
-	s := self superclass.
-	s isNil ifTrue: [^self].
-	aBlock value: s.
-	s allSuperclassesDo: aBlock
-! !
-
-!ClassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:24'!
-classVarNames
-	^classVariables keys
-! !
-
-!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
-classVarNames
-	^class classVarNames
-! !
-
-!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
-name
-	^class name , ' class'
-! !
-
-!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
-sharedPools
-	^class sharedPools
-! !
-
-!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
-superclass
-	^class superclass ifNotNil: [:c | c metaclass]
-! !
-
-!MetaclassSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:15:56'!
-isMetaclass
-	^true
-! !
-
-!MetaclassSpec methodsFor: 'enumerating' stamp: 'KenD 5/1/2022 12:15:56'!
-allSuperclassesDo: aBlock
-	| s c |
-	class supername isNil ifTrue: [
-		c := module resolveClass: 'Class'.
-		c ifNil: [c := Class].
-		c allSuperclassesDo: aBlock].
-	s := self superclass.
-	s isNil ifTrue: [^self].
-	aBlock value: s.
-	s allSuperclassesDo: aBlock
-! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 5/1/2022 12:57:19'!
-definition
-	| names |
-	names := (module classes collect: #name) sort.
-	^OrderedDictionary new
-		at: #name put: self moduleName asSymbol;
-		at: #requires
-		put: module dependencies keys asArray sort;
-		at: #classes put: names asArray;
-		yourself
-! !
-
 !ModuleTransliteratorTest methodsFor: 'private' stamp: 'KenD 5/1/2022 12:58:38'!
 builderClass
 	^PharoModuleBuilder
@@ -803,6 +594,18 @@ referencedIdentifiers
 ! !
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
+category
+	^self isExtension
+		ifTrue: ['*' , (module name readStream upToLast: $-)]
+		ifFalse: [category]
+! !
+
+!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
+category: aString
+	category := aString
+! !
+
+!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
 classBinding
 	^class
 ! !
@@ -811,6 +614,11 @@ classBinding
 classBinding: aSpeciesSpec
 	class := aSpeciesSpec
 ! !
+
+!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/2/2022 12:47:26'!
+compiler 
+
+	^ Smalltalk at: #SCompiler ifAbsent: [ nil ]! !
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
 module
@@ -873,6 +681,11 @@ classname
 !MethodSpec methodsFor: 'comparing' stamp: 'KenD 5/1/2022 12:18:05'!
 hash
 	^class name hash hashWith: selector
+! !
+
+!MethodSpec methodsFor: 'printing' stamp: 'KenD 5/1/2022 12:18:05'!
+printOn: aStream
+	aStream nextPutAll: class name asString , '>>#' , selector asString
 ! !
 
 !MethodSpec methodsFor: 'services' stamp: 'KenD 5/1/2022 12:18:05'!
@@ -980,6 +793,14 @@ methodReferences
 			list := references at: identifier ifAbsentPut: [OrderedCollection new].
 			list add: m]].
 	^references
+! !
+
+!ModuleSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:16:33'!
+printOn: aStream
+	aStream
+		nextPut: $<;
+		print: name;
+		nextPutAll: '> module'
 ! !
 
 !ModuleSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:16:33'!
@@ -1095,6 +916,11 @@ description: aString
 !ModuleSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:16:33'!
 extendedClasses
 	^extendedClasses
+! !
+
+!ModuleSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:16:33'!
+name
+	^name
 ! !
 
 !ModuleSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:16:33'!
@@ -1247,8 +1073,18 @@ addMethods: aCollection
 ! !
 
 !SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
+removeCategory: aSymbol
+	methods removeAllSuchThat: [:m | m category == aSymbol]
+! !
+
+!SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
 removeMethod: aMethodSpec
 	methods remove: aMethodSpec ifAbsent: nil
+! !
+
+!SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
+removeSelector: aSymbol
+	methods removeAllSuchThat: [:m | m selector == aSymbol]
 ! !
 
 !SpeciesSpec methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 12:13:10'!
@@ -1257,11 +1093,49 @@ removeSelectors: aCollection
 ! !
 
 !SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
+allInstVarNames
+	^(self withAllSuperclasses reversed gather: [:c | c instVarNames]) asArray
+! !
+
+!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
 allSharedPools
 	| pools |
 	pools := Set new.
 	self withAllSuperclasses do: [:c | pools addAll: c sharedPools].
 	^pools
+! !
+
+!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
+allSuperclasses
+	| superclasses |
+	superclasses := OrderedCollection new.
+	self allSuperclassesDo: [:s | superclasses add: s].
+	^superclasses
+! !
+
+!SpeciesSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:13:10'!
+withAllSuperclasses
+	^OrderedCollection with: self withAll: self allSuperclasses
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+allSubclasses
+	| all |
+	all := OrderedCollection new.
+	self allSubclassesDo: [:cls | all add: cls].
+	^all
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+allSubclassesDo: aBlock
+	self subclasses do: [:class | 
+		aBlock value: class.
+		class allSubclassesDo: aBlock]
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+instVarNames
+	^instanceVariables
 ! !
 
 !SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
@@ -1275,13 +1149,43 @@ ivars: aCollection
 ! !
 
 !SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+methods
+	^methods
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
 module: aModuleSpec
 	module := aModuleSpec
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+selectors
+	^methods collect: #selector
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+subclasses
+	^module allClasses select: [:c | c supername = self name]
+! !
+
+!SpeciesSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:13:10'!
+withAllSubclasses
+	^OrderedCollection with: self withAll: self allSubclasses
+! !
+
+!SpeciesSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:13:10'!
+hasMethods
+	^methods notEmpty
 ! !
 
 !SpeciesSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:13:10'!
 isExtension
 	^module extendedClasses includes: self instanceClass
+! !
+
+!SpeciesSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:13:10'!
+isMetaclass
+	^false
 ! !
 
 !SpeciesSpec methodsFor: 'initialization' stamp: 'KenD 5/1/2022 12:13:10'!
@@ -1290,6 +1194,11 @@ initialize
 	methods := OrderedCollection new.
 	instanceVariables := #().
 	format := 0
+! !
+
+!SpeciesSpec methodsFor: 'printing' stamp: 'KenD 5/1/2022 12:13:10'!
+printOn: aStream
+	aStream nextPutAll: '<' , self name , '>'
 ! !
 
 !SpeciesSpec class methodsFor: 'instance creation' stamp: 'KenD 5/1/2022 12:13:10'!
@@ -1342,8 +1251,18 @@ instanceClass
 ! !
 
 !ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
+isPointers
+	^pointers
+! !
+
+!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
 isPointers: aBoolean
 	pointers := aBoolean
+! !
+
+!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
+isVariable
+	^variable
 ! !
 
 !ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
@@ -1362,13 +1281,29 @@ metaclass: aMetaclassSpec
 ! !
 
 !ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
+name
+	^name
+! !
+
+!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
 name: aString
 	name := aString
 ! !
 
 !ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
+sharedPools
+	^sharedPools
+! !
+
+!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
 sharedPools: aCollection
 	sharedPools addAll: aCollection
+! !
+
+!ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
+superclass
+	supername ifNil: [^nil].
+	^module resolveClass: supername
 ! !
 
 !ClassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:24'!
@@ -1381,9 +1316,24 @@ supername: aString
 	supername := aString
 ! !
 
+!ClassSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:15:24'!
+hasMethods
+	^super hasMethods or: [metaclass hasMethods]
+! !
+
 !ClassSpec methodsFor: 'enumerating' stamp: 'KenD 5/1/2022 12:15:24'!
 allSharedPoolsUsing: namespace
 	^self allSharedPools
+! !
+
+!ClassSpec methodsFor: 'enumerating' stamp: 'KenD 5/1/2022 12:15:24'!
+allSuperclassesDo: aBlock
+	| s |
+	supername isNil ifTrue: [^self].
+	s := self superclass.
+	s isNil ifTrue: [^self].
+	aBlock value: s.
+	s allSuperclassesDo: aBlock
 ! !
 
 !ClassSpec methodsFor: 'initialization' stamp: 'KenD 5/1/2022 12:15:24'!
@@ -1399,6 +1349,11 @@ allMethods
 ! !
 
 !ClassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:24'!
+classVarNames
+	^classVariables keys
+! !
+
+!ClassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:24'!
 localPools
 	^classVariables select: [:c | c isKindOf: PoolDictionary]
 ! !
@@ -1409,8 +1364,28 @@ metaMethods
 ! !
 
 !MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
+classVarNames
+	^class classVarNames
+! !
+
+!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
 metaMethods
 	^#()
+! !
+
+!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
+name
+	^class name , ' class'
+! !
+
+!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
+sharedPools
+	^class sharedPools
+! !
+
+!MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
+superclass
+	^class superclass ifNotNil: [:c | c metaclass]
 ! !
 
 !MetaclassSpec methodsFor: 'inquiries' stamp: 'KenD 5/1/2022 12:15:56'!
@@ -1426,6 +1401,24 @@ instanceClass
 !MetaclassSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:15:56'!
 instanceClass: aClassSpec
 	class := aClassSpec
+! !
+
+!MetaclassSpec methodsFor: 'testing' stamp: 'KenD 5/1/2022 12:15:56'!
+isMetaclass
+	^true
+! !
+
+!MetaclassSpec methodsFor: 'enumerating' stamp: 'KenD 5/1/2022 12:15:56'!
+allSuperclassesDo: aBlock
+	| s c |
+	class supername isNil ifTrue: [
+		c := module resolveClass: 'Class'.
+		c ifNil: [c := Class].
+		c allSuperclassesDo: aBlock].
+	s := self superclass.
+	s isNil ifTrue: [^self].
+	aBlock value: s.
+	s allSuperclassesDo: aBlock
 ! !
 
 !TransliterationRule methodsFor: 'private' stamp: 'KenD 5/1/2022 12:56:07'!
@@ -2230,6 +2223,18 @@ exportMetadata
 !TonelModuleExporter methodsFor: 'private' stamp: 'KenD 5/1/2022 12:57:19'!
 createFolder
 	self moduleFolder createPath
+! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 5/1/2022 12:57:19'!
+definition
+	| names |
+	names := (module classes collect: #name) sort.
+	^OrderedDictionary new
+		at: #name put: self moduleName asSymbol;
+		at: #requires
+		put: module dependencies keys asArray sort;
+		at: #classes put: names asArray;
+		yourself
 ! !
 
 !TonelModuleExporter methodsFor: 'private' stamp: 'KenD 5/1/2022 12:57:19'!
