@@ -13,6 +13,7 @@ Background:
 - https://github.com/powerlang [Bee Bootstrap]
 - https://www.youtube.com/watch?v=ZWPMBSvYrs8 [Smalltalk VM Hackathon]
 - http://www.smalltalksystems.com/publications/avmarch.pdf [A Smalltalk Virtual Machine Architectural Model]
+- https://github.com/powerlang/bee-dmr [Source Code Repo (Tonel Format; see note below)]
 
 ![Bee Yourself](BeeGraphic.png)
 
