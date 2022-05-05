@@ -1,11 +1,12 @@
-'From Cuis 6.0 [latest update: #5130] on 2 May 2022 at 12:49:11 pm'!
+'From Cuis 6.0 [latest update: #5135] on 5 May 2022 at 11:06:05 am'!
 'Description Transliterator for translating between Smalltalk dialects.
 Used in Bee/Powerlang porting.
 
 Copyright (c) 2021 Quorum Software.
 	See (MIT) license in LICENSES directory.'!
-!provides: 'CodeSpecs' 1 2!
+!provides: 'CodeSpecs' 1 3!
 !requires: 'BeeCompatibility' 1 19 nil!
+!requires: 'ExchangeFormat-Tonel-Lite' 1 38 nil!
 SystemOrganization addCategory: 'CodeSpecs'!
 SystemOrganization addCategory: 'CodeSpecs-Porting-Rules'!
 SystemOrganization addCategory: 'CodeSpecs-Porting'!
