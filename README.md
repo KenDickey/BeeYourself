@@ -115,7 +115,21 @@ Feature require: 'PowerLang'.
 
 SCompiler compile:  'foo [true ifTrue: [^self]]' in: UndefinedObject.
 (SCompiler forClass: UndefinedObject) smalltalkCompiler  compileMethod:   'foo [true ifTrue: [^self]]' .
+
+
+````
+## Browsing Tonel Source Files
+
+````
+cd Cuis-Smalltalk
+git clone https://github.com/KenDickey/Cuis-Smalltalk-Tonel-Browser
 ```
+Then
+```Smalltalk
+Feature require: 'ExchangeFormat-Tonel-Lite'.
+````
+You should be able to open a File List, select a Tonel file, and click on the _code_ button to view in a Code Browser.
+
 
 ## Licences
 
