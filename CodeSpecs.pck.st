@@ -1,11 +1,11 @@
-'From Cuis 6.0 [latest update: #5135] on 5 May 2022 at 11:06:05 am'!
+'From Cuis 6.0 [latest update: #5135] on 6 May 2022 at 4:08:06 pm'!
 'Description Transliterator for translating between Smalltalk dialects.
 Used in Bee/Powerlang porting.
 
 Copyright (c) 2021 Quorum Software.
 	See (MIT) license in LICENSES directory.'!
-!provides: 'CodeSpecs' 1 3!
-!requires: 'BeeCompatibility' 1 19 nil!
+!provides: 'CodeSpecs' 1 5!
+!requires: 'BeeCompatibility' 1 21 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 38 nil!
 SystemOrganization addCategory: 'CodeSpecs'!
 SystemOrganization addCategory: 'CodeSpecs-Porting-Rules'!
@@ -616,10 +616,10 @@ classBinding: aSpeciesSpec
 	class := aSpeciesSpec
 ! !
 
-!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/2/2022 12:47:26'!
+!MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/5/2022 13:43:14'!
 compiler 
 
-	^ Smalltalk at: #SCompiler ifAbsent: [ nil ]! !
+	^ Smalltalk at: #SSmalltalkCompiler ifAbsent: [ nil ]! !
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:18:05'!
 module
@@ -2304,7 +2304,7 @@ import
 	self importMetadata; importClasses; importExtendedClasses
 ! !
 
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 5/1/2022 12:57:06'!
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 5/6/2022 08:04:15'!
 importClass: aString
 	| filename reader definition pointers variable class metasclass stream |
 	filename := path \ aString withExtension: 'st'.
@@ -2312,7 +2312,7 @@ importClass: aString
 		filename := path \ aString withFullExtension: 'class.st'.
 		filename exists
 			ifFalse: [self error: 'Cannot find file for class ' , aString]].
-	stream := filename asFile readStream.
+	stream := filename asFileEntry readStream.
 	reader := TonelReader on: stream.
 	[reader read] ensure: [stream close].
 	definition := reader definition.
