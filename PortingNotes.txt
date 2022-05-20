@@ -32,7 +32,7 @@ Ring: as with Tonel, Javier has started a replacement
 
 The idea being that [A] source for code and its shape is tracked (as with Ring) and [B] we should share code between Smalltalk dialects using rewrite/transliteration rules.
 
-My port of Javier's trnasliterator is
+My port of Javier's transliterator is
    BeeYourself/CodeSpecs.pck.st
 
 I think it would be easier to expand this a bit to get the benefits of Ring without the Bloat.
