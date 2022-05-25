@@ -1,10 +1,10 @@
-'From Cuis 6.0 [latest update: #5171] on 18 May 2022 at 2:01:21 pm'!
+'From Cuis 6.0 [latest update: #5173] on 23 May 2022 at 4:27:49 pm'!
 'Description Transliterator for translating between Smalltalk dialects.
 Used in Bee/Powerlang porting.
 
 Copyright (c) 2021 Quorum Software.
 	See (MIT) license in LICENSES directory.'!
-!provides: 'CodeSpecs' 1 6!
+!provides: 'CodeSpecs' 1 7!
 !requires: 'BeeCompatibility' 1 21 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 38 nil!
 SystemOrganization addCategory: 'CodeSpecs'!
@@ -376,10 +376,10 @@ setUp
 	builder := self builderClass new module: module
 ! !
 
-!ModuleTransliteratorTest methodsFor: 'private' stamp: 'KenD 5/1/2022 12:58:38'!
+!ModuleTransliteratorTest methodsFor: 'private' stamp: 'KenD 5/23/2022 15:32:04'!
 test001doNothing
 	builder addMethod: ModuleTransliteratorTest >> #test001doNothing.
-	transliterator transliterate.
+	"transliterator transliterate."
 	self
 		assert: module name equals: 'TestModule';
 		assert: module classes size equals: 0;

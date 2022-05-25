@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #5135] on 5 May 2022 at 1:31:04 pm'!
+'From Cuis 6.0 [latest update: #5173] on 25 May 2022 at 1:33:20 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 81!
+!provides: 'PowerLang' 1 82!
 !requires: 'BeeCompatibility' 1 2 nil!
 !requires: 'Cuis-Base' 60 5130 nil!
 !requires: 'BeePParser' 1 17 nil!
@@ -21585,12 +21585,12 @@ formatOfClass: definition
 	pointers := definition isBytes ifTrue: [ 0 ] ifFalse: [16r4000 ].
 	^variable | pointers | definition allInstVarNames size! !
 
-!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:20'!
+!VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 5/24/2022 12:07:10'!
 initialize 
 
-	classes := OrderedDictionary new.
+	classes        := OrderedDictionary new.
 	metaclasses := OrderedDictionary new.
-		identityMap := IdentityDictionary new! !
+	identityMap  := IdentityDictionary new! !
 
 !VirtualSmalltalkImage methodsFor: 'initialization' stamp: 'KenD 4/8/2021 14:32:37'!
 initializeBehavior: anObjectMap 
@@ -21817,13 +21817,13 @@ includes: anObject
 
 	^identityMap includesKey: anObject! !
 
-!VirtualSmalltalkImage class methodsFor: 'class initialization' stamp: 'KenD 6/13/2021 09:05:04'!
+!VirtualSmalltalkImage class methodsFor: 'class initialization' stamp: 'KenD 5/24/2022 12:05:15'!
 newKernelSpec 
 	| current repo spec |
 	current := (CodePackage installedPackages at: #'PowerLang') 
-				fullFileName asFileEntry parent parent.
+				fullFileName asFileEntry parent.
 	repo := TonelRepository new
-		directory: (current directoryMatching: 'Bee-DMR').
+		directory: (current directoryMatching: 'bee-dmr').
 	spec := repo asRingEnvironmentWith: #(Kernel).
 	^ spec clean! !
 
@@ -21832,10 +21832,10 @@ fromSpec
 
 	^ self new kernel: self kernelSpec! !
 
-!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 4/8/2021 14:22:48'!
+!VirtualSmalltalkImage class methodsFor: 'instance creation' stamp: 'KenD 5/24/2022 12:04:53'!
 kernelSpec 
 
-	^ KernelSpec ifNil: [ KernelSpec := self newKernelSpec ]! !
+	^ KernelSpec ifNil: [ KernelSpec := VirtualSmalltalkImage newKernelSpec ]! !
 
 !VirtualSmalltalkRuntime methodsFor: 'services' stamp: 'KenD 4/12/2021 07:57:32'!
 compile: anRGMethod 
