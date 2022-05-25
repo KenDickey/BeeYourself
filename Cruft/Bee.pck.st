@@ -1,11 +1,13 @@
-'From Cuis 6.0 [latest update: #5095] on 1 April 2022 at 8:19:24 am'!
+'From Cuis 6.0 [latest update: #5095] on 3 April 2022 at 9:24:27 am'!
 'Description Bee Transliterator
 
 Original code Copyright LICENCES/JavierPimas'!
-!provides: 'Bee' 1 8!
+!provides: 'Bee' 1 9!
 !requires: 'BeeCompatibility' 1 4 nil!
+!requires: 'Bee-Tonel-Lite' 1 0 nil!
 SystemOrganization addCategory: 'Bee-CodeSpecs-Porting'!
 SystemOrganization addCategory: 'Bee-CodeSpecs'!
+SystemOrganization addCategory: 'Bee-Tonel-Lite'!
 
 
 !classDefinition: #ModuleTransliteratorTest category: 'Bee-CodeSpecs-Porting'!
@@ -66,26 +68,6 @@ Object subclass: #RejectMethodRule
 	category: 'Bee-CodeSpecs-Porting'!
 !classDefinition: 'RejectMethodRule class' category: 'Bee-CodeSpecs-Porting'!
 RejectMethodRule class
-	instanceVariableNames: ''!
-
-!classDefinition: #TonelModuleExporter category: 'Bee-CodeSpecs-Porting'!
-Object subclass: #TonelModuleExporter
-	instanceVariableNames: 'module path compatible'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Bee-CodeSpecs-Porting'!
-!classDefinition: 'TonelModuleExporter class' category: 'Bee-CodeSpecs-Porting'!
-TonelModuleExporter class
-	instanceVariableNames: ''!
-
-!classDefinition: #TonelModuleImporter category: 'Bee-CodeSpecs-Porting'!
-Object subclass: #TonelModuleImporter
-	instanceVariableNames: 'module path metadata'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Bee-CodeSpecs-Porting'!
-!classDefinition: 'TonelModuleImporter class' category: 'Bee-CodeSpecs-Porting'!
-TonelModuleImporter class
 	instanceVariableNames: ''!
 
 !classDefinition: #TransliterationRule category: 'Bee-CodeSpecs-Porting'!
@@ -248,17 +230,36 @@ SpeciesSpec subclass: #MetaclassSpec
 MetaclassSpec class
 	instanceVariableNames: ''!
 
+!classDefinition: #TonelModuleExporter category: 'Bee-Tonel-Lite'!
+Object subclass: #TonelModuleExporter
+	instanceVariableNames: 'module path compatible'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-Tonel-Lite'!
+!classDefinition: 'TonelModuleExporter class' category: 'Bee-Tonel-Lite'!
+TonelModuleExporter class
+	instanceVariableNames: ''!
 
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:16'!
-definition 
-	| names |
-	names := (module classes collect: #name) sort.
-	^OrderedDictionary new
-		at: #name put: self moduleName asSymbol;
-		at: #requires
-		put: module dependencies keys asArray sort;
-		at: #classes put: names asArray;
-		yourself! !
+!classDefinition: #TonelModuleImporter category: 'Bee-Tonel-Lite'!
+Object subclass: #TonelModuleImporter
+	instanceVariableNames: 'module path metadata'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-Tonel-Lite'!
+!classDefinition: 'TonelModuleImporter class' category: 'Bee-Tonel-Lite'!
+TonelModuleImporter class
+	instanceVariableNames: ''!
+
+!classDefinition: #TonelReader category: 'Bee-Tonel-Lite'!
+Object subclass: #TonelReader
+	instanceVariableNames: 'class methods stream'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Bee-Tonel-Lite'!
+!classDefinition: 'TonelReader class' category: 'Bee-Tonel-Lite'!
+TonelReader class
+	instanceVariableNames: ''!
+
 
 !MethodSpec methodsFor: 'accessing' stamp: 'KenD 3/29/2022 14:31:20'!
 category 
@@ -452,6 +453,27 @@ sharedPools
 superclass 
 
 	^ class superclass ifNotNil: [:c | c metaclass]! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:16'!
+definition 
+	| names |
+	names := (module classes collect: #name) sort.
+	^OrderedDictionary new
+		at: #name put: self moduleName asSymbol;
+		at: #requires
+		put: module dependencies keys asArray sort;
+		at: #classes put: names asArray;
+		yourself! !
+
+!TonelReader methodsFor: 'accessing' stamp: 'KenD 4/3/2022 09:11:57'!
+definition 
+
+	^ class! !
+
+!TonelReader methodsFor: 'accessing' stamp: 'KenD 4/3/2022 09:12:40'!
+methods
+
+	^ methods! !
 
 !ModuleTransliteratorTest methodsFor: 'testing' stamp: 'KenD 3/30/2022 12:23:44'!
 builderClass 
@@ -1090,298 +1112,6 @@ new
 scope: aBlock 
 
 	scope := aBlock! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:23'!
-compatible: aBoolean 
-
-	compatible := aBoolean! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:33'!
-copyright 
-
-	^'Copyright (c) ' , Date today year asString , ' Quorum Software.'! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:15'!
-license 
-
-	^'See (MIT) license in root directory.'! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:27'!
-module: aModuleSpec 
-
-	module := aModuleSpec! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:37'!
-moduleFolder 
-
-	^path \ self exportedName! !
-
-!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:57:06'!
-path: aFilename 
-
-	path := aFilename asFilename! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:50:42'!
-export 
-
-	self
-		createFolder;
-		exportMetadata;
-		exportClasses;
-		exportExtendedClasses! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:23'!
-exportClass: aClassSpec 
-	| filename |
-	filename := self filenameForClass: aClassSpec.
-	self withFileNamed: filename do: [:stream | | writer |
-		stream truncate.
-		self flag: #TonelWriter.
-		writer := TonelWriter on: stream.
-		writer
-			category: self moduleName;
-			class: aClassSpec;
-			methods: (aClassSpec metaMethods sortBy: #selector)
-				& (aClassSpec methods sortBy: #selector);
-			write]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:37'!
-exportClasses 
-
-	module classes do: [:class | self exportClass: class]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:49'!
-exportEmptyClass: aClassSpec 
-	| filename |
-	filename := self filenameForClass: aClassSpec.
-	self withFileNamed: filename do: [:stream | | writer |
-		writer := TonelWriter on: stream.
-		writer
-			category: self moduleName;
-			class: aClassSpec;
-			methods: #();
-			write]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:52:02'!
-exportEmptyClasses 
-
-	module classes do: [:class | self exportEmptyClass: class]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:24'!
-exportExtendedClass: aClassSpec 
-	| filename |
-	filename := self filenameForExtension: aClassSpec.
-	self withFileNamed: filename do: [:stream | 
-		stream truncate.
-		self flag: #TonelWriter.
-		(TonelWriter on: stream)
-			writeMethods: (aClassSpec metaMethods sortBy: #selector)
-				& (aClassSpec methods sortBy: #selector)]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:39'!
-exportExtendedClasses 
-
-	module extendedClasses do: [:class | self exportExtendedClass: class]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:45'!
-exportMetadata 
-	| package |
-	package := self moduleFolder \ 'package.st'.
-	self flag: #STONWriter.
-	self withFileNamed: package do: [:stream | 
-		stream nextPutAll: 'Package '.
-		(STONWriter on: stream) writeMap: self definition]! !
-
-!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:58'!
-exportPseudoTonel 
-
-	compatible := false.
-	self export! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:00'!
-createFolder 
-
-	self moduleFolder createPath! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:21'!
-exportedName 
-
-	^ module name copy replace: Character space with: $\! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:34'!
-filenameForClass: aClassSpec 
-	| name |
-	name := aClassSpec name asFilename.
-	compatible ifTrue: [name := name appendExtension: 'class'].
-	^self moduleFolder \ name appendExtension: 'st'! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:52'!
-filenameForExtension: aClassSpec 
-	| name |
-	name := aClassSpec name asFilename.
-	compatible ifTrue: [name := name appendExtension: 'extension'].
-	^self moduleFolder \ name appendExtension: 'st'! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:56:49'!
-moduleName 
-
-	^self exportedName asFilename entityName! !
-
-!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:57:22'!
-withFileNamed: aFilename do: aBlock 
-	| stream |
-	stream := aFilename asFile writeStream.
-	stream
-		truncate;
-		eol: String lf;
-		nextPut: $";
-		crtab;
-		nextPutAll: self copyright;
-		crtab;
-		nextPutAll: self license;
-		cr;
-		nextPut: $";
-		cr;
-		cr.
-	[aBlock evaluateWith: stream] ensure: [stream close]! !
-
-!TonelModuleExporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:48:56'!
-new 
-
-	^ super new initialize! !
-
-!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:31'!
-module 
-
-	^ module! !
-
-!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:40'!
-module: aModuleSpec 
-
-	module := aModuleSpec! !
-
-!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:56'!
-path: aFilename 
-
-	path := aFilename! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:41:27'!
-import 
-
-	self importMetadata; importClasses; importExtendedClasses! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:42:45'!
-importClass: aString 
-	| filename reader definition pointers variable class metasclass stream |
-	filename := path \ aString withExtension: 'st'.
-	filename exists ifFalse: [
-		filename := path \ aString withFullExtension: 'class.st'.
-		filename exists
-			ifFalse: [self error: 'Cannot find file for class ' , aString]].
-	stream := filename asFile readStream.
-	self flag: #TonelReader.
-	reader := TonelReader on: stream.
-	[reader read] ensure: [stream close].
-	definition := reader definition.
-	variable := pointers := true.
-	definition at: #type ifPresent: [:type | 
-		variable := true.
-		type = #bytes ifTrue: [pointers := false]].
-	class := ClassSpec new
-		module: module;
-		name: (definition at: #name) asString;
-		supername: (definition at: #superclass ifAbsent: nil) asString;
-		ivars: (definition at: #instVars ifAbsent: #());
-		cvarNames: (definition at: #classVars ifAbsent: #());
-		sharedPools: (definition at: #pools ifAbsent: #());
-		isVariable: variable;
-		isPointers: pointers.
-	metasclass := MetaclassSpec new
-		module: module;
-		instanceClass: class;
-		ivars: (definition at: #classInstVars ifAbsent: #()).
-	class metaclass: metasclass.
-	module addClass: class.
-	reader methods do: [:m | self importMethod: m]! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:07'!
-importClasses 
-
-	(metadata at: #classes) do: [:name | self importClass: name]! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:21'!
-importExtendedClass: aString 
-	| filename stream reader definition class metaclass |
-	filename := path \ aString withExtension: 'st'.
-	filename exists ifFalse: [
-		filename := path \ aString withFullExtension: 'extension.st'.
-		filename exists
-			ifFalse: [self error: 'Cannot find file for extended class ' , aString]].
-	stream := filename asFile readStream.
-	reader := TonelReader on: stream.
-	[reader read] ensure: [stream close].
-	definition := reader definition.
-	class := ClassSpec new
-		module: module;
-		name: (definition at: #name) asString.
-	metaclass := MetaclassSpec new module: module; instanceClass: class.
-	class metaclass: metaclass.
-	module addClassExtension: class.
-	reader methods do: [:m | self importMethod: m]! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:36'!
-importExtendedClasses 
-	| classes filenames candidates |
-	classes := metadata at: #classes.
-	filenames := path asDirectory fileNamesWithExtension: 'st'.
-	candidates := filenames collect: [:s | s asFilename fileNameOnly].
-	candidates := candidates
-		reject: [:n | n = 'package' or: [classes includes: n]].
-	candidates do: [:n | self importExtendedClass: n]! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:44:16'!
-importMetadata 
-	| stream name |
-	stream := (path \ 'package.st') asFile readStream.
-	stream throughAll: 'Package '.
-	self flag: #STONReader.
-	metadata := (STONReader on: stream) parseMap.
-	name := (metadata at: #name) replace: $- with: Character space.
-	module name: name asString! !
-
-!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:46:12'!
-importMethod: aDictionary 
-	| classname selector category class signature body source method |
-	classname := aDictionary at: #class.
-	selector := aDictionary at: #selector.
-	category := aDictionary at: #category.
-	class := module resolveClass: classname.
-	class isNil ifTrue: [
-		self
-			error: 'Cannot find class for method ' , classname , ' >> #'
-				, selector asString].
-	signature := aDictionary at: #signature.
-	body := aDictionary at: #body.
-	source := signature dosToUnix unixToMac , String cr
-		, body dosToUnix unixToMac.
-	method := MethodSpec new
-		module: module;
-		classBinding: class;
-		selector: selector;
-		category: category;
-		source: source.
-	class addMethod: method! !
-
-!TonelModuleImporter methodsFor: 'initialization' stamp: 'KenD 3/30/2022 11:38:30'!
-initialize 
-	
-	super initialize.
-	module := ModuleSpec new! !
-
-!TonelModuleImporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:37:04'!
-new 
-
-	^ super new initialize! !
 
 !TransliterationRule methodsFor: 'accessing' stamp: 'KenD 3/30/2022 12:04:10'!
 class: aString 
@@ -2293,6 +2023,394 @@ supername
 isMetaclass 
 
 	^ true! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:23'!
+compatible: aBoolean 
+
+	compatible := aBoolean! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:49:33'!
+copyright 
+
+	^'Copyright (c) ' , Date today year asString , ' Quorum Software.'! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:15'!
+license 
+
+	^'See (MIT) license in root directory.'! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:27'!
+module: aModuleSpec 
+
+	module := aModuleSpec! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:56:37'!
+moduleFolder 
+
+	^path \ self exportedName! !
+
+!TonelModuleExporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:57:06'!
+path: aFilename 
+
+	path := aFilename asFilename! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:50:42'!
+export 
+
+	self
+		createFolder;
+		exportMetadata;
+		exportClasses;
+		exportExtendedClasses! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:23'!
+exportClass: aClassSpec 
+	| filename |
+	filename := self filenameForClass: aClassSpec.
+	self withFileNamed: filename do: [:stream | | writer |
+		stream truncate.
+		self flag: #TonelWriter.
+		writer := TonelWriter on: stream.
+		writer
+			category: self moduleName;
+			class: aClassSpec;
+			methods: (aClassSpec metaMethods sortBy: #selector)
+				& (aClassSpec methods sortBy: #selector);
+			write]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:37'!
+exportClasses 
+
+	module classes do: [:class | self exportClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:51:49'!
+exportEmptyClass: aClassSpec 
+	| filename |
+	filename := self filenameForClass: aClassSpec.
+	self withFileNamed: filename do: [:stream | | writer |
+		writer := TonelWriter on: stream.
+		writer
+			category: self moduleName;
+			class: aClassSpec;
+			methods: #();
+			write]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:52:02'!
+exportEmptyClasses 
+
+	module classes do: [:class | self exportEmptyClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:24'!
+exportExtendedClass: aClassSpec 
+	| filename |
+	filename := self filenameForExtension: aClassSpec.
+	self withFileNamed: filename do: [:stream | 
+		stream truncate.
+		self flag: #TonelWriter.
+		(TonelWriter on: stream)
+			writeMethods: (aClassSpec metaMethods sortBy: #selector)
+				& (aClassSpec methods sortBy: #selector)]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:53:39'!
+exportExtendedClasses 
+
+	module extendedClasses do: [:class | self exportExtendedClass: class]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:45'!
+exportMetadata 
+	| package |
+	package := self moduleFolder \ 'package.st'.
+	self flag: #STONWriter.
+	self withFileNamed: package do: [:stream | 
+		stream nextPutAll: 'Package '.
+		(STONWriter on: stream) writeMap: self definition]! !
+
+!TonelModuleExporter methodsFor: 'export' stamp: 'KenD 3/30/2022 11:54:58'!
+exportPseudoTonel 
+
+	compatible := false.
+	self export! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:50:00'!
+createFolder 
+
+	self moduleFolder createPath! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:21'!
+exportedName 
+
+	^ module name copy replace: Character space with: $\! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:34'!
+filenameForClass: aClassSpec 
+	| name |
+	name := aClassSpec name asFilename.
+	compatible ifTrue: [name := name appendExtension: 'class'].
+	^self moduleFolder \ name appendExtension: 'st'! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:55:52'!
+filenameForExtension: aClassSpec 
+	| name |
+	name := aClassSpec name asFilename.
+	compatible ifTrue: [name := name appendExtension: 'extension'].
+	^self moduleFolder \ name appendExtension: 'st'! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:56:49'!
+moduleName 
+
+	^self exportedName asFilename entityName! !
+
+!TonelModuleExporter methodsFor: 'private' stamp: 'KenD 3/30/2022 11:57:22'!
+withFileNamed: aFilename do: aBlock 
+	| stream |
+	stream := aFilename asFile writeStream.
+	stream
+		truncate;
+		eol: String lf;
+		nextPut: $";
+		crtab;
+		nextPutAll: self copyright;
+		crtab;
+		nextPutAll: self license;
+		cr;
+		nextPut: $";
+		cr;
+		cr.
+	[aBlock evaluateWith: stream] ensure: [stream close]! !
+
+!TonelModuleExporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:48:56'!
+new 
+
+	^ super new initialize! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:31'!
+module 
+
+	^ module! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:40'!
+module: aModuleSpec 
+
+	module := aModuleSpec! !
+
+!TonelModuleImporter methodsFor: 'accessing' stamp: 'KenD 3/30/2022 11:39:56'!
+path: aFilename 
+
+	path := aFilename! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:41:27'!
+import 
+
+	self importMetadata; importClasses; importExtendedClasses! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:42:45'!
+importClass: aString 
+	| filename reader definition pointers variable class metasclass stream |
+	filename := path \ aString withExtension: 'st'.
+	filename exists ifFalse: [
+		filename := path \ aString withFullExtension: 'class.st'.
+		filename exists
+			ifFalse: [self error: 'Cannot find file for class ' , aString]].
+	stream := filename asFile readStream.
+	self flag: #TonelReader.
+	reader := TonelReader on: stream.
+	[reader read] ensure: [stream close].
+	definition := reader definition.
+	variable := pointers := true.
+	definition at: #type ifPresent: [:type | 
+		variable := true.
+		type = #bytes ifTrue: [pointers := false]].
+	class := ClassSpec new
+		module: module;
+		name: (definition at: #name) asString;
+		supername: (definition at: #superclass ifAbsent: nil) asString;
+		ivars: (definition at: #instVars ifAbsent: #());
+		cvarNames: (definition at: #classVars ifAbsent: #());
+		sharedPools: (definition at: #pools ifAbsent: #());
+		isVariable: variable;
+		isPointers: pointers.
+	metasclass := MetaclassSpec new
+		module: module;
+		instanceClass: class;
+		ivars: (definition at: #classInstVars ifAbsent: #()).
+	class metaclass: metasclass.
+	module addClass: class.
+	reader methods do: [:m | self importMethod: m]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:07'!
+importClasses 
+
+	(metadata at: #classes) do: [:name | self importClass: name]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:21'!
+importExtendedClass: aString 
+	| filename stream reader definition class metaclass |
+	filename := path \ aString withExtension: 'st'.
+	filename exists ifFalse: [
+		filename := path \ aString withFullExtension: 'extension.st'.
+		filename exists
+			ifFalse: [self error: 'Cannot find file for extended class ' , aString]].
+	stream := filename asFile readStream.
+	reader := TonelReader on: stream.
+	[reader read] ensure: [stream close].
+	definition := reader definition.
+	class := ClassSpec new
+		module: module;
+		name: (definition at: #name) asString.
+	metaclass := MetaclassSpec new module: module; instanceClass: class.
+	class metaclass: metaclass.
+	module addClassExtension: class.
+	reader methods do: [:m | self importMethod: m]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:43:36'!
+importExtendedClasses 
+	| classes filenames candidates |
+	classes := metadata at: #classes.
+	filenames := path asDirectory fileNamesWithExtension: 'st'.
+	candidates := filenames collect: [:s | s asFilename fileNameOnly].
+	candidates := candidates
+		reject: [:n | n = 'package' or: [classes includes: n]].
+	candidates do: [:n | self importExtendedClass: n]! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:44:16'!
+importMetadata 
+	| stream name |
+	stream := (path \ 'package.st') asFile readStream.
+	stream throughAll: 'Package '.
+	self flag: #STONReader.
+	metadata := (STONReader on: stream) parseMap.
+	name := (metadata at: #name) replace: $- with: Character space.
+	module name: name asString! !
+
+!TonelModuleImporter methodsFor: 'import' stamp: 'KenD 3/30/2022 11:46:12'!
+importMethod: aDictionary 
+	| classname selector category class signature body source method |
+	classname := aDictionary at: #class.
+	selector := aDictionary at: #selector.
+	category := aDictionary at: #category.
+	class := module resolveClass: classname.
+	class isNil ifTrue: [
+		self
+			error: 'Cannot find class for method ' , classname , ' >> #'
+				, selector asString].
+	signature := aDictionary at: #signature.
+	body := aDictionary at: #body.
+	source := signature dosToUnix unixToMac , String cr
+		, body dosToUnix unixToMac.
+	method := MethodSpec new
+		module: module;
+		classBinding: class;
+		selector: selector;
+		category: category;
+		source: source.
+	class addMethod: method! !
+
+!TonelModuleImporter methodsFor: 'initialization' stamp: 'KenD 3/30/2022 11:38:30'!
+initialize 
+	
+	super initialize.
+	module := ModuleSpec new! !
+
+!TonelModuleImporter class methodsFor: 'instance creation' stamp: 'KenD 3/30/2022 11:37:04'!
+new 
+
+	^ super new initialize! !
+
+!TonelReader methodsFor: 'accessing' stamp: 'KenD 4/3/2022 09:17:14'!
+stream: aReadStream 
+
+	stream := aReadStream! !
+
+!TonelReader methodsFor: 'initialization' stamp: 'KenD 4/3/2022 09:12:22'!
+initialize 
+
+	class := OrderedDictionary new.
+	methods := OrderedCollection new! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:14:00'!
+read
+
+	self
+		readComments;
+		readType;
+		readDefinition;
+		readMethods! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:14:33'!
+readComments 
+
+	stream skipSeparators.
+	stream peek = $" ifTrue: [
+		stream next.
+		self skipComment
+	]! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:14:59'!
+readDefinition 
+
+	STONReader new
+		on: stream skipSeparators;
+		parseMapDo: [:key :value | class at: key put: value]
+
+! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:15:32'!
+readMethod 
+	| metadata classname signature selector method |
+	metadata := STON fromStream: stream.
+	classname := stream skipSeparators; upToAll: '>>'.
+	signature := stream upTo: $[.
+	selector := SmalltalkParser parseSelector: signature.
+	method := OrderedDictionary new.
+	method
+		addAll: metadata;
+		at: #class put: classname trimBlanks;
+		at: #signature put: signature trimBlanks;
+		at: #selector put: selector;
+		at: #body put: self nextBlock.
+	methods add: method! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:15:46'!
+readMethods 
+
+	[stream skipSeparators; atEnd] whileFalse: [self readMethod]! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:16:00'!
+readType 
+	| type |
+	type := stream skipSeparators; nextWordOrNumber.
+	(type = 'Class' or: [type = 'Extension'])
+		ifFalse: [self error: 'unsupported type']! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:16:13'!
+skipComment 
+
+	self skipToMatch: $"! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:16:27'!
+skipString 
+
+	self skipToMatch: $'! !
+
+!TonelReader methodsFor: 'reading' stamp: 'KenD 4/3/2022 09:17:00'!
+skipToMatch: aCharacter 
+	[| found |
+		found := stream skipTo: aCharacter.
+		found ifFalse: [self error: aCharacter storeString , ' end expected'].
+		stream peek = aCharacter ifTrue: [
+			stream next.
+			found := false].
+		found] whileFalse! !
+
+!TonelReader class methodsFor: 'instance creation' stamp: 'KenD 4/3/2022 09:11:15'!
+new 
+
+	^super new initialize! !
+
+!TonelReader class methodsFor: 'instance creation' stamp: 'KenD 4/3/2022 09:11:28'!
+on: aStream 
+
+	^ self new stream: aStream! !
 
 !Compiler methodsFor: '*Bee-CodeSpecs-Porting' stamp: 'KenD 3/30/2022 12:29:16'!
 parseMethod: aString 
