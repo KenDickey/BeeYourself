@@ -38,6 +38,8 @@ Then built on rv64/debian.
 With text editor, edited /etc/wifi/wpa_supplicant.config for router wifi name & wpa-psk password.
 Also edited /etc/network/interfaces as per popolon's web page.
 +reboot
+Now Connman from menu->settings and set up Wifi; use "gear" to auto-htpd.
++reboot
 
 Now use 
   sudo ifconfig
