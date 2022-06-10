@@ -1,0 +1,65 @@
+How I got up Sipeed Lichee Doc HW up.
+
+Got HV via AliExpress: ~$25
+
+https://www.aliexpress.com/item/3256803616861785.html?spm=a2g0o.order_detail.0.0.3f7cf19c8tuzNx&gatewayAdapt=4itemAdapt
+
+WORKING IMAGE
+
+Not having access to Windows/Intel, I found a Debiamn image referenced on the INet at page:
+
+  https://popolon.org/gblog3/?p=2261&lang=en
+
+
+Used Raspian Linux on RasPi4 to flash 32GB SD card via:
+
+ sudo dd if=20211230_LicheeRV_debian_d1_hdmi_8723ds.ddimg  of=/dev/sda bs=4M status=progress conv=sync
+
+Used same power/HDMI/usb-keyboard+mouse.
+
+Booted fine.
+
+* Login: sipeed
+* Password: licheepi
+
+Right-click to change desktop setting to add menus.
+
+No networking (locked up ap from menu: Settings->Connman).
+
+GETTING NETWORKING UP
+
+I needed a text editor.  So got mg and ncurses.  
+  https://github.com/troglobit/mg
+  https://invisible-mirror.net/archives/ncurses/
+
+tar'ed sw on RasPi4/Raspian; mounted SD card for Riscv64; copied to card; reinsert into LicheeRV; reboot.
+Then built on rv64/debian.
+
+With text editor, edited /etc/wifi/wpa_supplicant.config for router wifi name & wpa-psk password.
+Also edited /etc/network/interfaces as per popolon's web page.
++reboot
+
+Now use 
+  sudo ifconfig
+to get IP and can
+  ssh sipeed@<IP>
+for remote terminal 
+
+(AdaFruit USB Console also works with same pin positions
+  https://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable/connect-the-lead )
+
+GIT/APT et al
+
+Edited /etc/apt/filelist as per Debian
+Needed to install keys
+  dpkg -i debian-ports-archive-keyring_2022.02.15_all.deb
+
+so
+  sudo apt-get install git
+  sudo apt-get install dillo
+..
+
+That is the basics..
+
+
+
