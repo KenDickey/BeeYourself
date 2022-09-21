@@ -51,22 +51,22 @@ Instructions <<=====>> Operations/[Macro]Opcodes
 
 ## Possible Register Usage
 ````
-Bee      Aarch64     RISCV
----      -------     -----
-IP        -           -
-SP        SP*        X2
-FP        R29        X8
-R         R0/R1      X10/X11
-M         R19        X19
-S         R20        X20
-E         R21        X21
-A         R2-7       X12-17
-T         R9-12      X28-31
-V         R22        X22
-G         R23        X23
-nil       R24        X24
-true      R25        X25
-false     R26        X26
+Bee      Aarch64     RISCV	Notes
+---      -------     -----	=====
+IP        -           -		Program Counter [access by instruction]
+SP        SP*        X2		Stack Pointer
+FP        R29        X8		Frame Pointer
+R         R0/R1      X10/X11	Receiver=Self / Return Value
+M         R19        X19	Method Address
+S         R20        X20	Selector
+E         R21        X21	Environment [Escaping Variables]
+A         R2-7       X12-17	Arguments [1..6] (spill to stack}
+T         R9-12      X28-31	Temporaries/Volitile (non-object values)
+V         R22        X22	Temp Object Value (???)
+G         R23        X23	Smalltalk Globals (Vector of Objects)
+nil       R24        X24	(needed? -> StackLimit)
+true      R25        X25	(needed? -> NextAlloc)
+false     R26        X26	(needed? -> AllocLimit)
 
 ````
 
