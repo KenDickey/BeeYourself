@@ -1,11 +1,11 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 9:58:29 am'!
+'From Cuis 6.0 [latest update: #5552] on 12 November 2022 at 1:33:50 pm'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
 See https://github.com/powerlang/bee-dmr/tree/master/PetitParser
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'BeePParser' 1 19!
-!requires: 'BeeCompatibility' 1 11 nil!
-!requires: 'PetitParser' 1 2 nil!
+!provides: 'BeePParser' 1 21!
+!requires: 'BeeCompatibility' 1 32 nil!
+!requires: 'PetitParser' 1 5 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!
 SystemOrganization addCategory: 'BeePParser'!
@@ -399,6 +399,16 @@ sameAs: aCharacter
 
 	^self asLowercase = aCharacter asLowercase! !
 
+!UnicodeCodePoint methodsFor: '*BeePParser' stamp: 'KenD 11/12/2022 13:27:27'!
+parserTo: aCharacter 
+
+	^PPPredicateObjectParser between: self and: aCharacter! !
+
+!UnicodeCodePoint methodsFor: '*BeePParser' stamp: 'KenD 11/12/2022 13:27:34'!
+sameAs: aCharacter 
+
+	^self asLowercase = aCharacter asLowercase! !
+
 !ReadStream methodsFor: '*BeePParser' stamp: 'KenD 2/9/2021 15:48:17'!
 asPetitStream 
 
@@ -581,6 +591,12 @@ printTextOn: rtf
 		nextPutAll: ', ';
 		nextPutAll: stop;
 		nextPut: $]! !
+
+!PPRepeatingParser methodsFor: '*BeePParser' stamp: 'KenD 11/10/2022 12:25:27'!
+setMin: smallInteger max: largetrInteger
+
+	min := smallInteger.
+	max := largetrInteger! !
 
 !PPRepeatingParser class methodsFor: '*BeePParser' stamp: 'KenD 2/12/2021 09:01:04'!
 on: aParser 
