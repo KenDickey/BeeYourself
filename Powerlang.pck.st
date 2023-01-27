@@ -26884,7 +26884,7 @@ isBinary
 
 	^self precedence = 2! !
 
-!Utf8Symbol methodsFor: '*powerlang-core' stamp: 'KenD 11/12/2022 13:22:10'!
+!UnicodeSymbol methodsFor: '*powerlang-core' stamp: 'KenD 11/12/2022 13:22:10'!
 isBinary 
 
 	^self precedence = 2! !
