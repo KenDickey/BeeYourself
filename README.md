@@ -2,7 +2,7 @@
 
 Experiments in porting Powerlang/Bee-DMR bootstrap to Cuis
 
-Nota Bene: _very_ pre-Alpha [Broken, but package now loads with: "Feature require: 'PowerLang'"]
+Nota Bene: _very_ pre-Alpha [Broken, but package now loads with: "Feature require: 'Powerlang'"]
 
 Background:
 - http://esug.org/data/ESUG2014/IWST/Papers/iwst2014_Design%20and%20implementation%20of%20Bee%20Smalltalk%20Runtime.pdf [Bee Runtime]
@@ -112,7 +112,7 @@ Should be able to port by cross-compiling nativizer for new platform and cross/p
 ## Playtime:
 
 ```Smalltalk
-Feature require: 'PowerLang'.
+Feature require: 'Powerlang'.
 
 SCompiler compile:  'foo [true ifTrue: [^self]]' in: UndefinedObject.
 (SCompiler forClass: UndefinedObject) smalltalkCompiler  compileMethod:   'foo [true ifTrue: [^self]]' .
