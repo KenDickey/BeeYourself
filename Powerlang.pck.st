@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5658] on 30 January 2023 at 2:46:41 pm'!
+'From Cuis 6.0 [latest update: #5658] on 30 January 2023 at 3:22:27 pm'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 63!
+!provides: 'Powerlang' 1 64!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -20,100 +20,9 @@ SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk'!
 SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 SystemOrganization addCategory: 'Powerlang-Core-Emulation'!
-SystemOrganization addCategory: 'Powerlang-Compatibility-Pharo'!
 SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: 'Powerlang-Core-Execution-Ring'!
 
-
-!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
-SharedPool subclass: #CharacterConstants
-	instanceVariableNames: ''
-	classVariableNames: 'Cr Lf Newline Space Tab'
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
-CharacterConstants class
-	instanceVariableNames: ''!
-
-!classDefinition: #OperandTypeFlags category: 'Powerlang-Core-Assembler-Intel'!
-SharedPool subclass: #OperandTypeFlags
-	instanceVariableNames: ''
-	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Assembler-Intel'!
-!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core-Assembler-Intel'!
-OperandTypeFlags class
-	instanceVariableNames: ''!
-
-!classDefinition: #RegistersRISCV category: 'Powerlang-Core-Assembly-RISCV'!
-SharedPool subclass: #RegistersRISCV
-	instanceVariableNames: ''
-	classVariableNames: 'RegA RegE RegFP RegFalse RegFlags RegG RegLink RegM RegNil RegR RegS RegSP RegT RegTmp0 RegTmp1 RegTrue RegV RegX0 RegX1 RegZero'
-	poolDictionaries: 'RISC5Regs'
-	category: 'Powerlang-Core-Assembly-RISCV'!
-!classDefinition: 'RegistersRISCV class' category: 'Powerlang-Core-Assembly-RISCV'!
-RegistersRISCV class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core-Nativization'!
-SharedPool subclass: #InlineMessageLinkerFlags
-	instanceVariableNames: ''
-	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core-Nativization'!
-InlineMessageLinkerFlags class
-	instanceVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'!
-
-!classDefinition: #SendSiteFlags category: 'Powerlang-Core-Nativization'!
-SharedPool subclass: #SendSiteFlags
-	instanceVariableNames: ''
-	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Nativization'!
-!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core-Nativization'!
-SendSiteFlags class
-	instanceVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'!
-
-!classDefinition: #SCompiledBlockFlags category: 'Powerlang-Core-SCompiler'!
-SharedPool subclass: #SCompiledBlockFlags
-	instanceVariableNames: ''
-	classVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockFlags class' category: 'Powerlang-Core-SCompiler'!
-SCompiledBlockFlags class
-	instanceVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'!
-
-!classDefinition: #SCompiledMethodFlags category: 'Powerlang-Core-SCompiler'!
-SharedPool subclass: #SCompiledMethodFlags
-	instanceVariableNames: ''
-	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethodFlags class' category: 'Powerlang-Core-SCompiler'!
-SCompiledMethodFlags class
-	instanceVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'!
-
-!classDefinition: #SExpressionTypes category: 'Powerlang-Core-SExpressions'!
-SharedPool subclass: #SExpressionTypes
-	instanceVariableNames: ''
-	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core-SExpressions'!
-SExpressionTypes class
-	instanceVariableNames: ''!
-
-!classDefinition: #PSharedPool category: 'Powerlang-Compatibility-Pharo'!
-SharedPool subclass: #PSharedPool
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Compatibility-Pharo'!
-!classDefinition: 'PSharedPool class' category: 'Powerlang-Compatibility-Pharo'!
-PSharedPool class
-	instanceVariableNames: ''!
 
 !classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core-Metaphysics'!
 PSharedPool subclass: #ObjectHeaderMasks
@@ -205,6 +114,86 @@ PSharedPool subclass: #ClosureElementTypes
 ClosureElementTypes class
 	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
 
+!classDefinition: #CharacterConstants category: 'Powerlang-Core'!
+SharedPool subclass: #CharacterConstants
+	instanceVariableNames: ''
+	classVariableNames: 'Cr Lf Newline Space Tab'
+	poolDictionaries: ''
+	category: 'Powerlang-Core'!
+!classDefinition: 'CharacterConstants class' category: 'Powerlang-Core'!
+CharacterConstants class
+	instanceVariableNames: ''!
+
+!classDefinition: #OperandTypeFlags category: 'Powerlang-Core-Assembler-Intel'!
+SharedPool subclass: #OperandTypeFlags
+	instanceVariableNames: ''
+	classVariableNames: 'ConstantType ImmediateType MemoryType RegisterGP RegisterGroupMask RegisterSIMD RegisterSegment RegisterSpecific RegisterType'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Assembler-Intel'!
+!classDefinition: 'OperandTypeFlags class' category: 'Powerlang-Core-Assembler-Intel'!
+OperandTypeFlags class
+	instanceVariableNames: ''!
+
+!classDefinition: #RegistersRISCV category: 'Powerlang-Core-Assembly-RISCV'!
+SharedPool subclass: #RegistersRISCV
+	instanceVariableNames: ''
+	classVariableNames: 'RegA RegE RegFP RegFalse RegFlags RegG RegLink RegM RegNil RegR RegS RegSP RegT RegTmp0 RegTmp1 RegTrue RegV RegX0 RegX1 RegZero'
+	poolDictionaries: 'RISC5Regs'
+	category: 'Powerlang-Core-Assembly-RISCV'!
+!classDefinition: 'RegistersRISCV class' category: 'Powerlang-Core-Assembly-RISCV'!
+RegistersRISCV class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlineMessageLinkerFlags category: 'Powerlang-Core-Nativization'!
+SharedPool subclass: #InlineMessageLinkerFlags
+	instanceVariableNames: ''
+	classVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'InlineMessageLinkerFlags class' category: 'Powerlang-Core-Nativization'!
+InlineMessageLinkerFlags class
+	instanceVariableNames: '_ExtendedSize _Flags _Hash _Reserved _SmallSize'!
+
+!classDefinition: #SendSiteFlags category: 'Powerlang-Core-Nativization'!
+SharedPool subclass: #SendSiteFlags
+	instanceVariableNames: ''
+	classVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Nativization'!
+!classDefinition: 'SendSiteFlags class' category: 'Powerlang-Core-Nativization'!
+SendSiteFlags class
+	instanceVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'!
+
+!classDefinition: #SCompiledBlockFlags category: 'Powerlang-Core-SCompiler'!
+SharedPool subclass: #SCompiledBlockFlags
+	instanceVariableNames: ''
+	classVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledBlockFlags class' category: 'Powerlang-Core-SCompiler'!
+SCompiledBlockFlags class
+	instanceVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'!
+
+!classDefinition: #SCompiledMethodFlags category: 'Powerlang-Core-SCompiler'!
+SharedPool subclass: #SCompiledMethodFlags
+	instanceVariableNames: ''
+	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'SCompiledMethodFlags class' category: 'Powerlang-Core-SCompiler'!
+SCompiledMethodFlags class
+	instanceVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'!
+
+!classDefinition: #SExpressionTypes category: 'Powerlang-Core-SExpressions'!
+SharedPool subclass: #SExpressionTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'SExpressionTypes class' category: 'Powerlang-Core-SExpressions'!
+SExpressionTypes class
+	instanceVariableNames: ''!
+
 !classDefinition: #SClosure category: 'Powerlang-Core-Metaphysics'!
 Array variableSubclass: #SClosure
 	instanceVariableNames: 'block home'
@@ -264,16 +253,6 @@ ByteArray variableByteSubclass: #SFFIDescriptor
 !classDefinition: 'SFFIDescriptor class' category: 'Powerlang-Core-SCompiler'!
 SFFIDescriptor class
 	instanceVariableNames: 'FFICallingConventions FFITypes'!
-
-!classDefinition: #PoolDictionary category: 'Powerlang-Compatibility-Pharo'!
-Dictionary subclass: #PoolDictionary
-	instanceVariableNames: 'constant'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Compatibility-Pharo'!
-!classDefinition: 'PoolDictionary class' category: 'Powerlang-Compatibility-Pharo'!
-PoolDictionary class
-	instanceVariableNames: ''!
 
 !classDefinition: #SCompilationError category: 'Powerlang-Core-SCompiler'!
 Error subclass: #SCompilationError
@@ -2515,6 +2494,16 @@ PowertalkRingModule subclass: #PowertalkRingImage
 PowertalkRingImage class
 	instanceVariableNames: ''!
 
+!classDefinition: #Subject category: 'Powerlang-Core-Metaphysics'!
+ProtoObject subclass: #Subject
+	instanceVariableNames: 'gate'
+	classVariableNames: 'Counts'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'Subject class' category: 'Powerlang-Core-Metaphysics'!
+Subject class
+	instanceVariableNames: 'Counts'!
+
 
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
 WARNING: x86 specific!
@@ -2665,6 +2654,86 @@ the `VirtualRuntime`. That step is left to the `VirtualImage`
 that also creates the Kernel module.
 !
 
+!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+initialize
+		IsBytes := 16r1.
+		IsArrayed := 16r2.
+		IsNamed := 16r4.
+		IsSmall := 16r80
+
+! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
+behaviorOffset
+
+	^BehaviorOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
+flagsOffset
+
+	^FlagsOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
+hashOffset
+
+	^HashOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
+largeSizeOffset
+
+	^LargeSizeOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
+sizeOffset
+
+	^SizeOffset! !
+
+!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+initialize
+	BehaviorOffset := -4.
+	FlagsOffset := -5.
+	SizeOffset := -6.
+	HashOffset := -8.
+	LargeSizeOffset := -16
+! !
+
+!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
+initialize
+	NilId := 1.
+	TrueId := 2.
+	FalseId := 3.
+	ArgumentId := 4.
+	TemporaryId := 5.
+	SelfId := 6.
+	SuperId := 7.
+	DynamicVarId := 14.
+	NestedDynamicVarId := 15.
+	PushRid := 50.
+	PopRid := 51
+! !
+
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:51'!
+initialize
+	MethodId := 101.
+	BlockId := 102.
+	IdentifierId := 103.
+	LiteralId := 104.
+	MessageId := 105.
+	CascadeId := 106.
+	BraceId := 107.
+	AssignmentId := 108.
+	ReturnId := 109.
+	PragmaId := 110
+! !
+
+!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
+initialize
+	Self := 0.
+	LocalArgument := 1.
+	Environment := 2.
+	EnvironmentValue := 3
+! !
+
 !CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 5/31/2021 15:35:17'!
 initialize 
 "
@@ -2804,126 +2873,6 @@ initialize
 	BraceId := 7.
 	AssignmentId := 8.
 	ReturnId := 9! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-asArray
-	^self classPool asArray
-! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: aString
-	| var |
-	var :=  self classPool
-		associationAt: aString asSymbol
-		ifAbsent: [ self error: 'no such pool var' ].
-	^var value
-! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: aString ifAbsent: aBlock
-	| var |
-	var := self classPool associationAt: aString asSymbol ifAbsent: [^aBlock value].
-	^ var value
-! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: aString put: anObject
-	^self classPool
-		at: aString 
-		put: anObject
-! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-detect: aBlock ifNone: anotherBlock
-	^self classPool detect: aBlock  ifNone: [ ^ anotherBlock value ].
-	
-! !
-
-!PSharedPool class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-do: aBlock
-	^self classPool do: aBlock
-
-! !
-
-!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initialize
-		IsBytes := 16r1.
-		IsArrayed := 16r2.
-		IsNamed := 16r4.
-		IsSmall := 16r80
-
-! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
-behaviorOffset
-
-	^BehaviorOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
-flagsOffset
-
-	^FlagsOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
-hashOffset
-
-	^HashOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
-largeSizeOffset
-
-	^LargeSizeOffset! !
-
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
-sizeOffset
-
-	^SizeOffset! !
-
-!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-initialize
-	BehaviorOffset := -4.
-	FlagsOffset := -5.
-	SizeOffset := -6.
-	HashOffset := -8.
-	LargeSizeOffset := -16
-! !
-
-!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
-initialize
-	NilId := 1.
-	TrueId := 2.
-	FalseId := 3.
-	ArgumentId := 4.
-	TemporaryId := 5.
-	SelfId := 6.
-	SuperId := 7.
-	DynamicVarId := 14.
-	NestedDynamicVarId := 15.
-	PushRid := 50.
-	PopRid := 51
-! !
-
-!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:51'!
-initialize
-	MethodId := 101.
-	BlockId := 102.
-	IdentifierId := 103.
-	LiteralId := 104.
-	MessageId := 105.
-	CascadeId := 106.
-	BraceId := 107.
-	AssignmentId := 108.
-	ReturnId := 109.
-	PragmaId := 110
-! !
-
-!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
-initialize
-	Self := 0.
-	LocalArgument := 1.
-	Environment := 2.
-	EnvironmentValue := 3
-! !
 
 !SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
 block
@@ -3400,70 +3349,6 @@ ret: aString args: aCollection cc: ccName
 		callingConvention: cc;
 		return: return;
 		arguments: args
-! !
-
-!PoolDictionary methodsFor: 'testing' stamp: 'KenD 1/30/2023 10:10:46'!
-isConstant
-	^constant
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: key
-	^super at: key asString reduced
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: key ifAbsent: aBlock
-	^super at: key asString reduced ifAbsent: aBlock
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: key ifPresent: aBlock
-	^super at: key asString reduced ifPresent: aBlock
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-at: key put: value
-	^super at: key asString put: value
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-beConstant: aBoolean
-	constant := aBoolean
-! !
-
-!PoolDictionary methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:46'!
-beConstantPool
-	constant := true
-! !
-
-!PoolDictionary methodsFor: 'removing' stamp: 'KenD 1/30/2023 10:10:46'!
-removeKey: key ifAbsent: aBlock
-	super removeKey: key asString reduced ifAbsent: aBlock.
-	^key
-! !
-
-!PoolDictionary methodsFor: 'adding' stamp: 'KenD 1/30/2023 10:10:46'!
-add: anAssociation
-	anAssociation key isString
-		ifFalse: [self error: 'Pools are keyed with Strings'].
-	^super add: anAssociation
-! !
-
-!PoolDictionary methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:46'!
-initialize: anInteger
-	super initialize: anInteger.
-	constant := false
-! !
-
-!PoolDictionary methodsFor: 'inquiries' stamp: 'KenD 1/30/2023 10:10:46'!
-includesKey: key
-	^super includesKey: key asString reduced
-! !
-
-!PoolDictionary class methodsFor: 'instance creation' stamp: 'KenD 1/30/2023 10:10:46'!
-newConstantPool
-	^self new beConstantPool
 ! !
 
 !SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
@@ -31910,6 +31795,81 @@ kernel
 	^module
 ! !
 
+!Subject methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:54'!
+_gate
+	^gate
+! !
+
+!Subject methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:54'!
+_gate: aMirageGate
+	gate := aMirageGate
+! !
+
+!Subject methodsFor: 'inspector extensions' stamp: 'KenD 1/30/2023 10:10:54'!
+gtDisplayString
+	^self printString
+! !
+
+!Subject methodsFor: 'inspector extensions' stamp: 'KenD 1/30/2023 10:10:54'!
+isSelfEvaluating
+	^false
+! !
+
+!Subject methodsFor: 'inspector extensions' stamp: 'KenD 1/30/2023 10:10:54'!
+shouldBePrintedAsLiteral
+	^false
+! !
+
+!Subject methodsFor: 'system' stamp: 'KenD 1/30/2023 10:10:54'!
+doesNotUnderstand: aMessage
+	| send |
+	send := MessageSend message: aMessage to: self.
+			^ gate dispatch: send
+! !
+
+!Subject methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:54'!
+isKindOf: aClass
+	"Answer whether the class, aClass, is a superclass or class of the receiver.
+	The current implemementation allows for a Trait to be used as argument"
+
+	^ self class == aClass or: [ self class inheritsFrom: aClass ]
+! !
+
+!Subject methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:54'!
+perform: aSymbol withArguments: anArray
+	| message |
+	message := Message
+		selector: #perform:withArguments:
+		arguments: (Array with: aSymbol with: anArray).
+	^ self doesNotUnderstand: message
+! !
+
+!Subject methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:54'!
+printOn: aStream
+	aStream nextPutAll: '{'; print: gate; nextPutAll: '}'
+
+! !
+
+!Subject methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:54'!
+printString
+	^String streamContents: [ :s | self printOn: s ]
+! !
+
+!Subject methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:54'!
+printString2
+	| message |
+	message := MessageSend
+		receiver: self
+		selector: #printString
+		arguments: #().
+	^ self doesNotUnderstand: message
+! !
+
+!Subject class methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+initialize
+	Counts := IdentityDictionary new
+! !
+
 !ProtoObject methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:44:40'!
 !!== anObject 
 
@@ -32486,6 +32446,11 @@ nextULongPut: anInteger
 		| bi |
 		bi := anInteger byteAt: i.
 		self nextPut: bi ]! !
+ObjectHeaderMasks initialize!
+ObjectHeaderOffsets initialize!
+AstBindingTypes initialize!
+AstNodeTypes initialize!
+ClosureElementTypes initialize!
 CharacterConstants initialize!
 OperandTypeFlags initialize!
 RegistersRISCV initialize!
@@ -32494,13 +32459,9 @@ SendSiteFlags initialize!
 SCompiledBlockFlags initialize!
 SCompiledMethodFlags initialize!
 SExpressionTypes initialize!
-ObjectHeaderMasks initialize!
-ObjectHeaderOffsets initialize!
-AstBindingTypes initialize!
-AstNodeTypes initialize!
-ClosureElementTypes initialize!
 SFFIDescriptor initialize!
 Assembler initialize!
 SmalltalkInterpreter initialize!
 AstcodeDecoder initialize!
 MethodEvaluator initialize!
+Subject initialize!
