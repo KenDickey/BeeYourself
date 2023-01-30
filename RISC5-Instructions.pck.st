@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5494] on 2 November 2022 at 12:53:16 pm'!
+'From Cuis 6.0 [latest update: #5658] on 30 January 2023 at 3:33:25 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,8 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 51!
+!provides: 'RISC5-Instructions' 1 52!
+!requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
 
@@ -832,6 +833,19 @@ RV64UpperAddr subclass: #RV64LUI
 RV64LUI class
 	instanceVariableNames: ''!
 
+
+!RISC5Instructions commentStamp: '<historical>' prior: 0!
+Dirt simple assembler for RiscV64 32 bit wide Instruction opcodes for RV64G
+
+Nota Bene: Not all instructions supported
+ - No Compressed Instruction Format (all instructions 32 bits wide)
+ - No binary disassembly (but instruction objects can print themselves)
+ - Assumption of 8 byte Integers and DoubleFloats 
+ - Some mnemonics changed for clarification
+     E.g. Move value from DoubleFloat register into Integer register
+	is 'FmvD2I' not 'FMV.X.D'
+
+See  #RISC5InstructionsTests>>testRV64I method for sample usage!
 
 !RV64Branch commentStamp: '<historical>' prior: 0!
 Branch 
