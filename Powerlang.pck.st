@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5658] on 30 January 2023 at 3:22:27 pm'!
+'From Cuis 6.0 [latest update: #5658] on 31 January 2023 at 9:58:10 am'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 64!
+!provides: 'Powerlang' 1 65!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -22,6 +22,10 @@ SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 SystemOrganization addCategory: 'Powerlang-Core-Emulation'!
 SystemOrganization addCategory: 'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: 'Powerlang-Core-Execution-Ring'!
+SystemOrganization addCategory: 'Powerlang-Tests'!
+SystemOrganization addCategory: 'Powerlang-Tests-Bootstrap'!
+SystemOrganization addCategory: 'Powerlang-TestsFailing-SExpressions'!
+SystemOrganization addCategory: 'Powerlang-TestsFailing-Metaphysics'!
 
 
 !classDefinition: #ObjectHeaderMasks category: 'Powerlang-Core-Metaphysics'!
@@ -302,6 +306,136 @@ TestCase subclass: #ScriptScopeTest
 	category: 'Powerlang-Tests-SCompiler'!
 !classDefinition: 'ScriptScopeTest class' category: 'Powerlang-Tests-SCompiler'!
 ScriptScopeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkParserTest category: 'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkParserTest
+	instanceVariableNames: 'parser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkParserTest class' category: 'Powerlang-Tests-SCompiler'!
+SmalltalkParserTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkScannerTest category: 'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkScannerTest
+	instanceVariableNames: 'scanner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkScannerTest class' category: 'Powerlang-Tests-SCompiler'!
+SmalltalkScannerTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMapTest category: 'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #ObjectMapTest
+	instanceVariableNames: 'kernel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'ObjectMapTest class' category: 'Powerlang-Tests-Bootstrap'!
+ObjectMapTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMRBootstrapTest category: 'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkLMRBootstrapTest
+	instanceVariableNames: 'runtime bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRBootstrapTest class' category: 'Powerlang-Tests-Bootstrap'!
+PowertalkLMRBootstrapTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMRTest category: 'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkLMRTest
+	instanceVariableNames: 'runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRTest class' category: 'Powerlang-Tests-Bootstrap'!
+PowertalkLMRTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRingImageTest category: 'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkRingImageTest
+	instanceVariableNames: 'image'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkRingImageTest class' category: 'Powerlang-Tests-Bootstrap'!
+PowertalkRingImageTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRingRuntimeTest category: 'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkRingRuntimeTest
+	instanceVariableNames: 'image runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkRingRuntimeTest class' category: 'Powerlang-Tests-Bootstrap'!
+PowertalkRingRuntimeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeTest category: 'Powerlang-TestsFailing-SExpressions'!
+TestCase subclass: #AstcodeTest
+	instanceVariableNames: 'method'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-TestsFailing-SExpressions'!
+!classDefinition: 'AstcodeTest class' category: 'Powerlang-TestsFailing-SExpressions'!
+AstcodeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #MirrorTest category: 'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #MirrorTest
+	instanceVariableNames: 'runtime builder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'MirrorTest class' category: 'Powerlang-TestsFailing-Metaphysics'!
+MirrorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMirrorTest category: 'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #ObjectMirrorTest
+	instanceVariableNames: 'storage'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'ObjectMirrorTest class' category: 'Powerlang-TestsFailing-Metaphysics'!
+ObjectMirrorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionEmulatorTest category: 'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #SExpressionEmulatorTest
+	instanceVariableNames: 'builder writer runtime kernel'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes SExpressionTypes'
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'SExpressionEmulatorTest class' category: 'Powerlang-TestsFailing-Metaphysics'!
+SExpressionEmulatorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionInterpreterTest category: 'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #SExpressionInterpreterTest
+	instanceVariableNames: 'builder writer runtime kernel'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes SExpressionTypes'
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'SExpressionInterpreterTest class' category: 'Powerlang-TestsFailing-Metaphysics'!
+SExpressionInterpreterTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMRTestResource category: 'Powerlang-Tests-Bootstrap'!
+TestResource subclass: #PowertalkLMRTestResource
+	instanceVariableNames: 'image bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRTestResource class' category: 'Powerlang-Tests-Bootstrap'!
+PowertalkLMRTestResource class
 	instanceVariableNames: ''!
 
 !classDefinition: #NumberParser2 category: 'Powerlang-Core'!
@@ -2494,6 +2628,16 @@ PowertalkRingModule subclass: #PowertalkRingImage
 PowertalkRingImage class
 	instanceVariableNames: ''!
 
+!classDefinition: #MessageCollector category: 'Powerlang-Tests'!
+Object subclass: #MessageCollector
+	instanceVariableNames: 'subject'
+	classVariableNames: 'Messages'
+	poolDictionaries: ''
+	category: 'Powerlang-Tests'!
+!classDefinition: 'MessageCollector class' category: 'Powerlang-Tests'!
+MessageCollector class
+	instanceVariableNames: 'Messages'!
+
 !classDefinition: #Subject category: 'Powerlang-Core-Metaphysics'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -4294,6 +4438,3083 @@ precondition: aBoolean
 scopeFor: aSpecies 
 
 	^MethodScope new species: aSpecies! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment1
+	| node |
+	node := parser parse: 'unary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment10
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	[2. "comment3" 3]'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second statements second comment value = 'comment3'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment11
+	| node |
+	node := parser parse: 'unary
+	1. "comment"'.
+	self assert: node comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment12
+	| node |
+	node := parser parse: 'unary
+	[1. "comment"]'.
+	self assert: node statements anyOne comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment2
+	| node |
+	node := parser parse: '+ binary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment3
+	| node |
+	node := parser parse: 'keyword: arg
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment4
+	| node |
+	node := parser parse: 'unary
+	^true "comment"'.
+	self
+		assert: node statements anyOne expression comment value = 'comment';
+		deny: node comment value = 'comment';
+		assert: node comment isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment5
+	| node |
+	node := parser parse: '+ binary
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment6
+	| node |
+	node := parser parse: 'keyword: arg
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment7
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment8
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	^2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second expression comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment9
+	| node |
+	node := parser parse: 'unary
+	1. "comment2" 2'.
+	self assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray
+	| node |
+	node := parser parseExpression: '#[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'.
+	node := parser parse: 'b #[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray2
+	| array |
+	parser on: '#[16rFE]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE];
+		assert: array source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray3
+	| array |
+	parser on: '#[16rFE 2]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE 2];
+		assert: array source = '#[16rFE 2]'.
+	parser on: '#[16rFE 256 2]'.
+	parser step.
+	self should: [array := parser primary] raise: Exception
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol1
+	| array |
+	parser on: '#(#++)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'++').
+	parser on: '#(#-- )'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'--')
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol2
+	| symbol |
+	parser on: '#++'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'++'.
+	parser on: '#--'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'--'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testExpression
+	| expression |
+	parser on: '(x)'; step.
+	expression := parser primary.
+	self
+		assert: expression isIdentifier;
+		assert: expression source = 'x'.
+	parser on: '(x + 1)'; step.
+	expression := parser primary.
+	self
+		assert: expression class == SMessageNode;
+		assert: expression selector isBinary;
+		assert: expression source = '(x + 1)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testFloat
+	| source node |
+	source := '3.14159265358979323846'.
+	node := parser parseExpression: source.
+	self assert: node statements anyOne source = source.
+	node := parser parse: 'm ' , source.
+	self assert: node statements anyOne source = source
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralArray
+	| array |
+	parser on: '#(16rFE)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE);
+		assert: array source = '#(16rFE)'.
+	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE $a 'hello' #s #(1 2));
+		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralArray2
+	| array |
+	parser on: '#(a:b:)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(#a:b:);
+		assert: array source = '#(a:b:)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralKeywordArray
+	| ast literal |
+	ast := parser parseExpression: '#(a:b: c: d:)'.
+	literal := ast statements anyOne value.
+	self
+		assert: literal isArray;
+		assert: literal size = 3;
+		assert: literal first == #a:b:;
+		assert: literal second == #c:;
+		assert: literal third == #d:
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNegativeElementInArray
+	| array |
+	parser on: '#(-21)'.
+	parser step.
+	array := parser primary.
+	self assert: array isLiteral.
+	parser on: '#(-21 1 -5 4)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array
+			with: -21
+			with: 1
+			with: -5
+			with: 4)
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNegativeNumber
+	| number |
+	parser on: '-3'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3;
+		assert: number source = '-3'.
+	parser on: '-3.14'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3.14;
+		assert: number source = '-3.14'.
+	parser on: '-3.14e-10'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -0.000000000314;
+		assert: number source = '-3.14e-10'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNotAFloat
+	| method |
+	method := parser parseExpression: '0.a'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testScientificNotation
+	| method |
+	method := parser parseExpression: '
+	0.1e-2.
+	0.1E2'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0.001;
+		assert: method statements second value = 10
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock
+	| block |
+	parser on: '[]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[]'.
+	parser on: '[x]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[x]';
+		assert: block temporaries isEmpty;
+		assert: block arguments isEmpty;
+		assert: block statements size = 1;
+		assert: block statements anyOne isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock2
+	| block |
+	parser on: '[:i | i]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | i]';
+		assert: block arguments size = 1.
+	parser on: '[:i :j |]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i :j |]';
+		assert: block temporaries isEmpty;
+		assert: block arguments size = 2;
+		assert: block statements isEmpty;
+		assert: block arguments first isIdentifier;
+		assert: block arguments second isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock3
+	| block |
+	parser on: '[:i | | a b | a + b]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | | a b | a + b]';
+		assert: block arguments size = 1;
+		assert: block temporaries size = 2.
+	parser on: '[:i ||a b|a|b]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i ||a b|a|b]';
+		assert: block temporaries size = 2;
+		assert: block arguments size = 1;
+		assert: block statements size = 1;
+		assert: block statements anyOne selector value = #'|'
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testParseFragment
+	| source ast |
+	source := 'm
+	self do: [:x | Object'.
+	ast := parser compiler parseFragment: source.
+	self
+		assert: ast selector == #m;
+		assert: ast statements isEmpty
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testParseTemporaries
+	| temporaries |
+	temporaries := SCompiler new smalltalkParser
+		parseTemporaries:
+			'm: arg
+	| t1 t2 t3 |
+	^:= will not even parse'.
+	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testTemporaries
+	| temporaries |
+	parser on: '||'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| |'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| a b c |'.
+	parser step.
+	temporaries := parser temporaries.
+	self
+		assert: temporaries size = 3;
+		assert: temporaries first isIdentifier;
+		assert: temporaries first name = 'a';
+		assert: temporaries second isIdentifier;
+		assert: temporaries second name = 'b';
+		assert: temporaries third isIdentifier;
+		assert: temporaries third name = 'c'
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testTemporaryDeclarations
+	| temporaries |
+	parser on: '| | | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: '|| | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: 'a || b'.
+	parser step.
+	self assert: parser token value = 'a'.
+	parser step.
+	self assert: parser token value = #'||'.
+	parser step.
+	self assert: parser token value = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryHeader
+	| method selector |
+	parser on: '+++ x'.
+	parser step.
+	method := parser binarySignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 1;
+		assert: method selector value == #'+++';
+		assert: method arguments size = 1.
+	parser on: 'a'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil.
+	parser on: 'a: x'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeywordHeader
+	| method selector |
+	parser on: 'x: x y: y z: z'.
+	parser step.
+	method := parser keywordSignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 3;
+		assert: method selector value == #x:y:z:;
+		assert: method arguments size = 3.
+	parser on: 'a'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil.
+	parser on: '+ x'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeywordHeader2
+	| method |
+	parser on: 'x: xx y: yy z: zz'.
+	parser step.
+	method := parser methodSignature.
+	self
+		assert: method class == SMethodNode;
+		assert: method header = 'x: xx y: yy z: zz'.
+	parser on: 'x'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = 'x'.
+	parser on: '+= arg value := value + arg'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = '+= arg'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnaryHeader
+	| selector |
+	parser on: 'a'.
+	parser step.
+	self assert: parser token isNameToken.
+	selector := parser unarySelector.
+	self
+		assert: selector notNil;
+		assert: selector class == SSelectorNode;
+		assert: selector keywords size = 1;
+		assert: selector value == #a.
+	parser on: 'a: x'.
+	parser step.
+	self deny: parser token isNameToken.
+	parser on: '+ x'.
+	parser step.
+	self deny: parser token isNameToken
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmbeddedDots
+	| node |
+	node := parser parse: 'm
+	A.B.C name.
+	self m: A.B.C.
+	^true'.
+	self
+		assert: node statements first receiver name = 'A.B.C';
+		assert: node statements second arguments anyOne name = 'A.B.C'
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmbeddedDots2
+	self
+		should: [parser parse: '
+	m
+		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		| funny.local |
+		funny.local := 1.
+		^funny.local']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
+		raise: SCompilationError
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testPeekForIdentifier
+	| strm |
+	strm := 'abc.de' readStream.
+	self
+		assert: (SCompiler new peekForIdentifier: strm);
+		assert: strm position = 1.
+	strm position: 3.
+	self assert: (SCompiler new peekForIdentifier: strm).
+	strm := 'a2.c' readStream.
+	strm position: 2.
+	self deny: (SCompiler new peekForIdentifier: strm)
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryColon
+	| statements binary |
+	parser on: '3:4'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '3';
+		assert: binary symbol = #':';
+		assert: binary arguments anyOne source = '4'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryColon2
+	| m |
+	m := parser parse: ': b ^self / b'.
+	self assert: m selector = #':'.
+	self assert: m arguments anyOne source = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryPower
+	| statements binary |
+	parser on: '2^3'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '2';
+		assert: binary symbol = #'^';
+		assert: binary arguments anyOne source = '3'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryPower2
+	| m |
+	m := parser parse: '^ n ^self raisedTo: n'.
+	self assert: m selector = #'^'.
+	self assert: m arguments anyOne source = 'n'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testCascade
+	| cascade statements |
+	parser on: 'r m1; m2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first source = 'r m1';
+		assert: cascade messages first selector source = 'm1';
+		assert: cascade messages second selector source = 'm2'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testCascade2
+	| cascade statements |
+	parser on: 'r m: 1; + 2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first selector keywords size = 1;
+		assert: cascade messages first arguments anyOne value = 1;
+		assert: cascade messages second selector isBinary;
+		assert: cascade messages second arguments anyOne value = 2
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testMissingPrimary
+	| source |
+	source := 'pendingReservesAtTime: time well: index
+	i0 := startings at: index.
+	ti := self timeAt: i0.
+	dt := time - ti.
+	c := single primaryCurve.
+	^c reserves - (cumAtTime: dt)'.
+	self should: [parser parse: source] raise: Error
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testSelector
+	| source ast |
+	source := 'k1: arg1 k2: arg2'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode positions first
+			= (source indexOfSubCollection: 'k1:');
+		assert: ast selectorNode positions second
+			= (source indexOfSubCollection: 'k2:');
+		assert: ast selector == #k1:k2:
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnarySelector
+	| source ast |
+	source := 'm a notNil'.
+	ast := parser parse: source.
+	self
+		assert: (ast nodeWithLiteral: #notNil) positions first
+			= (source indexOfSubCollection: 'notNil')
+! !
+
+!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 1/30/2023 10:10:47'!
+testBraceNode
+	| ast brace sum |
+	ast := parser parseExpression: '{1. 3 + 4}'.
+	brace := ast statements anyOne.
+	sum := parser parseExpression: '3 + 4'.
+	self
+		assert: brace elements size = 2;
+		assert: brace elements first value = 1;
+		assert: brace elements second class = sum statements anyOne class;
+		assert: brace elements second arguments anyOne value = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnicode
+	| source ast |
+	source := 8855 asCharacter asString , ' aFreeTensor'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode position
+			= (source indexOfSubCollection: 8855 asCharacter asString);
+		assert: ast selector == 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment
+	| assignment |
+	parser on: 'a := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 1;
+		assert: assignment assignees anyOne source = 'a';
+		assert: assignment expression source = 'nil + 4'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment2
+	| assignment |
+	parser on: 'a := b := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 2;
+		assert: assignment assignees first name = 'b';
+		assert: assignment assignees second name = 'a'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment3
+	| node |
+	node := parser parseExpression: 'a : = 1'.
+	self
+		assert: node statements anyOne isAssign.
+	node := parser parseExpression: 'a :	= 1'.
+	self
+		assert: node statements anyOne isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnderscoreAssignment
+	| assignment |
+	parser on: 'a _ 3 + 4'.
+	parser step.
+	assignment := parser expression.
+	self assert: assignment isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 1/30/2023 10:10:47'!
+testAllNodesDo
+	| source nodes |
+	source := 'rcvr msg1; msg2'.
+	parser on: source.
+	parser step.
+	nodes := OrderedCollection new.
+	parser expression allNodesDo: [:n | nodes add: n].
+	self assert: nodes size = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	super setUp.
+	parser := SCompiler new smalltalkParser
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinary
+	| node |
+	scanner on: '-
+		--
+		---
+		==>
+		~!!|\/%&*+=><'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'-';
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'--';
+		assert: node source = '--'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'---';
+		assert: node source = '---'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'==>';
+		assert: node source = '==>'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'~!!|\/%&*+=><';
+		assert: node source = '~!!|\/%&*+=><'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testCharacter
+	| node |
+	scanner on: '$a$b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $a;
+		assert: node source = '$a'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $b;
+		assert: node source = '$b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmpty
+	scanner on: ''.
+	self assert: scanner next isEnd
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testString
+	| node quote |
+	scanner on: '' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = '';
+		assert: node source = (String with: $' with: $').
+	scanner on: 'Hello World!!' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = 'Hello World!!';
+		assert: node source = 'Hello World!!' storeString.
+	quote := String with: $'.
+	scanner on: quote storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = quote;
+		assert: node source = quote storeString
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+test0xNotation
+	| node |
+	node := SCompiler new smalltalkParser parseExpression: '0x10'.
+	self assert: node statements first value = 16.
+	node := SCompiler new smalltalkParser parseExpression: '0X10'.
+	self assert: node statements first value = 16
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testFloat
+	| node |
+	scanner on: '0.1'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1;
+		assert: node source = '0.1'.
+	scanner on: '0.1e-35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1e-35;
+		assert: node source = '0.1e-35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testInteger
+	| node |
+	scanner on: '0 12 -35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0;
+		assert: node source = '0'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 12;
+		assert: node source = '12'.
+	node := scanner next.
+	self
+		deny: node isNumberNode;
+		assert: (node is: #'-');
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 35;
+		assert: node source = '35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testIntegerRadix
+	| node |
+	scanner on: '16rFA2'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 16rFA2;
+		assert: node source = '16rFA2'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinarySymbol
+	| node |
+	scanner on: '#='.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node hasSymbol;
+		assert: node value = #'='
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol
+	| node |
+	scanner on: '#++'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'++';
+		assert: node source = '#++'.
+	scanner on: '#//'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'//';
+		assert: node source = '#//'.
+	scanner on: '#--'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'--';
+		assert: node source = '#--'.
+	scanner on: '#+-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'+-';
+		assert: node source = '#+-'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testNumericSymbol
+	scanner on: '#35'.
+	self assert: scanner next value = '35' asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testSymbol
+	| node |
+	scanner on: '#-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-';
+		assert: node source = '#-'.
+	scanner on: '#a:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	scanner on: '#-!!'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-!!';
+		assert: node source = '#-!!'.
+	scanner on: '#a:b:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:b:;
+		assert: node source = '#a:b:'.
+	scanner on: '#a:b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	node := scanner next.
+	self assert: node value = 'b'; assert: node source = 'b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 1/30/2023 10:10:47'!
+testArrayStart
+	| node |
+	scanner on: '#()'.
+	node := scanner next.
+	self
+		assert: (node is: #'#(');
+		assert: node source = '#('.
+	scanner on: '#['.
+	node := scanner next.
+	self
+		assert: (node is: #'#[');
+		assert: node source = '#['.
+	scanner on: '#''hello'''.
+	node := scanner next.
+	self
+		assert: node value = #hello;
+		assert: node source = '#''hello'''
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
+testIdentifier
+	| node |
+	scanner on: 'a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ' a1'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a1';
+		assert: node source = 'a1'.
+	scanner on: '_a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = '_a';
+		assert: node source = '_a'.
+	scanner on: 'a_1b'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a_1b';
+		assert: node source = 'a_1b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeyword
+	| node node2 |
+	scanner on: 'a:'.
+	node := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'a:';
+		assert: node source = 'a:'.
+	scanner on: 'ab:cd:'.
+	node := scanner next.
+	node2 := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'ab:';
+		assert: node source = 'ab:';
+		assert: node2 isKeyword;
+		assert: node2 value = 'cd:';
+		assert: node2 source = 'cd:'
+! !
+
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnicodeScanning
+	| next three tensor |
+	scanner on: '3 + 4' asWideString.
+	self assert: scanner next value = 3.
+	next := scanner next.
+	self
+		assert: next value == #'+';
+		assert: scanner next value = 4.
+	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
+	three := scanner next.
+	self assert: three value = 3.
+	tensor := scanner next.
+	self assert: tensor value = 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment
+	| node |
+	scanner on: '"comment"a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node value = 'comment';
+		assert: node source = '"comment"'.
+	scanner on: '"comment"'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node source = '"comment"';
+		assert: node position = 1.
+	scanner on: 'a"comment"'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node position = ('a' size + 1)
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
+testColon
+	| node |
+	scanner on: ':a'.
+	node := scanner next.
+	self
+		assert: (node is: $:);
+		assert: node source = ':'.
+	node := scanner next.
+	self
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ':='.
+	node := scanner next.
+	self
+		assert: node isAssignment;
+		assert: node source = ':='
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
+testColon2
+	| node |
+	scanner on: '::'.
+	node := scanner next.
+	self
+		assert: node class = SStringToken;
+		assert: node source = '::'
+! !
+
+!SmalltalkScannerTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	super setUp.
+	scanner := SCompiler new smalltalkScanner
+! !
+
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01a
+	| map |
+	
+	map := ObjectMap new: (kernel at: #Object).
+	self assert: map class == SlotObjectMap.
+	self assert: map size == 0.
+	
+! !
+
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01b
+	| undefined fraction null frac |
+	undefined := kernel at: #UndefinedObject.
+	fraction := kernel at: #Fraction.
+	
+	null := ObjectMap new: undefined.
+	frac := ObjectMap new: fraction.
+	self assert: frac class == SlotObjectMap.
+	self assert: frac size == 2.
+	
+	frac slotAt: 1 put: null.
+	frac slotAt: 2 put: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	self assert: (frac slotNamed: 'numerator') == null.
+	self assert: (frac slotNamed: 'denominator') == frac.
+	
+	self assert: (frac numerator) == null.
+	self assert: (frac denominator) == frac.
+
+	frac slotNamed: 'numerator' put: frac.
+	frac slotNamed: 'denominator' put: null.
+	self assert: (frac slotAt: 1) == frac.
+	self assert: (frac slotAt: 2) == null.
+	self assert: (frac slotNamed: 'numerator') == frac.
+	self assert: (frac slotNamed: 'denominator') == null.
+	
+	frac numerator: null.
+	frac denominator: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	
+	self should: [ frac slotAt: 0 ] raise: Error.
+	self should: [ frac slotAt: 3 ] raise: Error.
+	self should: [ frac slotAt: 0 put: null ] raise: Error.
+	self should: [ frac slotAt: 3 put: null ] raise: Error.
+	self should: [ frac slotAt: 1 put: 1 ] raise: Error.
+	
+	self should: [ frac slotNamed: 'bogus' ] raise: Error.
+	self should: [ frac slotNamed: 'bogus' put: null] raise: Error.
+
+	
+	
+	
+	
+	
+	
+! !
+
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01c
+	| undefined array null indexed |
+	
+	undefined := kernel at: #UndefinedObject.
+	array := kernel at: #Array.
+	null := ObjectMap new: undefined.
+	indexed := ObjectMap new: array size: 2.
+	self assert: indexed class == SlotObjectMap.
+	self assert: indexed size == 2.
+	
+	indexed at: 1 put: null.
+	indexed at: 2 put: indexed.
+	self assert: (indexed at: 1) == null.
+	self assert: (indexed at: 2) == indexed.
+	
+	indexed at: 1 put: indexed.
+	indexed at: 2 put: null.
+	self assert: (indexed at: 1) == indexed.
+	self assert: (indexed at: 2) == null.
+	
+	self should: [ indexed at: 0 ] raise: Error.
+	self should: [ indexed at: 3 ] raise: Error.
+	self should: [ indexed at: 0 put: null ] raise: Error.
+	self should: [ indexed at: 3 put: null ] raise: Error.
+	self should: [ indexed at: 1 put: 1] raise: Error.
+	
+	
+	
+	
+	
+	
+! !
+
+!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+setUp
+	super setUp.
+	kernel := PowertalkRingImage kernelSpec
+! !
+
+!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+tearDown
+	super tearDown.
+	kernel := nil
+! !
+
+!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	bootstrapper := PowertalkLMRTestResource new
+		setUp;
+		bootstrapper.
+	runtime := bootstrapper result.
+! !
+
+!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test010GenenerateKernelSegment
+	| output module |
+	output := bootstrapper outputDirectory / 'bootstrap' / 'Kernel.is'.
+	output exists
+		ifTrue: [ output deleteFile ].
+	module := bootstrapper loadBootstrapModule.
+	"runtime sendLocal: #writeModules to: module.
+	self assert: output exists"
+! !
+
+!PowertalkLMRBootstrapTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
+defaultTimeLimit
+	^ 1000 seconds
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:30'!
+==> anObject
+	| class |
+	class := anObject class.
+	anObject isInteger
+		ifTrue: [ ^ runtime newInteger: anObject ].
+	anObject == nil
+		ifTrue: [ ^ runtime nil ].
+	anObject == false
+		ifTrue: [ ^ runtime false ].
+	anObject == true
+		ifTrue: [ ^ runtime true ].
+	(class == Symbol or: [ class inheritsFrom: Symbol ])
+		ifTrue: [ ^ runtime symbolFromLocal: anObject ].
+	anObject isString
+		ifTrue: [ ^ runtime newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ runtime newBytesFrom: anObject ].
+	self assert: false
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+assertNoLeftoverFrames
+	self assert: runtime interpreter hasFinished
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+compile: aString in: classname during: aBlock
+	| class behavior md selector method |
+	class := self globalNamed: classname.
+	behavior := runtime speciesInstanceBehavior: class.
+	md := runtime behaviorMethodDictionary: behavior.
+	method := SCompiler new compile: aString.
+	self assert: method notNil.
+	method := self convertMethod: method.
+	selector := method slotAt: 5.
+	runtime
+		sendLocal: #at:put:
+		to: md
+		with:
+			{selector.
+			method}
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:47'!
+convert: anObject with: map
+	map at: anObject ifPresent: [:mapped | ^mapped ].
+	anObject ifNil: [ ^runtime nil ].
+	anObject isInteger
+		ifTrue: [ ^ runtime newInteger: anObject ].
+	anObject isSymbol
+		ifTrue: [ ^ runtime addSymbol: anObject ].
+	anObject isString
+		ifTrue: [ ^ runtime newString: anObject ].
+	anObject class = ByteArray
+		ifTrue: [ ^ runtime newByteArray: anObject ].
+	anObject class = SCompiledBlock ifTrue: [ ^self convertBlock: anObject with: map ].
+	self assert: false
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+convertBlock: anSCompiledBlock with: map
+	| class result instsize slot |
+	class := self globalNamed: #CompiledBlock.
+	result := runtime newSlots: class size: 0.
+	map at: anSCompiledBlock put: result.
+	instsize := anSCompiledBlock class instSize.
+	1 to: instsize do: [ :i | 
+		slot := anSCompiledBlock instVarAt: i.
+		result slotAt: i put: (self convert: slot with: map) ].
+	^ result
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+convertMethod: anSCompiledMethod
+	| class result map instsize slot |
+	class := self globalNamed: #CompiledMethod.
+	result := runtime newSlots: class size: anSCompiledMethod size.
+	map := IdentityDictionary new.
+	map at: anSCompiledMethod put: result.
+	instsize := anSCompiledMethod class instSize.
+	1 to: instsize do: [ :i | 
+		slot := anSCompiledMethod instVarAt: i.
+		result slotAt: i put: (self convert: slot with: map) ].
+	1 to: anSCompiledMethod size
+		do: [ :i | 
+			slot := anSCompiledMethod at: i.
+			result slotAt: i + instsize put: (self convert: slot with: map) ].
+	^ result
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+globalNamed: aSymbol
+	| symbol namespace assoc |
+	symbol := runtime symbolFromLocal: aSymbol.
+	namespace := runtime moduleNamespace: runtime kernel.
+	assoc := runtime lookupAssociationFor: symbol in: namespace.
+	^runtime loadAssociationValue: assoc
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test100yourself
+	| result |
+	result := runtime sendLocal: #yourself to: runtime nil.
+	self assert: result equals: runtime nil
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test110compute1plus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #+ to: one with: {one}.
+	self assert: result equals: self ==> 2; assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test111compute1minus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #- to: one with: {one}.
+	self assert: result equals: self ==> 0
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test112compute3times4
+	| result |
+	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
+	self assert: result equals: self ==> 12
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test113compute20quotient5
+	|  result |
+
+	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
+	self assert: result equals: self ==>4
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test130sendIfTrueToFalse
+	| result |
+	self
+		compile: 'foo ^false ifTrue: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test131sendIfFalseToTrue
+	| result |
+	self
+		compile: 'foo ^true ifFalse: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test132sendIfTrueToTrue
+	| result |
+	self
+		compile: 'foo ^true ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test140evaluateClosure
+	| result |
+	self
+		compile: 'foo ^[5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test141evaluateClosureFrames
+	| result |
+	self
+		compile: 'foo [5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test150sendWhileTrue
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := true.
+			[a] whileTrue: [a := false].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test151sendToDo
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			3 to: 4 do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152compute20dividedBy5
+	| result |
+	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
+	self 
+		assert: result equals: self ==> 4;
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test161evaluateClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test162evaluateClosureWithArgsAndTemps
+	| result |
+	self
+		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test163evaluateClosureWithArgsAndMethodTemps
+	| result |
+	self
+		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test164evaluateClosureWithArgsAndMultipleTemps
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				s := 3.
+				^[:a | | t | 
+					t := a.
+					t := t + s.
+					t] value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test165evaluateClosureNonLocalReturn
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				[s := 3. ^s] value.
+				s := 4.
+				^s'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test166evaluateNestedClosure
+	| result |
+	self
+		compile: 'foo ^[ [ 7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test167evaluateNestedClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureWithTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a |
+			a := 2.
+			^[ | b |
+				b := 3.
+				[ | c |
+				c := 4.
+				a + b + c ] value] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 9 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test169evaluateInlinedClosureInClosureWithMethodTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a result |
+			a := 3.
+			[ true ifTrue: [ result := a + 4 ] ] value.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test180evaluateToDo
+	| result |
+	self
+		compile:
+			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test190evaluateStringConcatenation
+	| result |
+	self
+		compile: 'foo ^''ABC'', ''DE'''
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result asLocalString equals: 'ABCDE' ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test200createDictionary
+	| class d |
+	class := self globalNamed: #Dictionary.
+	d := runtime sendLocal: #new to: class with: {}.
+	self
+		assert: d localClassName equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test210addAssociationToDictionary
+	| class symbol assoc d |
+	class := self globalNamed: #Dictionary.
+	symbol := runtime addSymbol: #foo.
+	assoc := runtime sendLocal: #-> to: symbol with: { runtime nil }.
+	d := runtime sendLocal: #new to: class with: {}.
+	runtime sendLocal: #add: to: d with: {assoc}.
+	self
+		assert: d localClassName equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test300smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := 16r1000 printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: 16r1000 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test301smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := 4611686018427387903 printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: 4611686018427387903 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test302smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := -4. ^result printString'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString
+					equals: -4 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test310smiFallbackToLNI
+	| result |
+	self
+		compile:
+			'foo | result | result := (16r100000000 * -16r100000000) printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString
+					equals: (16r100000000 * -16r100000000) printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test310smiFallbackToLPI
+	| result expected |
+	self
+		compile:
+			'foo | result | result := 1. 18 timesRepeat: [result := result * 10]. ^result printString'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			expected := 1.
+			18 timesRepeat: [ expected := expected * 10 ].
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: expected printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	runtime := PowertalkLMRTestResource current runtime
+! !
+
+!PowertalkLMRTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
+resources
+	^ Array with: PowertalkLMRTestResource
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test010nil
+	| nilObj class classname |
+	nilObj := image nil.
+	class := image classNamed: #UndefinedObject.
+	classname := class slotNamed: #name.
+	self
+		assert: nilObj size equals: 0;
+		assert: nilObj classname equals: 'UndefinedObject';
+		assert: classname asString 
+			equals: 'UndefinedObject'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test020true
+	| trueObj class classname |
+	trueObj := image true.
+	class := image classNamed: #True.
+	classname := class slotNamed: #name.
+	self
+		assert: trueObj size equals: 0;
+		assert: trueObj classname equals: 'True';
+		assert: classname asString equals: 'True'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test030false
+	| falseObj class classname |
+	falseObj := image false.
+	class := image classNamed: #False.
+	classname := class slotNamed: #name.
+	self
+		assert: falseObj size equals: 0;
+		assert: falseObj classname equals: 'False';
+		assert: classname asString equals: 'False'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test040superclasses
+	|  proto object collection class metaproto |
+	proto := image classNamed: #ProtoObject.
+	object := image classNamed: #Object.
+	collection := image classNamed: #Collection.
+	class := image classNamed: #Class.
+	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	self
+		assert: proto superclass equals: image nil;
+		assert: object superclass equals: proto;
+		assert: collection superclass equals: object;
+		assert: metaproto superclass equals: class
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test050metaclasses
+	| proto metaproto |
+	proto := image classNamed: #ProtoObject.
+	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	self assert: metaproto instanceSide equals: proto
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+==> anObject
+	^image transferLiteralDeep: anObject
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+assertNoLeftoverFrames
+	self assert: runtime interpreter hasFinished
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+compile: aString in: classname during: aBlock
+	| class selector method |
+	class := image => classname.
+	selector := class compile: aString notifying: nil.
+	method := class methodNamed: selector.
+	self assert: method notNil.
+	aBlock 		ensure: [ class removeLocalMethod: method ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test100yourself
+	| result |
+	result := runtime sendLocal: #yourself to: image nil.
+	self assert: result equals: image nil
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test110compute1plus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #+ to: one with: {one}.
+	self assert: result equals: self ==> 2; assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test111compute1minus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #- to: one with: {one}.
+	self assert: result equals: self ==> 0
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test112compute3times4
+	| result |
+	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
+	self assert: result equals: self ==> 12
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test113compute20quotient5
+	|  result |
+
+	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
+	self assert: result equals: self ==>4
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test120sendSizeMinusOne
+	| result |
+	self
+		compile: 'foo ^#abc _size - 1'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test121sendCascade
+	| result |
+	self
+		compile: 'foo ^#abc yourself; size'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test130sendIfTrueToFalse
+	| result |
+	self
+		compile: 'foo ^false ifTrue: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image nil ].
+		
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test131sendIfFalseToTrue
+	| result |
+	self
+		compile: 'foo ^true ifFalse: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test132sendIfTrueToTrue
+	| result |
+	self
+		compile: 'foo ^true ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test133sendIfTrueToTrueAndTrue
+	| result |
+	self
+		compile: 'foo ^(true and: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test134sendIfTrueToTrueAndFalse
+	| result |
+	self
+		compile: 'foo ^(true and: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test135sendIfTrueToFalseAndTrue
+	| result |
+	self
+		compile: 'foo ^(false and: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test136sendIfTrueToFalseOrTrue
+	| result |
+	self
+		compile: 'foo ^(false or: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test137sendIfTrueToFalseOrFalse
+	| result |
+	self
+		compile: 'foo ^(false or: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test138sendIfTrueToTrueOrFalse
+	| result |
+	self
+		compile: 'foo ^(true or: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [3] ifNotNil: [4]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilToNotNil
+	| result |
+	self
+		compile: 'foo ^#abc ifNil: [3] ifNotNil: [4]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilWithArg
+	| result |
+	self
+		compile: 'foo ^5 ifNil: [3] ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilWithArgToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [3] ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [self]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilToNotNil
+	| result |
+	self
+		compile: 'foo ^false ifNil: [self]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNotNilWithArg
+	| result |
+	self
+		compile: 'foo ^5 ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test140evaluateClosure
+	| result |
+	self
+		compile: 'foo ^[5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test141evaluateClosureFrames
+	| result |
+	self
+		compile: 'foo [5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test142evaluateClosureReceiver
+	| result |
+	self
+		compile: 'foo [self] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test150sendWhileTrue
+	| result |
+	self
+		compile: 'foo
+			 | a |
+			a := true.
+			[a] whileTrue: [a := false].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test151sendToDo
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			3 to: 4 do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152compute20dividedBy5
+	| result |
+	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
+	self 
+		assert: result equals: self ==> 4;
+		assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152sendToDoWithInterval
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			(3 to: 4) do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test161evaluateClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test162evaluateClosureWithArgsAndTemps
+	| result |
+	self
+		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test163evaluateClosureWithArgsAndMethodTemps
+	| result |
+	self
+		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test164evaluateClosureWithArgsAndMultipleTemps
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				s := 3.
+				^[:a | | t | 
+					t := a.
+					t := t + s.
+					t] value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test165evaluateClosureNonLocalReturn
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				[s := 3. ^s] value.
+				s := 4.
+				^s'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test166evaluateNestedClosure
+	| result |
+	self
+		compile: 'foo ^[ [ 7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test167evaluateNestedClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureNonLocalReturn
+	| result |
+	self
+		compile: 'foo [ [ ^7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureWithTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a |
+			a := 2.
+			^[ | b |
+				b := 3.
+				[ | c |
+				c := 4.
+				a + b + c ] value] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 9 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test169evaluateInlinedClosureInClosureWithMethodTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a result |
+			a := 3.
+			[ true ifTrue: [ result := a + 4 ] ] value.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test170evaluateNonInlinedClosureIfTrue
+	| result |
+	self
+		compile:
+			'foo 
+			| a result closure |
+			a := 3.
+			closure := [ a + 4 ].
+			result := true ifTrue: closure.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7;  assertNoLeftoverFrames ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test180evaluateToDo
+	| result |
+	self
+		compile:
+			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test181evaluateIntervalSize
+	| result |
+	self
+		compile:
+			'foo ^(1 to: 2) size'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals:  2 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test185evaluateArrayDo
+	| result |
+	self
+		compile:
+			'foo | result a |
+				result := 0.
+				a := Array new: 5.
+				a at: 1 put: 1; at: 2 put: 2; at: 3 put: 3; at: 4 put: 4; at: 5 put: 5.
+				a do: [:i | result := result + i].
+				^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test186evaluateOrderedCollectionDo
+	| result |
+	self
+		compile:
+			'foo | result o |
+				result := 0.
+				o:= OrderedCollection new: 5.
+				o add: 1; add: 2; add: 3; add: 4; add: 5.
+				o do: [:i | result := result + i].
+				^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test187evaluateArrayToDo
+	| result |
+	self
+		compile:
+			'foo | a |
+				a := Array new: 2.
+				1 to: 2 do: [ :i | a at: i put: i ].
+				^a first + a second'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test188evaluateReplaceFromToWith
+	| result |
+	self
+		compile: 'foo ^#(1 2) replaceFrom: 1 to: 2 with: #(3 4) startingAt: 1'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result size = 2;
+				assert: (result at: 1) value equals: 3;
+				assert: (result at: 2) value equals: 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test189evaluateArrayConcatenation
+	| result |
+	self
+		compile: 'foo ^#(3), #(4)'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result size equals: 2; assert: (result at: 1 ) value equals: 3; assert: (result at: 2) value equals: 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test190evaluateStringConcatenation
+	| result |
+	self
+		compile: 'foo ^''ABC'', ''DE'''
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result asString equals: 'ABCDE' ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test191evaluateIntervalCollect
+	| result |
+	self
+		compile:
+			'foo | result |
+				result := (1 to: 2) collect: [:i | i].
+				^result first + result second'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test200createDictionary
+	| class d |
+	class := image classNamed: #Dictionary.
+	d := runtime sendLocal: #new to: class with: {}.
+	self assert: d spec name equals: 'Dictionary'; assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test210addAssociationToDictionary
+	| class d assoc |
+	class := image classNamed: #Dictionary.
+	assoc := image newAssociation: #foo -> nil.
+	d := runtime sendLocal: #new to: class with: {}.
+	self assertNoLeftoverFrames.
+	runtime sendLocal: #add: to: d with: {assoc}.
+	self
+		assert: d spec name equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis.
+	runtime := image runtime
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+compile: source in: aSpecies
+	^SCompiler compile: source in: aSpecies
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+decode: anArray of: aCompiledMethod
+	| decoder |
+	decoder := AstcodeDecoder new
+		stream: anArray readStream;
+		method: aCompiledMethod.
+	^decoder decodeMethod
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+encode: source
+	^self encode: source in: UndefinedObject
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+encode: source in: aSpecies
+	| ring compiler |
+	ring := VirtualImage kernelSpec bindingOf: aSpecies name.
+	compiler := SCompiler forClass: ring value.
+	method := compiler compile: source.
+	^ method astcodes
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test010emptyMethod
+	| astcodes root |
+	astcodes := self encode: 'm'.
+	self assert: astcodes = {MethodId}.
+	root := self decode: astcodes of: method.
+	self assert: root isMethod; assert: root statements isEmpty
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeFalse
+	| astcodes root identifier |
+	astcodes := self encode: 'm false'.
+	self assert: astcodes = {MethodId. {IdentifierId. FalseId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = false
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeNil
+	| astcodes root identifier |
+	astcodes := self encode: 'm nil'.
+	self assert: astcodes = {MethodId. {IdentifierId. NilId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = nil
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeSelf
+	| astcodes root identifier |
+	astcodes := self encode: 'm self'.
+	self assert: astcodes = {MethodId. {IdentifierId. SelfId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self assert: identifier isVariable; assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeTrue
+	| astcodes root identifier |
+	astcodes := self encode: 'm true'.
+	self assert: astcodes = {MethodId. {IdentifierId. TrueId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = true
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodeClassVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm Flags' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. ClassVarId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isClassVar;
+		assert: identifier binding association class = Association;
+		assert: identifier binding association key = 'Flags';
+		assert: identifier binding association value class = PoolDictionary
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodeInstVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm name' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. InstVarId. 6}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isInstVar;
+		assert: identifier binding index = 6
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodePoolVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm Pointers' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. PoolVarId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isPoolVar;
+		assert: identifier binding association class = Association;
+		assert: identifier binding association key = 'Pointers';
+		assert: identifier binding association value = 16r200
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test022encodeReturn
+	| astcodes root return identifier |
+	astcodes := self encode: 'm ^self'.
+	self assert: astcodes = {MethodId. {ReturnId. true. {IdentifierId. SelfId}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	identifier := return expression.
+	self assert: identifier isVariable; assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test023encodeClass
+	| astcodes root return identifier |
+	astcodes := self encode: 'm ^Array'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {IdentifierId. GlobalClassId. 1}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	identifier := return expression.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isClassBinding;
+		assert: identifier binding association key = #Array;
+		assert: identifier binding association value = Array
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test024encodeLiteral
+	| astcodes root literal |
+	astcodes := self encode: 'm #foo'.
+	self assert: astcodes = {MethodId. {LiteralId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	literal := root statements first.
+	self
+		assert: literal isLiteral;
+		assert: literal value = #foo
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test030encodeUnaryMessage
+	| astcodes root return message identifier |
+	astcodes := self encode: 'm ^self foo'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	identifier := message receiver.
+	self
+		assert: message arguments isEmpty;
+		assert: identifier isVariable;
+		assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test035encodeBinaryMessage
+	| astcodes root return message receiver argument |
+	astcodes := self encode: 'm ^self foo: true'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}. {IdentifierId. TrueId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	receiver := message receiver.
+	argument := message arguments first.
+	self
+		assert: receiver isVariable;
+		assert: receiver binding isSelf;
+		assert: argument isVariable;
+		assert: argument binding isLiteral;
+		assert: argument binding value = true
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test036encodeTernaryMessage
+	| astcodes root return message receiver arg1 arg2 |
+	astcodes := self encode: 'm ^self foo: true bar: false'.
+	self
+		assert: astcodes = {MethodId. {ReturnId. true. {MessageId. 1.
+					{IdentifierId. SelfId}.
+					{IdentifierId. TrueId}.
+					{IdentifierId. FalseId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	receiver := message receiver.
+	arg1 := message arguments first.
+	arg2 := message arguments second.
+	self
+		assert: receiver isVariable;
+		assert: receiver binding isSelf;
+		assert: arg1 isVariable;
+		assert: arg1 binding isLiteral;
+		assert: arg1 binding value = true;
+		assert: arg2 isVariable;
+		assert: arg2 binding isLiteral;
+		assert: arg2 binding value = false
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test050instVarAssignment
+	| astcodes root assignment assignee expression |
+	astcodes := self encode: 'm name := true' in: Class.
+	self
+		assert: astcodes
+			= {MethodId. {AssignmentId. {IdentifierId. InstVarId. 6}. {IdentifierId. TrueId}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	assignment := root statements first.
+	self
+		assert: assignment isAssignment;
+		assert: assignment assignees size = 1.
+	assignee := assignment assignees first.
+	expression := assignment expression.
+	self
+		assert: assignee isVariable;
+		assert: assignee binding isInstVar;
+		assert: assignee binding index = 6;
+		assert: expression isVariable;
+		assert: expression binding isLiteral;
+		assert: expression binding value = true
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+maneuvererForObjects
+	| mirror |
+	mirror := runtime objectNamed: 'Object'.
+	^ mirror handle maneuverer
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+mirageForObject
+	| mirror |
+	mirror := runtime objectNamed: 'Object'.
+	^ mirror handle mirage
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+mirrorForObject
+	| address |
+	address := runtime objectNamed: 'Object'.
+	^ address asClassMirror
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test010nilHandle
+	| handle |
+	handle := runtime nil.
+	self
+		assert: handle isSmall;
+		deny: handle isBytes;
+		deny: handle isArrayed;
+		assert: handle basicSize equals: 0
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test020nilBehaviorHandle
+	| handle |
+	handle := runtime nil getBehavior.
+	self
+		assert: handle isSmall;
+		deny: handle isBytes;
+		deny: handle isArrayed;
+		assert: handle size equals: 3
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test030nilClassHandle
+	| behavior class name |
+	behavior := runtime nil getBehavior.
+	class := behavior slotAt: 1.
+	self
+		assert: class isSmall;
+		deny: class isBytes;
+		deny: class isArrayed;
+		assert: class size equals: 9.
+	name := class slotAt: 6.
+	self assert: name asLocalString equals: 'UndefinedObject'
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test040nilClassMirror
+	| class hierarchy |
+	class := runtime nil mirror reflectedClass.
+	hierarchy := class allSuperclasses collect: #localName.
+	self assert: class localName equals: 'UndefinedObject';
+		assert: hierarchy asArray equals: #('Object' 'ProtoObject')
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+testObjectMirrorBasics
+	| class definition |
+	class := self mirrorForObject.
+	self
+		deny: class reflectsInteger;
+		deny: class reflectsBytesObject;
+		deny: class reflectsLargeObject;
+		deny: class reflectsNil.
+	definition := builder => 'Class'.
+	self assert: class slotSize equals: definition allInstVarNames size
+! !
+
+!MirrorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	| vimage image |
+	super setUp.
+	vimage := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap.
+	builder := vimage builder.
+	builder addGenesisObjects.
+	image := builder writer write image.
+	runtime := Runtime
+		forSimulating: PowertalkRingImage kernelSpec
+		memory: image
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test010nilObjectHandle
+	| runtime handle |
+	runtime := self runtime.
+	handle := runtime nil.
+	self
+		assert: handle isFixed;
+		assert: handle isSmall;
+		assert: handle size = 0
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test015nilObjectMirror
+	| runtime handle mirror |
+	runtime := self runtime.
+	handle := runtime nil.
+	mirror := handle mirror.
+	self
+		assert: mirror = handle mirror;
+		assert: mirror reflectsNil;
+		deny: mirror reflectsInteger;
+		assert: mirror size = 0;
+		deny: mirror reflectsLargeObject;
+		deny: mirror reflectsBytesObject;
+		assert: mirror reflectedClass localName = 'UndefinedObject'
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test040UndefinedObjectMirror
+	| runtime nilMirror mirror |
+	runtime := self runtime.
+	nilMirror := runtime nil mirror.
+	mirror := nilMirror reflectedBehavior methodDictionary.
+	self
+		assert: mirror reflectsMethodDictionary
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test100findKernel
+	| smalltalk |
+	smalltalk := self runtime objectNamed: 'kernel'.
+	self
+		assert: smalltalk reflectedClass localName
+		equals: 'Kernel'
+! !
+
+!ObjectMirrorTest methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:45'!
+runtime
+	| vimage builder |
+	vimage := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap.
+	builder := vimage builder.
+	builder addGenesisObjects.
+	^ Runtime
+		forSimulating: PowertalkRingImage kernelSpec
+		memory: builder writer write image
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+handleFor: anObjectMap
+	| oid |
+	oid := writer offsetOf: anObjectMap.
+	^runtime handleOn: oid
+
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectMethod: anAstcode selector: selector for: classname
+	^ builder
+		newMethod: anAstcode
+		selector: selector
+		in: classname
+		format: 0
+		literals: #()
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectObject
+	^ builder newSlots: 'Object'
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+invoke: method with: object
+	| m receiver |
+	m := self handleFor: method.
+	receiver := self handleFor: object.
+	^receiver mirror invoke: m mirror asMethodMirror with: #()
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test100yourself
+	| object handle result |
+	object := self injectObject.
+	handle := builder emulator handleOn: object.
+	result := handle maneuverer yourself.
+	self
+		assert: object == result
+! !
+
+!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	super setUp.
+	builder := VirtualImage kernelSpec build
+! !
+
+!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+write
+	writer := builder writer write.
+	runtime := Runtime
+		forSimulating: VirtualImage kernelSpec
+		memory: writer image
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+handleFor: anObjectMap
+	| oid |
+	oid := writer offsetOf: anObjectMap.
+	^runtime handleOn: oid
+
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectMethod: anAstcode selector: selector for: classname
+	^ builder
+		newMethod: anAstcode
+		selector: selector
+		in: classname
+		format: 0
+		literals: #()
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectObject
+	^ builder newSlots: 'Object'
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+invoke: method with: object
+	| m receiver |
+	m := self handleFor: method.
+	receiver := self handleFor: object.
+	^receiver mirror invoke: m mirror asMethodMirror with: #()
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test100empty
+	| object astcodes method result original |
+	object := self injectObject.
+	astcodes := {MethodId. {IdentifierId. SelfId}}.	"foo self"
+	method := self injectMethod: astcodes selector: #foo for: 'Object'.
+	self write.
+	result := self invoke: method with: object.
+	original := self handleFor: object.
+	self
+		assert: result localClassname equals: 'Object';
+		assert: (result equals: original mirror)
+! !
+
+!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	super setUp.
+	builder := VirtualImage kernelSpec build
+! !
+
+!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+write
+	writer := builder writer write.
+	runtime := Runtime
+		forSimulating: VirtualImage kernelSpec
+		memory: writer image
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+bootstrapper
+	^bootstrapper ifNil: [ bootstrapper := image generateLMR ]
+
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+runtime
+	^ self bootstrapper result
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+setUp
+	super setUp.
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap;
+		fillClasses;
+		fillSymbols
+! !
 
 !NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:14:24'!
 error
@@ -31795,6 +35016,52 @@ kernel
 	^module
 ! !
 
+!MessageCollector methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:48'!
+subject
+	^ subject
+! !
+
+!MessageCollector methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:48'!
+subject:anObject
+	subject := anObject.
+
+! !
+
+!MessageCollector methodsFor: 'hooks' stamp: 'KenD 1/30/2023 10:10:48'!
+doesNotUnderstand: aMessage
+	(aMessage arguments allSatisfy: [:e | e isInteger ]) ifTrue: [ 
+		(Messages contains: [:e | e selector = aMessage selector and:[e arguments = aMessage arguments]]) ifFalse: [ 
+			Messages add: aMessage.
+		].
+	].
+	^ aMessage sendTo: subject
+
+! !
+
+!MessageCollector class methodsFor: 'instance creation' stamp: 'KenD 1/30/2023 10:10:48'!
+for: anObject
+	^ self new 
+		subject: anObject;
+		yourself
+
+! !
+
+!MessageCollector class methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:48'!
+initialize
+	"Invoked at system start or when the class is dynamically loaded."
+
+	"  please change as required (and remove this comment)"
+
+	Messages := Set new
+
+! !
+
+!MessageCollector class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:48'!
+messages
+	^ Messages
+
+! !
+
 !Subject methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:54'!
 _gate
 	^gate
@@ -32464,4 +35731,5 @@ Assembler initialize!
 SmalltalkInterpreter initialize!
 AstcodeDecoder initialize!
 MethodEvaluator initialize!
+MessageCollector initialize!
 Subject initialize!
