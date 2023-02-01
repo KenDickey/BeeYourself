@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5658] on 31 January 2023 at 9:58:10 am'!
+'From Cuis 6.0 [latest update: #5658] on 1 February 2023 at 3:01:07 pm'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 65!
+!provides: 'Powerlang' 1 66!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -34710,9 +34710,11 @@ fromSpec
 	^ self new specs: self kernelSpec; vmPrimitivesSpec: self vmPrimitivesSpec
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/1/2023 13:46:04'!
 kernelSpec
-	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: '.' ]
+	| localSpecDir |
+	localSpecDir := '/home/pi/BeePowerLang/PowerLang'.
+	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: localSpecDir " '.' "]
 ! !
 
 !PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
@@ -34727,16 +34729,14 @@ lmrBootstrapperSpec
 		ifNil: [ LMRBootstrapperSpec := self readSpec: #Bootstrapper at: 'Core' ]
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/1/2023 14:28:11'!
 readSpec: specName at: path
-	| root current repo spec subdir |
-	root := '.' asFileReference.
-	current := (root / 'specs' / 'current') contents asString trim.
-	subdir := path isString ifTrue: [ path ] ifFalse: [ path asPath pathString ].
-	repo := TonelRepository new
-		directory: root / 'specs' / current / subdir.
+	| root current repo spec |
+	root := path asDirectoryEntry.
+	current := (root / 'bootstrap' // 'current') textContents asString withBlanksTrimmed.
+	repo := TonelRepository new directory: root / 'bootstrap' / current.
 		
-	spec := repo asRingEnvironmentWith: {('.' split: specName) last}.
+	spec := repo asRingEnvironmentWith: { specName }.
 	^ spec clean
 ! !
 

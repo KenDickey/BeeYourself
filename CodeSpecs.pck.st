@@ -1,10 +1,10 @@
-'From Cuis 6.0 [latest update: #5173] on 23 May 2022 at 4:27:49 pm'!
+'From Cuis 6.0 [latest update: #5658] on 1 February 2023 at 1:34:28 pm'!
 'Description Transliterator for translating between Smalltalk dialects.
 Used in Bee/Powerlang porting.
 
 Copyright (c) 2021 Quorum Software.
 	See (MIT) license in LICENSES directory.'!
-!provides: 'CodeSpecs' 1 7!
+!provides: 'CodeSpecs' 1 8!
 !requires: 'BeeCompatibility' 1 21 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 38 nil!
 SystemOrganization addCategory: 'CodeSpecs'!
@@ -376,10 +376,10 @@ setUp
 	builder := self builderClass new module: module
 ! !
 
-!ModuleTransliteratorTest methodsFor: 'private' stamp: 'KenD 5/23/2022 15:32:04'!
+!ModuleTransliteratorTest methodsFor: 'private' stamp: 'KenD 2/1/2023 13:21:10'!
 test001doNothing
 	builder addMethod: ModuleTransliteratorTest >> #test001doNothing.
-	"transliterator transliterate."
+	transliterator transliterate.
 	self
 		assert: module name equals: 'TestModule';
 		assert: module classes size equals: 0;
@@ -2025,51 +2025,51 @@ specFromClass: aClass
 	^class
 ! !
 
-!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 2/1/2023 13:21:11'!
 addRule: aTransliterationRule
 	rules add: aTransliterationRule
 ! !
 
-!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 2/1/2023 13:21:11'!
 addRules: aCollection
 	rules addAll: aCollection
 ! !
 
-!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 2/1/2023 13:21:11'!
 initialize
 	rules := OrderedCollection new
 ! !
 
-!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'adding / removing' stamp: 'KenD 2/1/2023 13:21:11'!
 module
 	^module
 ! !
 
-!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'accessing' stamp: 'KenD 2/1/2023 13:21:11'!
 module: aModuleSpec
 	module := aModuleSpec
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeClass: aString
 	| rule |
 	rule := ClassRemoveRule name: aString.
 	self addRule: rule
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeInstVar: ivar in: classname
 	| rule |
 	rule := RemoveInstVarRule named: ivar in: classname.
 	self addRule: rule
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeMethodsSuchThat: aBlock
 	self removeMethodsSuchThat: aBlock class: nil module: nil
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeMethodsSuchThat: aBlock class: classname module: modulename
 	| rule |
 	rule := (MethodFilterRule on: aBlock)
@@ -2078,24 +2078,24 @@ removeMethodsSuchThat: aBlock class: classname module: modulename
 	self addRule: rule
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removePackage: aString
 	| rule |
 	rule := PackageRemoveRule name: aString.
 	self addRule: rule
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeSelectors: selectors
 	self removeSelectors: selectors class: nil module: nil
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeSelectors: selectors class: classname
 	^self removeSelectors: selectors class: classname module: nil
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeSelectors: selectors class: classname module: modulename
 	| rule |
 	rule := (MethodFilterRule on: [:m | selectors includes: m selector])
@@ -2104,19 +2104,58 @@ removeSelectors: selectors class: classname module: modulename
 	self addRule: rule
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 removeSelectors: selectors module: modulename
 	^self removeSelectors: selectors class: nil module: modulename
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 renameIdentifier: from to: to
 	self renameIdentifier: from to: to class: nil module: nil
 ! !
 
-!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 5/1/2022 13:12:19'!
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
 renameIdentifier: from to: to class: classname
 	self renameIdentifier: from to: to class: classname module: nil
+! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
+renameIdentifier: from to: to class: classname module: modulename
+	| rule |
+	rule := IdentifierRenameRule from: from to: to.
+	rule class: classname; module: modulename.
+	self addRule: rule
+! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
+renamePackage: aString to: anotherString
+	| rule |
+	rule := PackageRenameRule from: aString to: anotherString.
+	self addRule: rule
+! !
+
+!ModuleTransliterator methodsFor: 'services' stamp: 'KenD 2/1/2023 13:21:11'!
+renameSelector: aString to: anotherString
+	| rule |
+	rule := SelectorRenameRule from: aString to: anotherString.
+	self addRule: rule
+! !
+
+!ModuleTransliterator methodsFor: 'actions' stamp: 'KenD 2/1/2023 13:21:11'!
+transliterate
+	rules do: [:rule | rule applyTo: module].
+	module cleanDependencies; removeEmptyExtensions
+! !
+
+!ModuleTransliterator methodsFor: 'actions' stamp: 'KenD 2/1/2023 13:21:11'!
+transliterate: aModuleSpec
+	module := aModuleSpec.
+	self transliterate
+! !
+
+!ModuleTransliterator class methodsFor: 'instance creation' stamp: 'KenD 2/1/2023 13:21:11'!
+new
+	^super new initialize
 ! !
 
 !RejectMethodRule methodsFor: 'accessing' stamp: 'KenD 5/1/2022 12:57:47'!
