@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5658] on 1 February 2023 at 3:01:07 pm'!
+'From Cuis 6.0 [latest update: #5658] on 12 February 2023 at 11:29:27 am'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 66!
+!provides: 'Powerlang' 1 67!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -2611,7 +2611,7 @@ MethodEvaluator class
 !classDefinition: #PowertalkRingModule category: 'Powerlang-Core-Execution-Ring'!
 Object subclass: #PowertalkRingModule
 	instanceVariableNames: 'nilObj falseObj trueObj classes metaclasses runtime symbols identityMap specs vmPrimitivesSpec module kernel'
-	classVariableNames: 'KernelSpec LMRBootstrapperSpec VMPrimitivesSpec'
+	classVariableNames: 'KernelSpec LMRBootstrapperSpec RootDirName VMPrimitivesSpec'
 	poolDictionaries: ''
 	category: 'Powerlang-Core-Execution-Ring'!
 !classDefinition: 'PowertalkRingModule class' category: 'Powerlang-Core-Execution-Ring'!
@@ -34584,6 +34584,11 @@ runtime
 	^ runtime
 ! !
 
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:17:30'!
+specRoot
+
+	^ RootDirName ! !
+
 !PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
 speciesFor: anRGBehavior
 	^ anRGBehavior isMeta ifTrue: [metaclasses at: anRGBehavior] ifFalse: [ classes at: anRGBehavior ]
@@ -34710,11 +34715,10 @@ fromSpec
 	^ self new specs: self kernelSpec; vmPrimitivesSpec: self vmPrimitivesSpec
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/1/2023 13:46:04'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:09'!
 kernelSpec
-	| localSpecDir |
-	localSpecDir := '/home/pi/BeePowerLang/PowerLang'.
-	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: localSpecDir " '.' "]
+
+	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: RootDirName ]
 ! !
 
 !PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
@@ -34723,19 +34727,17 @@ lmrBootstrapper
 		specs: self lmrBootstrapperSpec
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:25'!
 lmrBootstrapperSpec
+
 	^ LMRBootstrapperSpec
-		ifNil: [ LMRBootstrapperSpec := self readSpec: #Bootstrapper at: 'Core' ]
+		ifNil: [ LMRBootstrapperSpec := self readSpec: #Bootstrapper at: RootDirName ]
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/1/2023 14:28:11'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:24:02'!
 readSpec: specName at: path
-	| root current repo spec |
-	root := path asDirectoryEntry.
-	current := (root / 'bootstrap' // 'current') textContents asString withBlanksTrimmed.
-	repo := TonelRepository new directory: root / 'bootstrap' / current.
-		
+	|  repo spec |
+	repo := TonelRepository new directory: path asDirectoryEntry.
 	spec := repo asRingEnvironmentWith: { specName }.
 	^ spec clean
 ! !
@@ -34747,10 +34749,11 @@ resetSpecs
 	LMRBootstrapperSpec := nil
 ! !
 
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:26:47'!
 vmPrimitivesSpec
+
 	^ VMPrimitivesSpec
-		ifNil: [ VMPrimitivesSpec := self readSpec: #VM at: 'Kernel' ]
+		ifNil: [ VMPrimitivesSpec := self readSpec: #VM at: RootDirName, '/Kernel' ]
 ! !
 
 !PowertalkRingModule class methodsFor: 'instance creation' stamp: 'KenD 1/30/2023 10:10:52'!
@@ -34760,6 +34763,14 @@ new
 	^ self basicNew initialize.
 
 ! !
+
+!PowertalkRingModule class methodsFor: 'class initialization' stamp: 'KenD 2/12/2023 11:21:10'!
+initialize
+"
+	PowertalkRingModule initialize.
+"
+	RootDirName := 
+		'/home/pi/BeePowerLang/PowerLang/bootstrap/bee-dmr'.! !
 
 !PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
 createBootstrapNamespace
@@ -35731,5 +35742,6 @@ Assembler initialize!
 SmalltalkInterpreter initialize!
 AstcodeDecoder initialize!
 MethodEvaluator initialize!
+PowertalkRingModule initialize!
 MessageCollector initialize!
 Subject initialize!
