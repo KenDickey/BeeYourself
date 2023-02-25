@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5107] on 20 April 2022 at 12:52:25 pm'!
+'From Cuis 6.0 [latest update: #5663] on 24 February 2023 at 11:35:57 pm'!
 'Description See http://scg.unibe.ch/research/helvetia/petitparser'!
-!provides: 'PetitParser' 1 16!
+!provides: 'PetitParser' 1 17!
 !requires: 'BeeCompatibility' 1 12 nil!
 SystemOrganization addCategory: 'PetitParser-Core'!
 SystemOrganization addCategory: 'PetitParser-Tools'!
@@ -621,52 +621,8 @@ printOn: aStream
 		ifFalse: [ ^ super printOn: aStream ].
 	aStream
 		nextPutAll: (collection copyFrom: 1 to: position);
-		nextPutAll: '·';
+		nextPutAll: 'Â·';
 		nextPutAll: (collection copyFrom: position + 1 to: readLimit)! !
-
-!PPFailure methodsFor: 'printing' stamp: 'lr 5/5/2010 14:01'!
-printOn: aStream
-	aStream nextPutAll: self message; nextPutAll: ' at '; print: position! !
-
-!PPToken methodsFor: 'printing' stamp: 'lr 6/16/2008 10:13'!
-printOn: aStream
-	super printOn: aStream.
-	aStream nextPut: $(; nextPutAll: self value; nextPut: $)! !
-
-!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:35'!
-name
-	"Answer the production name of the receiver."
-	
-	^ self propertyAt: #name ifAbsent: [ nil ]! !
-
-!PPParser methodsFor: 'copying' stamp: 'lr 4/19/2010 10:33'!
-postCopy
-	super postCopy.
-	properties := properties copy! !
-
-!PPParser methodsFor: 'printing' stamp: 'lr 4/16/2010 16:36'!
-printOn: aStream
-	super printOn: aStream.
-	aStream nextPut: $(.
-	self printNameOn: aStream.
-	aStream nextPut: $)! !
-
-!PPRepeatingParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 15:29:59'!
-printOn: aStream
-	super printOn: aStream.
-	aStream nextPut: $[.
-	aStream nextPutAll: self min printString.
-	aStream nextPutAll: ', '.
-	(self max = SmallInteger maxVal)
-		ifTrue: [aStream nextPut: $*]
-		ifFalse: [aStream nextPutAll: self max printString].
-	aStream nextPut: $]
-! !
-
-!PPListParser methodsFor: 'copying' stamp: 'lr 5/22/2010 10:26'!
-postCopy
-	super postCopy.
-	parsers := parsers copy! !
 
 !PPStream methodsFor: 'converting' stamp: 'lr 2/7/2010 20:53'!
 asPetitStream
@@ -707,6 +663,10 @@ uncheckedPeek
 	"An unchecked version of peek that throws an error if we try to peek over the end of the stream, even faster than #peek."
 
 	^ collection at: position + 1! !
+
+!PPFailure methodsFor: 'printing' stamp: 'lr 5/5/2010 14:01'!
+printOn: aStream
+	aStream nextPutAll: self message; nextPutAll: ' at '; print: position! !
 
 !PPFailure methodsFor: 'initialization' stamp: 'lr 5/5/2010 13:55'!
 initializeMessage: aString at: anInteger
@@ -767,6 +727,11 @@ result: anObject
 !PPMemento class methodsFor: 'instance creation' stamp: 'lr 4/22/2008 18:21'!
 new
 	^ self basicNew initialize! !
+
+!PPToken methodsFor: 'printing' stamp: 'lr 6/16/2008 10:13'!
+printOn: aStream
+	super printOn: aStream.
+	aStream nextPut: $(; nextPutAll: self value; nextPut: $)! !
 
 !PPToken methodsFor: 'comparing' stamp: 'lr 10/7/2009 09:06'!
 = anObject
@@ -892,9 +857,20 @@ children
 
 	^ #()! !
 
+!PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:35'!
+name
+	"Answer the production name of the receiver."
+	
+	^ self propertyAt: #name ifAbsent: [ nil ]! !
+
 !PPParser methodsFor: 'accessing' stamp: 'lr 4/19/2010 10:38'!
 name: aString
 	self propertyAt: #name put: aString! !
+
+!PPParser methodsFor: 'copying' stamp: 'lr 4/19/2010 10:33'!
+postCopy
+	super postCopy.
+	properties := properties copy! !
 
 !PPParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 14:51:29'!
 printNameOn: aStream 
@@ -902,6 +878,13 @@ printNameOn: aStream
 	self name isNil
 		ifTrue: [ aStream print: self hash ]
 		ifFalse: [ aStream nextPutAll: self name ]! !
+
+!PPParser methodsFor: 'printing' stamp: 'lr 4/16/2010 16:36'!
+printOn: aStream
+	super printOn: aStream.
+	aStream nextPut: $(.
+	self printNameOn: aStream.
+	aStream nextPut: $)! !
 
 !PPParser methodsFor: 'operators' stamp: 'lr 9/23/2008 18:32'!
 , aParser 
@@ -1784,6 +1767,18 @@ printTextOn: rtf
 	parser printSmalltalkReceiverOn: rtf.
 	rtf nextPutAll: ' optional'! !
 
+!PPRepeatingParser methodsFor: 'printing' stamp: 'KenD 2/15/2021 15:29:59'!
+printOn: aStream
+	super printOn: aStream.
+	aStream nextPut: $[.
+	aStream nextPutAll: self min printString.
+	aStream nextPutAll: ', '.
+	(self max = SmallInteger maxVal)
+		ifTrue: [aStream nextPut: $*]
+		ifFalse: [aStream nextPutAll: self max printString].
+	aStream nextPut: $]
+! !
+
 !PPRepeatingParser methodsFor: 'initialization' stamp: 'lr 4/1/2011 21:06'!
 initialize
 	super initialize.
@@ -1796,11 +1791,6 @@ setMax: anInteger
 !PPRepeatingParser methodsFor: 'initialization' stamp: 'lr 4/1/2011 21:01'!
 setMin: anInteger
 	min := anInteger! !
-
-!PPRepeatingParser methodsFor: 'initialization' stamp: 'KenD 2/15/2021 15:37:47'!
-setMin: anInteger max: aMaxInteger
-	min := anInteger.
-	max := aMaxInteger ! !
 
 !PPRepeatingParser methodsFor: 'accessing' stamp: 'lr 4/30/2010 11:08'!
 max
@@ -1960,6 +1950,11 @@ message: aString
 !PPListParser methodsFor: 'copying' stamp: 'lr 9/17/2008 22:36'!
 copyWith: aParser
 	^ self species withAll: (parsers copyWith: aParser)! !
+
+!PPListParser methodsFor: 'copying' stamp: 'lr 5/22/2010 10:26'!
+postCopy
+	super postCopy.
+	parsers := parsers copy! !
 
 !PPListParser methodsFor: 'accessing' stamp: 'lr 10/21/2009 16:37'!
 children
