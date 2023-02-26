@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #5663] on 25 February 2023 at 12:16:43 am'!
+'From Cuis 6.0 [latest update: #5663] on 26 February 2023 at 3:36:14 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 1!
+!provides: 'PowerLang' 1 2!
 !requires: 'Cuis-Base' 60 5663 nil!
 !requires: 'BeeCompatibility' 1 41 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 50 nil!
@@ -16,6 +16,8 @@ SystemOrganization addCategory: 'Powerlang-Core-Mirrors'!
 SystemOrganization addCategory: 'Powerlang-Core-Execution-Ring'!
 SystemOrganization addCategory: 'Powerlang-Core-Execution'!
 SystemOrganization addCategory: 'Powerlang-Core'!
+SystemOrganization addCategory: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SystemOrganization addCategory: 'Powerlang-Core-SExpressions'!
 
 
 !classDefinition: #PowerLangPackage category: 'Powerlang-Core'!
@@ -112,6 +114,26 @@ PSharedPool subclass: #SpeciesFormatMasks
 SpeciesFormatMasks class
 	instanceVariableNames: 'InstSize IsPointers'!
 
+!classDefinition: #AstBindingTypes category: 'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstBindingTypes
+	instanceVariableNames: ''
+	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstBindingTypes class' category: 'Powerlang-Core-SExpressions'!
+AstBindingTypes class
+	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
+
+!classDefinition: #AstNodeTypes category: 'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstNodeTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstNodeTypes class' category: 'Powerlang-Core-SExpressions'!
+AstNodeTypes class
+	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
+
 !classDefinition: #PowerLangPackage category: 'Powerlang-Core'!
 CodePackage subclass: #PowerLangPackage
 	instanceVariableNames: ''
@@ -130,6 +152,26 @@ Object subclass: #Bridge
 	category: 'Powerlang-Core-Metaphysics'!
 !classDefinition: 'Bridge class' category: 'Powerlang-Core-Metaphysics'!
 Bridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkBridge category: 'Powerlang-Core-Metaphysics'!
+Bridge subclass: #SmalltalkBridge
+	instanceVariableNames: 'nilObj trueObj falseObj'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'SmalltalkBridge class' category: 'Powerlang-Core-Metaphysics'!
+SmalltalkBridge class
+	instanceVariableNames: ''!
+
+!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core-Metaphysics'!
+SmalltalkBridge subclass: #BootstrappedPstBridge
+	instanceVariableNames: 'bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core-Metaphysics'!
+BootstrappedPstBridge class
 	instanceVariableNames: ''!
 
 !classDefinition: #Gate category: 'Powerlang-Core-Metaphysics'!
@@ -342,6 +384,16 @@ LiteralBinding subclass: #FalseBinding
 FalseBinding class
 	instanceVariableNames: ''!
 
+!classDefinition: #TrueBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+LiteralBinding subclass: #TrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+TrueBinding class
+	instanceVariableNames: ''!
+
 !classDefinition: #LocalBinding category: 'Powerlang-Core-SCompiler-Bindings'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
@@ -350,6 +402,46 @@ Binding subclass: #LocalBinding
 	category: 'Powerlang-Core-SCompiler-Bindings'!
 !classDefinition: 'LocalBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
 LocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+LocalBinding subclass: #ArgumentBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+ArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TemporaryBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+LocalBinding subclass: #TemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+TemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SelfBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #SelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+SelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SuperBinding category: 'Powerlang-Core-SCompiler-Bindings'!
+SelfBinding subclass: #SuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'SuperBinding class' category: 'Powerlang-Core-SCompiler-Bindings'!
+SuperBinding class
 	instanceVariableNames: ''!
 
 !classDefinition: #IdentifierBinder category: 'Powerlang-Core-SCompiler'!
@@ -370,6 +462,16 @@ Object subclass: #LocalEnvironment
 	category: 'Powerlang-Core-SCompiler'!
 !classDefinition: 'LocalEnvironment class' category: 'Powerlang-Core-SCompiler'!
 LocalEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArrayEnvironment category: 'Powerlang-Core-SCompiler'!
+LocalEnvironment subclass: #ArrayEnvironment
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core-SCompiler'!
+ArrayEnvironment class
 	instanceVariableNames: ''!
 
 !classDefinition: #MessageInliner category: 'Powerlang-Core-SCompiler'!
@@ -472,6 +574,56 @@ ObjectMap subclass: #ByteObjectMap
 ByteObjectMap class
 	instanceVariableNames: ''!
 
+!classDefinition: #SymbolMap category: 'Powerlang-Core-Execution-Ring'!
+ByteObjectMap subclass: #SymbolMap
+	instanceVariableNames: 'symbol'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'SymbolMap class' category: 'Powerlang-Core-Execution-Ring'!
+SymbolMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SlotObjectMap category: 'Powerlang-Core-Execution-Ring'!
+ObjectMap subclass: #SlotObjectMap
+	instanceVariableNames: 'slots hash'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core-Execution-Ring'!
+SlotObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SpeciesMap category: 'Powerlang-Core-Execution-Ring'!
+SlotObjectMap subclass: #SpeciesMap
+	instanceVariableNames: 'instanceSpec slotNames'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'SpeciesMap class' category: 'Powerlang-Core-Execution-Ring'!
+SpeciesMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassMap category: 'Powerlang-Core-Execution-Ring'!
+SpeciesMap subclass: #ClassMap
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'ClassMap class' category: 'Powerlang-Core-Execution-Ring'!
+ClassMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmallintObjectMap category: 'Powerlang-Core-Execution-Ring'!
+ObjectMap subclass: #SmallintObjectMap
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'SmallintObjectMap class' category: 'Powerlang-Core-Execution-Ring'!
+SmallintObjectMap class
+	instanceVariableNames: ''!
+
 !classDefinition: #PowertalkRingModule category: 'Powerlang-Core-Execution-Ring'!
 Object subclass: #PowertalkRingModule
 	instanceVariableNames: 'nilObj falseObj trueObj classes metaclasses runtime symbols identityMap specs vmPrimitivesSpec module kernel'
@@ -532,15 +684,25 @@ PowertalkRuntime subclass: #PowertalkRingRuntime
 PowertalkRingRuntime class
 	instanceVariableNames: ''!
 
-!classDefinition: #BootstrappedPstBridge category: 'Powerlang-Core-Metaphysics'!
-ProtoObject subclass: #BootstrappedPstBridge
-	instanceVariableNames: 'bootstrapper'
+!classDefinition: #SToken category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+Object subclass: #SToken
+	instanceVariableNames: 'compiler stretch comments'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'BootstrappedPstBridge class' category: 'Powerlang-Core-Metaphysics'!
-BootstrappedPstBridge class
+	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+!classDefinition: 'SToken class' category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
+SToken class
 	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeDecoder category: 'Powerlang-Core-SExpressions'!
+Object subclass: #AstcodeDecoder
+	instanceVariableNames: 'method stream builder'
+	classVariableNames: 'BindingTypes NodeTypes'
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeDecoder class' category: 'Powerlang-Core-SExpressions'!
+AstcodeDecoder class
+	instanceVariableNames: 'BindingTypes NodeTypes'!
 
 !classDefinition: #Subject category: 'Powerlang-Core-Metaphysics'!
 ProtoObject subclass: #Subject
@@ -551,6 +713,26 @@ ProtoObject subclass: #Subject
 !classDefinition: 'Subject class' category: 'Powerlang-Core-Metaphysics'!
 Subject class
 	instanceVariableNames: 'Counts'!
+
+!classDefinition: #ArgumentEnvironment category: 'Powerlang-Core-SCompiler'!
+ProtoObject subclass: #ArgumentEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'ArgumentEnvironment class' category: 'Powerlang-Core-SCompiler'!
+ArgumentEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssociationMirror category: 'Powerlang-Core-Mirrors'!
+ProtoObject subclass: #AssociationMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'AssociationMirror class' category: 'Powerlang-Core-Mirrors'!
+AssociationMirror class
+	instanceVariableNames: ''!
 
 !classDefinition: #BehaviorMirror category: 'Powerlang-Core-Mirrors'!
 ProtoObject subclass: #BehaviorMirror
@@ -612,16 +794,6 @@ ProtoObject subclass: #DictionaryMirror
 DictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassMap category: 'Powerlang-Core-Execution-Ring'!
-ProtoObject subclass: #ClassMap
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Execution-Ring'!
-!classDefinition: 'ClassMap class' category: 'Powerlang-Core-Execution-Ring'!
-ClassMap class
-	instanceVariableNames: ''!
-
 !classDefinition: #ClosureMap category: 'Powerlang-Core-Execution-Ring'!
 ProtoObject subclass: #ClosureMap
 	instanceVariableNames: 'block'
@@ -630,6 +802,16 @@ ProtoObject subclass: #ClosureMap
 	category: 'Powerlang-Core-Execution-Ring'!
 !classDefinition: 'ClosureMap class' category: 'Powerlang-Core-Execution-Ring'!
 ClosureMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeEncoder category: 'Powerlang-Core-SExpressions'!
+ProtoObject subclass: #AstcodeEncoder
+	instanceVariableNames: 'method stream script'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstcodeEncoder class' category: 'Powerlang-Core-SExpressions'!
+AstcodeEncoder class
 	instanceVariableNames: ''!
 
 
@@ -706,6 +888,35 @@ initialize
 	LargeSizeOffset := -16
 ! !
 
+!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 2/22/2023 22:58:46'!
+initialize
+	NilId := 1.
+	TrueId := 2.
+	FalseId := 3.
+	ArgumentId := 4.
+	TemporaryId := 5.
+	SelfId := 6.
+	SuperId := 7.
+	DynamicVarId := 14.
+	NestedDynamicVarId := 15.
+	PushRid := 50.
+	PopRid := 51
+! !
+
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 2/22/2023 22:58:47'!
+initialize
+	MethodId := 101.
+	BlockId := 102.
+	IdentifierId := 103.
+	LiteralId := 104.
+	MessageId := 105.
+	CascadeId := 106.
+	BraceId := 107.
+	AssignmentId := 108.
+	ReturnId := 109.
+	PragmaId := 110
+! !
+
 !PowerLangPackage class methodsFor: 'installing' stamp: 'KenD 2/24/2023 23:58:55'!
 postPackageInstall
 
@@ -768,6 +979,71 @@ runtime: aRuntime
 !Bridge class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:49'!
 new
 	^self basicNew initialize
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+false
+	^falseObj
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+findRootObjects
+	self subclassResponsibility
+
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+kernel
+	^ self
+		objectNamed: #kernel
+		ifAbsent: [ self
+				update;
+				objectNamed: #kernel ]
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+nil
+	^nilObj
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+true
+	^trueObj
+! !
+
+!SmalltalkBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+update
+	self
+		findRootObjects
+! !
+
+!SmalltalkBridge class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:22'!
+new
+	^self basicNew initialize
+! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:49'!
+bootstrapper: aSmalltalkBootstrapper
+	bootstrapper := aSmalltalkBootstrapper
+! !
+
+!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:49'!
+updateGlobals
+	bootstrapper globals keysAndValuesDo: [:name :obj | objects at: name put: obj ]
+! !
+
+!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:49'!
+findNilObject
+	^ nilObj := ObjectHandle
+		on: runtime storage nilObject
+		within: runtime
+! !
+
+!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:49'!
+findRootObjects
+	nilObj := ObjectHandle on: bootstrapper nilObject within: runtime.
+	trueObj := ObjectHandle on: bootstrapper trueObject within: runtime.
+	falseObj := ObjectHandle on: bootstrapper falseObject within: runtime
 ! !
 
 !Gate methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:52'!
@@ -2327,6 +2603,21 @@ value
 	^false
 ! !
 
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeTrue
+! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+name
+	^'true'
+! !
+
+!TrueBinding methodsFor: 'evaluating' stamp: 'KenD 2/22/2023 22:59:25'!
+value
+	^true
+! !
+
 !LocalBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:58:55'!
 beInArray
 	environment := ArrayEnvironment new
@@ -2392,6 +2683,130 @@ isLocal
 	^true
 ! !
 
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:58:46'!
+beInlined
+	environment := InlinedArgEnvironment new
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:58:46'!
+description
+	^'argument ' , name
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:58:46'!
+encodeUsing: anAstcodeEncoder
+	anAstcodeEncoder encodeArgument: index env: environment
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:58:46'!
+isInlined
+	^environment isInlinedArgument
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+canBeAssigned
+	^false
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+index: aNumber
+	index := aNumber.
+
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+isArgument
+	^true
+! !
+
+!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:46'!
+initialize
+	super initialize.
+	environment := ArgumentEnvironment new
+! !
+
+!ArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:46'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!TemporaryBinding methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:25'!
+description
+	^'temporary ' , name
+! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:25'!
+encodeUsing: anAstcodeEncoder
+	anAstcodeEncoder encodeTemporary: index env: environment
+! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:25'!
+initialize
+	super initialize.
+	environment := StackEnvironment new
+! !
+
+!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:25'!
+isTemporary
+	^true
+! !
+
+!TemporaryBinding class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:25'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SelfBinding methodsFor: 'actions' stamp: 'KenD 2/22/2023 22:59:22'!
+beReferencedFrom: aScriptNode
+	aScriptNode useSelf
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+canBeAssigned
+	^false
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeSelf
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+isSelf
+	^true
+! !
+
+!SelfBinding methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+name
+	^'self'
+! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeSuper
+! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+name
+	^'super'
+! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:25'!
+isSelf
+	^false
+! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:25'!
+isSuper
+	^true
+! !
+
 !IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:52'!
 contents
 	^contents
@@ -2419,6 +2834,36 @@ new
 
 !LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:55'!
 isInlinedArgument
+	^false
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 2/22/2023 22:58:46'!
+environmentType
+	^EnvironmentValue
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 2/22/2023 22:58:46'!
+index
+	^index
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 2/22/2023 22:58:46'!
+index: anInteger
+	index := anInteger
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+isCurrent
+	^index isNil
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+isIndirect
+	^self isCurrent not
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
+isStack
 	^false
 ! !
 
@@ -3646,6 +4091,468 @@ new: anRGBehavior size: anInteger
 new: anRGBehavior valued: bytes
 	"self assert: anRGBehavior isBytes."
 	^self new initializeAs: anRGBehavior sized: bytes size; fillFrom: bytes
+! !
+
+!SymbolMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+asString
+	^ symbol
+! !
+
+!SymbolMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+contentsString
+	^symbol storeString
+
+! !
+
+!SymbolMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+symbol
+	^symbol
+! !
+
+!SymbolMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:25'!
+symbol: aSymbol
+	symbol := aSymbol 
+! !
+
+!SymbolMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:25'!
+new: anRGBehavior symbol: aSymbol
+	| bytes |
+	bytes := aSymbol copyWith: Character null.
+	^ self new
+		initializeAs: anRGBehavior sized: bytes size;
+		fillFrom: bytes;
+		symbol: aSymbol
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+allSlotNames
+	^ spec properties
+		at: #allSlotNames
+		ifAbsentPut: [ self computeAllSlotNames ]
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+arrayedSize
+	"
+	 Return the size of the arrayed part of this object, that this,
+	 the value of size field in object header minus the instSize. 
+	"
+
+	^ self size - self instSize
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+asBoolean
+	spec name = #True ifTrue: [ ^true ].	spec name = #False ifTrue: [ ^false ].
+		self ASSERT: false
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+at: index
+	"Return indexed value at given index, starting with 1. This CANNOT be 
+	 used for accessing named slots (aka, instance variables), to access 
+	 them use #instVarAt:"
+	
+	self assert: (index between: 1 and: slots size - self instSize).
+	^slots at: self instSize + index
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+at: index put: value
+	"Set indexed value at given `index` to `value`. This CANNOT be used for 
+	 setting named slots (aka, instance variables), to access them use 
+	 #instVarAt:put:"
+	self assert: spec isVariable.
+	self assert: (index between: 1 and: slots size - self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: self instSize + index put: value
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+basicAt: index
+	"Return indexed value at given raw index, starting with 1"
+
+	self assert: (index between: 1 and: slots size).
+	^ slots at: index
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+bodySizeInBytes
+	^ self sizeInBytes
+
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+computeAllSlotNames
+	^spec allInstVarNames
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+doesNotUnderstand: aMessage
+	| sel ivars |
+	sel := aMessage selector.
+	ivars := self allSlotNames.
+	sel isUnary
+		ifTrue: [ (ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel ] ].
+	(sel isKeyword and: [ sel numArgs == 1 ])
+		ifTrue: [ sel := sel allButLast.
+			(ivars includes: sel)
+				ifTrue: [ ^ self slotNamed: sel put: aMessage arguments first ] ].
+	^ super doesNotUnderstand: aMessage
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+instSize
+	| c |
+	^ spec properties at: #instSize ifAbsentPut: [spec isMeta
+		ifTrue: [ c := spec environment at: #Class.
+			
+			c instSize + spec instSize ]
+		ifFalse: [ spec instSize ]]
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+isPointers
+	^true
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+loadIvar: aSymbol
+	| ivar |
+	ivar := self allSlotNames indexOf: aSymbol.
+	^ ivar > 0
+		ifTrue: [ self slotAt: ivar ]
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+printOn: aStream
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: spec name withArticle;
+		nextPutAll: '>>'
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+size
+	"Return the size if this object, that this, the value of
+	 size field in object header. 
+	
+	 For slot (pointer) objects, this is a number of slots. 
+	 For byte objects, this is a number of bytes. "
+	
+	^ slots size
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+sizeInBytes
+	^ self size * self wordSize
+
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slotAt: index
+	"Get named slot at given `index`, starting with 1. This CANNOT be used 
+	 for accessing indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:"
+	
+	self assert: (index between: 1 and: self instSize).
+	^slots at: index
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slotAt: index put: value
+	"Set named slot at given `index` to `value`. This CANNOT be used 
+	 for setting indexed slots  (i.e., variable part of array-like objects), 
+   to set them use #at:put:"
+	
+	self assert: (index between: 1 and: self instSize).
+	self assert: (value isKindOf: ObjectMap).
+	^slots at: index put: value
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slots
+	^slots
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slotsDo: aBlock
+	slots do: aBlock
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+storeIvar: aSymbol with: anObject
+	| ivar |
+	ivar := self allSlotNames indexOf: aSymbol.
+	^ ivar > 0
+		ifTrue: [ self slotAt: ivar put: anObject ]
+! !
+
+!SlotObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+value
+	| message |
+	(self allSlotNames includes: #value)
+		ifFalse: [ ^ super value ].
+	message := Message selector: #value.
+	^ self doesNotUnderstand: message
+! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+atAllPut: value
+	slots atAllPut: value
+! !
+
+!SlotObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+initializeAs: anRGBehavior sized: size
+	self assert: anRGBehavior notNil.
+	self assert: anRGBehavior isPointers.
+	self assert: (anRGBehavior isVariable or: [ size == 0 ]).
+	spec := anRGBehavior.
+	slots := Array new: self instSize + size
+! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+headerFlags
+	| variable named small |
+	variable := spec isVariable ifTrue: [2] ifFalse: [0].
+	named := spec instSize == 0 ifTrue: [0] ifFalse: [4].
+	small := self isSmall ifTrue: [16r80] ifFalse: [0].
+	^ variable | named | small
+! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+headerHash
+	^hash
+! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+headerHash: anInteger
+	hash := anInteger
+! !
+
+!SlotObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+initialize
+	hash := 0
+! !
+
+!SlotObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2023 22:59:22'!
+validate
+	super validate.
+	slots withIndexDo:[:value :index | self assert: value notNil ]
+! !
+
+!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:22'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:22'!
+new: anRGBehavior size: size
+
+	^ self new initializeAs: anRGBehavior sized: size
+! !
+
+!SlotObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:22'!
+new: anRGBehavior size: size withAll: value
+	| obj |
+	obj := self new: anRGBehavior size: size.
+	^obj atAllPut: value; yourself
+	
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+allInstVarNames
+	^self subclassResponsibility
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+allSlotNames
+	^ slotNames ifNil: [ self computeAllSlotNames ]
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+instanceSpec
+	^instanceSpec
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+instanceSpec: anRGBehavior
+	instanceSpec := anRGBehavior
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+storeCvar: aSymbol with: anObject
+	| species namespaces |
+	species := self. 
+	[ namespaces := species namespaces.
+	namespaces slotsDo: [ :namespace |
+	(namespace includesKey: aSymbol)
+		ifTrue: [ ^ namespace at: aSymbol put: anObject ]].
+	species := species superclass.
+	species isNil 
+	] whileFalse.
+	^ nil
+
+
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+storeNamed: aSymbol with: anObjectMap
+	(self storeCvar: aSymbol with: anObjectMap) ifNotNil: [ :value | ^ value ].
+	^ self module namespace
+		at: aSymbol
+		put: anObjectMap
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+superclass
+	^ self slotNamed: #superclass
+! !
+
+!SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+superclass: aSpeciesMap
+	^ self slotNamed: #superclass put: aSpeciesMap
+! !
+
+!SpeciesMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:23'!
+classFor: anRGBehavior
+	^self
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+allInstVarNames
+	^ (spec environment at: #Class)allInstVarNames, spec allInstVarNames
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+computeAllSlotNames
+	| c |
+	c := spec environment at: #Class.
+	^slotNames := c allInstVarNames , spec allInstVarNames
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+instanceSide
+	^ self
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+name
+	^instanceSpec name
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+namespaces
+	^ self slotNamed: #namespaces
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+namespaces: array
+	^ self slotNamed: #namespaces put: array
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+printOn: aStream
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: self name asString;
+		nextPutAll: '>>'
+! !
+
+!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+withAllSuperclasses
+	^self superclass isNil ifTrue: [ OrderedCollection with: self ]
+		ifFalse: [self superclass withAllSuperclasses
+				addFirst: self;
+				yourself ]
+! !
+
+!SmallintObjectMap methodsFor: 'comparing' stamp: 'KenD 2/22/2023 22:59:22'!
+= anObject
+	anObject class == self class
+		ifFalse: [ ^ false ].
+	^ value = anObject value
+! !
+
+!SmallintObjectMap methodsFor: 'comparing' stamp: 'KenD 2/22/2023 22:59:22'!
+hash
+	^ value hash
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+at: index
+	self errorNotIndexable
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+at: index put: anObject
+	self errorNotIndexable
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+size
+	^ 0
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slotAt: index
+	self errorNotIndexable
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+slotAt: index put: anObject
+	self errorNotIndexable
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+value
+	^value
+! !
+
+!SmallintObjectMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:22'!
+value: aSmallInteger
+	value := aSmallInteger
+! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+initializeAs: anRGBehavior sized: size
+	self shouldNotImplement
+! !
+
+!SmallintObjectMap methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:22'!
+initializeAs: anRGBehavior valued: anInteger
+	self assert: anRGBehavior name == #SmallInteger.
+	self assert: anInteger isInteger.
+	spec := anRGBehavior.
+	value := anInteger
+! !
+
+!SmallintObjectMap methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:22'!
+isImmediate
+	^ true
+! !
+
+!SmallintObjectMap methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:22'!
+printOn: aStream
+	aStream
+		nextPutAll: '<<';
+		nextPutAll: value printString;
+		nextPutAll: '>>'
+! !
+
+!SmallintObjectMap methodsFor: 'validation' stamp: 'KenD 2/22/2023 22:59:22'!
+validate
+	super validate.
+	self assert: value isSmallInteger 
+! !
+
+!SmallintObjectMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:22'!
+new: anRGBehavior valued: anInteger
+	^self new initializeAs: anRGBehavior valued: anInteger
 ! !
 
 !PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:03'!
@@ -5995,28 +6902,465 @@ new
 
 ! !
 
-!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:49'!
-bootstrapper: aSmalltalkBootstrapper
-	bootstrapper := aSmalltalkBootstrapper
+!SToken methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:21'!
+comment
+	^comments notNil ifTrue: [comments anyOne]
 ! !
 
-!BootstrappedPstBridge methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:49'!
-updateGlobals
-	bootstrapper globals keysAndValuesDo: [:name :obj | objects at: name put: obj ]
+!SToken methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:21'!
+comments
+	^comments
 ! !
 
-!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:49'!
-findNilObject
-	^ nilObj := ObjectHandle
-		on: runtime storage nilObject
-		within: runtime
+!SToken methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:21'!
+comments: aCollection
+	aCollection isNil ifTrue: [^self].
+	comments isNil
+		ifTrue: [comments := aCollection]
+		ifFalse: [comments addAll: aCollection]
 ! !
 
-!BootstrappedPstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:49'!
-findRootObjects
-	nilObj := ObjectHandle on: bootstrapper nilObject within: runtime.
-	trueObj := ObjectHandle on: bootstrapper trueObject within: runtime.
-	falseObj := ObjectHandle on: bootstrapper falseObject within: runtime
+!SToken methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:21'!
+moveCommentsTo: aParseNode
+	aParseNode comments: comments.
+	comments := nil
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+compileWarning: aString
+	compiler notify: aString at: self stretch
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+compiler
+	^compiler
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+compiler: aSmalltalkCompiler
+	compiler := aSmalltalkCompiler
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+end
+	^stretch end
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+end: aNumber
+	stretch end: aNumber
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+position
+	^stretch start
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+position: aNumber
+	stretch start: aNumber
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+prevPosition
+	^stretch start - 1
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+source
+	^compiler sourceCode copyFrom: stretch start to: stretch end
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+stretch
+	^stretch
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:21'!
+stretch: aStretch
+	stretch := aStretch
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+endsExpression
+	^self isEnd
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+hasSymbol
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+is: anObject
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isAssignment
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isBar
+	^(self is: #'|') or: [self is: #'/']
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isBlockNode
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isComment
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isDelimiter
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isEnd
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isIdentifier
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isKeyword
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isLiteral
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isNameToken
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isNumberNode
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isPoolLiteral
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:59:21'!
+isStringToken
+	^false
+! !
+
+!SToken methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:21'!
+initialize
+	super initialize.
+	stretch := 1 thru: 0
+! !
+
+!SToken methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:21'!
+isDelimitedIdentifier
+	^false
+! !
+
+!SToken class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:21'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+bindingTypeOf: id
+	^ BindingTypes at: id
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeArgument
+	^ SArgumentBinding new
+		index: self nextInteger;
+		environment: self nextEnvironment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeAssignment
+	| assignment assignees |
+	assignment := SAssignment new.
+	
+	assignees := self nextExpressionArray.
+	assignment expression: self nextExpression.
+	assignees do: [ :identifier | assignment assign: identifier ].
+	^ assignment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeBlock
+	| expression inlined block index |
+	expression := SBlock new.
+	inlined := self nextBoolean.
+	inlined
+		ifTrue: [ expression inlinedArgs: self nextArray ]
+		ifFalse: [ index := self nextInteger.
+			block := self literalAt: index.
+			builder ifNotNil: [ builder blockOptimizedCode: block put: expression ].
+			expression
+				compiledCode: block;
+				index: index;
+				capturedVariables: self nextArray ].
+	expression statements: self nextExpressionArray.
+	^ expression
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeCascade
+	| cascade receiver messages message count |
+	cascade := SCascade new.
+	receiver := self nextExpression.
+	count := self nextInteger.
+	messages := (1 to: count)
+		collect: [ :i | 
+			message := SCascadeMessage decodeUsing: self.
+			message cascade: cascade ].
+	^ cascade
+		receiver: receiver;
+		messages: messages
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeCascadeMessage
+	| selector arguments |
+	selector := self nextSymbol.
+	arguments := self nextExpressionArray.
+	^ SCascadeMessage new
+		selector: selector;
+		arguments: arguments
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeDynamicVar
+	^ SDynamicBinding new name: self nextSymbol
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeIdentifier
+	| type binding |
+	type := self bindingTypeOf: self nextInteger.
+	binding := type decodeUsing: self.
+	^ SIdentifier new binding: binding
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeLiteral
+	| index value |
+	index := self nextInteger.
+	value := index = 0
+		ifTrue: [ self nextLiteralInteger ]
+		ifFalse: [ self literalAt: index ].
+	^ SLiteral new
+		index: index;
+		value: value
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeMessage
+	| inlined selector receiver arguments |
+	inlined := self nextBoolean.
+	selector := self nextSymbol.
+	receiver := self nextExpression.
+	arguments := self nextExpressionArray.
+	^ SMessage new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		inlined: inlined
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeMethod
+	| type node next pragma |
+	type := stream next.
+	type !!= MethodId
+		ifTrue: [ self error: 'method astcode expected' ].
+	node := SMethod new.
+	next := stream peek.
+	next = PragmaId
+		ifTrue: [ stream next.
+			pragma := SPragma new name: self nextSymbolOrNil.
+			node pragma: pragma ].
+	node
+		compiledCode: method;
+		statements: self nextExpressionArray.
+	^ node
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeNestedDynamicVar
+	^ SNestedDynamicBinding new
+		name:
+			self nextSymbol.
+
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeReturn
+	| expression local |
+	local := self nextBoolean.
+	expression := self nextExpression.
+	^ SReturn new
+		local: local;
+		expression: expression
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+decodeTemporary
+	^ STemporaryBinding new
+		index: self nextInteger;
+		environment: self nextEnvironment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextArray
+	| count |
+	count := self nextInteger.
+	^ stream next: count
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextEnvironment
+	| value |
+	value := self nextInteger.
+	^ value !!= -2
+		ifTrue: [ value ]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextExpression
+	| type |
+	type := self nodeTypeOf: stream next.
+	^type decodeUsing: self.
+
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextExpressionArray
+	| count |
+	count := self nextInteger.
+	^(1 to: count) collect: [ :arg | self nextExpression ]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextSymbol
+	| index |
+	index := self nextInteger.
+	^ self literalAt: index
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nextSymbolOrNil
+	| index |
+	index := self nextInteger.
+	^index !!= 0 ifTrue: [ self literalAt: index]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 2/22/2023 22:58:47'!
+nodeTypeOf: id
+	^NodeTypes at: id
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
+builder: aRuntime
+	builder := aRuntime
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
+method: aMethod
+	method := aMethod
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
+stream: aStream
+	stream := aStream
+! !
+
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 2/22/2023 22:58:47'!
+literalAt: anInteger
+	^ builder ifNil: [method at: anInteger] ifNotNil: [builder method: method literalAt: anInteger]
+! !
+
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 2/22/2023 22:58:47'!
+nextLiteralInteger
+	| value |
+	value := self nextInteger.
+	^ builder
+		ifNil: [ value ]
+		ifNotNil: [ builder newInteger: value ]
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:47'!
+nextBoolean
+	^ stream next = 1
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:47'!
+nextInteger
+	| value |
+	value := stream next.
+	value = 16r80
+		ifTrue: [ ^ stream int64 ].
+	^ value <= 127
+		ifTrue: [ value ]
+		ifFalse: [ value - 16r100 ]
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:58:47'!
+nextUnsignedInteger
+	| value |
+	value := self nextByte.
+	^value < 128
+		ifTrue: [value]
+		ifFalse: [value - 128 + (self nextUnsignedInteger bitShift: 7)]
+! !
+
+!AstcodeDecoder class methodsFor: 'class initialization' stamp: 'KenD 2/22/2023 22:58:47'!
+initialize
+	NodeTypes := Dictionary new.
+	BindingTypes := Dictionary new.
+	NodeTypes
+		at: AssignmentId put: SAssignment;
+		at: BlockId put: SBlock;
+		at: CascadeId put: SCascade;
+		at: LiteralId put: SLiteral;
+		at: IdentifierId put: SIdentifier;
+		at: MessageId put: SMessage;
+		at: ReturnId put: SReturn.
+	BindingTypes
+		at: NilId put: SNilBinding;
+		at: TrueId put: STrueBinding;
+		at: FalseId put: SFalseBinding;
+		at: ArgumentId put: SArgumentBinding;
+		at: TemporaryId put: STemporaryBinding;
+		at: SelfId put: SSelfBinding;
+		at: SuperId put: SSuperBinding;
+		at: DynamicVarId put: SDynamicBinding;
+		at: NestedDynamicVarId put: SNestedDynamicBinding
+! !
+
+!AstcodeDecoder class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:47'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
 ! !
 
 !Subject methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:59:25'!
@@ -6092,6 +7436,26 @@ printString2
 !Subject class methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:25'!
 initialize
 	Counts := IdentityDictionary new
+! !
+
+!ArgumentEnvironment methodsFor: 'private' stamp: 'KenD 2/22/2023 22:58:46'!
+environmentType
+	^LocalArgument
+! !
+
+!AssociationMirror methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:46'!
+key
+	^self getInstVarNamed: #key
+! !
+
+!AssociationMirror methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:46'!
+value
+	^self getInstVarNamed: #value
+! !
+
+!AssociationMirror methodsFor: 'private' stamp: 'KenD 2/22/2023 22:58:46'!
+structureType
+	^#Association
 ! !
 
 !BehaviorMirror methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
@@ -6374,54 +7738,6 @@ do: aBlock
 			aBlock value: mirror key value: mirror value]]
 ! !
 
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-allInstVarNames
-	^ (spec environment at: #Class)allInstVarNames, spec allInstVarNames
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-computeAllSlotNames
-	| c |
-	c := spec environment at: #Class.
-	^slotNames := c allInstVarNames , spec allInstVarNames
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-instanceSide
-	^ self
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-name
-	^instanceSpec name
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-namespaces
-	^ self slotNamed: #namespaces
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-namespaces: array
-	^ self slotNamed: #namespaces put: array
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-printOn: aStream
-	aStream
-		nextPutAll: '<<';
-		nextPutAll: self name asString;
-		nextPutAll: '>>'
-! !
-
-!ClassMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-withAllSuperclasses
-	^self superclass isNil ifTrue: [ OrderedCollection with: self ]
-		ifFalse: [self superclass withAllSuperclasses
-				addFirst: self;
-				yourself ]
-! !
-
 !ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
 block
 	^block
@@ -6462,6 +7778,313 @@ classFor: anRGBehavior
 	^ self
 ! !
 
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+compiledBlockIndexOf: aBlockNode
+	| index |
+	index := method
+		findFirst: [:literal | literal isBlock
+			and: [literal id == aBlockNode index]].
+	^index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeArgument: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: ArgumentId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeClosureElements: aBlockNode
+	| scope parent |
+	scope := aBlockNode scope.
+	parent := aBlockNode realParent.
+	^Array streamContents: [:s |
+		scope capturesSelf ifTrue: [ s nextPut: Self ].
+		scope capturedEnvironments do: [:e | | index |
+			e == parent ifTrue: [s nextPut: Environment] ifFalse: [
+				index := aBlockNode environmentIndexOf: e.
+				self ASSERT: index notNil.
+				s nextPut: EnvironmentValue; nextPut: index]].
+		scope capturedArguments do: [:a | | binding |
+			binding := aBlockNode parent scope resolve: a name.
+			s 	nextPut: binding environmentType; nextPut: binding index]]
+	
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeDynamicVar: name
+	stream nextPut: DynamicVarId.
+	self nextSymbolPut: name
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeFalse
+	stream nextPut: FalseId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeLoadRvisitingReceiver
+	stream nextPut: LoadRvisitingReceiverId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeNestedDynamicVar: name
+	stream nextPut: NestedDynamicVarId.
+	self nextLiteralPut: name 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeNil
+	stream nextPut: NilId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodePopR
+	stream nextPut: PopRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodePushR
+	stream nextPut: PushRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeSelf
+	stream nextPut: SelfId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeSuper
+	stream nextPut: SuperId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeTemporary: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: TemporaryId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodeTrue
+	stream nextPut: TrueId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+encodedEnvironment: aLocalEnvironment
+	aLocalEnvironment isStack
+		ifTrue: [ ^ aLocalEnvironment isInlinedArgument
+				ifTrue: [ -1 ]
+				ifFalse: [ -2 ] ].
+	aLocalEnvironment isCurrent
+		ifTrue: [ ^ 0 ].
+	^ aLocalEnvironment index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextBigIntegerPut: anInteger
+	stream
+		nextPut: 16r80;
+		int64: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextBooleanPut: aBoolean
+	stream nextPut: aBoolean asBit
+
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextIntegerPut: anInteger
+	| value |
+	(anInteger > 127 or: [ anInteger < -127 ])
+		ifTrue: [ ^ self nextBigIntegerPut: anInteger ].
+	value := anInteger >= 0
+		ifTrue: [ anInteger ]
+		ifFalse: [ anInteger + 16r100 ].
+	stream nextPut: value
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextLiteralPut: anObject
+	| index |
+	index := method
+		indexOf: anObject
+		ifAbsent: [ self ASSERT: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextPut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextPutAll: aCollection
+	stream nextPut: aCollection size; nextPutAll: aCollection
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextSymbolPut: aSymbol
+	| index |
+	index := method
+		indexOf: aSymbol asSymbol
+		ifAbsent: [ self ASSERT: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+nextTypePut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitAssignment: anAssignmentNode
+	| assignees |
+	self nextTypePut: AssignmentId.
+	assignees := anAssignmentNode assignees.
+	self nextIntegerPut: assignees size.
+	assignees do: [ :node | node acceptVisitor: self ].
+	anAssignmentNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitBlock: aBlockNode
+	| args inlined |
+	self nextTypePut: BlockId.
+	inlined := aBlockNode isInlined.
+	self nextBooleanPut: inlined.
+	inlined
+		ifTrue: [ args := aBlockNode arguments collect: [ :id | id binding index ].
+			self nextPutAll: args asArray ]
+		ifFalse: [ | index captured |
+			index := self compiledBlockIndexOf: aBlockNode.
+			self nextPut: index.
+			captured := self encodeClosureElements: aBlockNode.
+			self nextPutAll: captured ].
+	self visitScript: aBlockNode
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitBraceNode: aBraceNode
+	aBraceNode isLiteral
+		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
+		ifFalse: [self visitCascade: aBraceNode asMessageNode]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitCascade: aCascadeNode
+	| messages |
+	self nextTypePut: CascadeId.
+	aCascadeNode receiver acceptVisitor: self.
+	messages := aCascadeNode messages.
+	self nextIntegerPut: messages size.
+	messages do: [ :node | self visitCascadeMessage: node ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitCascadeMessage: aCascadeMessageNode
+	| arguments |
+	self nextSymbolPut: aCascadeMessageNode selector symbol.
+	arguments := aCascadeMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitIdentifier: anIdentifierNode
+	self nextTypePut: IdentifierId.
+	anIdentifierNode binding encodeUsing: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitLiteral: aLiteralNode
+	| index |
+	index := method indexOf: aLiteralNode value.
+	self
+		nextTypePut: LiteralId;
+		nextIntegerPut: index.
+	index = 0
+		ifTrue: [ self nextIntegerPut: aLiteralNode value ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitMessage: aMessageNode
+	| arguments |
+	self
+		nextTypePut: MessageId;
+		nextBooleanPut: aMessageNode isInlined;
+		nextSymbolPut: aMessageNode selector symbol.
+	aMessageNode receiver acceptVisitor: self.
+	arguments := aMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitMethod: aMethodNode
+	| pragma |
+	self nextTypePut: MethodId.
+	pragma := aMethodNode pragma.
+	pragma isUsed
+		ifTrue: [ self nextTypePut: PragmaId.
+			pragma name
+				ifNotNil: [ self nextSymbolPut: pragma name ]
+				ifNil: [ self nextPut: 0 ] ].
+	self visitScript: aMethodNode.
+	^ stream contents 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitParseNode: aParseNode
+	^self ASSERT: false
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitReturn: aReturnNode
+	self
+		nextTypePut: ReturnId;
+		nextBooleanPut: script realScript isMethod.
+	
+		aReturnNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
+visitScript: aScriptNode
+	| prev statements |
+	prev := script.
+	script := aScriptNode.
+	statements := aScriptNode statements.
+	self nextIntegerPut: statements size.
+	statements do: [ :node | node acceptVisitor: self ].
+	script := prev
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
+initialize
+	stream := #[] writeStream
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:47'!
+method: aCompiledMethod
+	method := aCompiledMethod
+! !
+
+!AstcodeEncoder class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:47'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
 !Object methodsFor: '*Powerlang-Core-OCompiler' stamp: 'KenD 2/22/2023 22:58:57'!
 isInstruction
 	^false
@@ -6491,5 +8114,8 @@ asLittleEndianPositiveInteger
 ! !
 ObjectHeaderMasks initialize!
 ObjectHeaderOffsets initialize!
+AstBindingTypes initialize!
+AstNodeTypes initialize!
+AstcodeDecoder initialize!
 Subject initialize!
 PowerLangPackage postPackageInstall!
