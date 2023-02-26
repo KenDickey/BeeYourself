@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #5663] on 26 February 2023 at 4:00:53 pm'!
+'From Cuis 6.0 [latest update: #5663] on 26 February 2023 at 6:19:33 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 4!
+!provides: 'PowerLang' 1 5!
 !requires: 'Cuis-Base' 60 5663 nil!
 !requires: 'BeeCompatibility' 1 41 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 50 nil!
@@ -184,6 +184,16 @@ SmalltalkBridge subclass: #PharoBridge
 PharoBridge class
 	instanceVariableNames: ''!
 
+!classDefinition: #PstBridge category: 'Powerlang-Core-Metaphysics'!
+SmalltalkBridge subclass: #PstBridge
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'PstBridge class' category: 'Powerlang-Core-Metaphysics'!
+PstBridge class
+	instanceVariableNames: ''!
+
 !classDefinition: #Gate category: 'Powerlang-Core-Metaphysics'!
 Object subclass: #Gate
 	instanceVariableNames: 'handle'
@@ -242,6 +252,16 @@ ObjectHandle subclass: #LocalHandle
 	category: 'Powerlang-Core-Metaphysics'!
 !classDefinition: 'LocalHandle class' category: 'Powerlang-Core-Metaphysics'!
 LocalHandle class
+	instanceVariableNames: ''!
+
+!classDefinition: #PstFrameHandle category: 'Powerlang-Core-Metaphysics'!
+Handle subclass: #PstFrameHandle
+	instanceVariableNames: 'frame'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'PstFrameHandle class' category: 'Powerlang-Core-Metaphysics'!
+PstFrameHandle class
 	instanceVariableNames: ''!
 
 !classDefinition: #MethodLookup category: 'Powerlang-Core-Metaphysics'!
@@ -684,6 +704,16 @@ Object subclass: #LMRObjectHeader
 LMRObjectHeader class
 	instanceVariableNames: ''!
 
+!classDefinition: #RingBasedLMRBootstrapper category: 'Powerlang-Core-Execution-LMR'!
+Object subclass: #RingBasedLMRBootstrapper
+	instanceVariableNames: 'source dest nilObj trueObj falseObj behaviors mapping stack closureMethods'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-LMR'!
+!classDefinition: 'RingBasedLMRBootstrapper class' category: 'Powerlang-Core-Execution-LMR'!
+RingBasedLMRBootstrapper class
+	instanceVariableNames: ''!
+
 !classDefinition: #Mirror category: 'Powerlang-Core-Mirrors'!
 Object subclass: #Mirror
 	instanceVariableNames: 'handle'
@@ -864,6 +894,16 @@ LinkedEvaluationContext subclass: #IterativeLinkedEvaluationContext
 IterativeLinkedEvaluationContext class
 	instanceVariableNames: ''!
 
+!classDefinition: #RecursiveLinkedEvaluationContext category: 'Powerlang-Core-Execution'!
+LinkedEvaluationContext subclass: #RecursiveLinkedEvaluationContext
+	instanceVariableNames: 'nonLocalReturn'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'RecursiveLinkedEvaluationContext class' category: 'Powerlang-Core-Execution'!
+RecursiveLinkedEvaluationContext class
+	instanceVariableNames: ''!
+
 !classDefinition: #StackedEvaluationContext category: 'Powerlang-Core-Execution'!
 EvaluationContext subclass: #StackedEvaluationContext
 	instanceVariableNames: 'stack regSP regBP regM regS regE pc'
@@ -884,6 +924,66 @@ Object subclass: #PowertalkEvaluator
 PowertalkEvaluator class
 	instanceVariableNames: ''!
 
+!classDefinition: #PowertalkIterativeInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkEvaluator subclass: #PowertalkIterativeInterpreter
+	instanceVariableNames: 'regR'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkIterativeInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkIterativeInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkIterativeLinkedInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkIterativeInterpreter subclass: #PowertalkIterativeLinkedInterpreter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkIterativeLinkedInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkIterativeLinkedInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLinkedLinearInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkIterativeLinkedInterpreter subclass: #PowertalkLinkedLinearInterpreter
+	instanceVariableNames: 'linearizer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkLinkedLinearInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkLinkedLinearInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLinkedTreeInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkIterativeLinkedInterpreter subclass: #PowertalkLinkedTreeInterpreter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkLinkedTreeInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkLinkedTreeInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkIterativeStackedInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkIterativeInterpreter subclass: #PowertalkIterativeStackedInterpreter
+	instanceVariableNames: 'linearizer work'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkIterativeStackedInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkIterativeStackedInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRecursiveInterpreter category: 'Powerlang-Core-Execution'!
+PowertalkEvaluator subclass: #PowertalkRecursiveInterpreter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'PowertalkRecursiveInterpreter class' category: 'Powerlang-Core-Execution'!
+PowertalkRecursiveInterpreter class
+	instanceVariableNames: ''!
+
 !classDefinition: #PowertalkRuntime category: 'Powerlang-Core-Execution'!
 Object subclass: #PowertalkRuntime
 	instanceVariableNames: 'methodCache falseObj trueObj nilObj interpreter overrides symbolCache'
@@ -892,6 +992,16 @@ Object subclass: #PowertalkRuntime
 	category: 'Powerlang-Core-Execution'!
 !classDefinition: 'PowertalkRuntime class' category: 'Powerlang-Core-Execution'!
 PowertalkRuntime class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMR category: 'Powerlang-Core-Execution-LMR'!
+PowertalkRuntime subclass: #PowertalkLMR
+	instanceVariableNames: 'kernel wordSize bootstrapper behaviorNextIndex behaviorMethodDictionaryIndex behaviorClassIndex classNameIndex methodFlagsIndex symbolTable maxSMI minSMI knownSymbols arrayClass metaclassClass speciesInstanceBehaviorIndex speciesFormatIndex methodOptimizedCodeIndex methodAstcodesIndex methodInstSize methodClassBindingIndex speciesSuperclassIndex methodClass smallIntegerClass blockClass speciesIvarsIndex dictionaryTableIndex metaclassInstanceClassIndex classModuleIndex moduleNamespaceIndex byteArrayClass stringClass closureBlockIndex closureClass lastHash blockMethodIndex behaviorClass classNamespacesIndex largePositiveIntegerClass largeNegativeIntegerClass'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledBlockFlags SCompiledMethodFlags'
+	category: 'Powerlang-Core-Execution-LMR'!
+!classDefinition: 'PowertalkLMR class' category: 'Powerlang-Core-Execution-LMR'!
+PowertalkLMR class
 	instanceVariableNames: ''!
 
 !classDefinition: #PowertalkRingRuntime category: 'Powerlang-Core-Execution-Ring'!
@@ -1114,6 +1224,12 @@ access instance variables by name, asking the runtime the for
 the offsets of the instVars.
 !
 
+!RingBasedLMRBootstrapper commentStamp: '<historical>' prior: 0!
+A base instance of VirtualSmalltalkImage only contains empty classes, nil, true, false,
+and barely anything else. I am in charge of adding the Kernel module object to it and the
+methods to the classes.
+!
+
 !PowertalkRingModule commentStamp: '<historical>' prior: 0!
 I'm in charge of creating and managing the objects of an image. I'm created from a spec,
 and I know how to bootstrap and connect an initial graph of objects and classes.
@@ -1311,6 +1427,80 @@ findRootObjects
 	nilObj := LocalHandle on: nil within: runtime.
 	trueObj := LocalHandle on: true within: runtime.
 	falseObj := LocalHandle on: false within: runtime
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findFalseObject
+	| s handle |
+	s := runtime storage.
+	handle := s class = PowertalkRingImage
+		ifTrue: [ s false ]
+		ifFalse: [ self ASSERT: false ].
+	^ falseObj := ObjectHandle on: handle within: runtime
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findKernelModule
+	| handle |
+	handle := nilObj.
+	[ handle getClass localName !!= 'Kernel' ]
+		whileTrue: [ handle := handle nextObjectHandle ].
+
+	self name: handle mirror as: #kernel.
+
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findNilObject
+	^ nilObj := ObjectHandle
+		on: #ImageSegmentWriter nilOffset
+		within: runtime
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findObjectNamed: name
+	| namespace array |
+	namespace := self kernel slotOf: #Kernel named: #namespace.
+	array := namespace slotOf: #Namespace named: 'table'.
+	array
+		do: [ :slot | 
+			| assoc |
+			assoc := slot asAssociationMirror.
+			assoc reflectsNil
+				ifFalse: [ assoc key asLocalString = name
+						ifTrue: [ ^ assoc value ] ] ].
+	self error: 'object not found'
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findRootClasses
+	| object subclasses |
+	object := self objectNamed: 'Object'.
+	subclasses := object asSpeciesMirror subclasses.
+	1 to: subclasses size do: [ :i | 
+		| subclass name |
+		subclass := (subclasses slotAt: i) asSpeciesMirror.
+		name := subclass name asLocalString.
+		self name: subclass as: name ]
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findRootObjects
+	| class |
+	nilObj := self findNilObject.
+	class := nilObj mirror reflectedClass.
+	[ class reflectsNil ]
+		whileFalse: [ | name |
+			name := class name asLocalString.
+			self name: class as: name.
+			class := class superclass ].
+	self findRootClasses; findKernelModule
+! !
+
+!PstBridge methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
+findTrueObject
+	self ASSERT: false.
+	^ trueObj := ObjectHandle on: 0 within: runtime
 ! !
 
 !Gate methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:52'!
@@ -1811,6 +2001,43 @@ slotAt: index
 	| slot |
 	slot := oid instVarAt: index.
 	^ self handleOn: slot
+! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:05'!
+currentIp
+	^frame currentIp
+! !
+
+!PstFrameHandle methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:05'!
+frame: aFrame
+	frame := aFrame
+! !
+
+!PstFrameHandle methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:05'!
+objectAtSlot: index
+	| slot |
+	slot := frame slotAt: index.
+	^self objectHandleOn: slot
+! !
+
+!PstFrameHandle methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:05'!
+slotAt: index
+	^self objectAtSlot: index
+! !
+
+!PstFrameHandle methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:05'!
+slotAtTop
+	^frame slotAtTop
+! !
+
+!PstFrameHandle methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:05'!
+printOn: aStream
+	aStream nextPutAll: 'FH with: ' , String cr , frame printString
+! !
+
+!PstFrameHandle class methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:59:05'!
+on: frame within: runtime
+	^self new frame: frame; runtime: runtime
 ! !
 
 !MethodLookup methodsFor: 'meta accessing' stamp: 'KenD 2/22/2023 22:58:56'!
@@ -4284,6 +4511,538 @@ size
 size: anInteger
 	size := anInteger.
 	self isSmall ifTrue: [ flags := flags | 16r80]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+=> aSymbol
+	| classmap |
+	classmap := source classNamed: aSymbol.
+	^mapping at: classmap
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+closureCompiledBlock: anSCompiledBlock
+	| method index spec species table s selector m |
+	method := anSCompiledBlock method.
+	selector := source newSymbol: method selector.
+	index := method indexOf: anSCompiledBlock.
+	spec := source specs at: method classBinding name.
+	species := source speciesFor: spec.
+	table := species instanceBehavior methods table.
+	2 to: table size by: 2 do: [ :i | 
+		s := table basicAt: i.
+		s == selector
+			ifTrue: [ m := table basicAt: i + 1.
+				closureMethods add: m.
+				^ m at: index ] ].
+	^ self halt
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+convert
+	nilObj := self newMapping: source nil.
+	trueObj := self newMapping: source true.
+	falseObj := self newMapping: source false.
+	dest nil: nilObj true: trueObj false: falseObj.
+	self
+		map: source nil to: nilObj;
+		map: source true to: trueObj;
+		map: source false to: falseObj;
+		instantiateMetaobjects;
+		fixBehaviors;
+		convertBootstrapDictionaries;
+		convertClosure;
+		initializeSymbolTable;
+		initializeRuntime.
+
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+convertBootstrapDictionaries
+	source bootstrapDictionaries do: [ :dict | self convertBootstrapDictionary: dict ]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+convertBootstrapDictionary: aBootstrapDictionary
+	| class dict converted |
+	class := source classes at: aBootstrapDictionary realSpec.
+	dict := source runtime sendLocal: #new to: class.
+	aBootstrapDictionary
+		associations do: [ :assoc | 
+			source runtime
+				sendLocal: #at:put:
+				to: dict
+				with:
+					{assoc key.
+					assoc value} ].
+	converted:= self newMapping: dict.
+	self map: aBootstrapDictionary to: converted
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+convertClosure
+	| obj |
+	[ stack isEmpty ]
+		whileFalse: [ obj := stack removeFirst.
+			self convertSlotsOf: obj key in: obj value ]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+convertSlotsOf: ringObj in: lmrObj
+	| mapped block |
+	ringObj isPointers
+		ifFalse: [ ^ self ].
+	ringObj slots
+		withIndexDo: [ :slot :index | 
+			mapped := mapping at: slot ifAbsentPut: [ self newMapping: slot ].
+			lmrObj basicAt: index put: mapped ].
+	ringObj isClosure ifFalse: [^self]. block := self closureCompiledBlock: ringObj block.
+			mapped := mapping at: block ifAbsentPut: [ self newMapping: block ].
+			lmrObj basicAt: 1 put: mapped
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+createNewBlock: sblock
+	| format transferred method literal tliteral |
+	format := dest newInteger: sblock format.
+	transferred := dest
+		sendLocal: #new:
+		to: self => #CompiledBlock
+		with: {(dest newInteger: sblock size)}.
+	method := mapping at: sblock method.
+	dest
+		sendLocal: #format: to: transferred with: {format};
+		sendLocal: #method: to: transferred with: {method}.
+	1 to: sblock size do: [ :i | 
+		literal := sblock at: i.
+		tliteral := self transferLiteral: literal.
+		transferred at: i put: tliteral ].
+	^ transferred
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+createNewClassFrom: spec
+	| superclass metaclass class instanceBehavior classBehavior ivars |
+	superclass := self => spec superclass name.
+	metaclass := dest
+		sendLocal: #newSubclassOf:
+		to: self => #Class
+		with: {superclass}.
+	class := dest sendLocal: #instanceClass to: metaclass.
+	dest sendLocal: #name: to: class with: {(dest newString: spec name)}.
+	ivars := self transferLiteral: spec instVarNames.
+	dest sendLocal: #instVarNames: to: class with:  { ivars }.
+	instanceBehavior := dest sendLocal: #instanceBehavior to: class.
+	classBehavior := dest sendLocal: #instanceBehavior to: metaclass.
+	behaviors
+		at: spec put: instanceBehavior;
+		at: spec metaclass put: classBehavior.
+	spec methods do: [ :m | self createNewMethod: m in: class ].
+	spec metaclass methods
+		do: [ :m | self createNewMethod: m in: metaclass ].
+	^ class
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+createNewMethod: m in: species
+
+	| smethod size transferred astcodes selector format tliteral md code |
+	smethod := SCompiler new compile: m sourceCode.
+	smethod classBinding: species.
+	size := dest newInteger: smethod size.
+	transferred := dest
+		               sendLocal: #new:
+		               to: self => #CompiledMethod
+		               with: { size }.
+	mapping at: smethod put: transferred.
+	astcodes := dest newByteArray: smethod astcodes.
+	selector := dest addSymbol: smethod selector.
+	format := dest newInteger: smethod format.
+	code := dest newString: smethod source.
+	dest
+		sendLocal: #astcodes: to: transferred with: { astcodes };
+		sendLocal: #classBinding: to: transferred with: { species };
+		sendLocal: #selector: to: transferred with: { selector };
+		sendLocal: #format: to: transferred with: { format };
+		sendLocal: #sourceObject: to: transferred with: { code }.
+	smethod withIndexDo: [ :literal :i | 
+		tliteral := self transferLiteral: literal.
+		transferred at: i put: tliteral ].
+	md := dest sendLocal: #methodDictionary to: species.
+	dest sendLocal: #at:put: to: md with: { 
+			selector.
+			transferred }.
+	^ transferred
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+createNewModule: spec with: classes
+	| behavior class module |
+	behavior := behaviors at: spec.
+	class := dest behaviorClass: behavior.
+	module := dest sendLocal: #new to: class.
+	dest sendLocal: #bindKernelExports to: module.
+	classes
+		do: [ :c | 
+			dest
+				sendLocal: #addClass: to: module with: {c};
+				sendLocal: #module: to: c with: {module} ].
+	^ module
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+headerFor: aRingObject
+	| behavior |
+	behavior := behaviors at: aRingObject spec ifAbsent: nil.
+	^ LMRObjectHeader new
+		behavior: behavior;
+		bytes: aRingObject isBytes
+			arrayed: aRingObject spec isVariable
+			named: aRingObject spec instSize > 0;
+		size: aRingObject size;
+		hash: aRingObject headerHash
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+image: aPowertalkRingImage
+	| index |
+	source := aPowertalkRingImage.
+	dest bootstrapper: self.
+	index := (source => #Class) allInstVarNames indexOf: 'name'.
+	dest classNameIndex: index.
+	index := (source => #Class) allInstVarNames indexOf: 'module'.
+	dest classModuleIndex: index.
+	index := (source => #Metaclass) allInstVarNames indexOf: 'class'.
+	dest metaclassInstanceClassIndex: index.
+	index := (source => #Species) allInstVarNames
+		indexOf: 'instanceVariables'.
+	dest speciesIvarsIndex: index.
+	index := (source => #Species) allInstVarNames indexOf: 'superclass'.
+	dest speciesSuperclassIndex: index.
+	index := (source => #Species) allInstVarNames
+		indexOf: 'instanceBehavior'.
+	dest speciesInstanceBehaviorIndex: index.
+	index := (source => #Class) allInstVarNames indexOf: 'namespaces'.
+	dest classNamespacesIndex: index.
+	index := (source => #Species) allInstVarNames indexOf: 'format'.
+	dest speciesFormatIndex: index.
+	index := (source => #Module) allInstVarNames indexOf: 'namespace'.
+	dest moduleNamespaceIndex: index.
+	index := (source => #Behavior) allInstVarNames indexOf: 'methods'.
+	dest behaviorMethodDictionaryIndex: index.
+	index := (source => #Behavior) allInstVarNames indexOf: 'next'.
+	dest behaviorNextIndex: index.
+	index := (source => #Behavior) allInstVarNames indexOf: 'class'.
+	dest behaviorClassIndex: index.
+	index := (source => #MethodDictionary) allInstVarNames
+		indexOf: 'table'.
+	dest dictionaryTableIndex: index.
+	index := (source => #Closure) allInstVarNames indexOf: 'block'.
+	dest closureBlockIndex: index.
+	index := (source => #CompiledBlock) allInstVarNames indexOf: 'method'.
+	dest blockMethodIndex: index.
+	index := (source => #CompiledMethod) allInstVarNames
+		indexOf: 'format'.
+	dest methodFlagsIndex: index.
+	index := (source => #CompiledMethod) allInstVarNames
+		indexOf: 'astcodes'.
+	dest methodAstcodesIndex: index.
+	index := (source => #CompiledMethod) allInstVarNames indexOf: 'class'.
+	dest methodClassBindingIndex: index.
+	index := (source => #CompiledMethod) allInstVarNames
+		indexOf: 'optimizedCode'.
+	dest
+		methodOptimizedCodeIndex: index;
+		methodInstSize: (source => #CompiledMethod) allInstVarNames size
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+initialize
+	dest := PowertalkLMR new.
+	mapping := IdentityDictionary new.
+	behaviors := IdentityDictionary new.
+	stack := OrderedCollection new.
+	closureMethods := OrderedCollection new
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+initializeEmulationOverrides
+	| classes |
+	classes := source vmPrimitivesSpec allExtensionClasses.
+	classes
+		do: [ :class | 
+			class methods do: [ :m | self override: class name with: m ].
+			class metaclass methods
+				do: [ :m | self override: class metaclass name with: m ] ].
+	self removeBootstrapDictionaryNewOverride
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+initializeRuntime
+	| map symbols array method smi block metaclass kernel byteArray string closure behavior lpi lni |
+	symbols := Dictionary new.
+	#(+ - < > <= >= = == not)
+		do: [ :symbol | 
+			map := source newSymbol: symbol.
+			symbols at: symbol put: (mapping at: map) ].
+	array := mapping at: (source classNamed: #Array).
+	byteArray := mapping at: (source classNamed: #ByteArray).
+	method := mapping at: (source classNamed: #CompiledMethod).
+	block := mapping at: (source classNamed: #CompiledBlock).
+	closure := mapping at: (source classNamed: #Closure).
+	behavior := mapping at: (source classNamed: #Behavior).
+	smi := mapping at: (source classNamed: #SmallInteger).
+	lpi := mapping at: (source classNamed: #LargePositiveInteger).
+	lni := mapping at: (source classNamed: #LargeNegativeInteger).
+	string := mapping at: (source classNamed: #String).
+	metaclass := mapping at: (source classNamed: #Metaclass).
+	kernel := mapping at: source kernel.
+	dest
+		arrayClass: array;
+		byteArrayClass: byteArray;
+		methodClass: method;
+		blockClass: block;
+		closureClass: closure;
+		behaviorClass_: behavior;
+		smallIntegerClass: smi;
+		largePositiveIntegerClass: lpi;
+		largeNegativeIntegerClass: lni;
+		stringClass: string;
+		metaclassClass: metaclass;
+		knownSymbols: symbols;
+		wordSize: source wordSize;
+		initializeInterpreter;
+		kernel: kernel.
+	self
+		prepareClosuresForExecution;
+		initializeEmulationOverrides
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+initializeSymbolTable
+	| symbol namespaces cvars table mapped |
+	symbol := source classNamed: #Symbol.
+	namespaces := symbol namespaces.
+	cvars := namespaces at: 1.
+	table := cvars at: #SymbolTable.
+	mapped := mapping at: table.
+	dest symbolTable: mapped
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+instantiateMetaobjects
+	| ibehavior mspecies mbehavior |
+	source classes , source metaclasses
+		do: [ :species | 
+			ibehavior := species instanceBehavior.
+			mspecies := self newMapping: species.
+			mbehavior := self newBehaviorMapping: ibehavior.
+			behaviors at: species instanceSpec put: mbehavior.
+			mapping
+				at: species put: mspecies;
+				at: ibehavior put: mbehavior ]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+loadBootstrapModule
+	| spec classes moduleSpec bootstrapper |
+	spec := PowertalkRingModule lmrBootstrapperSpec.
+	classes := spec allClasses.
+	classes := classes
+		collect: [ :classSpec | self createNewClassFrom: classSpec ].
+	moduleSpec := spec at: #BootstrapModule.
+	bootstrapper := self createNewModule: moduleSpec with: classes.
+	dest sendLocal: #loadRequiredModules to: bootstrapper.
+	^bootstrapper
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+loadModule: symbol
+	| spec classes moduleSpec module |
+	spec := self readModuleSpec: symbol.
+	classes := spec allClasses.
+	classes := classes
+		collect: [ :classSpec | self createNewClassFrom: classSpec ].
+	moduleSpec := spec at: symbol , #Module.
+	moduleSpec ifNil: [moduleSpec := source specs at: #Module].
+	module := self createNewModule: moduleSpec with: classes.
+	dest sendLocal: #loadRequiredModules to: module.
+	^ module
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+map: aRingObject to: anLMRObject
+	mapping at: aRingObject put: anLMRObject
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+newBehaviorMapping: aRingObject
+	| header mapped |
+	header := self headerFor: aRingObject.
+	mapped := LMRBehaviorObject new header: header; runtime: dest.
+	stack add: aRingObject -> mapped.
+	^ mapped
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+newCallback: aNativeCode bytesFrom: aByteArray
+	| code original behavior class |
+	code := source newBytesFrom: aByteArray.
+	original := code behavior.
+	behavior := source newSlots: 'CallbackBehavior'.
+	class := original slotNamed: 'class'.
+	behavior
+		slotNamed: 'class' put: class;
+		methods: original methods;
+		next: source nil;
+		optimizedCode: aNativeCode.
+	code behavior: behavior.
+	^ code
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+newMapping: aRingObject
+	| header mapped |
+	aRingObject isImmediate
+		ifTrue: [ ^ LMRSmallInteger new value: aRingObject value ].
+	header := self headerFor: aRingObject.
+	aRingObject isBytes
+		ifTrue: [ ^ LMRByteObject new
+				header: header;
+				bytes: aRingObject bytes ].
+	mapped := LMRSlotObject new header: header.
+	stack add: aRingObject -> mapped.
+	^ mapped
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+override: classname with: rgMethod
+	| spec species behavior smethod rmethod lmrmethod selector |
+	spec := source specs at: classname.
+	species := (source speciesFor: spec).
+	behavior := mapping at: species instanceBehavior.
+	smethod := (SCompiler forClass: species) compile: rgMethod sourceCode.
+	rmethod := source transferMethod: smethod in: species. 
+	lmrmethod := self newMapping: rmethod.
+	self convertClosure.
+	selector := dest symbolFromLocal: rgMethod selector.
+	dest override: behavior -> selector with: lmrmethod
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+prepareClosuresForExecution
+	| mapped |
+	closureMethods
+		do: [ :method | mapped := mapping at: method. dest interpreter prepareForExecution: mapped ]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+readModuleSpec: aSymbol
+	| path |
+	path := self findModulePath: aSymbol.
+	^PowertalkRingModule readSpec: aSymbol at: path parent
+
+	
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+removeBootstrapDictionaryNewOverride
+	| spec species behavior selector |
+	spec := source specs at: #'Namespace class'.
+	species := source speciesFor: spec.
+	behavior := mapping at: species instanceBehavior.
+	selector := dest symbolFromLocal: #new.
+	dest removeOverride: behavior -> selector
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+result
+	^dest
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+source: aPowertalkRingImage
+	source := aPowertalkRingImage
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:06'!
+transferLiteral: anObject
+	| transferred |
+	anObject isInteger
+		ifTrue: [ ^ dest newInteger: anObject ].
+	anObject class == ByteArray
+		ifTrue: [ ^ dest newByteArray: anObject ].
+	anObject isSymbol
+		ifTrue: [ ^ dest addSymbol: anObject ].
+	anObject isString
+		ifTrue: [ ^ dest newString: anObject ].
+	anObject class == SCompiledBlock
+		ifTrue: [ ^self createNewBlock: anObject ].
+	anObject class == Array ifTrue: [ 
+		transferred := anObject collect: [ :o | self transferLiteral: o ].
+		^dest newArray: transferred ].
+	anObject isCharacter
+		ifTrue: [ ^ dest newCharacter: anObject ].
+	self ASSERT: false
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'paths' stamp: 'KenD 2/22/2023 22:59:06'!
+findModulePath: moduleName
+	| parts path candidates dir |
+	parts := '.' split: moduleName.
+	path := ('/' join: parts) asFileReference path.
+	candidates := self rootDirectory allDirectoriesMatching: parts first.
+	candidates do: [:match | 
+		dir := match parent / path pathString.
+		dir exists ifTrue: [ 	^dir relativeTo: self rootDirectory asAbsolute ]].
+	self error: 'module ' , moduleName , ' couldn''t be found'
+
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'paths' stamp: 'KenD 2/22/2023 22:59:06'!
+outputDirectory
+	^ self rootDirectory / 'build' 
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'paths' stamp: 'KenD 2/22/2023 22:59:06'!
+rootDirectory
+	^ './specs/bee-dmr' asFileReference
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'building' stamp: 'KenD 2/22/2023 22:59:06'!
+fixBehaviors
+	| metaspec behaviorspec mclass mmetaclass |
+	self
+		initializeBehavior: nilObj spec: source => #UndefinedObject;
+		initializeBehavior: trueObj spec: source => #True;
+		initializeBehavior: falseObj spec: source => #False.
+	metaspec := source => #Metaclass.
+	behaviorspec := source => #Behavior.
+	source classes values
+		with: source metaclasses values
+		do: [ :class :metaclass |
+			mclass := mapping at: class.
+			mmetaclass := mapping at: metaclass.
+			self
+				initializeBehavior: mclass spec: metaclass instanceSpec;
+				initializeBehavior: mmetaclass spec: metaspec ].
+	behaviors
+		do: [ :behavior | self initializeBehavior: behavior spec: behaviorspec ]
+! !
+
+!RingBasedLMRBootstrapper methodsFor: 'building' stamp: 'KenD 2/22/2023 22:59:06'!
+initializeBehavior: anLMRHeapObject spec: anRGBehavior
+	| behavior |
+	behavior := behaviors at: anRGBehavior.
+	anLMRHeapObject behavior: behavior
+! !
+
+!RingBasedLMRBootstrapper class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:06'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
 ! !
 
 !Mirror methodsFor: 'meta accessing' stamp: 'KenD 2/22/2023 22:58:57'!
@@ -6943,6 +7702,25 @@ operandAt: anInteger
 	^operands at: operands size - anInteger 
 ! !
 
+!RecursiveLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:59:05'!
+evaluateFor: interpreter
+	| sexpressions result |
+	nonLocalReturn := [ :value | 
+	interpreter context: self homeContext parent.
+	^ value ].
+	sexpressions := system sexpressionsOf: method.
+	result := interpreter visitMethod: sexpressions.
+	interpreter context: self parent.
+	^ result
+! !
+
+!RecursiveLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:59:05'!
+return: anObject
+	^self isBlock
+		ifTrue: [ nonLocalReturn value: anObject ]
+		ifFalse: [ anObject ]
+! !
+
 !StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
 argumentAt: anInteger
 	| args |
@@ -8094,6 +8872,841 @@ undermessages
 	^#(_basicAt: #_basicAt:put: _bitShiftLeft: _byteAt: #_byteAt:put: _smallSize _largeSize _isSmallInteger _basicHash _basicHash: _smallIntegerByteAt: _uShortAtOffset: #_uShortAtOffset:put:)
 ! !
 
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+evaluate
+	^self subclassResponsibility
+
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+hasFinished
+	^ context hasFinished
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+prepareDispatch: dispatch
+	self subclassResponsibility
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+prepareForBlock: sblock
+	^self subclassResponsibility	
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+regR: anObject
+	regR := anObject
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+underprimitiveRestart
+	^ self subclassResponsibility 
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitBlock: anSBlock
+	regR := context captureClosure: anSBlock
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitIdentifier: anSIdentifier
+	regR := anSIdentifier binding valueWithin: context
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitLiteral: anSLiteral
+	regR := runtime literalFor: anSLiteral value
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpAssign: anSOpAssign
+	anSOpAssign assignees
+		do: [ :identifier | identifier binding assign: regR within: context ]
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpDropToS: anSOpDropToS
+	context dropOperands: anSOpDropToS count
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpLoadRfromFrame: anSOpLoadRfromFrame
+	regR := context stackTemporaryAt: anSOpLoadRfromFrame index
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpLoadRfromStack: anSOpLoadRfromStack
+	regR := context operandAt: anSOpLoadRfromStack index
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpLoadRwithNil: anSOpLoadRwithNil
+	regR := nilObj
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpLoadRwithSelf: anSOpLoadRwithSelf
+	regR := context self
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpPushR: anSOpPushR
+	context pushOperand: regR
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpStoreRintoFrame: anSOpStoreRintoFrame
+	context stackTemporaryAt: anSOpStoreRintoFrame index put: regR
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'initializing' stamp: 'KenD 2/22/2023 22:59:00'!
+initializeUndermessages
+	super initializeUndermessages.
+	undermessages 		at: #_restart put: self underprimitiveRestart
+	
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:00'!
+prepareFor: anSCompiledMethod
+	self subclassResponsibility
+! !
+
+!PowertalkIterativeInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:00'!
+prepareForExecution: method
+	self subclassResponsibility
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:00'!
+evaluateClosure: closure withArgs: arguments
+	| frame sblock |
+	frame := closure builder.
+	sblock := closure executionTree.
+	context := frame copy
+		beBlock;
+		parent: context;
+		initializeForBlock: sblock args: arguments closure: closure.
+	^ self prepareForBlock: sblock
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+evaluationContextClass
+	^self subclassResponsibility
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+sendLocal: aSymbol to: receiver with: anArray
+	| symbol literal dummy message dispatch |
+	symbol := runtime symbolFromLocal: aSymbol.
+	literal := SLiteral new value: nilObj.
+	dummy := Array new: anArray size withAll: literal.
+	message := SMessage new
+		selector: symbol;
+		receiver: literal;
+		arguments: dummy.
+	dispatch := SOpDispatchMessage new message: message.
+	regR := receiver.
+	context := self evaluationContextClass new system: self.
+	self prepareDispatch: dispatch.
+	dummy isEmpty
+		ifFalse: [ context pushOperand: receiver ].
+	anArray do: [ :arg | context pushOperand: arg ].
+	self evaluate.
+	^ regR
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpDispatchMessage: anSOpDispatchMessage
+	| message argcount arguments behavior method size environment |
+	message := anSOpDispatchMessage message.
+	argcount := message argumentCount.
+	arguments := context popOperands: argcount.
+	(argcount > 0 andNot: [ message isCascadeMessage ])
+		ifTrue: [ context popOperand ].
+	message cachedUndermessage
+		ifNotNil: [ :block | ^ regR := block value: regR value: arguments ].
+	behavior := message receiver isSuper
+		ifTrue: [ runtime superBehaviorOf: context classBinding ]
+		ifFalse: [ runtime behaviorOf: regR ].
+	method := self
+		lookup: message selector
+		startingAt: behavior
+		sendSite: message.
+	method isBlock
+		ifTrue: [ ^ regR := method value: regR value: arguments ].
+	size := runtime methodEnvironmentSize: method.
+	environment := runtime newEnvironmentSized: size.
+	context := self evaluationContextClass new
+		self: regR;
+		arguments: arguments;
+		environment: environment;
+		system: runtime; method: method;
+		parent: context
+		.
+	self prepareFor: method
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpNonLocalReturn: anSOpReturn
+	context := context homeContext parent
+! !
+
+!PowertalkIterativeLinkedInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:00'!
+visitOpReturn: anSOpReturn
+	context := context parent
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluate
+	| operation |
+	[ operation := context nextOperation. operation notNil]
+		whileTrue: [ 			operation acceptVisitor: self ].
+	Transcript print: 'MessageCount: ' , messageCount asString; cr.
+	^ regR
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluationContextClass
+	^ LinkedLinearEvaluationContext
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+initialize
+	super initialize.
+	linearizer := SExpressionLinearizer new.
+
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+initializePrimitives
+	super initializePrimitives.
+	linearizer primitives: primitives
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareDispatch: dispatch
+	context work:  {dispatch}
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareForBlock: sblock
+	| operations |
+	operations := sblock optimizedCode.
+	context work: operations; restart .
+	^ nilObj
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+underprimitiveRestart
+	^ [ :receiver :arguments | 
+	context
+		restart]
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpJump: anSOpJump
+	context regPC: anSOpJump target + 1
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpJumpFalse: anSOpJumpFalse
+	regR == falseObj
+		ifTrue: [ context regPC: anSOpJumpFalse target+1 ]
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpJumpTrue: anSOpJumpTrue
+	regR == trueObj
+		ifTrue: [ context regPC: anSOpJumpTrue target +1]
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpPopR: anSOpPopR
+	regR := context popOperand
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpPrimitive: anSOpPrimtive
+	regR := anSOpPrimtive block value
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareFor: method
+	| operations |
+	operations := self
+		prepareForExecution: method. context
+		work: operations
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareForExecution: anSCompiledMethod
+	| operations array |
+	operations := runtime sexpressionsOf: anSCompiledMethod.
+	operations isCollection
+		ifTrue: [ ^ operations ].
+	linearizer visitMethod: operations.
+	array := linearizer operations asArray.
+	runtime methodOptimizedCode: operations put: array.
+	^array
+! !
+
+!PowertalkLinkedLinearInterpreter methodsFor: 'initializing' stamp: 'KenD 2/22/2023 22:59:02'!
+runtime: aPowertalkRuntime
+	super runtime: aPowertalkRuntime.
+	linearizer runtime: aPowertalkRuntime
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+dropToS
+	context pushOperation: SOpDropToS new
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluate
+	| operation |
+	[ context hasWork ]
+		whileTrue: [ operation := context popOperation.
+			operation acceptVisitor: self ].
+	Transcript print: 'MessageCount: ' , messageCount asString; cr.
+	^ regR
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluationContextClass
+	^ LinkedTreeEvaluationContext
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+loadRfromStack: anInteger
+	| load |
+	load := SOpLoadRfromStack new index: anInteger.
+		context pushOperation: load
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+loadRwithSelf
+		context pushOperation:SOpLoadRwithSelf new
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareDispatch: dispatch
+	context pushOperation: dispatch
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareForBlock: sblock
+	| statements |
+	statements := sblock statements.
+	(statements isEmpty orNot: [ statements last isReturn ])
+		ifTrue: [ context pushOperation: SOpReturn new ].
+	statements reverseDo: [ :exp | context pushOperation: exp ].
+	^ nilObj
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+push: anSExpression
+		context pushOperation: anSExpression
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+pushOpAssign: aCollection
+	| op |
+	op := SOpAssign new assignees: aCollection.
+		context pushOperation: op
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+pushOpReturn
+		context pushOperation: SOpReturn new
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+pushOpReturn: aBoolean
+	| class |
+	class := (aBoolean andNot: [ context isBlock ])
+		ifTrue: [ SOpReturn ]
+		ifFalse: [ SOpNonLocalReturn ].
+	context pushOperation: class new
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+pushR
+		context pushOperation: SOpPushR new
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitAssignment: anSAssignment
+	self
+		pushOpAssign: anSAssignment assignees;		push: anSAssignment expression
+
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitCascade: anSCascade
+	| dispatch args argsize |
+	self dropToS.
+	anSCascade messages
+		reverseDo: [ :msg | 
+			dispatch := SOpDispatchMessage new message: msg.
+			self push: dispatch.
+			args := msg arguments.
+			argsize := args size.
+			self loadRfromStack: argsize.
+			args
+				reverseDo: [ :arg | 
+					self
+						pushR;
+						push: arg ] ].
+	self
+		pushR;
+		push: anSCascade receiver
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitMessage: anSMessage
+	| dispatch args argsize |
+	messageCount := messageCount + 1.
+	dispatch := SOpDispatchMessage new message: anSMessage.
+	self push: dispatch.
+	args := anSMessage arguments.
+	argsize := args size.
+	argsize > 0
+		ifTrue: [ self loadRfromStack: argsize ].
+	args
+		reverseDo: [ :arg | 
+			self
+				pushR;
+				push: arg ].
+	argsize > 0
+		ifTrue: [ self pushR ].
+	self push: anSMessage receiver
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitMethod: anSMethod
+	| primitive statements |
+	primitive := anSMethod pragma.
+	primitive
+		ifNotNil: [ primitive class == SPragma
+				ifTrue: [ primitive := self primitiveFor: anSMethod primitive.
+					anSMethod pragma: primitive ].
+			self pushOpReturn.
+			^ regR := primitive value ].
+	statements := anSMethod statements.
+	(statements isEmpty orNot: [ statements last isReturn ])
+		ifTrue: [ self
+				pushOpReturn;
+				loadRwithSelf ].
+	statements reverseDo: [ :node | self push: node ]
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitOpRestart: anSOpRestart
+	| sexpressions |
+	sexpressions := runtime sexpressionsOf: context method.
+	self push: sexpressions
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:02'!
+visitReturn: anSReturn
+	self
+		pushOpReturn: anSReturn local;
+		push: anSReturn expression
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareFor: method
+	| sexpressions |
+	sexpressions := self prepareForExecution: method.
+	self push: sexpressions
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:02'!
+prepareForExecution: anSCompiledMethod
+	^runtime sexpressionsOf: anSCompiledMethod.
+
+! !
+
+!PowertalkLinkedTreeInterpreter methodsFor: 'initializing' stamp: 'KenD 2/22/2023 22:59:02'!
+underprimitiveRestart
+	^ [ :receiver :arguments | 
+	| sexpressions |
+	sexpressions := runtime sexpressionsOf: context method.
+	context
+		restart;
+		pushOperation: sexpressions ]
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+evaluate
+	| operation |
+	[ operation := self nextOperation.
+	operation notNil ] whileTrue: [ operation acceptVisitor: self ].
+	^ regR
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+evaluateUndermessage: message with: block
+	| argcount arguments |
+	argcount := message argumentCount.
+	arguments := context popOperands: argcount.
+	regR := block value: regR value: arguments.
+	context reserveStackSlots: argcount
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+initialize
+	super initialize.
+	context := StackedEvaluationContext new.
+	linearizer := SExpressionLinearizer new
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+initializePrimitives
+	super initializePrimitives.
+	linearizer primitives: primitives
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+nextOperation
+ | pc |
+pc := context incRegPC.
+	pc <= work size
+		ifFalse: [ ^ nil ].
+	^ work at: pc
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+sendLocal: aSymbol to: receiver with: anArray
+	| symbol literal dummy message dispatch prevWork prevPC |
+	symbol := runtime symbolFromLocal: aSymbol.
+	literal := SLiteral new value: nilObj.
+	dummy := Array new: anArray size withAll: nil.
+	message := SMessage new
+		selector: symbol;
+		receiver: literal;
+		arguments: dummy.
+	dispatch := SOpDispatchMessage new message: message.
+	prevWork := work.
+	prevPC := context regPC.
+	context buildLaunchFrame.
+	regR := receiver.
+	anArray isEmpty
+		ifFalse: [ context pushOperand: receiver ].
+	anArray do: [ :arg | context pushOperand: arg ].
+	work := {dispatch}.
+	context regPC: 0.
+	self evaluate.
+	context popLaunchFrame.
+	work := prevWork.
+	context regPC: prevPC.
+	^ regR
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+underprimitiveRestart
+	^ [ :receiver :arguments | context restart ]
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpDispatchMessage: anSOpDispatchMessage
+	| message behavior method size environment |
+	message := anSOpDispatchMessage message.
+	message cachedUndermessage
+		ifNotNil: [ :block | ^ self evaluateUndermessage: message with: block ].
+	behavior := message receiver isSuper
+		ifTrue: [ runtime superBehaviorOf: context classBinding ]
+		ifFalse: [ runtime behaviorOf: regR ].
+	method := self
+		lookup: message selector
+		startingAt: behavior
+		sendSite: message.
+	method isBlock
+		ifTrue: [ ^ self evaluateUndermessage: message with: method ].
+	size := runtime methodEnvironmentSize: method.
+	environment := runtime newEnvironmentSized: size.
+	self prepareFor: method.
+	work := runtime methodOptimizedCode: method.
+	context
+		buildMethodFrameFor: regR
+		code: method
+		environment: environment
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpJump: anSOpJump
+	context regPC: anSOpJump target
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpJumpFalse: anSOpJumpFalse
+	regR == falseObj
+		ifTrue: [ context regPC: anSOpJumpFalse target ]
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpJumpTrue: anSOpJumpTrue
+	regR == trueObj
+		ifTrue: [ context regPC: anSOpJumpTrue target ]
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpNonLocalReturn: anSOpReturn
+	context unwind.
+		work := runtime methodOptimizedCode: context regM
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpPopR: anSOpPopR
+	regR := context pop
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpPrimitive: anSOpPrimtive
+	regR := anSOpPrimtive block value
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:01'!
+visitOpReturn: anSOpReturn
+	context popFrame.
+	work := runtime methodOptimizedCode: context regM
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:01'!
+evaluateClosure: closure withArgs: arguments
+	| block receiver |
+	block := runtime closureBlock: closure.
+	work := runtime blockOptimizedCode: block.
+	receiver := (runtime blockCapturesSelf: block)
+		ifTrue: [ closure at: 1 ]
+		ifFalse: [ nilObj ].
+	context
+		popFrame;
+		buildClosureFrameFor: receiver code: block environment: closure.
+	^ regR
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:01'!
+prepareFor: method
+	self prepareForExecution: method
+
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:01'!
+prepareForExecution: method
+	| operations linearized |
+	operations := runtime sexpressionsOf: method.
+	operations isCollection
+		ifTrue: [ ^ self ].
+	linearizer visitMethod: operations.
+	linearized := linearizer operations asArray.
+	runtime methodOptimizedCode: method put: linearized
+! !
+
+!PowertalkIterativeStackedInterpreter methodsFor: 'initializing' stamp: 'KenD 2/22/2023 22:59:01'!
+runtime: aPowertalkRuntime
+	super runtime: aPowertalkRuntime.
+	linearizer
+		runtime: aPowertalkRuntime;
+		dropsArguments.
+	context system: runtime
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluateClosure: receiver whileFalse: arg
+	| result |
+	[ result := self evaluateClosure: receiver.
+	self booleanFrom: result ]
+		whileFalse: [ self evaluateClosure: arg ].
+	^ receiver
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluateClosure: receiver whileTrue: arg
+	| result |
+	[ result := self evaluateClosure: receiver.
+	self booleanFrom: result ] whileTrue: [ self evaluateClosure: arg ].
+	^ receiver
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+hasFinished
+	^context isNil
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+initializePrimitives
+	super initializePrimitives.
+	primitives 
+		at: #ClosureWhileTrue put: self primitiveClosureWhileTrue;
+		at: #ClosureWhileFalse put: self primitiveClosureWhileFalse
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+primitiveClosureWhileFalse
+	^ [ self
+		evaluateClosure: context self
+		whileFalse: context arguments first ]
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+primitiveClosureWhileTrue
+	^ [ self
+		evaluateClosure: context self
+		whileTrue: context arguments first ]
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+send: aSymbol to: receiver with: arguments super: aBoolean
+	^self send: aSymbol to: receiver with: arguments super: aBoolean sendSite: SMessage new
+
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+send: aSymbol to: receiver with: arguments super: aBoolean sendSite: anSMessage
+	| behavior method environment size |
+	anSMessage cachedUndermessage
+		ifNotNil: [ :block | ^ block value: receiver value: arguments ].
+	behavior := aBoolean
+		ifTrue: [ runtime superBehaviorOf: context classBinding ]
+		ifFalse: [ runtime behaviorOf: receiver ].
+	method := self
+		lookup: aSymbol
+		startingAt: behavior
+		sendSite: anSMessage.
+	method isBlock
+		ifTrue: [ ^ method value: receiver value: arguments ].
+	self ASSERT: method notNil.
+	size := runtime methodEnvironmentSize: method.
+	environment := runtime newEnvironmentSized: size.
+	context := RecursiveLinkedEvaluationContext new
+		self: receiver;
+		arguments: arguments;
+		environment: environment;
+		parent: context;
+		method: method;
+		system: runtime.
+	^ context evaluateFor: self
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+sendLocal: aSymbol to: receiver with: anArray
+	| symbol res |
+	symbol := runtime symbolFromLocal: aSymbol.
+	res := self
+		send: symbol
+		to: receiver
+		with: anArray
+		super: false.
+	^ res
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitAssignment: anSAssignment
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: context ].
+	^ result
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitBlock: anSBlock
+	^ context captureClosure: anSBlock
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitCascade: anSCascade
+	| recv args  last |
+	recv := anSCascade receiver acceptVisitor: self.
+	anSCascade messages
+		do: [ :msg | 
+			args := msg arguments collect: [ :code | code acceptVisitor: self ].
+			last := self
+				send: msg selector
+				to: recv
+				with: args
+				super: anSCascade receiver isSuper
+				sendSite: msg ].
+	^ last
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitIdentifier: anSIdentifier
+	^ anSIdentifier binding valueWithin: context
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitLiteral: anSLiteral
+	^ runtime literalFor: anSLiteral value
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitMessage: anSMessage
+	| recv args |
+	recv := anSMessage receiver acceptVisitor: self.
+	args := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	^ self
+		send: anSMessage selector
+		to: recv
+		with: args
+		super: anSMessage receiver isSuper
+		sendSite: anSMessage
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitMethod: anSMethod
+	| primitive |
+	primitive := anSMethod pragma.
+	primitive ifNil: [ ^ self evaluateMethodStatements: anSMethod ].
+	primitive class == SPragma
+		ifTrue: [ primitive := self primitiveFor: anSMethod primitive.
+			anSMethod pragma: primitive ].
+	^ primitive value
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:59:02'!
+visitReturn: anSReturn
+	| value |
+	value := anSReturn expression acceptVisitor: self.
+	^context return: value
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluateClosure: closure withArgs: arguments
+	| frame sblock result |
+	frame := closure builder.
+	sblock := closure executionTree.
+	context := frame copy
+		beBlock;
+		parent: context;
+		initializeForBlock: sblock args: arguments closure: closure.
+	result := nilObj.
+	sblock statements do: [ :node | result := node acceptVisitor: self ].
+	^ result
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:02'!
+evaluateMethodStatements: anSMethod
+	| last result |
+	last := nil.
+	anSMethod statements
+		do: [ :node | 
+			last := node.
+			result := node acceptVisitor: self ].
+	^ (last notNil and: [ last isReturn ])
+		ifTrue: [ result ]
+		ifFalse: [ context self ]
+! !
+
+!PowertalkRecursiveInterpreter methodsFor: 'initializing' stamp: 'KenD 2/22/2023 22:59:02'!
+runtime: aPowertalkRuntime
+	super runtime: aPowertalkRuntime.
+	aPowertalkRuntime
+		override: #Closure -> #whileTrue: withPrimitive: 'ClosureWhileTrue';
+		override: #Closure -> #whileFalse: withPrimitive: 'ClosureWhileFalse'
+! !
+
 !PowertalkRuntime methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:04'!
 behaviorOf: anObject
 	^self subclassResponsibility
@@ -8289,6 +9902,891 @@ symbolFromLocal: aSymbol
 !PowertalkRuntime methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:04'!
 true
 	^ trueObj
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+addSymbol: aSymbol
+	| string |
+	string := self newString: aSymbol asString.
+	^ self sendLocal: #asSymbol to: string
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+arrayClass: anLMRObject
+	arrayClass := anLMRObject 
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+arrayedSizeOf: anLMRObject
+	| species ivars |
+	anLMRObject isImmediate ifTrue: [ ^0 ].
+	species := self speciesFor: anLMRObject.
+	ivars := self speciesInstanceSize: species.
+	^anLMRObject size - ivars
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorClass: anLMRObject
+	^ anLMRObject slotAt: behaviorClassIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorClassIndex: anInteger
+	behaviorClassIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorClass_: anLMRObject
+	behaviorClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorMethodDictionary: anLMRObject
+	^ anLMRObject slotAt: behaviorMethodDictionaryIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorMethodDictionaryIndex: anInteger
+	behaviorMethodDictionaryIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorNext: anLMRObject
+	^ anLMRObject slotAt: behaviorNextIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorNextIndex: anInteger
+	behaviorNextIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+behaviorOf: anLMRObject
+	^anLMRObject isImmediate ifTrue: [ self smallIntegerBehavior ] ifFalse: [anLMRObject behavior]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockArgumentCount: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: BlockArgCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockCapturesHome: block
+	| flags |
+	flags := block slotAt: methodFlagsIndex.
+	^ flags value anyMask: BlockCapturesHome
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockCapturesSelf: block
+	| flags |
+	flags := block slotAt: methodFlagsIndex.
+	^ flags value anyMask: BlockCapturesSelf
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockClass: anLMRObject
+	blockClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockEnvironmentCount: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: BlockEnvCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockExecutionTree: anLMRObject
+	^ anLMRObject slotAt: methodOptimizedCodeIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockMethod: anLMRObject
+	^ anLMRObject slotAt: blockMethodIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockMethodIndex: anInteger
+	blockMethodIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockOptimizedCode: anLMRObject
+
+	^ self methodOptimizedCode: anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockOptimizedCode: anLMRObject put: anObject
+	^ self methodOptimizedCode: anLMRObject put: anObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+blockTempCount: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: BlockTempCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+bootstrapper
+	^bootstrapper
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+bootstrapper: aBootstrapper
+	bootstrapper := aBootstrapper
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+byteArrayClass: anLMRObject
+	byteArrayClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+classIvars: anLMRObject
+	^ anLMRObject slotAt: speciesIvarsIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+classModule: class
+	^ class slotAt: classModuleIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+classModuleIndex: anInteger
+	classModuleIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+className: anLMRObject
+	^ anLMRObject slotAt: classNameIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+classNameIndex: anInteger
+	classNameIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+classNamespacesIndex: anInteger
+	classNamespacesIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+closureBlock: closure
+	^closure slotAt: closureBlockIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+closureBlockIndex: anInteger
+	closureBlockIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+closureClass: anLMRObject
+	closureClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+closureHome: closure
+	| block |
+	block := self closureBlock: closure.
+	(self blockCapturesHome: block)
+		ifFalse: [ self error: 'closure has no home' ].
+	^ (self blockCapturesSelf: block)
+		ifTrue: [ closure at: 2 ]
+		ifFalse: [ closure at: 1 ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+dictionaryTable: anLMRObject
+	^anLMRObject slotAt: dictionaryTableIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+dictionaryTableIndex: anInteger
+	dictionaryTableIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+doLookup: aSymbol startingAt: aBehavior
+	| behavior m |
+	behavior := aBehavior.
+	[ m := self methodFor: aSymbol in: behavior.
+	m ifNotNil: [ ^m ].
+	behavior := self behaviorNext: behavior.
+	behavior !!= nilObj ] whileTrue.
+	^ nil
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+fixOverrides
+	| selector md |
+	overrides
+		keysAndValuesDo: [ :assoc :method | 
+			selector := assoc value.
+			md := self behaviorMethodDictionary: assoc key.
+			self
+				sendLocal: #at:put:
+				to: md
+				with:
+					{selector.
+					method} ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+hashFor: anLMRObject
+	| shifted hash current |
+	anLMRObject isImmediate
+		ifTrue: [ ^ anLMRObject value ].
+	current := anLMRObject headerHash.
+	current !!= 0
+		ifTrue: [ ^ current ].
+	shifted := lastHash bitShift: -1.
+	hash := (lastHash bitAnd: 1) = 0
+		ifTrue: [ shifted ]
+		ifFalse: [ shifted bitXor: 16rB9C8 ].
+	anLMRObject headerHash: hash.
+	^ lastHash := hash
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+initialize
+	lastHash := 1.
+	super initialize
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+integerFrom: anLMRObject
+	| behavior class |
+	anLMRObject isImmediate
+		ifTrue: [ ^ anLMRObject value ].
+	behavior := self behaviorOf: anLMRObject.
+	class := self behaviorClass: behavior.
+	^ class == largePositiveIntegerClass
+		ifTrue: [ anLMRObject bytes asLittleEndianPositiveInteger ]
+		ifFalse: [ anLMRObject bytes asLittleEndianNegativeInteger ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+isBlock: compiledCode
+	^ (self behaviorClass: compiledCode behavior) ==
+	blockClass 
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+isMetaclass: anLMRObject
+	^ (self speciesFor: anLMRObject) == metaclassClass
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+kernel
+	^kernel
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+kernel: anLMRObject
+	kernel := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+knownSymbols: associations
+	knownSymbols := Dictionary withAll: associations
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+largeNegativeIntegerClass: anLMRObject
+	largeNegativeIntegerClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+largePositiveIntegerClass: anLMRObject
+	largePositiveIntegerClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+loadAssociationValue: association
+	^ association slotAt: 2.
+
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+loadModule: symbol
+	^ bootstrapper loadModule: symbol asLocalString
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+lookupAssociationFor: aSymbol in: dictionary
+	|  table assoc key |
+	table := self dictionaryTable: dictionary.
+	2 to: table size do: [ :index | 
+		assoc := table slotAt: index.
+		assoc == nilObj ifFalse: [key := assoc slotAt: 1. key == aSymbol
+			ifTrue: [ ^ assoc] ]].
+	^ nil
+	
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+metaclassClass: anLMRObject
+	metaclassClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+metaclassInstanceClass: anLMRObject
+	^ anLMRObject slotAt: metaclassInstanceClassIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+metaclassInstanceClassIndex: anInteger
+	metaclassInstanceClassIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+method: method literalAt: index
+	^ method slotAt: methodInstSize + index
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodArgumentCount: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: ArgCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodAstcodes: anLMRObject
+	^ anLMRObject slotAt: methodAstcodesIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodAstcodesIndex: anInteger
+	methodAstcodesIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodClass: anLMRObject
+	methodClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodClassBinding: anLMRObject
+	^ anLMRObject slotAt: methodClassBindingIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodClassBindingIndex: anInteger
+	methodClassBindingIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodEnvironmentSize: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: EnvCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodFlagsIndex: anInteger
+	methodFlagsIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodFor: aSymbol in: behavior
+	| md table  |
+	overrides at: behavior -> aSymbol ifPresent: [ :m | ^ m ].
+	md := self behaviorMethodDictionary: behavior.
+	table := self dictionaryTable: md.
+	2 to: table size by: 2 do: [ :index | 
+		(table slotAt: index) == aSymbol
+			ifTrue: [ ^ table slotAt: index + 1 ] ].
+	^ nil
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodInstSize: anInteger
+	methodInstSize := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodOptimizedCode: anLMRObject
+	| slot |
+	slot := anLMRObject slotAt: methodOptimizedCodeIndex.
+	^ slot == nilObj ifTrue: [ slot ] ifFalse: [ slot code ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodOptimizedCode: anLMRObject put: anObject
+	| behavior header code |
+	behavior := self speciesInstanceBehavior: arrayClass.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: 0;
+		hash: 0.
+
+	code := LMRExecutableCode new header: header; code: anObject.
+	^ anLMRObject slotAt: methodOptimizedCodeIndex put: code
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodOptimizedCodeIndex: anInteger
+	methodOptimizedCodeIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+methodTempCount: anLMRObject
+	| flags |
+	flags := anLMRObject slotAt: methodFlagsIndex.
+	^ flags value bitsAt: TempCount
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+moduleNamespace: anLMRObject
+	^anLMRObject slotAt: moduleNamespaceIndex
+
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+moduleNamespaceIndex: anInteger
+
+	moduleNamespaceIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newArray: anArray
+| result |
+result := 	self newArraySized: anArray size.
+	anArray withIndexDo: [ :elem :i | result at: i put: elem ].
+	^result
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newArraySized: anInteger
+	| behavior header |
+	behavior := self speciesInstanceBehavior: arrayClass.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: anInteger;
+		hash: 0.
+	^ LMRSlotObject new header: header
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newByteArray: aByteArray
+	| behavior header |
+	behavior := self speciesInstanceBehavior: byteArrayClass.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: aByteArray size;
+		hash: 0.
+	^ LMRByteObject new header: header; bytes: aByteArray
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newBytes: species size: anInteger
+	| behavior header |
+	behavior := self speciesInstanceBehavior: species.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: anInteger;
+		hash: 0.
+	^ LMRByteObject new
+		header: header;
+		bytes: (ByteArray new: anInteger)
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newBytesOf: species sized: size
+	^ self newBytes: species size: size
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newCharacter: aCharacter
+	| value |
+	value := self newInteger: aCharacter asInteger.
+	^self sendLocal: #asCharacter to: value.
+
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newClosureFor: compiledBlock
+	| size closure |
+	size := self blockEnvironmentCount: compiledBlock.
+	closure := self newSlots: closureClass size:  size.
+	closure slotAt: closureBlockIndex put: compiledBlock.
+	^ closure
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newCompiledMethod
+	| behavior header method |
+	behavior := self speciesInstanceBehavior: methodClass.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: methodInstSize;
+		hash: 0.
+	method := LMRSlotObject new header: header.
+	method slotAt: methodFlagsIndex put: (self newInteger: 0).
+	^method
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newEnvironmentSized: anInteger
+	^ self newArraySized: anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newInteger: anInteger
+	anInteger > maxSMI
+		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
+	anInteger < minSMI
+		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
+	^ LMRSmallInteger new value: anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newLargeNegativeInteger: anInteger
+	| size bytes byte result complement |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	complement := anInteger negated - 1.
+	bytes := ByteArray new: size withAll: 16rFF.
+	1 to: anInteger bytesCount do: [ :i | 
+		byte := 255 - (complement byteAt: i).
+		bytes at: i put: byte ].
+	(bytes at: size) < 128 ifTrue: [ bytes := bytes, #[16rFF 16rFF] ].
+	result := self newBytes: largeNegativeIntegerClass size: bytes size.
+	^result bytes: bytes
+
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newLargePositiveInteger: anInteger
+	| size bytes result |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := anInteger asByteArrayOfSize: size.
+	result := self newBytes: largePositiveIntegerClass size: size.
+	^ result bytes: bytes reversed
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newOf: aSpecies sized: anInteger
+	^(self speciesIsBytes: aSpecies)
+		ifTrue: [ self newBytes: aSpecies size: anInteger ]
+		ifFalse: [ self newSlots: aSpecies size: anInteger ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newSlots: class
+	^self newSlots: class size: 0
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newSlots: class size: anInteger
+	| ivars behavior header result |
+	ivars := self speciesInstanceSize: class.
+	behavior := self speciesInstanceBehavior: class.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: false named: true;
+		size: ivars + anInteger;
+		hash: 0.
+	result := class == behaviorClass
+		ifTrue: [ LMRBehaviorObject new runtime: self]
+		ifFalse: [ LMRSlotObject new ].
+	^ result
+		header: header;
+		nilSlots: nilObj
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newSlotsOf: class
+	^ self newSlots: class size: 0
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newSmallInteger: anInteger
+	^ LMRSmallInteger new value: anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+newString: aString
+	| behavior header bytes |
+	behavior := self speciesInstanceBehavior: stringClass.
+	bytes := aString asByteArray copyWith: 0.
+	header := LMRObjectHeader new
+		behavior: behavior;
+		bytes: false arrayed: true named: false;
+		size: bytes size;
+		hash: 0.
+	^ LMRByteObject new
+		header: header;
+		bytes: bytes
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+nil: n true: t false: f
+	nilObj := n.
+	trueObj := t.
+	falseObj := f
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+override: assoc with: method
+	overrides at: assoc put: method
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+print: anLMRObject on: aStream
+	| species name |
+	species := self behaviorClass: anLMRObject behavior.
+	name := self speciesLocalName: species.
+	name = 'Symbol'
+		ifTrue: [ ^ aStream nextPutAll: '<#' , anLMRObject asLocalString , '>' ].
+	name = 'String'
+		ifTrue: [ ^ aStream nextPutAll: '<''' , anLMRObject asLocalString , '''>' ].
+	name = 'CompiledMethod'
+		ifTrue: [ ^ aStream
+				nextPutAll: '<';
+				print: (self methodClassBinding: anLMRObject);
+				nextPutAll: '>>#';
+				nextPutAll: (anLMRObject slotAt: 5) asLocalString;
+				nextPutAll: '>' ].
+	aStream
+		nextPut: $<;
+		nextPutAll: name withArticle;
+		nextPut: $>
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+printBehavior: anLMRBehavior on: aStream
+	| species name |
+	species := self behaviorClass: anLMRBehavior.
+	name := self speciesLocalName: species.
+	aStream
+		nextPutAll: '<' , name , ' instanceBehavior>'
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+removeOverride: assoc
+	| species selector |
+	species := assoc key.
+	selector := assoc value.
+	overrides removeKey: species -> selector.
+	methodCache removeKey: selector -> species ifAbsent: nil.
+	symbolCache
+		at: selector
+		ifPresent: [ :messages | messages do: #flushCache ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+sexpressionsOf: method
+	| expressions astcodes decoder |
+	expressions := self methodOptimizedCode: method.
+	expressions == nilObj ifFalse: [ ^expressions ].
+	astcodes := self methodAstcodes: method.
+	decoder := AstcodeDecoder new
+		stream: astcodes bytes readStream;
+		method: method; builder: self.
+	expressions := decoder decodeMethod.
+	self methodOptimizedCode: method put: expressions.
+	^expressions
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+smallIntegerBehavior
+	^self speciesInstanceBehavior: smallIntegerClass
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+smallIntegerClass: anLMRObject
+	smallIntegerClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesFor: anLMRObject
+	| behavior |
+	behavior := self behaviorOf: anLMRObject.
+	^self behaviorClass: behavior.
+
+
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesFormatIndex: anInteger
+	speciesFormatIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesInstanceBehavior: anLMRObject
+	^anLMRObject slotAt: speciesInstanceBehaviorIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesInstanceBehaviorIndex: anInteger
+	speciesInstanceBehaviorIndex := anInteger 
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesInstanceClass: anLMRObject
+	| metaclass |
+	metaclass := self isMetaclass: anLMRObject.
+	^ metaclass
+		ifTrue: [ self metaclassInstanceClass: anLMRObject ]
+		ifFalse: [ anLMRObject ]
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesInstanceSize: anLMRObject
+	^ (anLMRObject slotAt: speciesFormatIndex) value bitAnd: 16r7F.
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesIsBytes: anLMRObject
+	^ (anLMRObject slotAt: speciesFormatIndex) value noMask: 16r4000
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesIvarsIndex: anInteger
+	speciesIvarsIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesLocalName: species
+	| name class |
+	(self isMetaclass: species) ifFalse: [
+		name :=self className: species.
+		^name asLocalString].
+	
+	class := self metaclassInstanceClass: species. 
+	name := self className: class.
+	^ name asLocalString, ' class'
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesModule: species
+	| class |
+	(self isMetaclass: species)
+		ifFalse: [ ^ self classModule: species ].
+	class := self metaclassInstanceClass: species.
+	^ self classModule: class
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesNamespaces: anLMRObject
+	| class |
+	class := self speciesInstanceClass: anLMRObject.
+	^class slotAt: classNamespacesIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesSuperclass: anLMRObject
+	^ anLMRObject slotAt: speciesSuperclassIndex
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+speciesSuperclassIndex: anInteger
+	speciesSuperclassIndex := anInteger
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+staticBindingForIvar: aSymbol in: receiver
+	| class all slots bytes |
+	
+	class := self speciesFor: receiver.
+	all := Array new: 0.
+	[ class !!= nilObj ]
+		whileTrue: [ slots := self classIvars: class.
+			slots == nilObj
+				ifFalse: [ all := slots slots , all ].
+			class := self speciesSuperclass: class ].
+	bytes := aSymbol bytes.
+	all withIndexDo: [ :ivar :index | ivar bytes = bytes ifTrue: [ ^ index ] ].
+	^0
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+stringClass: anLMRObject
+	stringClass := anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+superBehaviorOf: class
+	| superclass |
+	superclass := self speciesSuperclass: class.
+	^ self speciesInstanceBehavior: superclass
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+symbolFromLocal: aSymbol
+	| bytes table symbol |
+	knownSymbols at: aSymbol ifPresent: [ :s | ^s ].
+	bytes := aSymbol asByteArray, #[0].
+	table := symbolTable slotAt: 2.
+	2 to: table size do: [:i | symbol := table slotAt: i. symbol == nilObj ifFalse: [symbol bytes = bytes ifTrue: [ ^symbol ] ] ].
+	self error: 'symbol not found'
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+symbolTable: anLMRObject
+	symbolTable:= anLMRObject
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+wordSize
+	^wordSize
+! !
+
+!PowertalkLMR methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:02'!
+wordSize: anInteger
+	wordSize := anInteger.
+	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
+	minSMI := maxSMI negated - 1
+! !
+
+!PowertalkLMR methodsFor: 'validating' stamp: 'KenD 2/22/2023 22:59:02'!
+nativizeForLMR
+	| script |
+	script := 'nativizeForLMR
+	lmr := Kernel loadModule: ''Nativization/LMR''. 
+	lmr nativizeLoadedModules'.
+	self
+		compile: script in: #UndefinedObject;
+		sendLocal: #nativizeForLMR to: nilObj
+! !
+
+!PowertalkLMR methodsFor: 'validating' stamp: 'KenD 2/22/2023 22:59:02'!
+readKernel
+	| script |
+	script := 'readKernel
+	| reader |
+	reader := Kernel loadModule: ''ImageSegment/Reader''. 
+	segment := reader read: ''build/Kernel.ims''.
+	^segment'.
+	self
+		compile: script in: #UndefinedObject;
+		sendLocal: #readKernel to: nilObj
+! !
+
+!PowertalkLMR methodsFor: 'validating' stamp: 'KenD 2/22/2023 22:59:02'!
+writeKernelAt: anInteger
+	| script |
+	script := 'writeKernel
+	| writer |
+	writer := Kernel loadModule: ''ImageSegment/Writer''. 
+	writer write: Kernel at: ' , anInteger asString
+		, ' to: ''build/Kernel.ims'''.
+	self
+		compile: script in: #UndefinedObject;
+		sendLocal: #writeKernel to: nilObj
 ! !
 
 !PowertalkRingRuntime methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:04'!
@@ -10147,6 +12645,60 @@ asLittleEndianPositiveInteger
 	^ integer normalize
 	
 
+! !
+
+!RGBehaviorStrategyUser methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+allSharedPoolsUsing: globals
+	"
+	in a pure, spec-based compilation, trying to access 
+	state (a shared pool) is considered an error
+	"
+
+	^ Dictionary new
+! !
+
+!RGBehaviorStrategyUser methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+isSpecies
+	^self isBehavior
+! !
+
+!RGClassVariable methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+association
+	^ self propertyNamed: #association
+! !
+
+!RGClassVariable methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+association: arg1
+	^ self propertyNamed: #association put: arg1
+! !
+
+!RGEnvironment methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+allClasses
+	| classes |
+	classes := OrderedCollection new.
+	self
+		behaviorsDo: [ :class | 
+			class isMeta
+				ifFalse: [ classes add: class ] ].
+	classes sort: [ :a :b | a name < b name ].
+	^ classes
+		select: [ :c | 
+			c isRingResolved
+				and: [ c metaclass isRingResolved and: [ c superclass isRingResolved ] ] ]
+! !
+
+!RGEnvironment methodsFor: '*Powerlang-Core' stamp: 'KenD 2/22/2023 22:59:05'!
+allExtensionClasses
+	| classes |
+	classes := OrderedCollection new.
+	self
+		behaviorsDo: [ :class | 
+			class isMeta
+				ifFalse: [ classes add: class ] ].
+	classes sort: [ :a :b | a name < b name ].
+	^ classes
+		select:
+			[ :c | c isRingResolved andNot: [ c superclass isRingResolved ] ]
 ! !
 ObjectHeaderMasks initialize!
 ObjectHeaderOffsets initialize!
