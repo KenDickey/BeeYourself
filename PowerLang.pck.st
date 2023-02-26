@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #5663] on 26 February 2023 at 3:36:14 pm'!
+'From Cuis 6.0 [latest update: #5663] on 26 February 2023 at 3:46:25 pm'!
 'Description Port of Bee bootstrap code from https://github.com/powerlang to Cuis.
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'PowerLang' 1 2!
+!provides: 'PowerLang' 1 3!
 !requires: 'Cuis-Base' 60 5663 nil!
 !requires: 'BeeCompatibility' 1 41 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 50 nil!
@@ -454,6 +454,16 @@ Object subclass: #IdentifierBinder
 IdentifierBinder class
 	instanceVariableNames: ''!
 
+!classDefinition: #StaticBinder category: 'Powerlang-Core-SCompiler'!
+IdentifierBinder subclass: #StaticBinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'StaticBinder class' category: 'Powerlang-Core-SCompiler'!
+StaticBinder class
+	instanceVariableNames: ''!
+
 !classDefinition: #LocalEnvironment category: 'Powerlang-Core-SCompiler'!
 Object subclass: #LocalEnvironment
 	instanceVariableNames: ''
@@ -472,6 +482,26 @@ LocalEnvironment subclass: #ArrayEnvironment
 	category: 'Powerlang-Core-SCompiler'!
 !classDefinition: 'ArrayEnvironment class' category: 'Powerlang-Core-SCompiler'!
 ArrayEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackEnvironment category: 'Powerlang-Core-SCompiler'!
+LocalEnvironment subclass: #StackEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'StackEnvironment class' category: 'Powerlang-Core-SCompiler'!
+StackEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlinedArgEnvironment category: 'Powerlang-Core-SCompiler'!
+StackEnvironment subclass: #InlinedArgEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'InlinedArgEnvironment class' category: 'Powerlang-Core-SCompiler'!
+InlinedArgEnvironment class
 	instanceVariableNames: ''!
 
 !classDefinition: #MessageInliner category: 'Powerlang-Core-SCompiler'!
@@ -544,6 +574,16 @@ Object subclass: #Mirror
 Mirror class
 	instanceVariableNames: ''!
 
+!classDefinition: #StackFrameMirror category: 'Powerlang-Core-Mirrors'!
+Mirror subclass: #StackFrameMirror
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'FrameOffsets'
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'StackFrameMirror class' category: 'Powerlang-Core-Mirrors'!
+StackFrameMirror class
+	instanceVariableNames: ''!
+
 !classDefinition: #ObjectMap category: 'Powerlang-Core-Execution-Ring'!
 Object subclass: #ObjectMap
 	instanceVariableNames: 'spec'
@@ -592,6 +632,16 @@ ObjectMap subclass: #SlotObjectMap
 	category: 'Powerlang-Core-Execution-Ring'!
 !classDefinition: 'SlotObjectMap class' category: 'Powerlang-Core-Execution-Ring'!
 SlotObjectMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClosureMap category: 'Powerlang-Core-Execution-Ring'!
+SlotObjectMap subclass: #ClosureMap
+	instanceVariableNames: 'block'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'ClosureMap class' category: 'Powerlang-Core-Execution-Ring'!
+ClosureMap class
 	instanceVariableNames: ''!
 
 !classDefinition: #SpeciesMap category: 'Powerlang-Core-Execution-Ring'!
@@ -652,6 +702,36 @@ Object subclass: #EvaluationContext
 	category: 'Powerlang-Core-Execution'!
 !classDefinition: 'EvaluationContext class' category: 'Powerlang-Core-Execution'!
 EvaluationContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #LinkedEvaluationContext category: 'Powerlang-Core-Execution'!
+EvaluationContext subclass: #LinkedEvaluationContext
+	instanceVariableNames: 'parent method arguments temporaries environment isBlock _self'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'LinkedEvaluationContext class' category: 'Powerlang-Core-Execution'!
+LinkedEvaluationContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #IterativeLinkedEvaluationContext category: 'Powerlang-Core-Execution'!
+LinkedEvaluationContext subclass: #IterativeLinkedEvaluationContext
+	instanceVariableNames: 'operands work'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'IterativeLinkedEvaluationContext class' category: 'Powerlang-Core-Execution'!
+IterativeLinkedEvaluationContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackedEvaluationContext category: 'Powerlang-Core-Execution'!
+EvaluationContext subclass: #StackedEvaluationContext
+	instanceVariableNames: 'stack regSP regBP regM regS regE pc'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'StackedEvaluationContext class' category: 'Powerlang-Core-Execution'!
+StackedEvaluationContext class
 	instanceVariableNames: ''!
 
 !classDefinition: #PowertalkEvaluator category: 'Powerlang-Core-Execution'!
@@ -794,14 +874,24 @@ ProtoObject subclass: #DictionaryMirror
 DictionaryMirror class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClosureMap category: 'Powerlang-Core-Execution-Ring'!
-ProtoObject subclass: #ClosureMap
-	instanceVariableNames: 'block'
+!classDefinition: #LinkedLinearEvaluationContext category: 'Powerlang-Core-Execution'!
+ProtoObject subclass: #LinkedLinearEvaluationContext
+	instanceVariableNames: 'pc'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-Execution-Ring'!
-!classDefinition: 'ClosureMap class' category: 'Powerlang-Core-Execution-Ring'!
-ClosureMap class
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'LinkedLinearEvaluationContext class' category: 'Powerlang-Core-Execution'!
+LinkedLinearEvaluationContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #LinkedTreeEvaluationContext category: 'Powerlang-Core-Execution'!
+ProtoObject subclass: #LinkedTreeEvaluationContext
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution'!
+!classDefinition: 'LinkedTreeEvaluationContext class' category: 'Powerlang-Core-Execution'!
+LinkedTreeEvaluationContext class
 	instanceVariableNames: ''!
 
 !classDefinition: #AstcodeEncoder category: 'Powerlang-Core-SExpressions'!
@@ -2832,6 +2922,74 @@ new
 	^super new initialize
 ! !
 
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+at: aString
+	^contents at: aString ifAbsent: nil
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+at: aString ifAbsentPut: aBlock
+	^contents at: aString ifAbsentPut: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+at: aString put: aBinding
+	contents at: aString put: aBinding
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+define: aString as: aBinding
+	contents at: aString put: aBinding
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+defines: identifier
+	^contents includesKey: identifier
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+do: aBlock
+	contents do: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+select: aBlock
+	^contents select: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+values
+	^contents values
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+withIndexDo: aBlock
+	contents withIndexDo: aBlock
+! !
+
+!StaticBinder methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+initialize
+	super initialize.
+	contents := OrderedDictionary new
+! !
+
+!StaticBinder methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:24'!
+printOn: aStream indent: anInteger
+	aStream tab: anInteger; nextPut: $<.
+	contents keys
+		do: [:name | name printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $>
+! !
+
+!StaticBinder class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:59:24'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
 !LocalEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:55'!
 isInlinedArgument
 	^false
@@ -2865,6 +3023,21 @@ isIndirect
 !ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 2/22/2023 22:58:46'!
 isStack
 	^false
+! !
+
+!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
+index
+	^nil
+! !
+
+!StackEnvironment methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:23'!
+isStack
+	^true
+! !
+
+!InlinedArgEnvironment methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:53'!
+isInlinedArgument
+	^true
 ! !
 
 !MessageInliner methodsFor: 'transforming' stamp: 'KenD 2/22/2023 22:58:55'!
@@ -3647,6 +3820,43 @@ on: handle
 	^self new handle: handle
 ! !
 
+!StackFrameMirror methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:24'!
+argumentAt: index
+	^(handle slotAt: LastArgumentIndex - index + 1) mirror
+! !
+
+!StackFrameMirror methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:24'!
+method
+	| mirror |
+	mirror := (handle slotAt: MethodIndex) mirror asMethodMirror.
+	^mirror isValid ifTrue: mirror
+! !
+
+!StackFrameMirror methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:24'!
+receiver
+	^(handle slotAt: ReceiverIndex) mirror
+! !
+
+!StackFrameMirror methodsFor: 'private' stamp: 'KenD 2/22/2023 22:59:24'!
+returnAddress
+	^handle slotAt: ReturnAddressIndex
+! !
+
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:24'!
+currentIp
+	^handle currentIp
+! !
+
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:24'!
+printOn: aStream
+	aStream nextPutAll: 'SFMirror(' , String cr , handle printString , ')'
+! !
+
+!StackFrameMirror methodsFor: 'printing' stamp: 'KenD 2/22/2023 22:59:24'!
+slotAtTop
+	^handle slotAtTop
+! !
+
 !ObjectMap methodsFor: 'services' stamp: 'KenD 2/22/2023 22:58:58'!
 allSlotNames
 	^#()
@@ -4362,6 +4572,46 @@ new: anRGBehavior size: size withAll: value
 	obj := self new: anRGBehavior size: size.
 	^obj atAllPut: value; yourself
 	
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+block
+	^block
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+block: anSCompiledBlock
+	block := anSCompiledBlock
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+executionTree
+	^ block optimizedCode
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+home
+	block capturesHome ifFalse: [ self error: 'closure has no home' ].
+	^block capturesSelf ifTrue: [ self at: 2 ] ifFalse: [ self at: 1 ]
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+isClosure
+	^true
+! !
+
+!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
+printOn: aStream
+	aStream
+		nextPutAll: '<< ['.
+	self slots do: [ :slot | aStream print: slot ] separatedBy: [ aStream nextPutAll: ', ' ].
+aStream
+		nextPutAll: '] >>'
+! !
+
+!ClosureMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:50'!
+classFor: anRGBehavior
+	^ self
 ! !
 
 !SpeciesMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:23'!
@@ -5536,6 +5786,645 @@ staticBindingForMvar: symbol
 	species := system methodClassBinding: self method.
 	module := system speciesModule: species.
 	^ self staticBindingFor: symbol inModule: module
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+argumentAt: anInteger
+	^arguments at: anInteger
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+argumentAt: index in: environmentIndex
+	| env | 
+	environmentIndex ifNil: [ ^ arguments at: index ].
+	env := self environmentFor: environmentIndex.
+	^ env at: index
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+arguments
+	^arguments
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+arguments: aCollection
+	arguments := aCollection
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+beBlock
+	isBlock := true
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+environment: anObject
+	environment := anObject
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+environmentFor: anInteger
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+homeContext
+	| frame searched |
+	isBlock
+		ifFalse: [ ^ self ].
+	frame := parent.
+	searched := system closureHome: environment.
+	[ frame notNil ]
+		whileTrue: [ frame environment == searched
+				ifTrue: [ ^ frame ].
+			frame := frame parent ].
+	self error: 'home context not found'
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+initialize
+	isBlock := false
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+initializeForBlock: sblock args: anArray closure: closure
+	"When the block is not inlined, closure becomes the environment of the new context.
+	But when it is inlined, the environment is the one of the builder, which is already
+	set because we copied from the builder frame."
+
+
+	sblock isInlined
+		ifTrue: [ anArray
+				with: sblock inlinedArgs
+				do: [ :arg :i | temporaries at: i put: arg ] ]
+		ifFalse: [ temporaries := Array new: sblock tempCount.
+			arguments := anArray.
+			environment := closure. ]
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+isBlock
+	^isBlock
+	
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+isHomeOf: env
+	^ environment == env andNot: [ isBlock ]
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+method
+	^method
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+methodArguments
+	^ arguments
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+parent
+	^parent
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+parent: anEvaluationContext
+	parent := anEvaluationContext.
+	(isBlock not and: [self framesCount > 1000])
+		ifTrue: [ self halt ].
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+receiver
+	^_self
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+self
+	^ _self
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+self: anObject
+	_self := anObject
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+stackTemporaryAt: index
+	^ temporaries at: index
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+stackTemporaryAt: index put: value
+	^temporaries at: index put: value
+	
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+temporaryAt: index in: environmentIndex
+	| env |
+	environmentIndex ifNil: [ ^ self stackTemporaryAt: index ].
+	env := self environmentFor: environmentIndex.
+	^ env at: index
+! !
+
+!LinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+temporaryAt: index in: environmentIndex put: value
+	| env |
+	environmentIndex ifNil: [ ^ self stackTemporaryAt: index put: value ].
+	env := self environmentFor: environmentIndex.
+	^ env at: index put: value
+! !
+
+!LinkedEvaluationContext methodsFor: 'services' stamp: 'KenD 2/22/2023 22:58:54'!
+backtrace
+	| bt next |
+	bt := OrderedCollection new.
+	next := self.
+	[ next notNil and: [ next method notNil ] ]
+		whileTrue: [ bt
+				add:
+					{next method signature.
+					next self} , next arguments.
+			next := next parent ].
+	^ bt
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+environment
+	^ environment
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+firstArgument
+	^arguments at: 1
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+fourthArgument
+	^ arguments at: 4
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+framesCount
+	| current result |
+	current := self.
+	result := 0.
+	[ current notNil ]
+		whileTrue: [ result := result + 1.
+			current := current parent ].
+	^ result
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+method: aMethod
+	| count |
+	method := aMethod.
+	count := system methodTempCount: aMethod.
+	temporaries := Array new: count
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+secondArgument
+	^ arguments at: 2
+! !
+
+!LinkedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+thirdArgument
+	^ arguments at: 3
+! !
+
+!LinkedEvaluationContext class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:54'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+beBlock
+	super beBlock.
+	operands := nil
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+dropOperands: anInteger
+	anInteger timesRepeat: [ operands removeLast ]
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+hasFinished
+	^parent isNil
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+popOperand
+	^operands removeLast
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+popOperands: anInteger
+
+	^ anInteger = 0 ifTrue: [#()] ifFalse: [operands removeLast: anInteger]
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+pushOperand: anObject
+	
+	operands ifNil: [ operands := OrderedCollection new ].
+	operands add: anObject
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'as yet unclassified' stamp: 'KenD 2/22/2023 22:58:53'!
+restart
+	operands ifNotNil: [operands reset]
+! !
+
+!IterativeLinkedEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:53'!
+operandAt: anInteger
+	^operands at: operands size - anInteger 
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+argumentAt: anInteger
+	| args |
+	args := self isBlock ifTrue: [ system blockArgumentCount: regM ] ifFalse: [ system methodArgumentCount: regM ].
+	^stack at: regBP + 1 + (args - anInteger + 1)
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+argumentAt: index in: environmentIndex
+	environmentIndex ifNil: [ ^ self argumentAt: index ].
+	^self environment: environmentIndex at: index.
+
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+arguments
+	| count |
+	self halt.
+	count := system argumentCountOf: regM.
+	^ (count to: 1 by: -1) collect: [ :i | self argumentAt: i ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+buildClosureFrameFor: receiver code: code environment: environment
+	| temps |
+	temps := system blockTempCount: code.
+	self buildFrameFor: receiver code: code environment: environment temps: temps
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+buildFrameFor: receiver code: code environment: environment temps: temps
+	regS := receiver.
+	regM := code.
+	self
+		push: pc;
+		push: regBP.
+	regBP := regSP.
+	regBP < 100 ifTrue: [ self error: 'stack overflow' ].
+	self
+		push: receiver;
+		push: code;
+		push: regE;
+		push: environment.
+	regE := environment.
+	pc := 0.
+	temps timesRepeat: [ self push: self nil ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+buildLaunchFrame
+	| launcher code |
+	launcher := system newCompiledMethod.
+	code := system newArraySized: 0.
+	system methodOptimizedCode: launcher put: code.
+	self
+		buildMethodFrameFor: system nil
+		code: launcher
+		environment: system nil
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+buildMethodFrameFor: receiver code: code environment: environment
+	| temps |
+	temps := system methodTempCount: code.
+	self
+		buildFrameFor: receiver
+		code: code
+		environment: environment
+		temps: temps
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+environment
+	^regE
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+environment: environmentIndex at: index
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	| env |
+	environmentIndex = -1
+		ifTrue: [ ^ self stackTemporaryAt: index ].
+	env := environmentIndex = 0
+		ifTrue: [ regE ]
+		ifFalse: [ regE at: environmentIndex ].
+	^ env at: index
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+environment: environmentIndex at: index put: value
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	| env |
+	environmentIndex = -1
+		ifTrue: [ ^ self stackTemporaryAt: index put: value ].
+	env := environmentIndex = 0
+		ifTrue: [ regE ]
+		ifFalse: [ regE at: environmentIndex ].
+	^ env at: index put: value
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+firstArgument
+	^ self argumentAt: 1
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+fourthArgument
+	^ self argumentAt: 4
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+hasFinished
+	^ regBP = 0 and: [ regSP = (stack size + 1) ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+incRegPC
+	^pc := pc + 1
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+initialize
+	super initialize.
+	stack := Array new: 64 * 1024.
+	regSP := stack size + 1.
+	regBP := 0.
+	pc := 0
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+isBlock
+	^ system isBlock: regM
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+method
+	^ self isBlock
+		ifTrue: [ system blockMethod: regM ]
+		ifFalse: [ regM ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+method: anSCompiledMethod
+	regM := anSCompiledMethod
+
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+methodArguments
+	| count |
+	count := system methodArgumentCount: regM.
+	^ (count to: 1 by: -1) collect: [ :i | self argumentAt: i ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+operandAt: anInteger
+	^ stack at: regSP + anInteger
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+pop
+	| result |
+	result := stack at: regSP.
+	regSP := regSP + 1.
+	^result
+
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+popFrame
+	regSP := regBP.
+	regE := stack at: regBP - 3.
+	regBP := self pop.
+	pc := self pop.
+		regM := stack at: regBP - 2.
+	regS := stack at: regBP - 1.
+
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+popLaunchFrame
+	regSP := regBP.
+	regE := stack at: regBP - 3.
+	regBP := self pop.
+	pc := self pop.
+	regBP = 0
+		ifTrue: [ ^ self ].
+	regM := stack at: regBP - 2.
+	regS := stack at: regBP - 1.
+
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+popOperand
+	^self pop
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+popOperands: anInteger
+	| result |
+	anInteger = 0
+		ifTrue: [ ^ #() ].
+	result := Array new: anInteger.
+	anInteger to: 1 by: -1 do: [ :i | result at: i put: self pop ].
+	^ result
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+printOn: aStream
+	| slot |
+	regSP to: regBP + 3 do: [ :i | slot := stack at: i. aStream nextPutAll: i hex; nextPutAll: ' -> '; print: slot;cr ].
+	aStream nextPutAll: '...'; cr.
+
+super printOn: aStream
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+printStack
+	^String
+		streamContents: [ :stream | 
+			| slot |
+			regSP to: stack size do: [ :i | 
+				slot := stack at: i.
+				stream
+					nextPutAll: i hex;
+					nextPutAll: ' -> ';
+					print: slot;
+					cr ] ]
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+push: anObject
+	anObject ifNil: [ self halt ].
+	regSP := regSP - 1.
+	stack at: regSP put: anObject
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+pushOperand: anObject
+	anObject ifNil: [ self halt ].
+	regSP := regSP - 1.
+	stack at: regSP put: anObject
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+receiver
+	^ regS
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+regBP
+	^ regBP
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+restart
+	| nilObj |
+	nilObj := system nil.
+	regBP - self tempOffset to: regSP by: -1 do: [ :i | stack at: i put: nilObj ].
+	pc := 1
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+secondArgument
+	^ self argumentAt: 2
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+self
+	^ regS
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+stackTemporaryAt: index
+	^ stack at: regBP - self tempOffset - index
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+stackTemporaryAt: index put: value
+	^ stack at: regBP - self tempOffset - index put: value
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+system: aPowertalkRuntime
+	super system: aPowertalkRuntime.
+	regE := regS := system nil
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+tempOffset
+"should be 2 or 4 if we had methods without environment"
+	^4
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+temporaryAt: index in: environmentIndex
+	environmentIndex ifNil: [ ^ self stackTemporaryAt: index].
+	^ self environment: environmentIndex at: index
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+temporaryAt: index in: environmentIndex put: value
+	environmentIndex ifNil: [ ^ self stackTemporaryAt: index put: value ].
+	^ self environment: environmentIndex at: index put: value
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+thirdArgument
+	^ self argumentAt: 3
+! !
+
+!StackedEvaluationContext methodsFor: 'initialization' stamp: 'KenD 2/22/2023 22:59:24'!
+unwind
+	| home bp environment |
+	home := system closureHome: self environment.
+	home == system nil ifTrue: [ self error: 'cannot return because closure has no home' ].
+	bp := regBP.
+	[ bp !!= 0 ]
+		whileTrue: [ environment := stack at: bp - 4.
+			environment == home
+				ifTrue: [ regBP := bp.
+					^ self popFrame ].
+			bp := stack at: bp ].
+	self error: 'cannot return from this closure'
+! !
+
+!StackedEvaluationContext methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:24'!
+backtrace
+	| result bp code receiver |
+	result := OrderedCollection new.
+	bp := regBP.
+	[ bp !!= 0 ]
+		whileTrue: [ code := stack at: bp - 2.
+			receiver := stack at: bp - 1.
+			result add: {code. receiver}.
+			bp := stack at: bp ].
+	^ result
+! !
+
+!StackedEvaluationContext methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:24'!
+dropOperands: anInteger
+	regSP := regSP + anInteger
+! !
+
+!StackedEvaluationContext methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:24'!
+reserveStackSlots: anInteger
+	regSP := regSP - anInteger
+! !
+
+!StackedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+regM
+	^ regM
+! !
+
+!StackedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+regPC
+	^pc
+! !
+
+!StackedEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:59:24'!
+regPC: anInteger
+	pc := anInteger
 ! !
 
 !PowertalkEvaluator methodsFor: 'services' stamp: 'KenD 2/22/2023 22:59:00'!
@@ -7738,44 +8627,96 @@ do: aBlock
 			aBlock value: mirror key value: mirror value]]
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-block
-	^block
+!LinkedLinearEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+initialize
+	super initialize.
+pc := 1
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-block: anSCompiledBlock
-	block := anSCompiledBlock
+!LinkedLinearEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+restart
+	super restart.
+	pc := 1
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-executionTree
-	^ block optimizedCode
+!LinkedLinearEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+work: aCollection
+	work := aCollection
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-home
-	block capturesHome ifFalse: [ self error: 'closure has no home' ].
-	^block capturesSelf ifTrue: [ self at: 2 ] ifFalse: [ self at: 1 ]
+!LinkedLinearEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+nextOperation
+	| op |
+	pc <= work size ifFalse: [^nil].
+	op := work at: pc.
+	pc := pc + 1.
+	^ op
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-isClosure
-	^true
+!LinkedLinearEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+regPC: anInteger
+	pc := anInteger
 ! !
 
-!ClosureMap methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:50'!
-printOn: aStream
-	aStream
-		nextPutAll: '<< ['.
-	self slots do: [ :slot | aStream print: slot ] separatedBy: [ aStream nextPutAll: ', ' ].
-aStream
-		nextPutAll: '] >>'
+!LinkedLinearEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+stackTemporaryAt: index
+	| size |
+	size := temporaries size.
+	^index > size
+		ifTrue: [ operands at: index - size ]
+		ifFalse: [ temporaries at: index ]
 ! !
 
-!ClosureMap class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:50'!
-classFor: anRGBehavior
-	^ self
+!LinkedLinearEvaluationContext methodsFor: 'accessing' stamp: 'KenD 2/22/2023 22:58:54'!
+stackTemporaryAt: index put: value
+	| size |
+	size := temporaries size.
+	^ index > size
+		ifTrue: [ operands at: index - size put: value ]
+		ifFalse: [ temporaries at: index put: value ]
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+beBlock
+	super beBlock.
+	work := OrderedCollection new: 5.
+
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+hasWork
+	^work notEmpty
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+initialize
+	super initialize.
+	work := OrderedCollection new: 5
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+popOperation
+	^ work removeLast
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+pushOperation: anSExpression
+	work add: anSExpression
+! !
+
+!LinkedTreeEvaluationContext methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:54'!
+restart
+	super restart.
+		work reset.
+
+! !
+
+!LinkedTreeEvaluationContext class methodsFor: 'instance creation' stamp: 'KenD 2/22/2023 22:58:54'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
 ! !
 
 !AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 2/22/2023 22:58:47'!
