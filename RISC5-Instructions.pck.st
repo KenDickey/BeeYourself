@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5658] on 30 January 2023 at 3:33:25 pm'!
+'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 3:20:42 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 52!
+!provides: 'RISC5-Instructions' 1 55!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1462,6 +1462,54 @@ strm contents. ""a ByteString""
 strm contents asString.
 "
 	'Hello RISCV World!!\n' asByteString do: [ :byte | byteStream nextPut: byte ].! !
+
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:17:37'!
+baseIOpFrom: encoding32
+	"Basic disassembler, but yield instruction object"
+	| reg1 reg2 regDest |
+	regDest := encoding32 rv64gRegDest.
+	reg1      := encoding32 rv64gReg1.
+	reg2      := encoding32 rv64gReg2.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[16r0] -> [(encoding32 rv64gFunct7 = 16r20)
+					 ifTrue: [ ^RV64SUB regDest: regDest regA: reg1 regB: reg2 ].
+				  (encoding32 rv64gFunct7 = 0)
+					ifTrue: [ ^RV64ADD regDest: regDest regA: reg1 regB: reg2 ].
+				 self caseError
+				].
+		[16r4] -> [^RV64XOR regDest: regDest regA: reg1 regB: reg2 ].
+		[16r6] -> [^RV64OR   regDest: regDest regA: reg1 regB: reg2 ].
+		[16r7] -> [^RV64AND regDest: regDest regA: reg1 regB: reg2 ].
+		[16r1] -> [^RV64SLL   regDest: regDest regA: reg1 regB: reg2 ].
+		[16r5] -> [(encoding32 rv64gFunct7 = 16r20)
+					ifTrue: [ ^RV64SRA regDest: regDest regA: reg1 regB: reg2 ].
+				  (encoding32 rv64gFunct7 = 0)
+					ifTrue: [ ^RV64SRL regDest: regDest regA: reg1 regB: reg2 ].
+				  self caseError
+				 ].
+		[16r2] -> [^RV64SLT regDest: regDest regA: reg1 regB: reg2 ].
+		[16r3] -> [^RV64SLTU regDest: regDest regA: reg1 regB: reg2 ].
+	}! !
+
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 14:49:32'!
+fromInteger: encoding32
+
+	"Basic disassembler, but yield instruction object"
+	(encoding32 rv64gOpcode) caseOf: {
+		[2r0110011] -> [^self baseIOpFrom: encoding32].
+		[2r0010011] -> [^self baseImmediateOpFrom: encoding32].
+		[2r0000011] -> [^self loadRegFrom: encoding32].
+		[2r0100011] -> [^self storeRegFrom: encoding32].
+		[2r0100011] -> [^self branchFrom: encoding32].
+		[2r1101111] -> [^self jumpFrom: encoding32].
+		[2r0110111] -> [^self loadUpperImmediateFrom: encoding32].
+		[2r0010111] -> [^self addUpperImmediateFrom: encoding32].
+		[2r1110011] -> [^self sysEnvOpFrom: encoding32].
+		[2r0110011] -> [^self mulDivFrom: encoding32].
+		[2r0101111] -> [^self atomicFrom: encoding32].
+
+	}! !
 
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
 func3
@@ -2989,5 +3037,58 @@ opName
 opcode
 	"Opcode for LUI"
 	^2r0110111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:50:04'!
+ev64gReg2
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 5 bit register-2 value -- bits 24..20."
+
+	^ (self bitShift: -20) bitAnd: 2r011111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:48:29'!
+rv64gFunct3
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 3 bit funct3 value -- bits 14..12."
+	
+	"2r10111010000000000101000001010101 RV64Gfunct3 printStringBase: 2.  --> '101' "
+
+	^ (self bitShift: -12) bitAnd: 2r0111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:00'!
+rv64gFunct7
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 7 bit funct7 value -- bits 31..25."
+
+	^ (self bitShift: -25) bitAnd: 2r01111111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:32'!
+rv64gOpcode
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my opcode. (my lower 7 bits)"
+	
+	"2r10111010000000000101000001010101 RV64Gopcode printStringBase: 2.  -->  '1010101' "
+
+	^ self bitAnd: 2r001111111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:50'!
+rv64gReg1
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 5 bit register-1 value -- bits 19..15."
+
+	^ (self bitShift: -15) bitAnd: 2r011111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:58:40'!
+rv64gReg2
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 5 bit register-2 value -- bits 24..20."
+
+	^ (self bitShift: -20) bitAnd: 2r011111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:50:27'!
+rv64gRegDest
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 5 bit destination register value -- bits 11..7."
+
+	^ (self bitShift: -7) bitAnd: 2r011111! !
 RISC5Regs initialize!
 RISC5Instructions initialize!
