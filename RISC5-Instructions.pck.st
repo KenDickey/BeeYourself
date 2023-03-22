@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 3:20:42 pm'!
+'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 3:45:17 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 55!
+!provides: 'RISC5-Instructions' 1 56!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -593,6 +593,36 @@ RV64Reg3Reg subclass: #RV64MUL
 RV64MUL class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64MULH category: 'RISC5-Instructions'!
+RV64MUL subclass: #RV64MULH
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULH class' category: 'RISC5-Instructions'!
+RV64MULH class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64MULSU category: 'RISC5-Instructions'!
+RV64MUL subclass: #RV64MULSU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULSU class' category: 'RISC5-Instructions'!
+RV64MULSU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64MULU category: 'RISC5-Instructions'!
+RV64MUL subclass: #RV64MULU
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULU class' category: 'RISC5-Instructions'!
+RV64MULU class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64OR category: 'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64OR
 	instanceVariableNames: ''
@@ -1090,6 +1120,15 @@ Register UNSIGNED DIVide, rounds toward zero!
 !RV64MUL commentStamp: '<historical>' prior: 0!
 MULtiply registers!
 
+!RV64MULH commentStamp: '<historical>' prior: 0!
+MULtiply High!
+
+!RV64MULSU commentStamp: '<historical>' prior: 0!
+MULtiply High (S) (U)!
+
+!RV64MULU commentStamp: '<historical>' prior: 0!
+MULtiply High (U)!
+
 !RV64OR commentStamp: '<historical>' prior: 0!
 Inclusive OR registers {distinguish XOR)!
 
@@ -1509,6 +1548,25 @@ fromInteger: encoding32
 		[2r0110011] -> [^self mulDivFrom: encoding32].
 		[2r0101111] -> [^self atomicFrom: encoding32].
 
+	}! !
+
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:45:03'!
+mulDivFrom: encoding32
+	"Basic disassembler, but yield instruction object; 2nd level"
+	| reg1 reg2 regDest |
+	regDest := encoding32 rv64gRegDest.
+	reg1      := encoding32 rv64gReg1.
+	reg2      := encoding32 rv64gReg2.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[0] -> [^RV64MUL     regDest: regDest regA: reg1 regB: reg2 ].
+		[1] -> [^RV64MULH   regDest: regDest regA: reg1 regB: reg2 ].
+		[2] -> [^RV64MULSU regDest: regDest regA: reg1 regB: reg2 ].
+		[3] -> [^RV64MULU   regDest: regDest regA: reg1 regB: reg2 ].
+		[4] -> [^RV64DIV       regDest: regDest regA: reg1 regB: reg2 ].
+		[5] -> [^RV64DIVU     regDest: regDest regA: reg1 regB: reg2 ].
+		[6] -> [^RV64REM      regDest: regDest regA: reg1 regB: reg2 ].
+		[7] -> [^RV64REMU   regDest: regDest regA: reg1 regB: reg2 ].
 	}! !
 
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
@@ -2622,6 +2680,21 @@ func7
 opName
 
 	^ 'Mul'! !
+
+!RV64MULH methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:41:01'!
+func3
+
+	^ 2r001! !
+
+!RV64MULSU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:42:55'!
+func3
+
+	^ 2r010! !
+
+!RV64MULU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:44:07'!
+func3
+
+	^ 2r011! !
 
 !RV64OR methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:13:29'!
 func3
