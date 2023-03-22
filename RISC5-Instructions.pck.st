@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 3:45:17 pm'!
+'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 4:32:05 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 56!
+!provides: 'RISC5-Instructions' 1 57!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -373,6 +373,76 @@ RV64ADD subclass: #RV64NOOP
 RV64NOOP class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64AMOADD category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOADD
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOADD class' category: 'RISC5-Instructions'!
+RV64AMOADD class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOAND category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOAND
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOAND class' category: 'RISC5-Instructions'!
+RV64AMOAND class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOMAX category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOMAX
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOMAX class' category: 'RISC5-Instructions'!
+RV64AMOMAX class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOMIN category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOMIN
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOMIN class' category: 'RISC5-Instructions'!
+RV64AMOMIN class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOOR category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOOR
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOOR class' category: 'RISC5-Instructions'!
+RV64AMOOR class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOSWAP category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOSWAP
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOSWAP class' category: 'RISC5-Instructions'!
+RV64AMOSWAP class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64AMOXOR category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64AMOXOR
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOXOR class' category: 'RISC5-Instructions'!
+RV64AMOXOR class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64AND category: 'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AND
 	instanceVariableNames: ''
@@ -583,6 +653,16 @@ RV64Reg3Reg subclass: #RV64DIVU
 RV64DIVU class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64LR category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64LR
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LR class' category: 'RISC5-Instructions'!
+RV64LR class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64MUL category: 'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64MUL
 	instanceVariableNames: ''
@@ -651,6 +731,16 @@ RV64Reg3Reg subclass: #RV64REMU
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64REMU class' category: 'RISC5-Instructions'!
 RV64REMU class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64SC category: 'RISC5-Instructions'!
+RV64Reg3Reg subclass: #RV64SC
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SC class' category: 'RISC5-Instructions'!
+RV64SC class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64SLL category: 'RISC5-Instructions'!
@@ -1015,6 +1105,27 @@ Add registers!
 !RV64NOOP commentStamp: '<historical>' prior: 0!
 No Operation [a 32 bit instruction useful in padding code for 64bit alignment]!
 
+!RV64AMOADD commentStamp: '<historical>' prior: 0!
+AtOMic ADD!
+
+!RV64AMOAND commentStamp: '<historical>' prior: 0!
+AtOMic AND!
+
+!RV64AMOMAX commentStamp: '<historical>' prior: 0!
+AtOMic MAX!
+
+!RV64AMOMIN commentStamp: '<historical>' prior: 0!
+AtOMic MIN!
+
+!RV64AMOOR commentStamp: '<historical>' prior: 0!
+AtOMic OR!
+
+!RV64AMOSWAP commentStamp: '<historical>' prior: 0!
+AtOMic SWAP!
+
+!RV64AMOXOR commentStamp: '<historical>' prior: 0!
+AtOMic XOR!
+
 !RV64AND commentStamp: '<historical>' prior: 0!
 AND registers!
 
@@ -1117,6 +1228,9 @@ Divide registers
 !RV64DIVU commentStamp: '<historical>' prior: 0!
 Register UNSIGNED DIVide, rounds toward zero!
 
+!RV64LR commentStamp: '<historical>' prior: 0!
+Load Reserved (atomic)!
+
 !RV64MUL commentStamp: '<historical>' prior: 0!
 MULtiply registers!
 
@@ -1139,6 +1253,9 @@ REMainder
 
 !RV64REMU commentStamp: '<historical>' prior: 0!
 UNSIGNED REMainder!
+
+!RV64SC commentStamp: '<historical>' prior: 0!
+Store Conditional (Atomic)!
 
 !RV64SLL commentStamp: '<historical>' prior: 0!
 Shift Left Logical -- destReg := regA << regB
@@ -1502,9 +1619,9 @@ strm contents asString.
 "
 	'Hello RISCV World!!\n' asByteString do: [ :byte | byteStream nextPut: byte ].! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:17:37'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:53:14'!
 baseIOpFrom: encoding32
-	"Basic disassembler, but yield instruction object"
+	"Basic disassembler, but yield instruction object; *2nd level*"
 	| reg1 reg2 regDest |
 	regDest := encoding32 rv64gRegDest.
 	reg1      := encoding32 rv64gReg1.
@@ -1531,10 +1648,10 @@ baseIOpFrom: encoding32
 		[16r3] -> [^RV64SLTU regDest: regDest regA: reg1 regB: reg2 ].
 	}! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 14:49:32'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:53:08'!
 fromInteger: encoding32
 
-	"Basic disassembler, but yield instruction object"
+	"Basic disassembler, but yield instruction object; *first level - entry*"
 	(encoding32 rv64gOpcode) caseOf: {
 		[2r0110011] -> [^self baseIOpFrom: encoding32].
 		[2r0010011] -> [^self baseImmediateOpFrom: encoding32].
@@ -1550,9 +1667,9 @@ fromInteger: encoding32
 
 	}! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:45:03'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:52:39'!
 mulDivFrom: encoding32
-	"Basic disassembler, but yield instruction object; 2nd level"
+	"Basic disassembler, but yield instruction object; *2nd level*"
 	| reg1 reg2 regDest |
 	regDest := encoding32 rv64gRegDest.
 	reg1      := encoding32 rv64gReg1.
@@ -2276,6 +2393,146 @@ initialize
 	super destReg: Zero.
 	regA := regB := Zero.! !
 
+!RV64AMOADD methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:22:04'!
+func3
+
+	^16r2! !
+
+!RV64AMOADD methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:22:24'!
+func7
+
+	^16r00 bitShift: 2! !
+
+!RV64AMOADD methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:21:31'!
+opName
+
+	^'amoADD'! !
+
+!RV64AMOADD class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:22:44'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOAND methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:24:22'!
+func3
+
+	^16r2! !
+
+!RV64AMOAND methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:24:38'!
+func7
+
+	^16r0C bitShift: 2! !
+
+!RV64AMOAND methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:24:15'!
+opName
+
+	^'amoAND'! !
+
+!RV64AMOAND class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:24:55'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOMAX methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:29:23'!
+func3
+
+	^16r2! !
+
+!RV64AMOMAX methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:29:37'!
+func7
+
+	^16r14 bitShift: 2! !
+
+!RV64AMOMAX methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:29:48'!
+opName
+
+	^'amoMAX'! !
+
+!RV64AMOMAX class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:30:02'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOMIN methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:30:58'!
+func3
+
+	^16r2! !
+
+!RV64AMOMIN methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:31:12'!
+func7
+
+	^16r10 bitShift: 2! !
+
+!RV64AMOMIN methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:31:23'!
+opName
+
+	^'amoMIN'! !
+
+!RV64AMOMIN class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:31:54'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:25:57'!
+func3
+
+	^16r2! !
+
+!RV64AMOOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:26:10'!
+func7
+
+	^16r0A bitShift: 2! !
+
+!RV64AMOOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:26:21'!
+opName
+
+	^'amoOR'! !
+
+!RV64AMOOR class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:26:36'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOSWAP methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:17:21'!
+func3
+
+	^16r2! !
+
+!RV64AMOSWAP methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:18:10'!
+func7
+
+	^16r01 bitShift: 2! !
+
+!RV64AMOSWAP methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:17:35'!
+opName
+
+	^'amoSWAP'! !
+
+!RV64AMOSWAP class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:19:14'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
+!RV64AMOXOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:27:46'!
+func3
+
+	^16r2! !
+
+!RV64AMOXOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:28:01'!
+func7
+
+	^16r04 bitShift: 2! !
+
+!RV64AMOXOR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:28:11'!
+opName
+
+	^'amoXOR'! !
+
+!RV64AMOXOR class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:28:27'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
+
 !RV64AND methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:15:47'!
 func3
 
@@ -2651,6 +2908,11 @@ opName
 
 	^ 'Div'! !
 
+!RV64DIV class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:10:13'!
+opcode
+	"Opcode for all Multiply/Divide R-type instructions"
+	^2r0110011! !
+
 !RV64DIVU methodsFor: 'accessing' stamp: 'KenD 10/16/2022 12:26:36'!
 func3
 
@@ -2665,6 +2927,31 @@ func7
 opName
 
 	^ 'DivU'! !
+
+!RV64DIVU class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:10:00'!
+opcode
+	"Opcode for all Multiply/Divide R-type instructions"
+	^2r0110011! !
+
+!RV64LR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:04:03'!
+func3
+
+	^16r2! !
+
+!RV64LR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:05:15'!
+func7
+
+	^16r02 bitShift: 2! !
+
+!RV64LR methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:05:37'!
+opName
+
+	^'lr'! !
+
+!RV64LR class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:08:09'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
 
 !RV64MUL methodsFor: 'accessing' stamp: 'KenD 10/16/2022 12:21:23'!
 func3
@@ -2681,20 +2968,40 @@ opName
 
 	^ 'Mul'! !
 
+!RV64MUL class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:09:30'!
+opcode
+	"Opcode for all Multiply/Divide R-type instructions"
+	^2r0110011! !
+
 !RV64MULH methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:41:01'!
 func3
 
 	^ 2r001! !
+
+!RV64MULH methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:57:32'!
+opName
+
+	^ 'MulH'! !
 
 !RV64MULSU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:42:55'!
 func3
 
 	^ 2r010! !
 
+!RV64MULSU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:57:44'!
+opName
+
+	^ 'MulSU'! !
+
 !RV64MULU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:44:07'!
 func3
 
 	^ 2r011! !
+
+!RV64MULU methodsFor: 'accessing' stamp: 'KenD 3/22/2023 15:57:53'!
+opName
+
+	^ 'MulU'! !
 
 !RV64OR methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:13:29'!
 func3
@@ -2726,6 +3033,11 @@ opName
 
 	^ 'Rem'! !
 
+!RV64REM class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:10:40'!
+opcode
+	"Opcode for all Multiply/Divide R-type instructions"
+	^2r0110011! !
+
 !RV64REMU methodsFor: 'accessing' stamp: 'KenD 10/16/2022 12:29:35'!
 func3
 
@@ -2740,6 +3052,31 @@ func7
 opName
 
 	^ 'RemU'! !
+
+!RV64REMU class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:11:01'!
+opcode
+	"Opcode for all Multiply/Divide R-type instructions"
+	^2r0110011! !
+
+!RV64SC methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:12:58'!
+func3
+
+	^16r2! !
+
+!RV64SC methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:18:26'!
+func7
+
+	^16r03 bitShift: 2! !
+
+!RV64SC methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:12:36'!
+opName
+
+	^'sc'! !
+
+!RV64SC class methodsFor: 'accessing' stamp: 'KenD 3/22/2023 16:13:58'!
+opcode
+	"Opcode for all ATOMIC R-type instructions"
+	^2r0101111! !
 
 !RV64SLL methodsFor: 'accessing' stamp: 'KenD 5/3/2021 14:20:55'!
 func3
@@ -3126,6 +3463,13 @@ rv64gFunct3
 	"2r10111010000000000101000001010101 RV64Gfunct3 printStringBase: 2.  --> '101' "
 
 	^ (self bitShift: -12) bitAnd: 2r0111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 15:59:38'!
+rv64gFunct5
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 5 bit funct3 value -- bits 31..27."
+	
+	^ (self bitShift: -27) bitAnd: 2r011111! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:00'!
 rv64gFunct7
