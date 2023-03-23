@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 23 March 2023 at 11:47:12 am'!
+'From Cuis 6.0 [latest update: #5667] on 23 March 2023 at 2:51:48 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 58!
+!provides: 'RISC5-Instructions' 1 59!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1473,10 +1473,34 @@ testRV64I
 		 = 'lui  ReturnAddr, 16rC0E03' 
 		! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 09:57:03'!
-testR
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 13:39:23'!
+testB
+	"Test encode+decode B-type instructions"
+	
+	 #(#RV64BEQ #RV64BGE #RV64BGEU 
+	     #RV64BLT #RV64BLTU #RV64BNE)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
 
-	#(#RV64ADD #RV64AND  #RV64DIV #RV64DIVU #RV64MUL #RV64OR #RV64REM #RV64REMU #RV64SLL #RV64SLT #RV64SLTU #RV64SRA #RV64SRL #RV64SUB #RV64XOR #RV64LR #RV64SC #RV64AMOSWAP #RV64AMOADD #RV64AMOAND #RV64AMOOR #RV64AMOXOR #RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
+testR
+	"Test encode+decode R-type instructions"
+	
+	#(#RV64ADD #RV64AND  
+	#RV64DIV #RV64DIVU #RV64MUL 
+	#RV64OR #RV64REM #RV64REMU 
+	#RV64SLL #RV64SLT #RV64SLTU 
+	#RV64SRA #RV64SRL #RV64SUB 
+	#RV64XOR #RV64LR #RV64SC 
+	#RV64AMOSWAP #RV64AMOADD #RV64AMOAND 
+	#RV64AMOOR #RV64AMOXOR 
+	#RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
 		| class encoding |
 		class := Smalltalk at: clsName.
 		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
@@ -1538,17 +1562,22 @@ initialize
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/23/2023 11:43:34'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/23/2023 13:16:11'!
 fromInteger: encoding32
 
-	"Basic disassembler, but yield instruction object; *first level - entry*"
+	"Basic disassembler, but yield instruction object; *first level - entry*
+	 Invoke `self caseError` if unrecognized encoding."
+	
 	(encoding32 rv64gOpcode) caseOf: {
 		[2r0110011] -> [^self baseIOpFrom: encoding32].
 		[2r0010011] -> [^self baseImmediateOpFrom: encoding32].
 		[2r0000011] -> [^self loadRegFrom: encoding32].
 		[2r0100011] -> [^self storeRegFrom: encoding32].
-		[2r0100011] -> [^self branchFrom: encoding32].
-		[2r1101111] -> [^self jumpFrom: encoding32].
+		[2r1100011] -> [^self branchFrom: encoding32].
+		[2r1101111] -> [^RV64JAL regDest: (encoding32 rv64gRegDest) 
+								offset: (encoding32 rv64gJtypeImmediate) ].
+		[2r1100111] -> [^RV64JALR regDest: (encoding32 rv64gRegDest) 
+								 offset: (encoding32 rv64gItypeImmediate) ].
 		[2r0110111] -> [^self loadUpperImmediateFrom: encoding32].
 		[2r0010111] -> [^self addUpperImmediateFrom: encoding32].
 		[2r1110011] -> [^self sysEnvOpFrom: encoding32].
@@ -1715,6 +1744,45 @@ baseIOpFrom: encoding32
 				}].
 	}! !
 
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/23/2023 13:35:22'!
+baseImmediateOpFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+	| reg1 regDest immediate12 |
+	immediate12 := encoding32 rv64gItypeImmediate.
+	reg1               := encoding32 rv64gReg1.
+	regDest          := encoding32 rv64gRegDest.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[16r0] -> [^RV64ADDI   regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r1] -> [^RV64SLLI    regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r2] -> [^RV64SLTI    regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r3] -> [^RV64SLTIU regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r4] -> [^RV64XORI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r5] -> [(encoding32 rv64gFunct3) caseOf: {
+			[16r20] -> [^RV64SRAI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+			[16r00] -> [^RV64SRLI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+			} ].
+		[16r6] -> [^RV64ORI     regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r7] -> [^RV64ANDI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+	}! !
+
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/23/2023 13:53:47'!
+branchFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+	| reg1 reg2 immediate12 |
+	immediate12 := encoding32 rv64gStypeImmediate.
+	reg1      := encoding32 rv64gReg1.
+	reg2      := encoding32 rv64gReg2.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[16r0] -> [^RV64BEQ    regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+		[16r1] -> [^RV64BNE    regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+		[16r4] -> [^RV64BLT     regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+		[16r5] -> [^RV64BGE    regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+		[16r6] -> [^RV64BLTU  regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+		[16r7] -> [^RV64BGEU regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+	}! !
+
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
 func3
 
@@ -1752,8 +1820,8 @@ opcode
 	"Opcode for all S-type instructions"
 	^2r1100011! !
 
-!RV64Branch methodsFor: 'initialization' stamp: 'KenD 5/8/2021 07:08:15'!
-regA: reg1 regB: reg2 immLo: lo mmHi: hi
+!RV64Branch methodsFor: 'initialization' stamp: 'KenD 3/23/2023 13:42:39'!
+regA: reg1 regB: reg2 immLo: lo immHi: hi
 
 	regA := reg1.
 	regB := reg2.
@@ -3477,12 +3545,16 @@ opcode
 	"Opcode for LUI"
 	^2r0110111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:50:04'!
-ev64gReg2
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 14:47:03'!
+rv64gBtypeImmediate
 	"I am a 32 bit encoding of RV64G Instruction.  
-	 Answer my 5 bit register-2 value -- bits 24..20."
+	 Answer my 12 bit value -- bits: 31 (sign) | 7 | 30..25 | 11..8."
 
-	^ (self bitShift: -20) bitAnd: 2r011111! !
+	"This wierd encodng gets 11 bits + sign bit"
+	^ ((self bitShift: -7) bitAnd: 2r011110) "low bit always zero"
+	+ ((self bitShift: -25) bitAnd: 2r011111100000)
+	+ ((self bitAnd: 2r10000000) bitShift: 23) "shift -7 + 30"
+	+ ((self bitShift: 20) bitAnd: 2r010000000000)  "shift 31 - 11"! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:48:29'!
 rv64gFunct3
@@ -3506,6 +3578,20 @@ rv64gFunct7
 	 Answer my 7 bit funct7 value -- bits 31..25."
 
 	^ (self bitShift: -25) bitAnd: 2r01111111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 12:52:24'!
+rv64gItypeImmediate
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 12 bit value -- bits 31..20."
+
+	^ (self bitShift: -20) bitAnd: 2r0111111111111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 13:00:46'!
+rv64gJtypeImmediate
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 20 bit value -- bits 31..12."
+
+	^ (self bitShift: -12) bitAnd: 16r0FFFFF! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:32'!
 rv64gOpcode
@@ -3536,5 +3622,20 @@ rv64gRegDest
 	 Answer my 5 bit destination register value -- bits 11..7."
 
 	^ (self bitShift: -7) bitAnd: 2r011111! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 12:51:57'!
+rv64gStypeImmediate
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 12 bit value -- bits 31..25 | 11..7."
+
+	^ ((self bitShift: -7) bitAnd: 2r011111)
+	+ ((self bitShift: -20) bitAnd: 2r011111100000)! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 12:58:14'!
+rv64gUtypeImmediate
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 20 bit value -- bits 31..12."
+
+	^ (self bitShift: -12) bitAnd: 16r0FFFFF! !
 RISC5Regs initialize!
 RISC5Instructions initialize!
