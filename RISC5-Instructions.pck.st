@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 22 March 2023 at 4:32:05 pm'!
+'From Cuis 6.0 [latest update: #5667] on 23 March 2023 at 11:47:12 am'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 57!
+!provides: 'RISC5-Instructions' 1 58!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1473,6 +1473,18 @@ testRV64I
 		 = 'lui  ReturnAddr, 16rC0E03' 
 		! !
 
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 09:57:03'!
+testR
+
+	#(#RV64ADD #RV64AND  #RV64DIV #RV64DIVU #RV64MUL #RV64OR #RV64REM #RV64REMU #RV64SLL #RV64SLT #RV64SLTU #RV64SRA #RV64SRL #RV64SUB #RV64XOR #RV64LR #RV64SC #RV64AMOSWAP #RV64AMOADD #RV64AMOAND #RV64AMOOR #RV64AMOXOR #RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
 !RISC5Instructions methodsFor: 'initialization' stamp: 'KenD 10/5/2022 11:37:08'!
 destReg: regDest
 	"Common to all instruction variants"
@@ -1525,6 +1537,24 @@ initialize
 		  FArg2 FArg3 FArg4 FArg5 FArg6 FArg7 
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
+
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/23/2023 11:43:34'!
+fromInteger: encoding32
+
+	"Basic disassembler, but yield instruction object; *first level - entry*"
+	(encoding32 rv64gOpcode) caseOf: {
+		[2r0110011] -> [^self baseIOpFrom: encoding32].
+		[2r0010011] -> [^self baseImmediateOpFrom: encoding32].
+		[2r0000011] -> [^self loadRegFrom: encoding32].
+		[2r0100011] -> [^self storeRegFrom: encoding32].
+		[2r0100011] -> [^self branchFrom: encoding32].
+		[2r1101111] -> [^self jumpFrom: encoding32].
+		[2r0110111] -> [^self loadUpperImmediateFrom: encoding32].
+		[2r0010111] -> [^self addUpperImmediateFrom: encoding32].
+		[2r1110011] -> [^self sysEnvOpFrom: encoding32].
+		[2r0101111] -> [^self atomicFrom: encoding32].
+
+	}! !
 
 !RISC5Instructions class methodsFor: 'testing' stamp: 'KenD 11/2/2022 07:57:44'!
 fitsIn12bits: anInteger
@@ -1619,7 +1649,28 @@ strm contents asString.
 "
 	'Hello RISCV World!!\n' asByteString do: [ :byte | byteStream nextPut: byte ].! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:53:14'!
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/23/2023 08:17:53'!
+atomicFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+	| reg1 reg2 regDest |
+	regDest := encoding32 rv64gRegDest.
+	reg1      := encoding32 rv64gReg1.
+	reg2      := encoding32 rv64gReg2.
+	
+	(encoding32 rv64gFunct5) caseOf: {
+		[16r02] -> [^RV64LR               regDest: regDest regA: reg1 regB: reg2 ].
+		[16r03] -> [^RV64SC               regDest: regDest regA: reg1 regB: reg2 ].
+		[16r01] -> [^RV64AMOSWAP regDest: regDest regA: reg1 regB: reg2 ].
+		[16r00] -> [^RV64AMOADD    regDest: regDest regA: reg1 regB: reg2 ].
+		[16r0C] -> [^RV64AMOAND    regDest: regDest regA: reg1 regB: reg2 ].
+		[16r0A] -> [^RV64AMOOR      regDest: regDest regA: reg1 regB: reg2 ].
+		[16r04] -> [^RV64AMOXOR    regDest: regDest regA: reg1 regB: reg2 ].
+		[16r14] -> [^RV64AMOMAX    regDest: regDest regA: reg1 regB: reg2 ].
+		[16r10] -> [^RV64AMOMIN     regDest: regDest regA: reg1 regB: reg2 ].
+
+	}! !
+
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/23/2023 11:46:03'!
 baseIOpFrom: encoding32
 	"Basic disassembler, but yield instruction object; *2nd level*"
 	| reg1 reg2 regDest |
@@ -1628,62 +1679,40 @@ baseIOpFrom: encoding32
 	reg2      := encoding32 rv64gReg2.
 	
 	(encoding32 rv64gFunct3) caseOf: {
-		[16r0] -> [(encoding32 rv64gFunct7 = 16r20)
-					 ifTrue: [ ^RV64SUB regDest: regDest regA: reg1 regB: reg2 ].
-				  (encoding32 rv64gFunct7 = 0)
-					ifTrue: [ ^RV64ADD regDest: regDest regA: reg1 regB: reg2 ].
-				 self caseError
-				].
-		[16r4] -> [^RV64XOR regDest: regDest regA: reg1 regB: reg2 ].
-		[16r6] -> [^RV64OR   regDest: regDest regA: reg1 regB: reg2 ].
-		[16r7] -> [^RV64AND regDest: regDest regA: reg1 regB: reg2 ].
-		[16r1] -> [^RV64SLL   regDest: regDest regA: reg1 regB: reg2 ].
-		[16r5] -> [(encoding32 rv64gFunct7 = 16r20)
-					ifTrue: [ ^RV64SRA regDest: regDest regA: reg1 regB: reg2 ].
-				  (encoding32 rv64gFunct7 = 0)
-					ifTrue: [ ^RV64SRL regDest: regDest regA: reg1 regB: reg2 ].
-				  self caseError
-				 ].
-		[16r2] -> [^RV64SLT regDest: regDest regA: reg1 regB: reg2 ].
-		[16r3] -> [^RV64SLTU regDest: regDest regA: reg1 regB: reg2 ].
-	}! !
-
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:53:08'!
-fromInteger: encoding32
-
-	"Basic disassembler, but yield instruction object; *first level - entry*"
-	(encoding32 rv64gOpcode) caseOf: {
-		[2r0110011] -> [^self baseIOpFrom: encoding32].
-		[2r0010011] -> [^self baseImmediateOpFrom: encoding32].
-		[2r0000011] -> [^self loadRegFrom: encoding32].
-		[2r0100011] -> [^self storeRegFrom: encoding32].
-		[2r0100011] -> [^self branchFrom: encoding32].
-		[2r1101111] -> [^self jumpFrom: encoding32].
-		[2r0110111] -> [^self loadUpperImmediateFrom: encoding32].
-		[2r0010111] -> [^self addUpperImmediateFrom: encoding32].
-		[2r1110011] -> [^self sysEnvOpFrom: encoding32].
-		[2r0110011] -> [^self mulDivFrom: encoding32].
-		[2r0101111] -> [^self atomicFrom: encoding32].
-
-	}! !
-
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/22/2023 15:52:39'!
-mulDivFrom: encoding32
-	"Basic disassembler, but yield instruction object; *2nd level*"
-	| reg1 reg2 regDest |
-	regDest := encoding32 rv64gRegDest.
-	reg1      := encoding32 rv64gReg1.
-	reg2      := encoding32 rv64gReg2.
-	
-	(encoding32 rv64gFunct3) caseOf: {
-		[0] -> [^RV64MUL     regDest: regDest regA: reg1 regB: reg2 ].
-		[1] -> [^RV64MULH   regDest: regDest regA: reg1 regB: reg2 ].
-		[2] -> [^RV64MULSU regDest: regDest regA: reg1 regB: reg2 ].
-		[3] -> [^RV64MULU   regDest: regDest regA: reg1 regB: reg2 ].
-		[4] -> [^RV64DIV       regDest: regDest regA: reg1 regB: reg2 ].
-		[5] -> [^RV64DIVU     regDest: regDest regA: reg1 regB: reg2 ].
-		[6] -> [^RV64REM      regDest: regDest regA: reg1 regB: reg2 ].
-		[7] -> [^RV64REMU   regDest: regDest regA: reg1 regB: reg2 ].
+		[16r0] -> [(encoding32 rv64gFunct7) caseOf: {
+					[16r20] -> [ ^RV64SUB regDest: regDest regA: reg1 regB: reg2 ].
+				  	[16r00] -> [ ^RV64ADD regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [ ^RV64MUL regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r4] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [ ^RV64XOR regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [ ^RV64DIV regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r6] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [ ^RV64OR   regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [ ^RV64REM regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r7] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [ ^RV64AND    regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [ ^RV64REMU regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r1] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [^RV64SLL     regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [^RV64MULH regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r5] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r20] -> [ ^RV64SRA  regDest: regDest regA: reg1 regB: reg2 ].
+				 	[16r00] -> [ ^RV64SRL   regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [ ^RV64DIVU regDest: regDest regA: reg1 regB: reg2 ].
+				 }].
+		[16r2] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [^RV64SLT       regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [^RV64MULSU regDest: regDest regA: reg1 regB: reg2 ].
+				}].
+		[16r3] -> [(encoding32 rv64gFunct7) caseOf: {
+				  	[16r00] -> [^RV64SLTU  regDest: regDest regA: reg1 regB: reg2 ].
+					[16r01] -> [^RV64MULU regDest: regDest regA: reg1 regB: reg2 ].
+				}].
 	}! !
 
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
