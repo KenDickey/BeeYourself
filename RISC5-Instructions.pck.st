@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 24 March 2023 at 6:14:55 pm'!
+'From Cuis 6.0 [latest update: #5667] on 25 March 2023 at 10:43:18 am'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 62!
+!provides: 'RISC5-Instructions' 1 63!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -141,26 +141,6 @@ RV64Immediate subclass: #RV64ANDI
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64ANDI class' category: 'RISC5-Instructions'!
 RV64ANDI class
-	instanceVariableNames: ''!
-
-!classDefinition: #RV64EBREAK category: 'RISC5-Instructions'!
-RV64Immediate subclass: #RV64EBREAK
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64EBREAK class' category: 'RISC5-Instructions'!
-RV64EBREAK class
-	instanceVariableNames: ''!
-
-!classDefinition: #RV64ECALL category: 'RISC5-Instructions'!
-RV64Immediate subclass: #RV64ECALL
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ECALL class' category: 'RISC5-Instructions'!
-RV64ECALL class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64ORI category: 'RISC5-Instructions'!
@@ -923,6 +903,36 @@ RV64Store subclass: #RV64SW
 RV64SW class
 	instanceVariableNames: ''!
 
+!classDefinition: #RV64SysCall category: 'RISC5-Instructions'!
+RISC5Instructions subclass: #RV64SysCall
+	instanceVariableNames: 'classifier'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SysCall class' category: 'RISC5-Instructions'!
+RV64SysCall class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64EBREAK category: 'RISC5-Instructions'!
+RV64SysCall subclass: #RV64EBREAK
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64EBREAK class' category: 'RISC5-Instructions'!
+RV64EBREAK class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64ECALL category: 'RISC5-Instructions'!
+RV64SysCall subclass: #RV64ECALL
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ECALL class' category: 'RISC5-Instructions'!
+RV64ECALL class
+	instanceVariableNames: ''!
+
 !classDefinition: #RV64UpperAddr category: 'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64UpperAddr
 	instanceVariableNames: 'immediate20'
@@ -998,10 +1008,10 @@ Branch if Not Equal!
 !RV64Immediate commentStamp: '<historical>' prior: 0!
 Immediate instructions
 
-	destReg := regA OP immed12
+	eCall opcode in Arg7
 	
 Instruction Pattern:
-  [immed12][sourceReg][func3][destReg][opcode]!
+  [immed12=Classifier][opcode]!
 
 !RV64ADDI commentStamp: '<historical>' prior: 0!
 Add Immediate
@@ -1012,12 +1022,6 @@ Instruction Pattern:
 
 !RV64ANDI commentStamp: '<historical>' prior: 0!
 And, Immediate!
-
-!RV64EBREAK commentStamp: '<historical>' prior: 0!
-Environment Break -- Transfer control to debugger!
-
-!RV64ECALL commentStamp: '<historical>' prior: 0!
-Environment Call -- transfer control to OS!
 
 !RV64ORI commentStamp: '<historical>' prior: 0!
 Or, Immediate!
@@ -1330,6 +1334,20 @@ Store (2 Byte) Halfword!
 !RV64SW commentStamp: '<historical>' prior: 0!
 Store (4 byte) Word !
 
+!RV64SysCall commentStamp: '<historical>' prior: 0!
+Immediate instructions
+
+	eCall opcode in Arg7
+	
+Instruction Pattern:
+  [immed12=Classifier][opcode]!
+
+!RV64EBREAK commentStamp: '<historical>' prior: 0!
+Environment Break -- Transfer control to debugger!
+
+!RV64ECALL commentStamp: '<historical>' prior: 0!
+Environment Call -- transfer control to OS!
+
 !RV64AUIPC commentStamp: '<historical>' prior: 0!
 Add Upper Immediate to PC
 
@@ -1436,7 +1454,7 @@ initialize
 	SizeQuad := 2r11. "Quad Precision"
 ! !
 
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 9/9/2022 12:22:21'!
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
 testRV64I
 
 	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
@@ -1447,16 +1465,16 @@ testRV64I
 		= 'sub  GlobalPtr, ReturnAddr,StackPtr' .
 	"... ... ..."
 	self assert: 
-	  (RV64LD regDest: 1 regBase: 3 immediateOffset: 16rFFF) 
+	  (RV64LD regDest: 1 regBase: 3 offset: 16rFFF) 
 		instruction 
 		= 2r11111111111100011011000010000011.
 		    "10987654321098765432109876543210"
 	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
-	self assert: ((RV64LB regDest: 10 regBase: 12 immediateOffset: 16rFFF) 
+	self assert: ((RV64LB regDest: 10 regBase: 12 offset: 16rFFF) 
 				offset printStringBase: 16)
 				= 'FFF'.
 	self assert: 
-		((RV64LB regDest: 10 regBase: 12 immediateOffset: 16rA5A) 
+		((RV64LB regDest: 10 regBase: 12 offset: 16rA5A) 
 			printString )
 			=  'lb  Arg0, Arg2, 16rA5A' .
 	self assert:
@@ -1485,6 +1503,24 @@ testB
 		| class encoding |
 		class := Smalltalk at: clsName.
 		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 10:35:07'!
+testI
+	"Test encode+decode I-type instructions"
+	
+	 #(   RV64ADDI RV64ANDI 
+		RV64ORI RV64SLLI RV64SLTI 
+		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
+		"RV64FLD" RV64LB RV64LBU RV64LD 
+		RV64LH RV64LHU RV64LW RV64LWU)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
 		self assert: (encoding = 
 			(RISC5Instructions fromInteger: encoding) instruction).
 	].
@@ -1520,6 +1556,20 @@ testR
 		| class encoding |
 		class := Smalltalk at: clsName.
 		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 09:52:39'!
+testSysCall
+	"Test encode+decode SysCall instructions"
+	
+	#(RV64EBREAK 
+		RV64ECALL ) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class new) instruction.
 		self assert: (encoding = 
 			(RISC5Instructions fromInteger: encoding) instruction).
 	].
@@ -1578,7 +1628,7 @@ initialize
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/23/2023 13:16:11'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/25/2023 09:02:15'!
 fromInteger: encoding32
 
 	"Basic disassembler, but yield instruction object; *first level - entry*
@@ -1593,6 +1643,7 @@ fromInteger: encoding32
 		[2r1101111] -> [^RV64JAL regDest: (encoding32 rv64gRegDest) 
 								offset: (encoding32 rv64gJtypeImmediate) ].
 		[2r1100111] -> [^RV64JALR regDest: (encoding32 rv64gRegDest) 
+								regBase: (encoding32 rv64gReg1) 
 								 offset: (encoding32 rv64gItypeImmediate) ].
 		[2r0110111] -> [^self loadUpperImmediateFrom: encoding32].
 		[2r0010111] -> [^self addUpperImmediateFrom: encoding32].
@@ -1606,7 +1657,7 @@ fitsIn12bits: anInteger
 	"Signed integer `anInteger` fits in immediate12 ?"
 	^ (anInteger between: -16r800 and: 16r7FF) ! !
 
-!RISC5Instructions class methodsFor: 'testing' stamp: 'KenD 9/5/2022 12:41:40'!
+!RISC5Instructions class methodsFor: 'testing' stamp: 'KenD 3/25/2023 09:07:46'!
 helloCodeInto: byteStream
 "
 | strm |
@@ -1621,20 +1672,20 @@ strm contents asHex.
 "
 	instructionObjects := {
 		"LI A0, STDERR" 
-		RV64ADDI regDest: Arg0 regSource: Zero imm12: 0. "StdError"
+		RV64ADDI regDest: Arg0 regBase: Zero offset: 0. "StdError"
 		"LA a1, msg -- where 'msg' is the address added by the linker"
 		RV64AUIPC regDest: Arg1 immediate: 0. "msg[31:12]"
-		RV64ADDI regDest: Arg1 regSource: Arg1 imm12: 0. "msg[11:0] "
+		RV64ADDI regDest: Arg1 regBase: Arg1 offset: 0. "msg[11:0] "
 		"LI a2,20"
-		RV64ADDI regDest: Arg2 regSource: Zero imm12: 20. "str len"
+		RV64ADDI regDest: Arg2 regBase: Zero offset: 20. "str len"
 		"LI a7, SYS_WRITE"
-		RV64ADDI regDest: Arg7 regSource: Zero imm12: 64. "kernel call#"
+		RV64ADDI regDest: Arg7 regBase: Zero offset: 64. "kernel call#"
 		"ECALL"
 		RV64ECALL new.
 		"LI	a0, 0"
-		RV64ADDI regDest: Arg0 regSource: Zero imm12: 0. "no error"
+		RV64ADDI regDest: Arg0 regBase: Zero offset: 0. "no error"
 		"LI	a7, SYS_EXIT"
-		RV64ADDI regDest: Arg7 regSource: Zero imm12: 93. "kernel call#"
+		RV64ADDI regDest: Arg7 regBase: Zero offset: 93. "kernel call#"
 		"ECALL"
 		RV64ECALL new.
 		"Keep prefetch happy."
@@ -1653,27 +1704,27 @@ strm contents asHex.
 		
 	! !
 
-!RISC5Instructions class methodsFor: 'testing' stamp: 'KenD 9/5/2022 12:48:56'!
+!RISC5Instructions class methodsFor: 'testing' stamp: 'KenD 3/25/2023 09:07:46'!
 helloCodeToTranscript
 "
   self helloCodeToTranscript.
 "
 {
 		"LI A0, STDERR" 
-		RV64ADDI regDest: Arg0 regSource: Zero imm12: 0. "StdError"
+		RV64ADDI regDest: Arg0 regBase: Zero offset: 0. "StdError"
 		"LA a1, msg -- where 'msg' is the address added by the linker"
 		RV64AUIPC regDest: Arg1 immediate: 0. "msg[31:12]"
-		RV64ADDI regDest: Arg1 regSource: Arg1 imm12: 0. "msg[11:0] "
+		RV64ADDI regDest: Arg1 regBase: Arg1 offset: 0. "msg[11:0] "
 		"LI a2,20"
-		RV64ADDI regDest: Arg2 regSource: Zero imm12: 20. "str len"
+		RV64ADDI regDest: Arg2 regBase: Zero offset: 20. "str len"
 		"LI a7, SYS_WRITE"
-		RV64ADDI regDest: Arg7 regSource: Zero imm12: 64. "kernel call#"
+		RV64ADDI regDest: Arg7 regBase: Zero offset: 64. "kernel call#"
 		"ECALL"
 		RV64ECALL new.
 		"LI	a0, 0"
-		RV64ADDI regDest: Arg0 regSource: Zero imm12: 0. "no error"
+		RV64ADDI regDest: Arg0 regBase: Zero offset: 0. "no error"
 		"LI	a7, SYS_EXIT"
-		RV64ADDI regDest: Arg7 regSource: Zero imm12: 93. "kernel call#"
+		RV64ADDI regDest: Arg7 regBase: Zero offset: 93. "kernel call#"
 		"ECALL"
 		RV64ECALL new.
 		"Keep prefetch happy."
@@ -1760,7 +1811,7 @@ baseIOpFrom: encoding32
 				}].
 	}! !
 
-!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/23/2023 13:35:22'!
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/25/2023 10:24:13'!
 baseImmediateOpFrom: encoding32
 	"Basic disassembler, but yield instruction object; *2nd level*"
 	| reg1 regDest immediate12 |
@@ -1769,17 +1820,19 @@ baseImmediateOpFrom: encoding32
 	regDest          := encoding32 rv64gRegDest.
 	
 	(encoding32 rv64gFunct3) caseOf: {
-		[16r0] -> [^RV64ADDI   regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r1] -> [^RV64SLLI    regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r2] -> [^RV64SLTI    regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r3] -> [^RV64SLTIU regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r4] -> [^RV64XORI  regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r5] -> [(encoding32 rv64gFunct3) caseOf: {
-			[16r20] -> [^RV64SRAI  regDest: regDest regSource: reg1 imm12: immediate12 ].
-			[16r00] -> [^RV64SRLI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r0] -> [^RV64ADDI   regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r1] -> [^RV64SLLI    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r2] -> [^RV64SLTI    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r3] -> [^RV64SLTIU regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r4] -> [^RV64XORI  regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r5] -> [(immediate12 >> 5) caseOf: {
+			[16r20] -> [^RV64SRAI  regDest: regDest regBase: reg1 
+								  offset: (immediate12 bitAnd: 2r011111) ].
+			[16r00] -> [^RV64SRLI  regDest: regDest regBase: reg1  
+							 	  offset: (immediate12 bitAnd: 2r011111) ].
 			} ].
-		[16r6] -> [^RV64ORI     regDest: regDest regSource: reg1 imm12: immediate12 ].
-		[16r7] -> [^RV64ANDI  regDest: regDest regSource: reg1 imm12: immediate12 ].
+		[16r6] -> [^RV64ORI     regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r7] -> [^RV64ANDI  regDest: regDest regBase: reg1 offset: immediate12 ].
 	}! !
 
 !RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/24/2023 14:51:09'!
@@ -1797,6 +1850,34 @@ branchFrom: encoding32
 		[16r5] -> [^RV64BGE    regA: reg1 regB: reg2 immediateOffset: immediate12 ].
 		[16r6] -> [^RV64BLTU  regA: reg1 regB: reg2 immediateOffset: immediate12 ].
 		[16r7] -> [^RV64BGEU regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+	}! !
+
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/25/2023 10:42:11'!
+loadRegFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+	| reg1 regDest immediate12 |
+	immediate12 := encoding32 rv64gItypeImmediate.
+	reg1               := encoding32 rv64gReg1.
+	regDest          := encoding32 rv64gRegDest.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[16r0] -> [^RV64LB    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r1] -> [^RV64LH    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r2] -> [^RV64LW   regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r3] -> [^RV64LD   regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r4] -> [^RV64LBU  regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r5] -> [^RV64LHU  regDest: regDest regBase: reg1 offset: immediate12 ].
+		[16r6] -> [^RV64LWU  regDest: regDest regBase: reg1 offset: immediate12 ].
+	}! !
+
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/25/2023 09:55:45'!
+sysEnvOpFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+
+	(encoding32 rv64gItypeImmediate) caseOf: {
+		[16r0] -> [^RV64ECALL     new ].
+		[16r1] -> [^RV64EBREAK  new ].
+		
 	}! !
 
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:11:01'!
@@ -1971,10 +2052,10 @@ printString
 		(self class regName: sourceReg), ', ', 
 		'16r', (immediate12 printStringBase: 16).  "FIXME: 0x??"! !
 
-!RV64Immediate class methodsFor: 'instance creation' stamp: 'KenD 11/2/2022 07:58:09'!
-regDest: destReg regSource: reg1 imm12: immediate12
+!RV64Immediate class methodsFor: 'instance creation' stamp: 'KenD 3/25/2023 09:22:25'!
+regDest: destReg regBase: reg1 offset: immediate12
 
-	(self fitsIn12bits: immediate12) 
+	((immediate12 bitAnd: 16rFFF) = immediate12)
 		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
 		
 	^self new destReg: destReg regSource: reg1  imm12: immediate12 ! !
@@ -1999,83 +2080,6 @@ opName
 
 	^'andI'! !
 
-!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:01:07'!
-func3
-
-	^16r0! !
-
-!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:17:32'!
-instruction
-	"[1 :20][000zeros000][opcode 6:0]"
-	^(1 << 20) 
-	 + self opcode! !
-
-!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:01:41'!
-opName
-
-	^'ebreak'! !
-
-!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:02:03'!
-opcode
-	"Opcode for ecall&ebreak"
-	^2r1110011! !
-
-!RV64EBREAK methodsFor: 'initialization' stamp: 'KenD 5/11/2021 14:24:33'!
-initialize
-
-	super destReg: 0.
-	sourceReg := 0.
-	immediate12 := 1
-! !
-
-!RV64EBREAK methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:03'!
-printString
-
-	^self opName ! !
-
-!RV64EBREAK class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:18:58'!
-regDest: destReg regSource: reg1 imm12: immediate12
-		
-	^self new destReg: 0 regSource: 0  imm12: 1 ! !
-
-!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 13:58:49'!
-func3
-
-	^16r0! !
-
-!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:16:03'!
-instruction
-	"[000][opcode 6:0]"
-	^self opcode! !
-
-!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 13:57:41'!
-opName
-
-	^'ecall'! !
-
-!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:02:10'!
-opcode
-	"Opcode for ecall&ebreak"
-	^2r1110011! !
-
-!RV64ECALL methodsFor: 'initialization' stamp: 'KenD 5/11/2021 14:24:10'!
-initialize
-
-	super destReg: 0.
-	sourceReg := 0.
-	immediate12 := 0
-! !
-
-!RV64ECALL methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:22'!
-printString
-
-	^self opName ! !
-
-!RV64ECALL class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 14:19:39'!
-regDest: destReg regSource: reg1 imm12: immediate12
-		
-	^self new destReg: 0 regSource: 0  imm12: 0! !
-
 !RV64ORI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:14:06'!
 func3
 
@@ -2090,6 +2094,15 @@ opName
 func3
 
 	^16r1! !
+
+!RV64SLLI methodsFor: 'accessing' stamp: 'KenD 3/25/2023 10:20:43'!
+instruction
+	"[immed5 25:20][rSource1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
+	^ ((immediate12 bitAnd: 2r011111) << 20) 
+	 + (sourceReg << 15) 
+	 + (self func3 << 12) 
+	 + (destReg << 7) 
+	 + self opcode! !
 
 !RV64SLLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:17:02'!
 opName
@@ -2121,6 +2134,16 @@ func3
 
 	^16r5! !
 
+!RV64SRAI methodsFor: 'accessing' stamp: 'KenD 3/25/2023 10:19:10'!
+instruction
+	"[immed5 25:20][rSource1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
+	^16r20 << 25 "SIGNIFIES SRAI"
+	 + ((immediate12 bitAnd: 2r011111) << 20) 
+	 + (sourceReg << 15) 
+	 + (self func3 << 12) 
+	 + (destReg << 7) 
+	 + self opcode! !
+
 !RV64SRAI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:20:07'!
 opName
 
@@ -2130,6 +2153,15 @@ opName
 func3
 
 	^16r5! !
+
+!RV64SRLI methodsFor: 'accessing' stamp: 'KenD 3/25/2023 10:20:06'!
+instruction
+	"[immed5 25:20][rSource1 19:15][func3 14:12][rd 11:7][opcode 6:0]"
+	^ ((immediate12 bitAnd: 2r011111) << 20) 
+	 + (sourceReg << 15) 
+	 + (self func3 << 12) 
+	 + (destReg << 7) 
+	 + self opcode! !
 
 !RV64SRLI methodsFor: 'accessing' stamp: 'KenD 5/3/2021 16:17:49'!
 opName
@@ -2249,17 +2281,6 @@ printString
 		(self class regName: baseReg), ', ', 
 		'16r', (self offset printStringBase: 16).  ! !
 
-!RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:56:56'!
-regDest: rd regBase: rb immediateOffset: immediate12
-
-	(immediate12 bitAnd: 16rFFF) = immediate12 
-		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
-		
-	^self new 
-			destReg: rd 
-			baseReg: rb 
-			immedOffset: immediate12 	! !
-
 !RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:53:56'!
 regDest: rd regBase: rb offset: immediate12
 
@@ -2321,8 +2342,8 @@ printString
 		(self class regName: baseReg ), ', 16r', 
 		(self offset printStringBase: 16)! !
 
-!RV64Load class methodsFor: 'instance creation' stamp: 'KenD 5/7/2021 16:05:43'!
-regDest: rd regBase: rb immediateOffset: immediate12
+!RV64Load class methodsFor: 'instance creation' stamp: 'KenD 3/25/2023 09:10:42'!
+regDest: rd regBase: rb offset: immediate12
 	
 	(immediate12 bitAnd: 16rFFF) = immediate12 
 		ifFalse: [DomainError signal: 'too big for 12 bit immediate'].
@@ -3502,6 +3523,52 @@ opName
 	"StoreWord"
 	^'sw'! !
 
+!RV64SysCall methodsFor: 'accessing' stamp: 'KenD 3/25/2023 09:45:51'!
+classifier
+
+	^classifier ! !
+
+!RV64SysCall methodsFor: 'accessing' stamp: 'KenD 3/25/2023 10:14:02'!
+instruction
+
+	"Classifier at position of Immediate"
+	^ (self classifier << 20) + self opcode! !
+
+!RV64SysCall methodsFor: 'accessing' stamp: 'KenD 3/25/2023 09:46:51'!
+opcode
+
+	^2r1110011 ! !
+
+!RV64EBREAK methodsFor: 'accessing' stamp: 'KenD 5/11/2021 14:01:41'!
+opName
+
+	^'ebreak'! !
+
+!RV64EBREAK methodsFor: 'initialization' stamp: 'KenD 3/25/2023 09:49:51'!
+initialize
+
+	classifier := 1! !
+
+!RV64EBREAK methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:03'!
+printString
+
+	^self opName ! !
+
+!RV64ECALL methodsFor: 'accessing' stamp: 'KenD 5/11/2021 13:57:41'!
+opName
+
+	^'ecall'! !
+
+!RV64ECALL methodsFor: 'initialization' stamp: 'KenD 3/25/2023 09:50:09'!
+initialize
+
+	classifier := 0! !
+
+!RV64ECALL methodsFor: 'printing' stamp: 'KenD 5/11/2021 14:25:22'!
+printString
+
+	^self opName ! !
+
 !RV64UpperAddr methodsFor: 'initialization' stamp: 'KenD 5/11/2021 09:03:52'!
 destReg: rd immediate: imm20
 
@@ -3599,22 +3666,22 @@ rv64gFunct7
 
 	^ (self bitShift: -25) bitAnd: 2r01111111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/23/2023 12:52:24'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 08:51:00'!
 rv64gItypeImmediate
-	"I am a 32 bit encoding of RV64G Instruction.  
+	"I am a 32 bit encoding of I-type RV64G Instruction.  
 	 Answer my 12 bit value -- bits 31..20."
 
 	^ (self bitShift: -20) bitAnd: 2r0111111111111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/24/2023 16:51:32'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 08:24:27'!
 rv64gJtypeImmediate
 	"I am a 32 bit encoding of RV64G J-type Instruction.  
 	 Answer my 20 bit value - unswizzled  ."
-
-	^ ((self >> 11) bitAnd: 2r010000000000000000000) "31 -> 20"
-	+ (self               bitAnd: 2r001111111100000000000) "12 ->12"
-	+ ((self >>   9) bitAnd: 2r000000000010000000000) "20 -> 11"
-	+ ((self >> 21) bitAnd: 2r000000000001111111111) "21 -> 0"! !
+                                                                                            "bit shift"
+	^ ((self >> 12) bitAnd: 2r010000000000000000000) "31 -> 20"
+	+ ((self >>   1)   bitAnd: 2r001111111100000000000) "12 ->12"
+	+ ((self >>  10) bitAnd: 2r000000000010000000000) "20 -> 11"
+	+ ((self >>  21) bitAnd: 2r000000000001111111111) "21 -> 0"! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:32'!
 rv64gOpcode
