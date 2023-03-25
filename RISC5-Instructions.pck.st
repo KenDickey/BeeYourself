@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 25 March 2023 at 2:41:53 pm'!
+'From Cuis 6.0 [latest update: #5667] on 25 March 2023 at 3:24:53 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 64!
+!provides: 'RISC5-Instructions' 1 65!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1346,7 +1346,25 @@ Instruction Pattern:
 Environment Break -- Transfer control to debugger!
 
 !RV64ECALL commentStamp: '<historical>' prior: 0!
-Environment Call -- transfer control to OS!
+Environment Call -- transfer control to OS
+
+Environment Call -- transfer control to OS
+
+System calls for this system will have the service number in  a7 (register  x17). 
+
+-    syscall number is passed in a7
+-    syscall arguments are passed in a0 to a5
+-    unused arguments are set to 0
+-    return value is returned in a0
+
+System Call Number (in a7 register)	Function	Arguments
+0  exit() -	a0: exit return code
+1  printInt - a0: int to print
+2  putchar()	 - a0: char [?also 11? ]
+3  getchar()	 
+4  printString - a0: Address of null-terminated string
+5  readInt - a0 has int after read
+!
 
 !RV64AUIPC commentStamp: '<historical>' prior: 0!
 Add Upper Immediate to PC
@@ -3459,12 +3477,12 @@ func7
 
 	self shouldNotImplement ! !
 
-!RV64Store methodsFor: 'accessing' stamp: 'KenD 3/25/2023 12:25:13'!
+!RV64Store methodsFor: 'accessing' stamp: 'KenD 3/25/2023 14:44:06'!
 instruction
 " [immHi 25:31][baseReg 20:24][destReg 15:19][func3 12:14][immLo 7:11][opcode 6:0]"
 	^  (immHi << 25) 
 	 + (destReg << 20) "NB: really Source Reg"
-	 + (baseReg << 15) 
+	 + (baseReg << 15) "for base+offset"
 	 + (self func3 << 12) 
 	 + (immLo << 7) 
 	 + self opcode! !
