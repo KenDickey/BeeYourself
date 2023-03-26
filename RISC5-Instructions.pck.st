@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 26 March 2023 at 2:41:47 pm'!
+'From Cuis 6.0 [latest update: #5667] on 26 March 2023 at 3:01:08 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 68!
+!provides: 'RISC5-Instructions' 1 69!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1005,7 +1005,14 @@ Nota Bene: Not all instructions supported
      E.g. Move value from DoubleFloat register into Integer register
 	is 'FmvD2I' not 'FMV.X.D'
 
-See  #RISC5InstructionsTests>>testRV64I method for sample usage!
+See  #RISC5InstructionsTests>>testRV64I method for sample usage
+
+Nota Bene: `NAN-Boxing` or `NAN-Boxed floats`
+When multiple floating-point precisions are supported, with valid values of narrower n-bit types represented in the lower n bits, 
+the upper bits of a valid NaN-boxed value must be all 1s.
+This is to be maintained for all float operations.
+Load and Store of NANs is legal and unchecked
+(e.g. load of a `Float` may result in a NAN register value)."!
 
 !RV64Branch commentStamp: '<historical>' prior: 0!
 Branch 
@@ -1102,16 +1109,17 @@ Nota Bene: immediate12 value is split:
   immHi is upper 7 bits; immLo is lower 5 bits!
 
 !RV64FLD commentStamp: '<historical>' prior: 0!
-load Half Precision Floatingpoint Half into register!
+load 64-bit Double Precision Floatingpoint Double into register!
 
 !RV64FLH commentStamp: '<historical>' prior: 0!
-load Half Precision Floatingpoint Half into register!
+load 16-bit Half Precision Floatingpoint Half into register!
 
 !RV64FLQ commentStamp: '<historical>' prior: 0!
-load Quad Precision Floatingpoint Quad into register!
+load 128 bit Quad Precision Floatingpoint Quad into register
+ !
 
 !RV64FLW commentStamp: '<historical>' prior: 0!
-load Single Precision Floatingpoint Word into register
+load 32-bit Single Precision Floatingpoint Word into register
 
 !
 
@@ -1423,7 +1431,7 @@ Load Upper Immediate
 Instruction Pattern:
   [immed20][regDest][opcode]!
 
-!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 3/26/2023 08:27:18'!
+!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 3/26/2023 15:01:01'!
 initialize
 "
 	self initialize
@@ -1507,10 +1515,11 @@ initialize
 	"2r101 & 2r110 reserved for future use"
 	
 	"Float Data Formats"
-	SizeSingle  := 2r00. "Single Precision"
-	SizeDouble := 2r01. "Double Precision"
-	SizeHalf      := 2r10. "Half Precision"
-	SizeQuad    := 2r11. "Quad Precision"
+	SizeSingle  := 2r00. "Single Precision    32-bits"
+	SizeDouble := 2r01. "Double Precision  64-bits"
+	SizeHalf      := 2r10. "Half Precision       16-bits"
+	SizeQuad    := 2r11. "Quad Precision   128-bits"
+
 ! !
 
 !RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
