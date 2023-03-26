@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 25 March 2023 at 3:24:53 pm'!
+'From Cuis 6.0 [latest update: #5667] on 26 March 2023 at 2:41:47 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 65!
+!provides: 'RISC5-Instructions' 1 68!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -251,6 +251,36 @@ RV64Load subclass: #RV64FLD
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RV64FLD class' category: 'RISC5-Instructions'!
 RV64FLD class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64FLH category: 'RISC5-Instructions'!
+RV64Load subclass: #RV64FLH
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLH class' category: 'RISC5-Instructions'!
+RV64FLH class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64FLQ category: 'RISC5-Instructions'!
+RV64Load subclass: #RV64FLQ
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLQ class' category: 'RISC5-Instructions'!
+RV64FLQ class
+	instanceVariableNames: ''!
+
+!classDefinition: #RV64FLW category: 'RISC5-Instructions'!
+RV64Load subclass: #RV64FLW
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLW class' category: 'RISC5-Instructions'!
+RV64FLW class
 	instanceVariableNames: ''!
 
 !classDefinition: #RV64LB category: 'RISC5-Instructions'!
@@ -1072,7 +1102,18 @@ Nota Bene: immediate12 value is split:
   immHi is upper 7 bits; immLo is lower 5 bits!
 
 !RV64FLD commentStamp: '<historical>' prior: 0!
-load (8 byte) Floatingpoint Double into register!
+load Half Precision Floatingpoint Half into register!
+
+!RV64FLH commentStamp: '<historical>' prior: 0!
+load Half Precision Floatingpoint Half into register!
+
+!RV64FLQ commentStamp: '<historical>' prior: 0!
+load Quad Precision Floatingpoint Quad into register!
+
+!RV64FLW commentStamp: '<historical>' prior: 0!
+load Single Precision Floatingpoint Word into register
+
+!
 
 !RV64LB commentStamp: '<historical>' prior: 0!
 load signed Byte into register!
@@ -1382,7 +1423,7 @@ Load Upper Immediate
 Instruction Pattern:
   [immed20][regDest][opcode]!
 
-!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 10/7/2022 14:18:25'!
+!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 3/26/2023 08:27:18'!
 initialize
 "
 	self initialize
@@ -1391,85 +1432,85 @@ initialize
 	 Note the non-uniform name ordering.
 	 See #RISC5Instructions class>>initialize"
  	 X0 := Zero := 0.
- 	 X1 := ReturnAddr := 1.
-	 X2 := StackPtr:= 2.
- 	 X3 := GlobalPtr:= 3.
- 	 X4 := ThreadPtr := 4.
- 	 X5 :=  Tmp0 := 5.
- 	 X6 :=  Tmp1 := 6.
- 	 X7 :=  Tmp2 := 7.
- 	 X8 :=  FramePtr := Sav0 := 8.
- 	 X9 :=  Sav1 := 9.
-	X10 :=  Arg0 :=  10.
-	X11 :=  Arg1 := 11.
-	X12 :=  Arg2 := 12.
-	X13 :=  Arg3 := 13.
-	X14 :=  Arg4 := 14.
-	X15 :=  Arg5 := 15.
-	X16 :=  Arg6 := 16.
-	X17 :=  Arg7 := 17.
-	X18 := Sav2 := 18.
-	X19 := Sav3 := 19.
-	X20 := Sav4 := 20.
-	X21 := Sav5 := 21.
-	X22 := Sav6 := 22.
-	X23 := Sav7 := 23.
-	X24 := Sav8 := 24.
-	X25 := Sav9 := 25.
-	X26 := Sav10 := 26.
-	X27 := Sav11 := 27.
-	X28 := Tmp3 := 28.
-	X29 := Tmp4 := 29.
-	X30 := Tmp5 := 30.
-	X31 := Tmp6 := 31.
+ 	 X1 := ReturnAddr := 1. "calleR saves"
+	 X2 := StackPtr       := 2. "calleE saves"
+ 	 X3 := GlobalPtr     := 3.
+ 	 X4 := ThreadPtr    := 4.
+ 	 X5 :=  Tmp0 := 5. "R"
+ 	 X6 :=  Tmp1 := 6. "R"
+ 	 X7 :=  Tmp2 := 7. "R"
+ 	 X8 :=  FramePtr := Sav0 := 8. "E"
+ 	 X9 :=   Sav1 :=  9.  "E"
+	X10 :=  Arg0 := 10. "R"
+	X11 :=  Arg1 := 11. "R"
+	X12 :=  Arg2 := 12. "R"
+	X13 :=  Arg3 := 13. "R"
+	X14 :=  Arg4 := 14. "R"
+	X15 :=  Arg5 := 15. "R"
+	X16 :=  Arg6 := 16. "R"
+	X17 :=  Arg7 := 17. "R"
+	X18 := Sav2  := 18.  "E"
+	X19 := Sav3  := 19.  "E"
+	X20 := Sav4  := 20.  "E"
+	X21 := Sav5  := 21.  "E"
+	X22 := Sav6  := 22.  "E"
+	X23 := Sav7  := 23.  "E"
+	X24 := Sav8  := 24.  "E"
+	X25 := Sav9  := 25.  "E"
+	X26 := Sav10 := 26.  "E"
+	X27 := Sav11 := 27.  "E"
+	X28 := Tmp3  := 28. "R"
+	X29 := Tmp4  := 29. "R"
+	X30 := Tmp5  := 30. "R"
+	X31 := Tmp6  := 31. "R"
 	
-	 F0 := FTmp0 := 0.
-	 F1 := FTmp1 := 1.
-	 F2 := FTmp2 := 2.
-	 F3 := FTmp3 := 3.
-	 F4 := FTmp4 := 4.
-	 F5 := FTmp5 := 5.
-	 F6 := FTmp6 := 6.
-	 F7 := FTmp7 := 7.
-	 F8 := FSav0 := 8.
-	 F9 := FSav1 := 9.
-	F10 := FArg0 := 10.
-	F11 := FArg1 := 11.
-	F12 := FArg2 := 12.
-	F13 := FArg3 := 13.
-	F14 := FArg4 := 14.
-	F15 := FArg5 := 15.
-	F16 := FArg6 := 16.
-	F17 := FArg7 := 17.
-	F18 := FSav2 := 18.
-	F19 := FSav3 := 19.
-	F20 := FSav4 := 20.
-	F21 := FSav5 := 21.
-	F22 := FSav6 := 22.
-	F23 := FSav7 := 23.
-	F24 := FSav8 := 24.
-	F25 := FSav9 := 25.
-	F26 := FSav10 := 26.
-	F27 := FSav11 := 27.
-	F28 := FTmp8 := 28.
-	F29 := FTmp9 := 29.
-	F30 := FTmp10 := 30.
-	F31 := FTmp11 := 31.
+	 F0 := FTmp0 := 0. "R"
+	 F1 := FTmp1 := 1. "R"
+	 F2 := FTmp2 := 2. "R"
+	 F3 := FTmp3 := 3. "R"
+	 F4 := FTmp4 := 4. "R"
+	 F5 := FTmp5 := 5. "R"
+	 F6 := FTmp6 := 6. "R"
+	 F7 := FTmp7 := 7. "R"
+	 F8 := FSav0  := 8. "E"
+	 F9 := FSav1  := 9."E"
+	F10 := FArg0 := 10. "R"
+	F11 := FArg1 := 11. "R"
+	F12 := FArg2 := 12. "R"
+	F13 := FArg3 := 13. "R"
+	F14 := FArg4 := 14. "R"
+	F15 := FArg5 := 15. "R"
+	F16 := FArg6 := 16. "R"
+	F17 := FArg7 := 17. "R"
+	F18 := FSav2 := 18. "E"
+	F19 := FSav3 := 19. "E"
+	F20 := FSav4 := 20. "E"
+	F21 := FSav5 := 21. "E"
+	F22 := FSav6 := 22. "E"
+	F23 := FSav7 := 23. "E"
+	F24 := FSav8 := 24. "E"
+	F25 := FSav9 := 25. "E"
+	F26 := FSav10  := 26. "E"
+	F27 := FSav11  := 27. "E"
+	F28 := FTmp8   := 28. "R"
+	F29 := FTmp9   := 29. "R"
+	F30 := FTmp10 := 30. "R"
+	F31 := FTmp11 := 31. "R"
 	
 	"Float Rounding Modes"
 	RoundNearestToEven := 2r000. "RME Round to Nearest, ties to Even"
-	RoundTwordZero := 2r001. "RTZ Round Towards Zero"
-	RoundDown := 2r010. "RDN Round DowN (toward -infinity)"
-	RoundUp := 2r011. "RUP Round UP (towards +infinity)"
-	RoundNearestToMax := 2r100. "RMM Round to nearest, ties to Max Magnitude"
-	DYNamic := 2r111. "DYN In instruction's #rm field, select dynamic; else illegal"
+	RoundTwordZero         := 2r001. "RTZ Round Towards Zero"
+	RoundDown                  := 2r010. "RDN Round DowN (toward -infinity)"
+	RoundUp                       := 2r011. "RUP Round UP (towards +infinity)"
+	RoundNearestToMax  := 2r100. "RMM Round to nearest, ties to Max Magnitude"
+	DYNamic                       := 2r111. "DYN In instruction's #rm field, select dynamic; else illegal"
 	"2r101 & 2r110 reserved for future use"
 	
 	"Float Data Formats"
 	SizeSingle  := 2r00. "Single Precision"
 	SizeDouble := 2r01. "Double Precision"
-	SizeHalf := 2r10. "Half Precision"
-	SizeQuad := 2r11. "Quad Precision"
+	SizeHalf      := 2r10. "Half Precision"
+	SizeQuad    := 2r11. "Quad Precision"
 ! !
 
 !RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
@@ -1526,14 +1567,15 @@ testB
 	].
 	! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:15:50'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
 testI
 	"Test encode+decode I-type instructions"
 	
 	 #(   RV64ADDI RV64ANDI 
 		RV64ORI RV64SLLI RV64SLTI 
 		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
-		"RV64FLD" RV64LB RV64LBU RV64LD
+		RV64FLW RV64FLD RV64FLH RV64FLQ
+		RV64LB RV64LBU RV64LD
 		RV64LH RV64LHU RV64LW RV64LWU)  
 	do: [ :clsName |
 		| class encoding |
@@ -1579,9 +1621,9 @@ testR
 	].
 	! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:15:37'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:15'!
 testS
-	"Test encode+decode I-type instructions"
+	"Test encode+decode S-type instructions"
 	
 	 #( RV64SB RV64SH RV64SW RV64SD )  
 	do: [ :clsName |
@@ -1593,12 +1635,12 @@ testS
 	].
 	! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 09:52:39'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:42'!
 testSysCall
 	"Test encode+decode SysCall instructions"
 	
-	#(RV64EBREAK 
-		RV64ECALL ) do: [ :clsName |
+	#( RV64EBREAK 
+	     RV64ECALL ) do: [ :clsName |
 		| class encoding |
 		class := Smalltalk at: clsName.
 		encoding := (class new) instruction.
@@ -1674,7 +1716,7 @@ initialize
 		  FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FSav10 FSav11 
 		  FTmp8 FTmp9 FTmp10 FTmp11).! !
 
-!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/25/2023 12:04:49'!
+!RISC5Instructions class methodsFor: 'instance creation' stamp: 'KenD 3/26/2023 13:59:25'!
 fromInteger: encoding32
 
 	"Basic disassembler, but yield instruction object; *first level - entry*
@@ -1697,6 +1739,7 @@ fromInteger: encoding32
 							immediate:(encoding32 rv64gUtypeImmediate) ].
 		[2r1110011] -> [^self sysEnvOpFrom: encoding32].
 		[2r0101111] -> [^self atomicFrom: encoding32].
+		[2r0000111] -> [^self loadFloatFrom: encoding32 ].
 
 	}! !
 
@@ -1898,6 +1941,21 @@ branchFrom: encoding32
 		[16r5] -> [^RV64BGE    regA: reg1 regB: reg2 immediateOffset: immediate12 ].
 		[16r6] -> [^RV64BLTU  regA: reg1 regB: reg2 immediateOffset: immediate12 ].
 		[16r7] -> [^RV64BGEU regA: reg1 regB: reg2 immediateOffset: immediate12 ].
+	}! !
+
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/26/2023 14:33:47'!
+loadFloatFrom: encoding32
+	"Basic disassembler, but yield instruction object; *2nd level*"
+	| reg1 regDest immediate12 |
+	immediate12 := encoding32 rv64gItypeImmediate.
+	reg1               := encoding32 rv64gReg1.
+	regDest          := encoding32 rv64gRegDest.
+	
+	(encoding32 rv64gFunct3) caseOf: {
+		[SizeSingle  ] -> [^RV64FLW   regDest: regDest regBase: reg1 offset: immediate12 ].
+		[SizeDouble] -> [^RV64FLD    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[SizeHalf     ] -> [^RV64FLH    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[SizeQuad   ] -> [^RV64FLQ    regDest: regDest regBase: reg1 offset: immediate12 ].
 	}! !
 
 !RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/25/2023 10:42:11'!
@@ -2416,17 +2474,62 @@ regDest: rd regBase: rb offset: immediate12
 			baseReg: rb 
 			immedOffset: immediate12 ! !
 
-!RV64FLD methodsFor: 'accessing' stamp: 'KenD 10/13/2022 09:55:40'!
+!RV64FLD methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:26:05'!
 func3
 
-	^ 2r011! !
+	^ SizeDouble! !
 
 !RV64FLD methodsFor: 'accessing' stamp: 'KenD 10/7/2022 13:48:31'!
 opName
 
 	^'Fld'! !
 
-!RV64FLD methodsFor: 'accessing' stamp: 'KenD 10/7/2022 13:49:25'!
+!RV64FLD class methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:27:02'!
+opcode
+
+	^ 2r0000111! !
+
+!RV64FLH methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:28:48'!
+func3
+
+	^ SizeHalf! !
+
+!RV64FLH methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:28:55'!
+opName
+
+	^'Fld'! !
+
+!RV64FLH class methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:29:15'!
+opcode
+
+	^ 2r0000111! !
+
+!RV64FLQ methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:25:38'!
+func3
+
+	^ SizeQuad! !
+
+!RV64FLQ methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:21:56'!
+opName
+
+	^'Flq'! !
+
+!RV64FLQ class methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:27:15'!
+opcode
+
+	^ 2r0000111! !
+
+!RV64FLW methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:25:51'!
+func3
+
+	^ SizeSingle! !
+
+!RV64FLW methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:05:16'!
+opName
+
+	^'Flw'! !
+
+!RV64FLW class methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:27:26'!
 opcode
 
 	^ 2r0000111! !
@@ -3699,47 +3802,54 @@ opcode
 	"Opcode for LUI"
 	^2r0110111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/24/2023 15:41:59'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:44:41'!
 rv64gBtypeImmediate
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 12 bit value -- bits: 31 (sign) | 7 | 30..25 | 11..8.
 	 Treat as unsigned, but sign bit is high bit."
 
 	"This wierd encodng gets 11 bits + sign bit"          "bits shift"
-	^ ((self bitShift: -19) bitAnd: 2r0100000000000) "12 -> 31"
-	+ ((self bitShift:     3) bitAnd: 2r0010000000000)  "11 ->  7"
-	+ ((self bitShift: -20) bitAnd: 2r0001111110000)  " 5 -> 25"
-	+ ((self bitShift:   -8) bitAnd: 2r0000000001111)  " 0 -> 8"! !
+	^ ((self >> 19) bitAnd: 2r0100000000000) "12 -> 31"
+	+ ((self <<   3) bitAnd: 2r0010000000000)  "11 ->  7"
+	+ ((self >> 20) bitAnd: 2r0001111110000)  " 5 -> 25"
+	+ ((self >>  8) bitAnd: 2r0000000001111)  " 0 -> 8"! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:48:29'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:37:19'!
+rv64gFunct2
+	"I am a 32 bit encoding of RV64G Instruction.  
+	 Answer my 2 bit funct2 value -- bits 26..25."
+	
+	^ (self >> 25) bitAnd: 2r011! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:43:00'!
 rv64gFunct3
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 3 bit funct3 value -- bits 14..12."
 	
 	"2r10111010000000000101000001010101 RV64Gfunct3 printStringBase: 2.  --> '101' "
 
-	^ (self bitShift: -12) bitAnd: 2r0111! !
+	^ (self >> 12) bitAnd: 2r0111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 15:59:38'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:42:44'!
 rv64gFunct5
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 5 bit funct3 value -- bits 31..27."
 	
-	^ (self bitShift: -27) bitAnd: 2r011111! !
+	^ (self >> 27) bitAnd: 2r011111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:00'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:42:30'!
 rv64gFunct7
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 7 bit funct7 value -- bits 31..25."
 
-	^ (self bitShift: -25) bitAnd: 2r01111111! !
+	^ (self >> 25) bitAnd: 2r01111111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 08:51:00'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:42:15'!
 rv64gItypeImmediate
 	"I am a 32 bit encoding of I-type RV64G Instruction.  
 	 Answer my 12 bit value -- bits 31..20."
 
-	^ (self bitShift: -20) bitAnd: 2r0111111111111! !
+	^ (self >> 20) bitAnd: 2r0111111111111! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 08:24:27'!
 rv64gJtypeImmediate
@@ -3760,26 +3870,34 @@ rv64gOpcode
 
 	^ self bitAnd: 2r001111111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:50'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:41:07'!
 rv64gReg1
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 5 bit register-1 value -- bits 19..15."
 
-	^ (self bitShift: -15) bitAnd: 2r011111! !
+	^ (self >> 15) bitAnd: 2r011111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:58:40'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:41:00'!
 rv64gReg2
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 5 bit register-2 value -- bits 24..20."
 
-	^ (self bitShift: -20) bitAnd: 2r011111! !
+	^ (self >> 20) bitAnd: 2r011111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:50:27'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:51:23'!
+rv64gReg3
+	"I am a 32 bit encoding of RV64G Instruction.  R4-type.  
+	 Answer my 5 bit register-3 value -- bits 31..27.
+	(Same code as rv64gFunct5)"
+
+	^ self rv64gFunct5! !
+
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:41:28'!
 rv64gRegDest
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 5 bit destination register value -- bits 11..7."
 
-	^ (self bitShift: -7) bitAnd: 2r011111! !
+	^ (self >> 7) bitAnd: 2r011111! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 12:52:18'!
 rv64gStypeImmediate
@@ -3789,11 +3907,11 @@ rv64gStypeImmediate
 	^ ((self >>   7) bitAnd: 2r011111)              "7 -> 0"
 	+ ((self >> 20) bitAnd: 2r0111111100000) "25 -> 5"! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 12:01:12'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:41:52'!
 rv64gUtypeImmediate
 	"I am a 32 bit encoding of U-type RV64G Instruction.  
 	 Answer my 20 bit value -- bits 31..12."
 
-	^ (self bitShift: -12) bitAnd: 16r0FFFFF! !
+	^ (self >> 12) bitAnd: 16r0FFFFF! !
 RISC5Regs initialize!
 RISC5Instructions initialize!
