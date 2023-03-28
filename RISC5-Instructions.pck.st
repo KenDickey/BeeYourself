@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 11:55:32 am'!
+'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 12:14:24 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 71!
+!provides: 'RISC5-Instructions' 1 72!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1684,11 +1684,12 @@ testR
 	].
 	! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:15'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 12:05:13'!
 testS
 	"Test encode+decode S-type instructions"
 	
-	 #( RV64SB RV64SH RV64SW RV64SD )  
+	 #( RV64SB RV64SH RV64SW RV64SD
+	     RV64FSQ RV64FSH RV64FSW RV64FSD )  
 	do: [ :clsName |
 		| class encoding |
 		class := Smalltalk at: clsName.
@@ -2039,19 +2040,19 @@ loadRegFrom: encoding32
 		[16r6] -> [^RV64LWU  regDest: regDest regBase: reg1 offset: immediate12 ].
 	}! !
 
-!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/27/2023 15:15:20'!
+!RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/28/2023 12:14:15'!
 storeFloatFrom: encoding32
 	"Basic disassembler, but yield instruction object; *2nd level*"
-	| reg1 regDest immediate12 |
-	immediate12 := encoding32 rv64gItypeImmediate.
+	| reg1 reg2 immediate12 |
+	immediate12 := encoding32 rv64gStypeImmediate.
 	reg1               := encoding32 rv64gReg1.
-	regDest          := encoding32 rv64gRegDest.
-	
+	reg2               := encoding32 rv64gReg2.
+
 	(encoding32 rv64gFunct3) caseOf: {
-		[SizeSingle  ] -> [^RV64FSW   regDest: regDest regBase: reg1 offset: immediate12 ].
-		[SizeDouble] -> [^RV64FSD    regDest: regDest regBase: reg1 offset: immediate12 ].
-		[SizeHalf     ] -> [^RV64FSH    regDest: regDest regBase: reg1 offset: immediate12 ].
-		[SizeQuad   ] -> [^RV64FSQ    regDest: regDest regBase: reg1 offset: immediate12 ].
+		[SizeSingle  ] -> [^RV64FSW  regSource: reg2 regBase: reg1 offset: immediate12 ].
+		[SizeDouble] -> [^RV64FSD   regSource: reg2 regBase: reg1 offset: immediate12 ].
+		[SizeHalf     ] -> [^RV64FSH   regSource: reg2 regBase: reg1 offset: immediate12 ].
+		[SizeQuad   ] -> [^RV64FSQ   regSource: reg2 regBase: reg1 offset: immediate12 ].
 	}! !
 
 !RISC5Instructions class methodsFor: 'private instance' stamp: 'KenD 3/25/2023 14:41:37'!
@@ -3770,9 +3771,9 @@ opName
 
 	self subclassResponsibility ! !
 
-!RV64Store methodsFor: 'accessing' stamp: 'KenD 5/7/2021 15:41:26'!
+!RV64Store methodsFor: 'accessing' stamp: 'KenD 3/28/2023 12:03:26'!
 opcode
-	"Opcode for all S-type instructions"
+	"Opcode for all non-float S-type instructions"
 	^2r0100011! !
 
 !RV64Store methodsFor: 'initialization' stamp: 'KenD 11/2/2022 12:22:35'!
