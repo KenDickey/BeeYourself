@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 2:11:04 pm'!
+'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 3:41:46 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 73!
+!provides: 'RISC5-Instructions' 1 74!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1649,7 +1649,7 @@ testI
 	].
 	! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/24/2023 16:13:12'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 15:41:32'!
 testJ
 	"Test encode+decode J-type instructions"
 	
@@ -1661,6 +1661,21 @@ testJ
 		self assert: (encoding = 
 			(RISC5Instructions fromInteger: encoding) instruction).
 	].
+	"Check immediate20 swizzle"
+	self assert: (RV64JAL regDest: 10 offset:  16rFFFFF) 
+		  instruction rv64gJtypeImmediate = 16rFFFFF.    
+		
+	self assert: (RV64JAL regDest: 10 offset: 2r010000000000000000000) 
+		  instruction rv64gJtypeImmediate = 2r010000000000000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000001111111111) 
+		  instruction rv64gJtypeImmediate = 2r000000000001111111111.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000010000000000) 
+		  instruction rv64gJtypeImmediate = 2r000000000010000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r001111111100000000000) 
+		  instruction rv64gJtypeImmediate = 2r001111111100000000000.
 	! !
 
 !RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
@@ -2382,7 +2397,7 @@ opName
 
 	^'XorI'! !
 
-!RV64JAL methodsFor: 'accessing' stamp: 'KenD 5/9/2021 15:04:46'!
+!RV64JAL methodsFor: 'accessing' stamp: 'KenD 3/28/2023 15:10:20'!
 instruction
 " [immOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
 	^ (bit31 << 31) 
@@ -2431,19 +2446,19 @@ printString
 		(self class regName: destReg), ', ', 
 		'16r', (self offset printStringBase: 16).  "FIXME: 0x??"! !
 
-!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 3/24/2023 15:57:03'!
+!RV64JAL class methodsFor: 'instance creation' stamp: 'KenD 3/28/2023 15:19:38'!
 regDest: destReg offset: immediate20
 
 	"Hmmm.. could be signed"
 	   (immediate20 bitAnd: 16rFFFFF) = immediate20 
 		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
-	"Bit 0 will be zero"
+	"[20|10:1|11|19:12] starting at bit 12"
 	^self new 
 		destReg: destReg 
-		bit31:          (immediate20 bitAnd: 2r10000000000000000000)  >> 19 "source bit 20"
-		bits21to30: (immediate20 bitAnd: 2r00000000001111111111) "source bits 1:10"
-		bit20:          (immediate20 bitAnd: 2r00000000010000000000) >> 10"source bit 11"
-		bits12to19: (immediate20 bitAnd: 2r01111111100000000000) >> 11 "source bits 12:19"! !
+		bit31:          (immediate20 bitAnd: 2r010000000000000000000) >> 19 "21->1"
+		bits21to30: (immediate20 bitAnd: 2r000000000001111111111)
+		bit20:          (immediate20 bitAnd: 2r000000000010000000000) >> 10
+		bits12to19: (immediate20 bitAnd: 2r001111111100000000000) >> 11! !
 
 !RV64JALR methodsFor: 'accessing' stamp: 'KenD 5/9/2021 16:03:52'!
 instruction
@@ -4066,14 +4081,14 @@ rv64gItypeImmediate
 
 	^ (self >> 20) bitAnd: 2r0111111111111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/25/2023 08:24:27'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 15:35:13'!
 rv64gJtypeImmediate
 	"I am a 32 bit encoding of RV64G J-type Instruction.  
 	 Answer my 20 bit value - unswizzled  ."
                                                                                             "bit shift"
-	^ ((self >> 12) bitAnd: 2r010000000000000000000) "31 -> 20"
-	+ ((self >>   1)   bitAnd: 2r001111111100000000000) "12 ->12"
-	+ ((self >>  10) bitAnd: 2r000000000010000000000) "20 -> 11"
+	^ ((self >> 12)  bitAnd: 2r010000000000000000000) "31 -> 20"
+	+ ((self >>   1)  bitAnd: 2r001111111100000000000) "12 ->12"
+	+ ((self >>  10)  bitAnd: 2r000000000010000000000) "20 -> 11"
 	+ ((self >>  21) bitAnd: 2r000000000001111111111) "21 -> 0"! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/22/2023 14:49:32'!
