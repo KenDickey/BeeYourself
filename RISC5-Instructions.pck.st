@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 27 March 2023 at 3:37:08 pm'!
+'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 11:55:32 am'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 70!
+!provides: 'RISC5-Instructions' 1 71!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -1600,7 +1600,7 @@ testRV64I
 		 = 'lui  ReturnAddr, 16rC0E03' 
 		! !
 
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 13:39:23'!
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 11:44:25'!
 testB
 	"Test encode+decode B-type instructions"
 	
@@ -1613,6 +1613,21 @@ testB
 		self assert: (encoding = 
 			(RISC5Instructions fromInteger: encoding) instruction).
 	].
+	"Check immediate 12 swizzle/unswizzle. NB: treat immediate as unsigned"
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0100000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0100000000000.
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0010000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0010000000000.		
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0001111110000) instruction rv64gBtypeImmediate ) 
+							 = 2r0001111110000.				
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0000000001111) instruction rv64gBtypeImmediate ) 
+							 = 2r0000000001111.	
+
+
 	! !
 
 !RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
@@ -2074,27 +2089,28 @@ func7
 
 	self shouldNotImplement ! !
 
-!RV64Branch methodsFor: 'accessing' stamp: 'KenD 3/24/2023 15:40:25'!
+!RV64Branch methodsFor: 'accessing' stamp: 'KenD 3/28/2023 11:55:05'!
 instruction
 " [immed12|10:5][regB 22:20][regA 19:15][func3 14:12][imm4:1|11][opcode6:0] "
+	"NB: ((2r0010000000000 << 3) >> 4) = 2r0010000000000"
 	|  swizzledImmediate |
-	swizzledImmediate :=                                                        "bits shift"
-		   ((imm12 bitAnd: 2r0100000000000) bitShift: 19) "31 <- 12"
-		+ ((imm12 bitAnd: 2r0010000000000) bitShift: -3) "8 <- 11"
-		+ ((imm12 bitAnd: 2r0001111110000) bitShift: 20) "25 <- 5"
-		+ ((imm12 bitAnd: 2r0000000001111) bitShift:   8).  "8 <- 0"
+	swizzledImmediate :=                                               "bits shift"
+		   ((imm12 bitAnd: 2r0100000000000) << 19) "31 <- 11"
+		+ ((imm12 bitAnd: 2r0010000000000) >>  4)   "7 <- 10"
+		+ ((imm12 bitAnd: 2r0001111110000) << 20) "25 <- 4"
+		+ ((imm12 bitAnd: 2r0000000001111) <<   8).  "8 <- 0"
 	^ swizzledImmediate
 	 + (regB << 20) "NB: really Source Reg"
 	 + (regA << 15) 
 	 + (self func3 << 12) 
 	 + self opcode! !
 
-!RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:30:47'!
+!RV64Branch methodsFor: 'accessing' stamp: 'KenD 3/28/2023 11:21:36'!
 offset
 
 	"Answer assembled immediate
 	  Nota Bene: immed12 multiplied by 2"
-	^ ((immHi << 5) + immLo) << 1 ! !
+	^ imm12  << 1! !
 
 !RV64Branch methodsFor: 'accessing' stamp: 'KenD 5/8/2021 07:10:48'!
 opName
@@ -3995,17 +4011,19 @@ opcode
 	"Opcode for LUI"
 	^2r0110111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:44:41'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 11:54:13'!
 rv64gBtypeImmediate
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 12 bit value -- bits: 31 (sign) | 7 | 30..25 | 11..8.
-	 Treat as unsigned, but sign bit is high bit."
+	 Treat as unsigned, but sign bit is high bit.
+	NB: offset is multiplied by 2 (<< 1) when executed.
+	((2r0010000000000 << 3) >> 4) = 2r0010000000000"
 
-	"This wierd encodng gets 11 bits + sign bit"          "bits shift"
-	^ ((self >> 19) bitAnd: 2r0100000000000) "12 -> 31"
-	+ ((self <<   3) bitAnd: 2r0010000000000)  "11 ->  7"
-	+ ((self >> 20) bitAnd: 2r0001111110000)  " 5 -> 25"
-	+ ((self >>  8) bitAnd: 2r0000000001111)  " 0 -> 8"! !
+	"This wierd encodng gets 11 bits + sign bit"  "bits shift"
+	^ ((self >> 19) bitAnd: 2r0100000000000) "11 <- 31"
+	+ ((self <<   3) bitAnd: 2r0010000000000)  "10 <-  7"
+	+ ((self >> 20) bitAnd: 2r0001111110000)  " 4 <- 25"
+	+ ((self >>   8) bitAnd: 2r0000000001111)  " 0 <-   8"! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:37:19'!
 rv64gFunct2
