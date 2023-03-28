@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 12:14:24 pm'!
+'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 2:11:04 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 72!
+!provides: 'RISC5-Instructions' 1 73!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: 'RISC5-Instructions'!
 
@@ -2090,17 +2090,11 @@ func7
 
 	self shouldNotImplement ! !
 
-!RV64Branch methodsFor: 'accessing' stamp: 'KenD 3/28/2023 11:55:05'!
+!RV64Branch methodsFor: 'accessing' stamp: 'KenD 3/28/2023 14:09:15'!
 instruction
 " [immed12|10:5][regB 22:20][regA 19:15][func3 14:12][imm4:1|11][opcode6:0] "
-	"NB: ((2r0010000000000 << 3) >> 4) = 2r0010000000000"
-	|  swizzledImmediate |
-	swizzledImmediate :=                                               "bits shift"
-		   ((imm12 bitAnd: 2r0100000000000) << 19) "31 <- 11"
-		+ ((imm12 bitAnd: 2r0010000000000) >>  4)   "7 <- 10"
-		+ ((imm12 bitAnd: 2r0001111110000) << 20) "25 <- 4"
-		+ ((imm12 bitAnd: 2r0000000001111) <<   8).  "8 <- 0"
-	^ swizzledImmediate
+
+	^ self swizzleImmediate
 	 + (regB << 20) "NB: really Source Reg"
 	 + (regA << 15) 
 	 + (self func3 << 12) 
@@ -2138,6 +2132,15 @@ printString
 		(self class regName: regA), ', ',  "NB: 'destReg'  unused"
 		(self class regName: regB ), ', 16r', 
 		(self offset printStringBase: 16)! !
+
+!RV64Branch methodsFor: 'private' stamp: 'KenD 3/28/2023 14:05:43'!
+swizzleImmediate
+	"Move bits from immediate12 to opcode positions:
+	  [31|29..25|]..[4:1|11]"
+	^  ((imm12 bitAnd: 2r0100000000000) << 20) "31 <- 11"
+	  + ((imm12 bitAnd: 2r0010000000000) >>  3)   "7 <- 10"
+	  + ((imm12 bitAnd: 2r0001111110000) << 21) "25 <- 4"
+	  + ((imm12 bitAnd: 2r0000000001111) <<   8).  "8 <- 0"! !
 
 !RV64Branch class methodsFor: 'instance creation' stamp: 'KenD 3/23/2023 15:44:25'!
 regA: reg1 regB: reg2 immediateOffset: immediate12
@@ -4012,7 +4015,7 @@ opcode
 	"Opcode for LUI"
 	^2r0110111! !
 
-!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 11:54:13'!
+!SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 14:08:15'!
 rv64gBtypeImmediate
 	"I am a 32 bit encoding of RV64G Instruction.  
 	 Answer my 12 bit value -- bits: 31 (sign) | 7 | 30..25 | 11..8.
@@ -4021,9 +4024,9 @@ rv64gBtypeImmediate
 	((2r0010000000000 << 3) >> 4) = 2r0010000000000"
 
 	"This wierd encodng gets 11 bits + sign bit"  "bits shift"
-	^ ((self >> 19) bitAnd: 2r0100000000000) "11 <- 31"
+	^ ((self >> 20) bitAnd: 2r0100000000000) "11 <- 31"
 	+ ((self <<   3) bitAnd: 2r0010000000000)  "10 <-  7"
-	+ ((self >> 20) bitAnd: 2r0001111110000)  " 4 <- 25"
+	+ ((self >> 21) bitAnd: 2r0001111110000)  " 4 <- 25"
 	+ ((self >>   8) bitAnd: 2r0000000001111)  " 0 <-   8"! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/26/2023 13:37:19'!
