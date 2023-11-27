@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #6072] on 27 November 2023 at 2:58:56 pm'!
+'From Cuis 6.0 [latest update: #6072] on 27 November 2023 at 3:49:04 pm'!
 'Description Egg -- refactoring of Bee runtime
 
 Note fork: `https://github.com/KenDickey/egg`'''!
-!provides: 'Egg' 1 2!
+!provides: 'Egg' 1 3!
 !requires: 'BeeCompatibility' 1 46 nil!
 !requires: 'RISC5-Instructions' 1 74 nil!
 SystemOrganization addCategory: #'Egg-Builder'!
@@ -51458,6 +51458,43 @@ primitivePrintString
 	^self printString
 ! !
 
+!Object class methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+disableCode: aBlock
+	"the block has been disabled"
+! !
+
+!Collection methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+anyone
+	^self anyOne
+! !
+
+!Collection methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+conform: evaluable
+	^self allSatisfy: evaluable
+! !
+
+!Collection class methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+with: anObject withAll: aCollection
+	^self new add: anObject; addAll: aCollection; yourself
+! !
+
+!SequenceableCollection methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+beeCopyFrom: start
+	^self beeCopyFrom: start to: self size
+! !
+
+!SequenceableCollection methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+beeCopyFrom: start to: stop
+	| size copy |
+	size := stop - start + 1 max: 0.
+	copy := self species ofSize: size.
+	^copy
+		replaceFrom: 1
+		to: size
+		with: self
+		startingAt: start
+! !
+
 !String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
 arity
 	^self numArgs
@@ -51545,6 +51582,222 @@ withArticle
 	| article |
 	article := self first isVowel ifTrue: ['an'] ifFalse: ['a'].
 	^article , ' ' , self
+! !
+
+!Dictionary methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+removeAllSuchThat: aBlock
+	"Evaluate aBlock for each element and remove all that elements from
+	the receiver for that aBlock evaluates to true.  Use a copy to enumerate 
+	collections whose order changes when an element is removed (i.e. Sets)."
+	self copy
+		keysAndValuesDo: [:key :each | (aBlock value: each)
+			ifTrue: [self removeKey: key]]
+! !
+
+!OrderedDictionary methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+withIndexDo: aBlock
+	| i |
+	i := 1.
+	self do: [:each | 
+		aBlock value: each value: i.
+		i := i + 1]
+! !
+
+!Stream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+sizeToEnd
+	^self size - self position
+! !
+
+!Stream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+skip
+	self skip: 1
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+int64
+	"Answer the next signed, 64-bit integer from this (binary) stream."
+
+	"Details: As a fast check for negative number, check the high bit of the first digit"
+
+	| n firstDigit |
+	n := firstDigit := self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	n := (n bitShift: 8) + self next.
+	firstDigit >= 128
+		ifTrue: [ n := -16r10000000000000000 + n ].	"decode negative 64-bit integer"
+	^ n
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+int64: anInteger
+	"Store the given signed, 64-bit integer on this (binary) stream."
+
+	| n |
+	(anInteger < -16r8000000000000000 or: [ anInteger >= 16r8000000000000000 ])
+		ifTrue: [ self error: 'outside 32-bit integer range' ].
+	n := anInteger < 0
+		ifTrue: [ 16r10000000000000000 + anInteger ]
+		ifFalse: [ anInteger ].
+	self nextPut: (n byteAt: 8).
+	self nextPut: (n byteAt: 7).
+	self nextPut: (n byteAt: 6).
+	self nextPut: (n byteAt: 5).
+	self nextPut: (n byteAt: 4).
+	self nextPut: (n byteAt: 3).
+	self nextPut: (n byteAt: 2).
+	self nextPut: (n byteAt: 1)
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+peekForAll: aCollection
+	| n |
+	n := aCollection size.
+	^((self peek: n) hasEqualElements: aCollection)
+		ifTrue: [self skip: n];
+		yourself
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint16le
+	"Answer the next unsigned, 16-bit integer from this (binary) stream."
+
+	^ self next + (self next bitShift: 8)
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint16le: anInteger
+	"Store the given unsigned, 32-bit integer as little endian 
+	 on this (binary) stream."
+
+	(anInteger < 0 or: [ anInteger >= 16r10000 ])
+		ifTrue: [ self error: 'outside unsigned 16-bit integer range' ].
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2)
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint32le
+	"Answer the next unsigned, 32-bit integer from this (binary) stream."
+
+	^self next + (self next bitShift: 8) + (self next bitShift: 16) + (self next bitShift: 24)
+	
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint32le: anInteger
+	"Store the given unsigned, 32-bit integer as little endian 
+	 on this (binary) stream."
+
+	(anInteger < 0 or: [ anInteger >= 16r100000000 ])
+		ifTrue: [ self error: 'outside unsigned 32-bit integer range' ].
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2).
+	self nextPut: (anInteger byteAt: 3).
+	self nextPut: (anInteger byteAt: 4)
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint64le
+	"Answer the next unsigned, 64-bit integer from this (binary) stream."
+
+	^ self next + (self next bitShift: 8) + (self next bitShift: 16)
+		+ (self next bitShift: 24) + (self next bitShift: 32)
+		+ (self next bitShift: 40) + (self next bitShift: 48)
+		+ (self next bitShift: 56)
+! !
+
+!PositionableStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+uint64le: anInteger
+	"Store the given unsigned, 64-bit integer as little endian 
+	 on this (binary) stream."
+
+	self nextPut: (anInteger byteAt: 1).
+	self nextPut: (anInteger byteAt: 2).
+	self nextPut: (anInteger byteAt: 3).
+	self nextPut: (anInteger byteAt: 4).
+	self nextPut: (anInteger byteAt: 5).
+	self nextPut: (anInteger byteAt: 6).
+	self nextPut: (anInteger byteAt: 7).
+	self nextPut: (anInteger byteAt: 8)
+! !
+
+!ReadStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+copyFrom: start to: stop
+	| pos result |
+	pos := self position.
+	self position: start - 1.
+	result := self next: stop - start + 1.
+	self position: pos.
+	^result
+! !
+
+!ReadStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+peek: n
+	| pos safe data |
+	pos := self position.
+	safe := n min: self sizeToEnd.
+	data := self next: safe.
+	self position: pos.
+	^data
+! !
+
+!ReadStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+prev
+	^self position > 0
+		ifTrue: [self position: self position - 1; peek]
+		ifFalse: [self error: 'read beyond start of stream']
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextBytePut: aCollection
+	^ self nextPut: aCollection
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextBytesPut: aCollection
+	^self nextBytesPutAll: aCollection
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextLargePut: anInteger
+	| unsigned |
+	unsigned := anInteger < 0 ifTrue: [ anInteger + (1 << 64) ] ifFalse: [ anInteger  ]
+.self nextULargePut: unsigned.
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextLongPut: anInteger
+	| unsigned |
+	unsigned := anInteger < 0 ifTrue: [ anInteger + (1 << 32) ] ifFalse: [ anInteger  ]
+.self nextULongPut: unsigned.
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextULargePut: anInteger
+	1 to: 8 do: [ :i | 
+		| bi |
+		bi := anInteger byteAt: i.
+		self nextPut: bi ]
+
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+nextULongPut: anInteger
+	1 to: 4 do: [ :i | 
+		| bi |
+		bi := anInteger byteAt: i.
+		self nextPut: bi ]
+
+! !
+
+!WriteStream methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+peek
+	^self atEnd ifFalse: [collection at: position + 1]
 ! !
 
 !Behavior methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
@@ -51744,6 +51997,67 @@ isSmallInteger
 !Character methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
 isHexDigit
 	^self isDigit or: [self between: $a and: $f] or: [self between: $A and: $F]
+! !
+
+!SmalltalkImage methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+associationAt: aSymbol
+	^globals associationAt: aSymbol
+! !
+
+!SmalltalkImage methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+getPackageDirectoryForPackage: anRPackage
+	"Return a directory from which given package has been loaded.
+	 
+	 CAVEAT: This only works for packages loaded from GIT repository and
+	 having in registered in Iceberg"
+	
+	| repo |
+	repo := IceRepository registry 
+					detect:[ :each | each loadedPackages contains: [:icep | icep name = anRPackage name ] ]
+					ifNone:[ ^ nil ].
+	^repo codeDirectory / anRPackage name
+
+! !
+
+!SmalltalkImage methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+host
+	"Return current host identification string (that is, identification
+	of machine the smalltalk is currently running on). 
+
+	The format of the string is that of GNU triplets except that 'vendor'
+	part is ommited (mostly unused these days anyway). 
+
+	Examples:   
+			* x86_64-linux-gnu 
+			* x86_64-win32
+			* riscv64-linux-gnu
+			
+	CAVEAT: following code simply assumes that Pharo is used
+	on x86_64 systems only and also assumes that if the OS is 
+	not Windows nor macOS, it must be Linux (and not, for instance,
+	FreeBSD or Solaris). 
+
+	Is there a standard way to figure that out? 
+	"
+	
+	| platform |
+	
+	platform := OSPlatform current.
+		
+	(platform isWin64 or: [platform isWin32 and: [Smalltalk vm wordSize = 8]]) ifTrue: [ ^'x86_64-win32' ].
+	platform isMacOSX ifTrue:[ ^'x86_64-darwin' ].
+	platform isUnix64 ifTrue:[ ^'x86_64-linux-gnu' ].
+	
+	self error: 'Unknown host!!'
+	
+	
+
+
+
+
+
+
+
 ! !
 CharacterConstants initialize!
 OperandTypeFlags initialize!
