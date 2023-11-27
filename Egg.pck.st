@@ -1,8 +1,8 @@
-'From Cuis 6.0 [latest update: #6072] on 27 November 2023 at 2:27:19 pm'!
+'From Cuis 6.0 [latest update: #6072] on 27 November 2023 at 2:58:56 pm'!
 'Description Egg -- refactoring of Bee runtime
 
 Note fork: `https://github.com/KenDickey/egg`'''!
-!provides: 'Egg' 1 1!
+!provides: 'Egg' 1 2!
 !requires: 'BeeCompatibility' 1 46 nil!
 !requires: 'RISC5-Instructions' 1 74 nil!
 SystemOrganization addCategory: #'Egg-Builder'!
@@ -75,7 +75,7 @@ Prefixes class
 !classDefinition: #Registers category: #'Egg-Core-Assembler-Intel'!
 PSharedPool subclass: #Registers
 	instanceVariableNames: ''
-	classVariableNames: 'ah al ax bh bl bp bpl bx ch cl cs cx dh di dil dl ds dx eax ebp ebx ecx edi edx es esi esp fs gs mmx0 mmx1 mmx2 mmx3 mmx4 mmx5 mmx6 mmx7 r10 r10b r10d r10w r11 r11b r11d r11w r12 r12b r12d r12w r13 r13b r13d r13w r14 r14b r14d r14w r15 r15b r15d r15w r8 r8b r8d r8w r9 r9b r9d r9w rax rbp rbx rcx rdi rdx rip rsi rsp si sil sp spl ss xmm0 xmm1 xmm10 xmm11 xmm12 xmm13 xmm14 xmm15 xmm2 xmm3 xmm4 xmm5 xmm6 xmm7 xmm8 xmm9 ymm0 ymm1 ymm10 ymm11 ymm12 ymm13 ymm14 ymm15 ymm2 ymm3 ymm4 ymm5 ymm6 ymm7 ymm8 ymm9'
+	classVariableNames: 'AH AL AX BH BL BP BPL BX CH CL CS CX DH DI DIL DL DS DX EAX EBP EBX ECX EDI EDX ES ESI ESP FS GS MMX0 MMX1 MMX2 MMX3 MMX4 MMX5 MMX6 MMX7 R10 R10B R10D R10W R11 R11B R11D R11W R12 R12B R12D R12W R13 R13B R13D R13W R14 R14B R14D R14W R15 R15B R15D R15W R8 R8B R8D R8W R9 R9B R9D R9W RAX RBP RBX RCX RDI RDX RIP RSI RSP SI SIL SP SPL SS XMM0 XMM1 XMM10 XMM11 XMM12 XMM13 XMM14 XMM15 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 XMM9 YMM0 YMM1 YMM10 YMM11 YMM12 YMM13 YMM14 YMM15 YMM2 YMM3 YMM4 YMM5 YMM6 YMM7 YMM8 YMM9'
 	poolDictionaries: ''
 	category: 'Egg-Core-Assembler-Intel'!
 !classDefinition: 'Registers class' category: #'Egg-Core-Assembler-Intel'!
@@ -6502,9 +6502,10 @@ addRegister: aRegister
 	Registers at: aRegister name put: aRegister
 ! !
 
-!Register class methodsFor: 'initialization' stamp: 'KenD 11/22/2023 13:56:07'!
+!Register class methodsFor: 'initialization' stamp: 'Install-Egg 11/27/2023 14:47:40'!
 initialize
-	self initializeRegisters; initializeFamilies
+	self flag: #FixMe
+	"self initializeRegisters; initializeFamilies"
 ! !
 
 !Register class methodsFor: 'initialization' stamp: 'KenD 11/22/2023 13:56:07'!
@@ -51295,6 +51296,454 @@ isUndeclaredAssignment
 stretch: aStretch
 	super stretch: aStretch.
 	identifier := self source
+! !
+
+!ProtoObject methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+!!== anObject
+	^self ~~ anObject
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+!!= anObject
+		^ self ~= anObject
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+ASSERT: aBoolean
+	self assert: aBoolean
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+DENY: aBoolean
+	self ASSERT: aBoolean not
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+evaluate
+	^self
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+evaluateWithArguments: anArray
+	^self evaluate
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashWith: a
+	^self
+		hashedWith: a
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		count: 2
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashWith: a with: b
+	^ self
+		hashedWith: a
+		with: b
+		with: nil
+		with: nil
+		with: nil
+		with: nil
+		count: 3
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashWith: a with: b with: c
+	^self
+		hashedWith: a
+		with: b
+		with: c
+		with: nil
+		with: nil
+		with: nil
+		count: 4
+
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashWith: a with: b with: c with: d
+	^ self
+		hashedWith: a
+		with: b
+		with: c
+		with: d
+		with: nil
+		with: nil
+		count: 5
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashWith: a with: b with: c with: d with: e
+	^ self
+		hashedWith: a
+		with: b
+		with: c
+		with: d
+		with: e
+		with: nil
+		count: 6
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+hashedWith: a with: b with: c with: d with: e with: f count: n
+	| hash |
+	hash := n hashMultiply bitXor: self hash.
+	hash := hash hashMultiply bitXor: a hash.
+	n = 2 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: b hash.
+	n = 3 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: c hash.
+	n = 4 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: d hash.
+	n = 5 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: e hash.
+	n = 6 ifTrue: [^hash].
+	hash := hash hashMultiply bitXor: f hash.
+	n = 7 ifTrue: [^hash].
+	self error: 'Invalid argument count'
+! !
+
+!Object methodsFor: '*Egg-IR' stamp: 'KenD 11/22/2023 14:00:07'!
+isBinaryConstantOperation
+	^false
+! !
+
+!Object methodsFor: '*Egg-IR' stamp: 'KenD 11/22/2023 14:00:07'!
+isBinaryVariableOperation
+	^false
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+isBoolean
+	^false
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+isEmptyOrNil
+	^false
+! !
+
+!Object methodsFor: '*Egg-OCompiler' stamp: 'KenD 11/22/2023 13:59:55'!
+isInstruction
+	^false
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+isSmallInteger
+	^false
+! !
+
+!Object methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+isSpecies
+	^false
+! !
+
+!Object methodsFor: '*Egg-IR' stamp: 'KenD 11/22/2023 14:00:07'!
+isTernaryOperation
+	^false
+! !
+
+!Object methodsFor: '*Egg-IR' stamp: 'KenD 11/22/2023 14:00:07'!
+isUnaryOperation
+	^false
+! !
+
+!Object methodsFor: '*Egg-IR' stamp: 'KenD 11/22/2023 14:00:07'!
+primitivePrintString
+	^self printString
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+arity
+	^self numArgs
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+existingSymbol
+	^Symbol findInterned: self
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+includesString: aString
+	^ self includesSubstring: aString
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+indexOfString: aString from: start to: stop
+	| n limit base i |
+	n := aString size.
+	limit := stop - n.
+	base := start - 1.
+	i := 1.
+	[
+		base > limit ifTrue: [^0].
+		i <= n]
+		whileTrue: [
+			i := (self at: base + i) = (aString at: i) ifTrue: [i + 1] ifFalse: [
+				base := base + 1.
+				1]].
+	^i > 1 ifTrue: [base + 1] ifFalse: [0]
+
+
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+indexOfSubcollection: aCollection startingAt: anInteger
+	| m n i first |
+	m := aCollection size.
+	m = 0 ifTrue: [^0].
+	n := self size - m + 1.
+	i := anInteger.
+	first := aCollection at: 1.
+	[i <= n] whileTrue: [| j |
+		(self at: i) = first ifTrue: [
+			j := 2.
+			[j <= m and: [(self at: i + j - 1) = (aCollection at: j)]]
+				whileTrue: [j := j + 1].
+			j > m ifTrue: [^i]].
+		i := i + 1].
+	^0
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+reduced
+	^self
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+replaceAllSubstrings: aString with: anotherString
+	| string strm index fragment n |
+	string := aString asString.
+	string isEmpty ifTrue: [^self].
+	index := self indexOfSubcollection: string startingAt: 1.
+	index = 0 ifTrue: [^self].
+	strm := self asString class new writeStream.
+	fragment := self copyFrom: 1 to: index - 1.
+	strm nextPutAll: fragment.
+	n := string size.
+	[index > 0] whileTrue: [| next limit |
+		next := self indexOfString: string from: index + n to: self size.
+		limit := next = 0 ifTrue: [self size + 1] ifFalse: [next].
+		fragment := self copyFrom: index + n - 1 + 1 to: limit - 1.
+		strm nextPutAll: anotherString; nextPutAll: fragment.
+		index := next].
+	^strm contents
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 13:16:06'!
+trimBlanks
+	^self withBlanksTrimmed
+! !
+
+!String methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+withArticle
+	| article |
+	article := self first isVowel ifTrue: ['an'] ifFalse: ['a'].
+	^article , ' ' , self
+! !
+
+!Behavior methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+configureCompiler: aCompiler
+	
+! !
+
+!Behavior methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:11'!
+isSpecies
+	^true
+! !
+
+!ClassDescription methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+allSharedPoolsUsing: globals
+	^self allSharedPools 
+! !
+
+!ClassDescription methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+indexOfSlot: instVarName
+	^self instVarIndexFor: instVarName
+
+! !
+
+!ClassDescription methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+localPools
+	^#()
+! !
+
+!Boolean methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+isBoolean
+	^ true
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+and: block1 and: block2
+	^ self
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+and: block1 and: block2 and: block3
+	^self
+
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+and: block1 andNot: block2
+	^self
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+andNot: aBlock
+	^self
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+or: aBlock or: anotherBlock
+	^aBlock value or: [anotherBlock value]
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+or: aBlock or: aBlock2 or: aBlock3
+	aBlock value ifTrue: [^true].
+	aBlock2 value ifTrue: [^true].
+	aBlock3 value ifTrue: [^true].
+	^self
+! !
+
+!False methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:12'!
+orNot: aBlock
+	^aBlock value not
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+and: block1 and: block2
+	^ block1 value and: [ block2 value ]
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+and: block1 and: block2 and: block3
+	^block1 value and: [block2 value] and: [block3 value]
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+and: block1 andNot: block2
+	^block1 value andNot: [block2 value]
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+andNot: aBlock
+	^aBlock value not
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+or: aBlock or: aBlock2
+	^self
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+or: aBlock or: aBlock2 or: aBlock3
+	^self
+! !
+
+!True methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:14'!
+orNot: aBlock
+	^self
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bin
+	"
+	255 bin
+	"
+	^self radix: 2
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bin: bits
+	"
+	(2 bin: 7) size = 7
+	"
+	| pad bin |
+	pad := String new: bits withAll: $0.
+	bin := pad , self bin.
+	^ bin copyFrom: bin size - bits + 1 to: bin size
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bitShiftRight: anInteger
+	^self bitShift: 0 - anInteger
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bitsAt: aStretch
+	"
+	(2r001101010 bitField: (3 thru: 6)) bin = '1010'
+	(-16r40000000 bitField: (29 thru: 31)) bin = '100'
+	"
+	| shifted mask |
+	shifted := self bitShiftRight: aStretch start - 1.
+	mask := 1 bitShift: aStretch length.
+	^shifted bitAnd: mask - 1
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bitsAt: aStretch put: anInteger
+	"
+	((2r001101100 bitsAt: (3 thru: 6) put: 2r1101) bitField: (3 thru: 6)) bin = '1101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (29 thru: 31)) bin = '101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (1 thru: 3)) bin = '100'
+	"
+	| shifted max |
+	shifted := anInteger bitShift: aStretch start - 1.
+	max := 1 bitShift: aStretch length.
+	anInteger < max ifFalse: [self error: 'invalid argument'].
+	^(self bitsClear: aStretch) bitOr: shifted
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+bitsClear: aStretch
+	"
+	(2r111100110 bitsClear: (3 thru: 6)) = 2r111000010
+	"
+	| mask |
+	mask := (1 bitShift: aStretch end) - (1 bitShift: aStretch start - 1).
+	^self bitAnd: mask bitInvert
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+isOnBit: n
+	^(self bitAnd: n) = n
+! !
+
+!Integer methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+linearFeedbackShiftRandom: key
+	"
+	LFSR implementation (avoids 0 by definition).
+	More keys at: https://users.ece.cmu.edu/~koopman/lfsr/index.html
+	"
+
+	| shifted |
+	shifted := self bitShift: -1.
+	^ (self bitAnd: 1) = 0
+		ifTrue: [ shifted ]
+		ifFalse: [ shifted bitXor: key ]
+! !
+
+!Integer methodsFor: '*Egg-SCompiler' stamp: 'KenD 11/22/2023 07:42:21'!
+thru: anInteger
+	^Stretch from: self thru: anInteger
+! !
+
+!SmallInteger methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:13'!
+isSmallInteger
+	^ true
+! !
+
+!Character methodsFor: '*Egg-Compatibility-Pharo' stamp: 'KenD 11/22/2023 07:41:10'!
+isHexDigit
+	^self isDigit or: [self between: $a and: $f] or: [self between: $A and: $F]
 ! !
 CharacterConstants initialize!
 OperandTypeFlags initialize!
