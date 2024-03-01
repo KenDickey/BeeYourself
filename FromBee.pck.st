@@ -1,8 +1,8 @@
-'From Cuis6.3 [latest update: #6245] on 1 March 2024 at 2:37:16 pm'!
+'From Cuis6.3 [latest update: #6245] on 1 March 2024 at 3:47:50 pm'!
 'Description Compiler from Bee/Egg
 
 Test case for Cuis Bootstrap'!
-!provides: 'FromBee' 1 4!
+!provides: 'FromBee' 1 5!
 !requires: 'Cuis-Base' 63 6245 nil!
 !requires: 'BeeCompatibility' 1 49 nil!
 SystemOrganization addCategory: 'FromBee-Core-SCompiler'!
@@ -2337,7 +2337,7 @@ testCascade
 		assert: cascade messages second selector source = 'm2'
 ! !
 
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 15:38:42'!
 testCascade2
 	| cascade statements |
 	parser on: 'r m: 1; + 2'.
@@ -2366,27 +2366,27 @@ testMissingPrimary
 	self should: [parser parse: source] raise: Error
 ! !
 
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 15:43:04'!
 testSelector
 	| source ast |
 	source := 'k1: arg1 k2: arg2'.
 	ast := parser parse: source.
 	self
 		assert: ast selectorNode positions first
-			= (source indexOfSubCollection: 'k1:');
+			= (source findString: 'k1:');
 		assert: ast selectorNode positions second
-			= (source indexOfSubCollection: 'k2:');
+			= (source findString: 'k2:');
 		assert: ast selector == #k1:k2:
 ! !
 
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 15:43:23'!
 testUnarySelector
 	| source ast |
 	source := 'm a notNil'.
 	ast := parser parse: source.
 	self
 		assert: (ast nodeWithLiteral: #notNil) positions first
-			= (source indexOfSubCollection: 'notNil')
+			= (source findString: 'notNil')
 ! !
 
 !SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 3/1/2024 09:50:42'!
@@ -2402,15 +2402,15 @@ testBraceNode
 		assert: brace elements second arguments anyOne value = 4
 ! !
 
-!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 3/1/2024 09:50:42'!
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 3/1/2024 15:45:37'!
 testUnicode
 	| source ast |
-	source := 8855 asCharacter asString , ' aFreeTensor'.
+	source := (Character codePoint: 8855) asString , ' aFreeTensor'.
 	ast := parser parse: source.
 	self
 		assert: ast selectorNode position
-			= (source indexOfSubCollection: 8855 asCharacter asString);
-		assert: ast selector == 8855 asCharacter asString asSymbol
+			= (source findString: (Character codePoint: 8855) asString);
+		assert: ast selector == (Character codePoint: 8855) asString asSymbol
 ! !
 
 !SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 3/1/2024 09:50:42'!
@@ -2773,20 +2773,20 @@ testKeyword
 		assert: node2 source = 'cd:'
 ! !
 
-!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 3/1/2024 09:50:26'!
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 3/1/2024 15:46:53'!
 testUnicodeScanning
 	| next three tensor |
-	scanner on: '3 + 4' asWideString.
+	scanner on: '3 + 4' .
 	self assert: scanner next value = 3.
 	next := scanner next.
 	self
 		assert: next value == #'+';
 		assert: scanner next value = 4.
-	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
+	scanner on: '3'  , (Character codePoint: 8855) asString , '4' .
 	three := scanner next.
 	self assert: three value = 3.
 	tensor := scanner next.
-	self assert: tensor value = 8855 asCharacter asString asSymbol
+	self assert: tensor value = (Character codePoint: 8855)  asString asSymbol
 ! !
 
 !SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:26'!
@@ -5497,13 +5497,13 @@ on: aString
 	scanner on: aString
 ! !
 
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/1/2024 08:18:39'!
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/1/2024 15:39:11'!
 peek
 	| comments |
 	next ifNotNil: [^next].
 	next := scanner next.
 	next isComment ifFalse: [^next].
-	comments := OrderedCollection new: 2.
+	comments := OrderedCollection new.
 	[
 		comments add: next.
 		next := scanner next.
@@ -7251,9 +7251,9 @@ isSelector
 	^true
 ! !
 
-!SSelectorNode methodsFor: 'queries' stamp: 'KenD 3/1/2024 08:18:39'!
+!SSelectorNode methodsFor: 'queries' stamp: 'KenD 3/1/2024 15:36:56'!
 isBinary
-	^symbol isBinary
+	^symbol isValidBinarySelector
 ! !
 
 !SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 3/1/2024 08:18:39'!
@@ -7402,7 +7402,7 @@ isKeyword
 	^value last = $:
 ! !
 
-!SStringToken methodsFor: 'testing' stamp: 'KenD 3/1/2024 08:18:39'!
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/1/2024 15:38:09'!
 isNameToken
 	^(self isKeyword or: [self isBinary]) not
 ! !
