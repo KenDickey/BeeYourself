@@ -1,135 +1,137 @@
-'From Cuis6.3 [latest update: #6247] on 4 March 2024 at 12:14:03 pm'!
+'From Cuis6.3 [latest update: #6253] on 5 March 2024 at 4:14:06 pm'!
 'Description Bootstrap test: Bee Compiler -> ast codes'!
-!provides: 'FromBee' 1 1!
+!provides: 'FromBee' 1 4!
 !requires: 'Cuis-Base' 63 6247 nil!
-!requires: 'BeeCompatibility' 1 58 nil!
+!requires: 'BeeCompatibility' 1 60 nil!
+!requires: 'ExchangeFormat-Tonel-Lite' 1 67 nil!
 !requires: 'Bootstrap' 1 38 nil!
-SystemOrganization addCategory: 'FromBee-SCompiler-Frontend'!
-SystemOrganization addCategory: 'FromBee-SCompiler-Backend'!
-SystemOrganization addCategory: 'FromBee-SCompiler-Parser'!
-SystemOrganization addCategory: 'FromBee-SCompiler'!
-SystemOrganization addCategory: 'FromBee-SCompiler-Bindings'!
-SystemOrganization addCategory: 'FromBee-Compatibility-Pharo'!
+SystemOrganization addCategory: #'FromBee-SCompiler-Frontend'!
+SystemOrganization addCategory: #'FromBee-SCompiler-Backend'!
+SystemOrganization addCategory: #'FromBee-SCompiler-Parser'!
+SystemOrganization addCategory: #'FromBee-SCompiler'!
+SystemOrganization addCategory: #'FromBee-SCompiler-Bindings'!
+SystemOrganization addCategory: #'FromBee-Compatibility-Pharo'!
+SystemOrganization addCategory: 'FromBee-ProtoBoot'!
 SystemOrganization addCategory: #FromBee!
 
 
-!classDefinition: #AstBindingTypes category: 'FromBee-SCompiler-Backend'!
-PSharedPool subclass: #AstBindingTypes
+!classDefinition: #AstBindingTypes category: #'FromBee-SCompiler-Backend'!
+SharedPool subclass: #AstBindingTypes
 	instanceVariableNames: ''
 	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'AstBindingTypes class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'AstBindingTypes class' category: #'FromBee-SCompiler-Backend'!
 AstBindingTypes class
 	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
 
-!classDefinition: #AstNodeTypes category: 'FromBee-SCompiler-Backend'!
-PSharedPool subclass: #AstNodeTypes
+!classDefinition: #AstNodeTypes category: #'FromBee-SCompiler-Backend'!
+SharedPool subclass: #AstNodeTypes
 	instanceVariableNames: ''
 	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'AstNodeTypes class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'AstNodeTypes class' category: #'FromBee-SCompiler-Backend'!
 AstNodeTypes class
 	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
 
-!classDefinition: #ClosureElementTypes category: 'FromBee-SCompiler-Backend'!
-PSharedPool subclass: #ClosureElementTypes
+!classDefinition: #ClosureElementTypes category: #'FromBee-SCompiler-Backend'!
+SharedPool subclass: #ClosureElementTypes
 	instanceVariableNames: ''
 	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'ClosureElementTypes class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'ClosureElementTypes class' category: #'FromBee-SCompiler-Backend'!
 ClosureElementTypes class
 	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
 
-!classDefinition: #SCompiledBlockFlags category: 'FromBee-SCompiler-Backend'!
-PSharedPool subclass: #SCompiledBlockFlags
+!classDefinition: #SCompiledBlockFlags category: #'FromBee-SCompiler-Backend'!
+SharedPool subclass: #SCompiledBlockFlags
 	instanceVariableNames: ''
 	classVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCompiledBlockFlags class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCompiledBlockFlags class' category: #'FromBee-SCompiler-Backend'!
 SCompiledBlockFlags class
 	instanceVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'!
 
-!classDefinition: #SCompiledMethodFlags category: 'FromBee-SCompiler-Backend'!
-PSharedPool subclass: #SCompiledMethodFlags
+!classDefinition: #SCompiledMethodFlags category: #'FromBee-SCompiler-Backend'!
+SharedPool subclass: #SCompiledMethodFlags
 	instanceVariableNames: ''
 	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCompiledMethodFlags class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCompiledMethodFlags class' category: #'FromBee-SCompiler-Backend'!
 SCompiledMethodFlags class
 	instanceVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'!
 
-!classDefinition: #SCompiledMethod category: 'FromBee-SCompiler-Backend'!
+!classDefinition: #SCompiledMethod category: #'FromBee-SCompiler-Backend'!
 Array variableSubclass: #SCompiledMethod
 	instanceVariableNames: 'format optimizedCode astcodes class selector source'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCompiledMethod class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCompiledMethod class' category: #'FromBee-SCompiler-Backend'!
 SCompiledMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCallbackMethod category: 'FromBee-SCompiler-Backend'!
+!classDefinition: #SCallbackMethod category: #'FromBee-SCompiler-Backend'!
 SCompiledMethod variableSubclass: #SCallbackMethod
 	instanceVariableNames: 'receiver descriptor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCallbackMethod class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCallbackMethod class' category: #'FromBee-SCompiler-Backend'!
 SCallbackMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCalloutMethod category: 'FromBee-SCompiler-Backend'!
+!classDefinition: #SCalloutMethod category: #'FromBee-SCompiler-Backend'!
 SCompiledMethod variableSubclass: #SCalloutMethod
 	instanceVariableNames: 'descriptor symbol address'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCalloutMethod class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCalloutMethod class' category: #'FromBee-SCompiler-Backend'!
 SCalloutMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFFIDescriptor category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SFFIDescriptor category: #'FromBee-SCompiler-Parser'!
 ByteArray variableByteSubclass: #SFFIDescriptor
 	instanceVariableNames: ''
 	classVariableNames: 'FFICallingConventions FFITypes'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SFFIDescriptor class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SFFIDescriptor class' category: #'FromBee-SCompiler-Parser'!
 SFFIDescriptor class
 	instanceVariableNames: 'FFICallingConventions FFITypes'!
 
-!classDefinition: #SCompilationError category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SCompilationError category: #'FromBee-SCompiler-Frontend'!
 Error subclass: #SCompilationError
 	instanceVariableNames: 'compiler resumable retryable stretch'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SCompilationError class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SCompilationError class' category: #'FromBee-SCompiler-Frontend'!
 SCompilationError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SInvalidPragmaError category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SInvalidPragmaError category: #'FromBee-SCompiler-Frontend'!
 SCompilationError subclass: #SInvalidPragmaError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SInvalidPragmaError class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SInvalidPragmaError class' category: #'FromBee-SCompiler-Frontend'!
 SInvalidPragmaError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SUndeclaredIdentifierError category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SUndeclaredIdentifierError category: #'FromBee-SCompiler-Frontend'!
 SCompilationError subclass: #SUndeclaredIdentifierError
 	instanceVariableNames: 'identifier assigned'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SUndeclaredIdentifierError class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: #'FromBee-SCompiler-Frontend'!
 SUndeclaredIdentifierError class
 	instanceVariableNames: ''!
 
@@ -163,559 +165,569 @@ TestCase subclass: #SmalltalkScannerTest
 SmalltalkScannerTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompilationResult category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SCompilationResult category: #'FromBee-SCompiler-Frontend'!
 Object subclass: #SCompilationResult
 	instanceVariableNames: 'compiler error ast method'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SCompilationResult class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SCompilationResult class' category: #'FromBee-SCompiler-Frontend'!
 SCompilationResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiler category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SCompiler category: #'FromBee-SCompiler-Frontend'!
 Object subclass: #SCompiler
 	instanceVariableNames: 'errorHandler result class'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SCompiler class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SCompiler class' category: #'FromBee-SCompiler-Frontend'!
 SCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkCompiler category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SSmalltalkCompiler category: #'FromBee-SCompiler-Frontend'!
 Object subclass: #SSmalltalkCompiler
 	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SSmalltalkCompiler class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SSmalltalkCompiler class' category: #'FromBee-SCompiler-Frontend'!
 SSmalltalkCompiler class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledBlock category: 'FromBee-SCompiler-Backend'!
+!classDefinition: #SCompiledBlock category: #'FromBee-SCompiler-Backend'!
 Object subclass: #SCompiledBlock
 	instanceVariableNames: 'format optimizedCode method'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledBlockFlags'
 	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'SCompiledBlock class' category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'SCompiledBlock class' category: #'FromBee-SCompiler-Backend'!
 SCompiledBlock class
 	instanceVariableNames: ''!
 
-!classDefinition: #IdentifierBinder category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #IdentifierBinder category: #'FromBee-SCompiler-Parser'!
 Object subclass: #IdentifierBinder
 	instanceVariableNames: 'contents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'IdentifierBinder class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'IdentifierBinder class' category: #'FromBee-SCompiler-Parser'!
 IdentifierBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #StaticBinder category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #StaticBinder category: #'FromBee-SCompiler-Parser'!
 IdentifierBinder subclass: #StaticBinder
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'StaticBinder class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'StaticBinder class' category: #'FromBee-SCompiler-Parser'!
 StaticBinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseTreeVisitor category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SParseTreeVisitor category: #'FromBee-SCompiler-Parser'!
 Object subclass: #SParseTreeVisitor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SParseTreeVisitor class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SParseTreeVisitor class' category: #'FromBee-SCompiler-Parser'!
 SParseTreeVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSemanticVisitor category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: #SSemanticVisitor category: #'FromBee-SCompiler-Frontend'!
 SParseTreeVisitor subclass: #SSemanticVisitor
 	instanceVariableNames: 'inliner'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Frontend'!
-!classDefinition: 'SSemanticVisitor class' category: 'FromBee-SCompiler-Frontend'!
+!classDefinition: 'SSemanticVisitor class' category: #'FromBee-SCompiler-Frontend'!
 SSemanticVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #AstcodeEncoder category: 'FromBee-SCompiler-Backend'!
-SParseTreeVisitor subclass: #AstcodeEncoder
-	instanceVariableNames: 'method stream script'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
-	category: 'FromBee-SCompiler-Backend'!
-!classDefinition: 'AstcodeEncoder class' category: 'FromBee-SCompiler-Backend'!
-AstcodeEncoder class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkParser category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SSmalltalkParser category: #'FromBee-SCompiler-Parser'!
 Object subclass: #SSmalltalkParser
 	instanceVariableNames: 'compiler scanner token next'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SSmalltalkParser class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SSmalltalkParser class' category: #'FromBee-SCompiler-Parser'!
 SSmalltalkParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSmalltalkScanner category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SSmalltalkScanner category: #'FromBee-SCompiler-Parser'!
 Object subclass: #SSmalltalkScanner
 	instanceVariableNames: 'compiler stream'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SSmalltalkScanner class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SSmalltalkScanner class' category: #'FromBee-SCompiler-Parser'!
 SSmalltalkScanner class
 	instanceVariableNames: ''!
 
-!classDefinition: #SToken category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SToken category: #'FromBee-SCompiler-Parser'!
 Object subclass: #SToken
 	instanceVariableNames: 'compiler stretch comments'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SToken class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SToken class' category: #'FromBee-SCompiler-Parser'!
 SToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SEndToken category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SEndToken category: #'FromBee-SCompiler-Parser'!
 SToken subclass: #SEndToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SEndToken class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SEndToken class' category: #'FromBee-SCompiler-Parser'!
 SEndToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SParseNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SParseNode category: #'FromBee-SCompiler-Parser'!
 SToken subclass: #SParseNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SParseNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SParseNode class' category: #'FromBee-SCompiler-Parser'!
 SParseNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SAssignmentNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SAssignmentNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SAssignmentNode
 	instanceVariableNames: 'assignees expression operators'
 	classVariableNames: 'Token'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SAssignmentNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SAssignmentNode class' category: #'FromBee-SCompiler-Parser'!
 SAssignmentNode class
 	instanceVariableNames: 'Token'!
 
-!classDefinition: #SBraceNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SBraceNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SBraceNode
 	instanceVariableNames: 'elements message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SBraceNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SBraceNode class' category: #'FromBee-SCompiler-Parser'!
 SBraceNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SCascadeNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SCascadeNode
 	instanceVariableNames: 'receiver messages optimized'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SCascadeNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SCascadeNode class' category: #'FromBee-SCompiler-Parser'!
 SCascadeNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCommentNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SCommentNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SCommentNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SCommentNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SCommentNode class' category: #'FromBee-SCompiler-Parser'!
 SCommentNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SIdentifierNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SIdentifierNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SIdentifierNode
 	instanceVariableNames: 'name binding'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SIdentifierNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SIdentifierNode class' category: #'FromBee-SCompiler-Parser'!
 SIdentifierNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SLiteralNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SLiteralNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SLiteralNode
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SLiteralNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SLiteralNode class' category: #'FromBee-SCompiler-Parser'!
 SLiteralNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SNumberNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SNumberNode category: #'FromBee-SCompiler-Parser'!
 SLiteralNode subclass: #SNumberNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SNumberNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SNumberNode class' category: #'FromBee-SCompiler-Parser'!
 SNumberNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SStringNode category: #'FromBee-SCompiler-Parser'!
 SLiteralNode subclass: #SStringNode
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SStringNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SStringNode class' category: #'FromBee-SCompiler-Parser'!
 SStringNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMessageNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SMessageNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SMessageNode
 	instanceVariableNames: 'selector receiver arguments inlined'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SMessageNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SMessageNode class' category: #'FromBee-SCompiler-Parser'!
 SMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCascadeMessageNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SCascadeMessageNode category: #'FromBee-SCompiler-Parser'!
 SMessageNode subclass: #SCascadeMessageNode
 	instanceVariableNames: 'cascade'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SCascadeMessageNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: #'FromBee-SCompiler-Parser'!
 SCascadeMessageNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SReturnNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SReturnNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SReturnNode
 	instanceVariableNames: 'expression return'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SReturnNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SReturnNode class' category: #'FromBee-SCompiler-Parser'!
 SReturnNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SScriptNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SScriptNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SScriptNode
 	instanceVariableNames: 'statements arguments temporaries children scope'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SScriptNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SScriptNode class' category: #'FromBee-SCompiler-Parser'!
 SScriptNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SBlockNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SBlockNode category: #'FromBee-SCompiler-Parser'!
 SScriptNode subclass: #SBlockNode
 	instanceVariableNames: 'inlined index parent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SBlockNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SBlockNode class' category: #'FromBee-SCompiler-Parser'!
 SBlockNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SMethodNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SMethodNode category: #'FromBee-SCompiler-Parser'!
 SScriptNode subclass: #SMethodNode
 	instanceVariableNames: 'selector pragma'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SMethodNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SMethodNode class' category: #'FromBee-SCompiler-Parser'!
 SMethodNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSelectorNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SSelectorNode category: #'FromBee-SCompiler-Parser'!
 SParseNode subclass: #SSelectorNode
 	instanceVariableNames: 'symbol keywords'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SSelectorNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SSelectorNode class' category: #'FromBee-SCompiler-Parser'!
 SSelectorNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SPragmaNode category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SPragmaNode category: #'FromBee-SCompiler-Parser'!
 SToken subclass: #SPragmaNode
 	instanceVariableNames: 'type name info'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SPragmaNode class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SPragmaNode class' category: #'FromBee-SCompiler-Parser'!
 SPragmaNode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SSymbolicToken category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SSymbolicToken category: #'FromBee-SCompiler-Parser'!
 SToken subclass: #SSymbolicToken
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SSymbolicToken class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SSymbolicToken class' category: #'FromBee-SCompiler-Parser'!
 SSymbolicToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SDelimiterToken category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SDelimiterToken category: #'FromBee-SCompiler-Parser'!
 SSymbolicToken subclass: #SDelimiterToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SDelimiterToken class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SDelimiterToken class' category: #'FromBee-SCompiler-Parser'!
 SDelimiterToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #SStringToken category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #SStringToken category: #'FromBee-SCompiler-Parser'!
 SSymbolicToken subclass: #SStringToken
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'SStringToken class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'SStringToken class' category: #'FromBee-SCompiler-Parser'!
 SStringToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #ScriptScope category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #ScriptScope category: #'FromBee-SCompiler-Parser'!
 Object subclass: #ScriptScope
 	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'ScriptScope class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'ScriptScope class' category: #'FromBee-SCompiler-Parser'!
 ScriptScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #BlockScope category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #BlockScope category: #'FromBee-SCompiler-Parser'!
 ScriptScope subclass: #BlockScope
 	instanceVariableNames: 'environments captured'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'BlockScope class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'BlockScope class' category: #'FromBee-SCompiler-Parser'!
 BlockScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodScope category: 'FromBee-SCompiler-Parser'!
+!classDefinition: #MethodScope category: #'FromBee-SCompiler-Parser'!
 ScriptScope subclass: #MethodScope
 	instanceVariableNames: 'pseudo'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Parser'!
-!classDefinition: 'MethodScope class' category: 'FromBee-SCompiler-Parser'!
+!classDefinition: 'MethodScope class' category: #'FromBee-SCompiler-Parser'!
 MethodScope class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageInliner category: 'FromBee-SCompiler'!
+!classDefinition: #MessageInliner category: #'FromBee-SCompiler'!
 Object subclass: #MessageInliner
 	instanceVariableNames: 'message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler'!
-!classDefinition: 'MessageInliner class' category: 'FromBee-SCompiler'!
+!classDefinition: 'MessageInliner class' category: #'FromBee-SCompiler'!
 MessageInliner class
 	instanceVariableNames: ''!
 
-!classDefinition: #Binding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #Binding category: #'FromBee-SCompiler-Bindings'!
 Object subclass: #Binding
 	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'Binding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'Binding class' category: #'FromBee-SCompiler-Bindings'!
 Binding class
 	instanceVariableNames: ''!
 
-!classDefinition: #DynamicBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #DynamicBinding category: #'FromBee-SCompiler-Bindings'!
 Binding subclass: #DynamicBinding
 	instanceVariableNames: ''
 	classVariableNames: 'Default'
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'DynamicBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'DynamicBinding class' category: #'FromBee-SCompiler-Bindings'!
 DynamicBinding class
 	instanceVariableNames: 'Default'!
 
-!classDefinition: #NestedDynamicBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #NestedDynamicBinding category: #'FromBee-SCompiler-Bindings'!
 DynamicBinding subclass: #NestedDynamicBinding
 	instanceVariableNames: 'parent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'NestedDynamicBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'NestedDynamicBinding class' category: #'FromBee-SCompiler-Bindings'!
 NestedDynamicBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LiteralBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #LiteralBinding category: #'FromBee-SCompiler-Bindings'!
 Binding subclass: #LiteralBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'LiteralBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'LiteralBinding class' category: #'FromBee-SCompiler-Bindings'!
 LiteralBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #FalseBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #FalseBinding category: #'FromBee-SCompiler-Bindings'!
 LiteralBinding subclass: #FalseBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'FalseBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'FalseBinding class' category: #'FromBee-SCompiler-Bindings'!
 FalseBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #NilBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #NilBinding category: #'FromBee-SCompiler-Bindings'!
 LiteralBinding subclass: #NilBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'NilBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'NilBinding class' category: #'FromBee-SCompiler-Bindings'!
 NilBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TrueBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #TrueBinding category: #'FromBee-SCompiler-Bindings'!
 LiteralBinding subclass: #TrueBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'TrueBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: #'FromBee-SCompiler-Bindings'!
 TrueBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #LocalBinding category: #'FromBee-SCompiler-Bindings'!
 Binding subclass: #LocalBinding
 	instanceVariableNames: 'index environment declaration'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'LocalBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'LocalBinding class' category: #'FromBee-SCompiler-Bindings'!
 LocalBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #ArgumentBinding category: #'FromBee-SCompiler-Bindings'!
 LocalBinding subclass: #ArgumentBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'ArgumentBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: #'FromBee-SCompiler-Bindings'!
 ArgumentBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #TemporaryBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #TemporaryBinding category: #'FromBee-SCompiler-Bindings'!
 LocalBinding subclass: #TemporaryBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'TemporaryBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: #'FromBee-SCompiler-Bindings'!
 TemporaryBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SelfBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #SelfBinding category: #'FromBee-SCompiler-Bindings'!
 Binding subclass: #SelfBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'SelfBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: #'FromBee-SCompiler-Bindings'!
 SelfBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #SuperBinding category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #SuperBinding category: #'FromBee-SCompiler-Bindings'!
 SelfBinding subclass: #SuperBinding
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'SuperBinding class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'SuperBinding class' category: #'FromBee-SCompiler-Bindings'!
 SuperBinding class
 	instanceVariableNames: ''!
 
-!classDefinition: #LocalEnvironment category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #LocalEnvironment category: #'FromBee-SCompiler-Bindings'!
 Object subclass: #LocalEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: 'private'
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'LocalEnvironment class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'LocalEnvironment class' category: #'FromBee-SCompiler-Bindings'!
 LocalEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArrayEnvironment category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #ArrayEnvironment category: #'FromBee-SCompiler-Bindings'!
 LocalEnvironment subclass: #ArrayEnvironment
 	instanceVariableNames: 'index'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'ArrayEnvironment class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'ArrayEnvironment class' category: #'FromBee-SCompiler-Bindings'!
 ArrayEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #StackEnvironment category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #StackEnvironment category: #'FromBee-SCompiler-Bindings'!
 LocalEnvironment subclass: #StackEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'StackEnvironment class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'StackEnvironment class' category: #'FromBee-SCompiler-Bindings'!
 StackEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentEnvironment category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #ArgumentEnvironment category: #'FromBee-SCompiler-Bindings'!
 StackEnvironment subclass: #ArgumentEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'ArgumentEnvironment class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'ArgumentEnvironment class' category: #'FromBee-SCompiler-Bindings'!
 ArgumentEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #InlinedArgEnvironment category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: #InlinedArgEnvironment category: #'FromBee-SCompiler-Bindings'!
 StackEnvironment subclass: #InlinedArgEnvironment
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-SCompiler-Bindings'!
-!classDefinition: 'InlinedArgEnvironment class' category: 'FromBee-SCompiler-Bindings'!
+!classDefinition: 'InlinedArgEnvironment class' category: #'FromBee-SCompiler-Bindings'!
 InlinedArgEnvironment class
 	instanceVariableNames: ''!
 
-!classDefinition: #NumberParser2 category: 'FromBee-Compatibility-Pharo'!
+!classDefinition: #NumberParser2 category: #'FromBee-Compatibility-Pharo'!
 Object subclass: #NumberParser2
 	instanceVariableNames: 'stream error return'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-Compatibility-Pharo'!
-!classDefinition: 'NumberParser2 class' category: 'FromBee-Compatibility-Pharo'!
+!classDefinition: 'NumberParser2 class' category: #'FromBee-Compatibility-Pharo'!
 NumberParser2 class
 	instanceVariableNames: ''!
 
+!classDefinition: #BeeProtoImage category: 'FromBee-ProtoBoot'!
+Object subclass: #BeeProtoImage
+	instanceVariableNames: 'isBigEndian classes methods baseAddressOfImage nextFreeAddressOfImage lastHash firstForeignObject lastForeignObject foreignObjectsMap specialObjectsArrayForeignObject globalVariables symbols processorBindingForeignObject smalltalkForeignObject displayForeignObject startUpMethod'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'FromBee-ProtoBoot'!
+!classDefinition: 'BeeProtoImage class' category: 'FromBee-ProtoBoot'!
+BeeProtoImage class
+	instanceVariableNames: ''!
 
-!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:47'!
+
+!BeeProtoImage commentStamp: '<historical>' prior: 0!
+Does not make sense to subclass ImageBuilder as that class entails too much Cuis/OpenSmalltalk specifics.
+But look `at class ImageBuilder` for details.
+Assume 64-bit CPU as default.
+
+!
+
+!AstBindingTypes class methodsFor: 'pool initialization' stamp: 'KenD 3/5/2024 15:07:07'!
 initialize
+"
+	AstBindingTypes initialize.
+"
 	NilId := 1.
 	TrueId := 2.
 	FalseId := 3.
@@ -726,11 +738,26 @@ initialize
 	DynamicVarId := 14.
 	NestedDynamicVarId := 15.
 	PushRid := 50.
-	PopRid := 51
-! !
+	PopRid := 51.
+	
+	self flag: #poolInitBugP.
+	self at: #NilId put: NilId.
+	self at: #TrueId put: TrueId.
+	self at: #FalseId put: FalseId.
+	self at: #ArgumentId put: ArgumentId.
+	self at: #TemporaryId put: TemporaryId.
+	self at: #SelfId put: SelfId.
+	self at: #SuperId put: SuperId.
+	self at: #DynamicVarId put: DynamicVarId.
+	self at: #NestedDynamicVarId put: NestedDynamicVarId.
+	self at: #PushRid put: PushRid.
+	self at: #PopRid put: PopRid.! !
 
-!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:53'!
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:07:15'!
 initialize
+"
+	AstNodeTypes initialize.
+"
 	MethodId := 101.
 	BlockId := 102.
 	IdentifierId := 103.
@@ -740,18 +767,40 @@ initialize
 	BraceId := 107.
 	AssignmentId := 108.
 	ReturnId := 109.
-	PragmaId := 110
+	PragmaId := 110.
+
+	self flag: #poolInitBugP.
+	self at: #MethodId put: MethodId.
+	self at: #BlockId put: BlockId.
+	self at: #IdentifierId put: IdentifierId.
+	self at: #LiteralId put: LiteralId.
+	self at: #MessageId put: MessageId.
+	self at: #CascadeId put: CascadeId.
+	self at: #BraceId put: BraceId.
+	self at: #AssignmentId put: AssignmentId.
+	self at: #ReturnId put: ReturnId.
+	self at: #PragmaId put: PragmaId.
+	
 ! !
 
-!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:59'!
+!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:08:30'!
 initialize
+"
+	ClosureElementTypes initialize.
+"
 	Self := 0.
 	LocalArgument := 1.
 	Environment := 2.
-	EnvironmentValue := 3
+	EnvironmentValue := 3.
+	
+	self flag: #poolInitBugP.
+	self at: #Self put: Self.
+	self at: #LocalArgument put: LocalArgument.
+	self at: #Environment put: Environment.
+	self at: #EnvironmentValue put: EnvironmentValue
 ! !
 
-!SCompiledBlockFlags class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 07:15:46'!
+!SCompiledBlockFlags class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:08:18'!
 initialize
 "
 	SCompiledBlockFlags initialize.
@@ -761,11 +810,21 @@ initialize
 	BlockId := 15 thru: 22.
 	BlockCapturesSelf := 1 bitShift: 23 - 1.
 	BlockCapturesHome := 1 bitShift: 24 - 1.
-	BlockEnvCount := 25 thru: 31
-! !
+	BlockEnvCount := 25 thru: 31.
+	
+	self flag: #poolInitBugP.
+	self at: #BlockArgCount put: BlockArgCount.
+	self at: #BlockTempCount put: BlockTempCount.
+	self at: #BlockId put: BlockId.
+	self at: #BlockCapturesSelf put: BlockCapturesSelf.
+	self at: #BlockCapturesHome put: BlockCapturesHome.
+	self at: #BlockEnvCount put: BlockEnvCount.! !
 
-!SCompiledMethodFlags class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:47'!
+!SCompiledMethodFlags class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:09:40'!
 initialize
+"
+	SCompiledMethodFlags initialize.
+"
 	ArgCount := 1 thru: 6.
 	BlockCount := 7 thru: 13.
 	TempCount := 14 thru: 21.
@@ -773,7 +832,17 @@ initialize
 	HasEnvironment := 1 bitShift: 23 - 1.
 	HasFrame := 1 bitShift: 24 - 1.
 	Debuggable := 1 bitShift: 25 - 1.
-	EnvCount := 26 thru: 31
+	EnvCount := 26 thru: 31.
+	
+	self flag: #poolInitBugP.
+	self at: #ArgCount put: ArgCount.
+	self at: #BlockCount put: BlockCount.
+	self at: #TempCount put: TempCount.
+	self at: #CapturesSelf put: CapturesSelf.
+	self at: #HasEnvironment put: HasEnvironment.
+	self at: #HasFrame put: HasFrame.
+	self at: #Debuggable put: Debuggable.
+	self at: #EnvCount put: EnvCount.	
 ! !
 
 !SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
@@ -4118,321 +4187,6 @@ new
 
 ! !
 
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-compiledBlockIndexOf: aBlockNode
-	| index |
-	index := method
-		findFirst: [:literal | literal isBlock
-			and: [literal id == aBlockNode index]].
-	^index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeArgument: anInteger env: environment
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	self
-		nextPut: ArgumentId;
-		nextIntegerPut: anInteger;
-		nextIntegerPut: encoded
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 11:46:17'!
-encodeClosureElements: aBlockNode
-
-	| scope parent |
-	scope := aBlockNode scope.
-	parent := aBlockNode realParent.
-	^ Array streamContents: [ :s |
-		  scope capturesSelf ifTrue: [ s nextPut: SelfId ].
-		  scope capturedEnvironments do: [ :e |
-			  | index |
-			  e == parent
-				  ifTrue: [ s nextPut: Environment ]
-				  ifFalse: [
-					  index := parent environmentIndexOf: e.
-					  self assert: index notNil.
-					  s
-						  nextPut: EnvironmentValue;
-						  nextPut: index ] ].
-		  scope capturedArguments do: [ :a |
-			  | binding |
-			  binding := aBlockNode parent scope resolve: a name.
-			  s
-				  nextPut: binding environmentType;
-				  nextPut: binding index ] ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeDynamicVar: name
-	stream nextPut: DynamicVarId.
-	self nextSymbolPut: name
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeFalse
-	stream nextPut: FalseId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeLoadRvisitingReceiver
-	stream nextPut: LoadRvisitingReceiverId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeNestedDynamicVar: name
-	stream nextPut: NestedDynamicVarId.
-	self nextLiteralPut: name 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeNil
-	stream nextPut: NilId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodePopR
-	stream nextPut: PopRid 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodePushR
-	stream nextPut: PushRid 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeSelf
-	stream nextPut: SelfId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeSuper
-	stream nextPut: SuperId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeTemporary: anInteger env: environment
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	self
-		nextPut: TemporaryId;
-		nextIntegerPut: anInteger;
-		nextIntegerPut: encoded
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodeTrue
-	stream nextPut: TrueId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-encodedEnvironment: aLocalEnvironment
-	aLocalEnvironment isStack
-		ifTrue: [ ^ aLocalEnvironment isInlinedArgument
-				ifTrue: [ -1 ]
-				ifFalse: [ -2 ] ].
-	aLocalEnvironment isCurrent
-		ifTrue: [ ^ 0 ].
-	^ aLocalEnvironment index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextBigIntegerPut: anInteger
-	stream
-		nextPut: 16r80;
-		int64: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextBooleanPut: aBoolean
-	stream nextPut: aBoolean asBit
-
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextIntegerPut: anInteger
-	| value |
-	(anInteger > 127 or: [ anInteger < -127 ])
-		ifTrue: [ ^ self nextBigIntegerPut: anInteger ].
-	value := anInteger >= 0
-		ifTrue: [ anInteger ]
-		ifFalse: [ anInteger + 16r100 ].
-	stream nextPut: value
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 11:47:26'!
-nextLiteralPut: anObject
-	| index |
-	index := method
-		indexOf: anObject
-		ifAbsent: [ self assert: false ].
-	self nextIntegerPut: index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextPut: anInteger
-	stream nextPut: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextPutAll: aCollection
-	stream nextPut: aCollection size; nextPutAll: aCollection
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 11:49:11'!
-nextSymbolPut: aSymbol
-	| index |
-	index := method
-		indexOf: aSymbol asSymbol
-		ifAbsent: [ self assert: false ].
-	self nextIntegerPut: index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-nextTypePut: anInteger
-	stream nextPut: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitAssignment: anAssignmentNode
-	| assignees |
-	self nextTypePut: AssignmentId.
-	assignees := anAssignmentNode assignees.
-	self nextIntegerPut: assignees size.
-	assignees do: [ :node | node acceptVisitor: self ].
-	anAssignmentNode expression acceptVisitor: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitBlock: aBlockNode
-	| args inlined |
-	self nextTypePut: BlockId.
-	inlined := aBlockNode isInlined.
-	self nextBooleanPut: inlined.
-	inlined
-		ifTrue: [ args := aBlockNode arguments collect: [ :id | id binding index ].
-			self nextPutAll: args asArray ]
-		ifFalse: [ | index captured |
-			index := self compiledBlockIndexOf: aBlockNode.
-			self nextPut: index.
-			captured := self encodeClosureElements: aBlockNode.
-			self nextPutAll: captured ].
-	self visitScript: aBlockNode
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitBraceNode: aBraceNode
-	aBraceNode isLiteral
-		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
-		ifFalse: [self visitCascade: aBraceNode asMessageNode]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitCascade: aCascadeNode
-	| messages |
-	self nextTypePut: CascadeId.
-	aCascadeNode receiver acceptVisitor: self.
-	messages := aCascadeNode messages.
-	self nextIntegerPut: messages size.
-	messages do: [ :node | self visitCascadeMessage: node ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitCascadeMessage: aCascadeMessageNode
-	| arguments |
-	self nextSymbolPut: aCascadeMessageNode selector symbol.
-	arguments := aCascadeMessageNode arguments.
-	self nextIntegerPut: arguments size.
-	arguments do: [ :arg | arg acceptVisitor: self ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitIdentifier: anIdentifierNode
-	self nextTypePut: IdentifierId.
-	anIdentifierNode binding encodeUsing: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitLiteral: aLiteralNode
-	| index |
-	index := method indexOf: aLiteralNode value.
-	self
-		nextTypePut: LiteralId;
-		nextIntegerPut: index.
-	index = 0
-		ifTrue: [ self nextIntegerPut: aLiteralNode value ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitMessage: aMessageNode
-	| arguments |
-	self
-		nextTypePut: MessageId;
-		nextBooleanPut: aMessageNode isInlined;
-		nextSymbolPut: aMessageNode selector symbol.
-	aMessageNode receiver acceptVisitor: self.
-	arguments := aMessageNode arguments.
-	self nextIntegerPut: arguments size.
-	arguments do: [ :arg | arg acceptVisitor: self ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitMethod: aMethodNode
-	| pragma |
-	self nextTypePut: MethodId.
-	pragma := aMethodNode pragma.
-	pragma isUsed
-		ifTrue: [ self nextTypePut: PragmaId.
-			pragma name
-				ifNotNil: [ self nextSymbolPut: pragma name ]
-				ifNil: [ self nextPut: 0 ] ].
-	self visitScript: aMethodNode.
-	^ stream contents 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 11:47:52'!
-visitParseNode: aParseNode
-	^self assert:  false
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitReturn: aReturnNode
-	self
-		nextTypePut: ReturnId;
-		nextBooleanPut: script realScript isMethod.
-	
-		aReturnNode expression acceptVisitor: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
-visitScript: aScriptNode
-	| prev statements |
-	prev := script.
-	script := aScriptNode.
-	statements := aScriptNode statements.
-	self nextIntegerPut: statements size.
-	statements do: [ :node | node acceptVisitor: self ].
-	script := prev
-! !
-
-!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
-initialize
-	stream := #[] writeStream
-! !
-
-!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
-method: aCompiledMethod
-	method := aCompiledMethod
-! !
-
-!AstcodeEncoder class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:49'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
 !SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
 addBodyTo: aMethodNode
 	self
@@ -7047,10 +6801,9 @@ hasSymbol
 	^value isSymbol
 ! !
 
-!SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/5/2024 07:51:02'!
 isBinary
-	^value isSymbol
-! !
+	^value asSymbol isValidBinarySelector! !
 
 !SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
 isDelimitedIdentifier
@@ -8368,6 +8121,95 @@ reset
 nextValue
 	^self next ifNil: [0] ifNotNil: [:assoc | assoc key]
 ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:05:33'!
+classes
+	"Answer dictionary of NameSym->ClassSpec"
+	^classes! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:06:50'!
+globalVariables
+	"Answer dictionary of NameSym->LiteralVariableSpec"
+	^globalVariables ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:03:41'!
+isBigEndian
+
+	^isBigEndian ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:04:01'!
+isBigEndian: aBoolean
+
+	isBigEndian := aBoolean ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:06:04'!
+methods
+	"Answer dictionary of NameSym->MethodSpec"
+	^methods! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:07:46'!
+startUpMethod
+	"Answer a MethodSpec"
+	^startUpMethod! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:10:25'!
+imageFormat
+	"Answer the number that identifies this image format"
+	self flag: #Fixme
+	^666! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:08:42'!
+imageHeaderSize
+	"In Bytes"
+	self flag: #Fixme.
+	^0! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:09:51'!
+lastBridge
+	"In Bytes"
+	self flag: #Fixme.
+	self error: 'no lastBridge defined'.! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:07:47'!
+wordSize
+	"Also size of an oop.
+	In Bytes"
+	^8! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:25:20'!
+on: aStream nexWordPut: aNumber
+	"Write #wordSize bytes. Use 'isBigEndian' endianess."
+
+	self on: aStream nextUint64Put: aNumber.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:12'!
+on: aStream nextUint16Put: aNumber
+	"Write 2 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint16Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:34'!
+on: aStream nextUint32Put: aNumber
+	"Write 4 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint32Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:40'!
+on: aStream nextUint64Put: aNumber
+	"Write 8 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint64Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'initialization' stamp: 'KenD 3/5/2024 12:22:24'!
+initialize
+	isBigEndian := false. "default"
+	classes := OrderedDictionary new.
+	methods := IdentitySet new.
+	baseAddressOfImage := self imageHeaderSize. 										"Base address. Start of Object Memory."
+	nextFreeAddressOfImage := baseAddressOfImage.
+	foreignObjectsMap := IdentityDictionary new.
+	globalVariables  := OrderedCollection new.
+	symbols := OrderedCollection new.! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
