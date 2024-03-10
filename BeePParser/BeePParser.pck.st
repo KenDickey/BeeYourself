@@ -1,84 +1,84 @@
-'From Cuis 6.0 [latest update: #5552] on 12 November 2022 at 1:33:50 pm'!
+'From Cuis6.3 [latest update: #6253] on 10 March 2024 at 2:58:30 pm'!
 'Description Port of PowerLang/Bee-DMR Petite Parser code into Cuis.
 See https://github.com/powerlang/bee-dmr/tree/master/PetitParser
 
 Original code Copyright LICENCES/Acuerna'!
-!provides: 'BeePParser' 1 21!
+!provides: 'BeePParser' 1 22!
 !requires: 'BeeCompatibility' 1 32 nil!
 !requires: 'PetitParser' 1 5 nil!
 !requires: 'RTFExporting' 1 3 nil!
 !requires: 'RTFImporting' 1 6 nil!
-SystemOrganization addCategory: 'BeePParser'!
-SystemOrganization addCategory: 'BeePParser-Tests'!
+SystemOrganization addCategory: #BeePParser!
+SystemOrganization addCategory: #'BeePParser-Tests'!
 
 
-!classDefinition: #PPActionParserTest category: 'BeePParser-Tests'!
+!classDefinition: #PPActionParserTest category: #'BeePParser-Tests'!
 TestCase subclass: #PPActionParserTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser-Tests'!
-!classDefinition: 'PPActionParserTest class' category: 'BeePParser-Tests'!
+!classDefinition: 'PPActionParserTest class' category: #'BeePParser-Tests'!
 PPActionParserTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPGramarTest category: 'BeePParser-Tests'!
+!classDefinition: #PPGramarTest category: #'BeePParser-Tests'!
 TestCase subclass: #PPGramarTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser-Tests'!
-!classDefinition: 'PPGramarTest class' category: 'BeePParser-Tests'!
+!classDefinition: 'PPGramarTest class' category: #'BeePParser-Tests'!
 PPGramarTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPIdentifierTest category: 'BeePParser-Tests'!
+!classDefinition: #PPIdentifierTest category: #'BeePParser-Tests'!
 TestCase subclass: #PPIdentifierTest
 	instanceVariableNames: 'identifier'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser-Tests'!
-!classDefinition: 'PPIdentifierTest class' category: 'BeePParser-Tests'!
+!classDefinition: 'PPIdentifierTest class' category: #'BeePParser-Tests'!
 PPIdentifierTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPParserCombinationTest category: 'BeePParser-Tests'!
+!classDefinition: #PPParserCombinationTest category: #'BeePParser-Tests'!
 TestCase subclass: #PPParserCombinationTest
 	instanceVariableNames: 'identifier'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser-Tests'!
-!classDefinition: 'PPParserCombinationTest class' category: 'BeePParser-Tests'!
+!classDefinition: 'PPParserCombinationTest class' category: #'BeePParser-Tests'!
 PPParserCombinationTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPTerminalParserTest category: 'BeePParser-Tests'!
+!classDefinition: #PPTerminalParserTest category: #'BeePParser-Tests'!
 TestCase subclass: #PPTerminalParserTest
 	instanceVariableNames: 'characters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser-Tests'!
-!classDefinition: 'PPTerminalParserTest class' category: 'BeePParser-Tests'!
+!classDefinition: 'PPTerminalParserTest class' category: #'BeePParser-Tests'!
 PPTerminalParserTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPMappedParser category: 'BeePParser'!
+!classDefinition: #PPMappedParser category: #BeePParser!
 PPListParser subclass: #PPMappedParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser'!
-!classDefinition: 'PPMappedParser class' category: 'BeePParser'!
+!classDefinition: 'PPMappedParser class' category: #BeePParser!
 PPMappedParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPSequencedChoiceParser category: 'BeePParser'!
+!classDefinition: #PPSequencedChoiceParser category: #BeePParser!
 PPListParser subclass: #PPSequencedChoiceParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'BeePParser'!
-!classDefinition: 'PPSequencedChoiceParser class' category: 'BeePParser'!
+!classDefinition: 'PPSequencedChoiceParser class' category: #BeePParser!
 PPSequencedChoiceParser class
 	instanceVariableNames: ''!
 
@@ -395,16 +395,6 @@ parserTo: aCharacter
 	^PPPredicateObjectParser between: self and: aCharacter! !
 
 !Character methodsFor: '*BeePParser' stamp: 'KenD 2/9/2021 15:53:12'!
-sameAs: aCharacter 
-
-	^self asLowercase = aCharacter asLowercase! !
-
-!UnicodeCodePoint methodsFor: '*BeePParser' stamp: 'KenD 11/12/2022 13:27:27'!
-parserTo: aCharacter 
-
-	^PPPredicateObjectParser between: self and: aCharacter! !
-
-!UnicodeCodePoint methodsFor: '*BeePParser' stamp: 'KenD 11/12/2022 13:27:34'!
 sameAs: aCharacter 
 
 	^self asLowercase = aCharacter asLowercase! !

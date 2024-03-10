@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6253] on 5 March 2024 at 4:14:06 pm'!
+'From Cuis6.3 [latest update: #6253] on 7 March 2024 at 2:19:29 pm'!
 'Description Bootstrap test: Bee Compiler -> ast codes'!
-!provides: 'FromBee' 1 4!
+!provides: 'FromBee' 1 5!
 !requires: 'Cuis-Base' 63 6247 nil!
 !requires: 'BeeCompatibility' 1 60 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 67 nil!
@@ -13,6 +13,7 @@ SystemOrganization addCategory: #'FromBee-SCompiler-Bindings'!
 SystemOrganization addCategory: #'FromBee-Compatibility-Pharo'!
 SystemOrganization addCategory: 'FromBee-ProtoBoot'!
 SystemOrganization addCategory: #FromBee!
+SystemOrganization addCategory: #'FromBee-Core-SExpressions'!
 
 
 !classDefinition: #AstBindingTypes category: #'FromBee-SCompiler-Backend'!
@@ -195,6 +196,16 @@ Object subclass: #SSmalltalkCompiler
 SSmalltalkCompiler class
 	instanceVariableNames: ''!
 
+!classDefinition: #NameOfSubclass category: #'FromBee-SCompiler-Backend'!
+Object subclass: #NameOfSubclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'NameOfSubclass class' category: #'FromBee-SCompiler-Backend'!
+NameOfSubclass class
+	instanceVariableNames: ''!
+
 !classDefinition: #SCompiledBlock category: #'FromBee-SCompiler-Backend'!
 Object subclass: #SCompiledBlock
 	instanceVariableNames: 'format optimizedCode method'
@@ -243,6 +254,16 @@ SParseTreeVisitor subclass: #SSemanticVisitor
 	category: 'FromBee-SCompiler-Frontend'!
 !classDefinition: 'SSemanticVisitor class' category: #'FromBee-SCompiler-Frontend'!
 SSemanticVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeEncoder category: #'FromBee-SCompiler-Backend'!
+SParseTreeVisitor subclass: #AstcodeEncoder
+	instanceVariableNames: 'method stream script'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
+	category: 'FromBee-SCompiler-Backend'!
+!classDefinition: 'AstcodeEncoder class' category: #'FromBee-SCompiler-Backend'!
+AstcodeEncoder class
 	instanceVariableNames: ''!
 
 !classDefinition: #SSmalltalkParser category: #'FromBee-SCompiler-Parser'!
@@ -714,6 +735,16 @@ Object subclass: #BeeProtoImage
 !classDefinition: 'BeeProtoImage class' category: 'FromBee-ProtoBoot'!
 BeeProtoImage class
 	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeDecoder category: #'FromBee-Core-SExpressions'!
+Object subclass: #AstcodeDecoder
+	instanceVariableNames: 'method stream builder'
+	classVariableNames: 'BindingTypes NodeTypes'
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'FromBee-Core-SExpressions'!
+!classDefinition: 'AstcodeDecoder class' category: #'FromBee-Core-SExpressions'!
+AstcodeDecoder class
+	instanceVariableNames: 'BindingTypes NodeTypes'!
 
 
 !BeeProtoImage commentStamp: '<historical>' prior: 0!
@@ -4180,6 +4211,321 @@ visitReturn: aReturnNode
 ! !
 
 !SSemanticVisitor class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:51'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+compiledBlockIndexOf: aBlockNode
+	| index |
+	index := method
+		findFirst: [:literal | literal isBlock
+			and: [literal id == aBlockNode index]].
+	^index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeArgument: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: ArgumentId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:46:50'!
+encodeClosureElements: aBlockNode
+
+	| scope parent |
+	scope := aBlockNode scope.
+	parent := aBlockNode realParent.
+	^ Array streamContents: [ :s |
+		  scope capturesSelf ifTrue: [ s nextPut: Self ].
+		  scope capturedEnvironments do: [ :e |
+			  | index |
+			  e == parent
+				  ifTrue: [ s nextPut: Environment ]
+				  ifFalse: [
+					  index := parent environmentIndexOf: e.
+					  self assert: index notNil.
+					  s
+						  nextPut: EnvironmentValue;
+						  nextPut: index ] ].
+		  scope capturedArguments do: [ :a |
+			  | binding |
+			  binding := aBlockNode parent scope resolve: a name.
+			  s
+				  nextPut: binding environmentType;
+				  nextPut: binding index ] ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeDynamicVar: name
+	stream nextPut: DynamicVarId.
+	self nextSymbolPut: name
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeFalse
+	stream nextPut: FalseId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeLoadRvisitingReceiver
+	stream nextPut: LoadRvisitingReceiverId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeNestedDynamicVar: name
+	stream nextPut: NestedDynamicVarId.
+	self nextLiteralPut: name 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeNil
+	stream nextPut: NilId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodePopR
+	stream nextPut: PopRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodePushR
+	stream nextPut: PushRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeSelf
+	stream nextPut: SelfId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeSuper
+	stream nextPut: SuperId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeTemporary: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: TemporaryId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeTrue
+	stream nextPut: TrueId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodedEnvironment: aLocalEnvironment
+	aLocalEnvironment isStack
+		ifTrue: [ ^ aLocalEnvironment isInlinedArgument
+				ifTrue: [ -1 ]
+				ifFalse: [ -2 ] ].
+	aLocalEnvironment isCurrent
+		ifTrue: [ ^ 0 ].
+	^ aLocalEnvironment index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextBigIntegerPut: anInteger
+	stream
+		nextPut: 16r80;
+		int64: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextBooleanPut: aBoolean
+	stream nextPut: aBoolean asBit
+
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextIntegerPut: anInteger
+	| value |
+	(anInteger > 127 or: [ anInteger < -127 ])
+		ifTrue: [ ^ self nextBigIntegerPut: anInteger ].
+	value := anInteger >= 0
+		ifTrue: [ anInteger ]
+		ifFalse: [ anInteger + 16r100 ].
+	stream nextPut: value
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:06'!
+nextLiteralPut: anObject
+	| index |
+	index := method
+		indexOf: anObject
+		ifAbsent: [ self assert: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextPut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextPutAll: aCollection
+	stream nextPut: aCollection size; nextPutAll: aCollection
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:11'!
+nextSymbolPut: aSymbol
+	| index |
+	index := method
+		indexOf: aSymbol asSymbol
+		ifAbsent: [ self assert: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextTypePut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitAssignment: anAssignmentNode
+	| assignees |
+	self nextTypePut: AssignmentId.
+	assignees := anAssignmentNode assignees.
+	self nextIntegerPut: assignees size.
+	assignees do: [ :node | node acceptVisitor: self ].
+	anAssignmentNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitBlock: aBlockNode
+	| args inlined |
+	self nextTypePut: BlockId.
+	inlined := aBlockNode isInlined.
+	self nextBooleanPut: inlined.
+	inlined
+		ifTrue: [ args := aBlockNode arguments collect: [ :id | id binding index ].
+			self nextPutAll: args asArray ]
+		ifFalse: [ | index captured |
+			index := self compiledBlockIndexOf: aBlockNode.
+			self nextPut: index.
+			captured := self encodeClosureElements: aBlockNode.
+			self nextPutAll: captured ].
+	self visitScript: aBlockNode
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitBraceNode: aBraceNode
+	aBraceNode isLiteral
+		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
+		ifFalse: [self visitCascade: aBraceNode asMessageNode]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitCascade: aCascadeNode
+	| messages |
+	self nextTypePut: CascadeId.
+	aCascadeNode receiver acceptVisitor: self.
+	messages := aCascadeNode messages.
+	self nextIntegerPut: messages size.
+	messages do: [ :node | self visitCascadeMessage: node ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitCascadeMessage: aCascadeMessageNode
+	| arguments |
+	self nextSymbolPut: aCascadeMessageNode selector symbol.
+	arguments := aCascadeMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitIdentifier: anIdentifierNode
+	self nextTypePut: IdentifierId.
+	anIdentifierNode binding encodeUsing: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitLiteral: aLiteralNode
+	| index |
+	index := method indexOf: aLiteralNode value.
+	self
+		nextTypePut: LiteralId;
+		nextIntegerPut: index.
+	index = 0
+		ifTrue: [ self nextIntegerPut: aLiteralNode value ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitMessage: aMessageNode
+	| arguments |
+	self
+		nextTypePut: MessageId;
+		nextBooleanPut: aMessageNode isInlined;
+		nextSymbolPut: aMessageNode selector symbol.
+	aMessageNode receiver acceptVisitor: self.
+	arguments := aMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitMethod: aMethodNode
+	| pragma |
+	self nextTypePut: MethodId.
+	pragma := aMethodNode pragma.
+	pragma isUsed
+		ifTrue: [ self nextTypePut: PragmaId.
+			pragma name
+				ifNotNil: [ self nextSymbolPut: pragma name ]
+				ifNil: [ self nextPut: 0 ] ].
+	self visitScript: aMethodNode.
+	^ stream contents 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:15'!
+visitParseNode: aParseNode
+	^self assert: false
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitReturn: aReturnNode
+	self
+		nextTypePut: ReturnId;
+		nextBooleanPut: script realScript isMethod.
+	
+		aReturnNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitScript: aScriptNode
+	| prev statements |
+	prev := script.
+	script := aScriptNode.
+	statements := aScriptNode statements.
+	self nextIntegerPut: statements size.
+	statements do: [ :node | node acceptVisitor: self ].
+	script := prev
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+initialize
+	stream := #[] writeStream
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+method: aCompiledMethod
+	method := aCompiledMethod
+! !
+
+!AstcodeEncoder class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:49'!
 new
 	"return an initialized instance"
 
@@ -8210,9 +8556,293 @@ initialize
 	foreignObjectsMap := IdentityDictionary new.
 	globalVariables  := OrderedCollection new.
 	symbols := OrderedCollection new.! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
+builder: aRuntime
+	builder := aRuntime
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
+method: aMethod
+	method := aMethod
+! !
+
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
+stream: aStream
+	stream := aStream
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+bindingTypeOf: id
+	^ BindingTypes at: id
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeArgument
+	^ SArgumentBinding new
+		index: self nextInteger;
+		environment: self nextEnvironment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeAssignment
+	| assignment assignees |
+	assignment := SAssignment new.
+	
+	assignees := self nextExpressionArray.
+	assignment expression: self nextExpression.
+	assignees do: [ :identifier | assignment assign: identifier ].
+	^ assignment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeBlock
+	| expression inlined block index |
+	expression := SBlock new.
+	inlined := self nextBoolean.
+	inlined
+		ifTrue: [ expression inlinedArgs: self nextArray ]
+		ifFalse: [ index := self nextInteger.
+			block := self literalAt: index.
+			builder ifNotNil: [ builder blockOptimizedCode: block put: expression ].
+			expression
+				compiledCode: block;
+				index: index;
+				capturedVariables: self nextArray ].
+	expression statements: self nextExpressionArray.
+	^ expression
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeCascade
+	| cascade receiver messages message count |
+	cascade := SCascade new.
+	receiver := self nextExpression.
+	count := self nextInteger.
+	messages := (1 to: count)
+		collect: [ :i | 
+			message := SCascadeMessage decodeUsing: self.
+			message cascade: cascade ].
+	^ cascade
+		receiver: receiver;
+		messages: messages
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeCascadeMessage
+	| selector arguments |
+	selector := self nextSymbol.
+	arguments := self nextExpressionArray.
+	^ SCascadeMessage new
+		selector: selector;
+		arguments: arguments
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeDynamicVar
+	^ SDynamicBinding new name: self nextSymbol
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeIdentifier
+	| type binding |
+	type := self bindingTypeOf: self nextInteger.
+	binding := type decodeUsing: self.
+	^ SIdentifier new binding: binding
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeLiteral
+	| index value |
+	index := self nextInteger.
+	value := index = 0
+		ifTrue: [ self nextLiteralInteger ]
+		ifFalse: [ self literalAt: index ].
+	^ SLiteral new
+		index: index;
+		value: value
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeMessage
+	| inlined selector receiver arguments |
+	inlined := self nextBoolean.
+	selector := self nextSymbol.
+	receiver := self nextExpression.
+	arguments := self nextExpressionArray.
+	^ SMessage new
+		receiver: receiver;
+		selector: selector;
+		arguments: arguments;
+		inlined: inlined
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeMethod
+	| type node next pragma |
+	type := stream next.
+	type !!= MethodId
+		ifTrue: [ self error: 'method astcode expected' ].
+	node := SMethod new.
+	next := stream peek.
+	next = PragmaId
+		ifTrue: [ stream next.
+			pragma := SPragma new name: self nextSymbolOrNil.
+			node pragma: pragma ].
+	node
+		compiledCode: method;
+		statements: self nextExpressionArray.
+	^ node
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeNestedDynamicVar
+	^ SNestedDynamicBinding new
+		name:
+			self nextSymbol.
+
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeReturn
+	| expression local |
+	local := self nextBoolean.
+	expression := self nextExpression.
+	^ SReturn new
+		local: local;
+		expression: expression
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+decodeTemporary
+	^ STemporaryBinding new
+		index: self nextInteger;
+		environment: self nextEnvironment
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextArray
+	| count |
+	count := self nextInteger.
+	^ stream next: count
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextEnvironment
+	| value |
+	value := self nextInteger.
+	^ value !!= -2
+		ifTrue: [ value ]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextExpression
+	| type |
+	type := self nodeTypeOf: stream next.
+	^type decodeUsing: self.
+
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextExpressionArray
+	| count |
+	count := self nextInteger.
+	^(1 to: count) collect: [ :arg | self nextExpression ]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextSymbol
+	| index |
+	index := self nextInteger.
+	^ self literalAt: index
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nextSymbolOrNil
+	| index |
+	index := self nextInteger.
+	^index !!= 0 ifTrue: [ self literalAt: index]
+! !
+
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
+nodeTypeOf: id
+	^NodeTypes at: id
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
+nextBoolean
+	^ stream next = 1
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
+nextInteger
+	| value |
+	value := stream next.
+	value = 16r80
+		ifTrue: [ ^ stream int64 ].
+	^ value <= 127
+		ifTrue: [ value ]
+		ifFalse: [ value - 16r100 ]
+! !
+
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
+nextUnsignedInteger
+	| value |
+	value := self nextByte.
+	^value < 128
+		ifTrue: [value]
+		ifFalse: [value - 128 + (self nextUnsignedInteger bitShift: 7)]
+! !
+
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 3/7/2024 14:16:30'!
+literalAt: anInteger
+	^ builder ifNil: [method at: anInteger] ifNotNil: [builder method: method literalAt: anInteger]
+! !
+
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 3/7/2024 14:16:30'!
+nextLiteralInteger
+	| value |
+	value := self nextInteger.
+	^ builder
+		ifNil: [ value ]
+		ifNotNil: [ builder newInteger: value ]
+! !
+
+!AstcodeDecoder class methodsFor: 'class initialization' stamp: 'KenD 3/7/2024 14:16:30'!
+initialize
+	NodeTypes := Dictionary new.
+	BindingTypes := Dictionary new.
+	NodeTypes
+		at: AssignmentId put: SAssignment;
+		at: BlockId put: SBlock;
+		at: CascadeId put: SCascade;
+		at: LiteralId put: SLiteral;
+		at: IdentifierId put: SIdentifier;
+		at: MessageId put: SMessage;
+		at: ReturnId put: SReturn.
+	BindingTypes
+		at: NilId put: SNilBinding;
+		at: TrueId put: STrueBinding;
+		at: FalseId put: SFalseBinding;
+		at: ArgumentId put: SArgumentBinding;
+		at: TemporaryId put: STemporaryBinding;
+		at: SelfId put: SSelfBinding;
+		at: SuperId put: SSuperBinding;
+		at: DynamicVarId put: SDynamicBinding;
+		at: NestedDynamicVarId put: SNestedDynamicBinding
+! !
+
+!AstcodeDecoder class methodsFor: 'instance creation' stamp: 'KenD 3/7/2024 14:16:30'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!
 ClosureElementTypes initialize!
 SCompiledBlockFlags initialize!
 SCompiledMethodFlags initialize!
 SFFIDescriptor initialize!
+AstcodeDecoder initialize!

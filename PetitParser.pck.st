@@ -1,379 +1,379 @@
-'From Cuis 6.0 [latest update: #5663] on 24 February 2023 at 11:35:57 pm'!
+'From Cuis6.3 [latest update: #6253] on 10 March 2024 at 3:09:31 pm'!
 'Description See http://scg.unibe.ch/research/helvetia/petitparser'!
-!provides: 'PetitParser' 1 17!
+!provides: 'PetitParser' 1 18!
 !requires: 'BeeCompatibility' 1 12 nil!
-SystemOrganization addCategory: 'PetitParser-Core'!
-SystemOrganization addCategory: 'PetitParser-Tools'!
-SystemOrganization addCategory: 'PetitParser-Parsers'!
+SystemOrganization addCategory: #'PetitParser-Core'!
+SystemOrganization addCategory: #'PetitParser-Tools'!
+SystemOrganization addCategory: #'PetitParser-Parsers'!
 
 
-!classDefinition: #PPStream category: 'PetitParser-Core'!
+!classDefinition: #PPStream category: #'PetitParser-Core'!
 ReadStream subclass: #PPStream
 	instanceVariableNames: 'failure'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Core'!
-!classDefinition: 'PPStream class' category: 'PetitParser-Core'!
+!classDefinition: 'PPStream class' category: #'PetitParser-Core'!
 PPStream class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPFailure category: 'PetitParser-Core'!
+!classDefinition: #PPFailure category: #'PetitParser-Core'!
 Object subclass: #PPFailure
 	instanceVariableNames: 'message position'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Core'!
-!classDefinition: 'PPFailure class' category: 'PetitParser-Core'!
+!classDefinition: 'PPFailure class' category: #'PetitParser-Core'!
 PPFailure class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPMemento category: 'PetitParser-Core'!
+!classDefinition: #PPMemento category: #'PetitParser-Core'!
 Object subclass: #PPMemento
 	instanceVariableNames: 'result count position'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Core'!
-!classDefinition: 'PPMemento class' category: 'PetitParser-Core'!
+!classDefinition: 'PPMemento class' category: #'PetitParser-Core'!
 PPMemento class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPToken category: 'PetitParser-Core'!
+!classDefinition: #PPToken category: #'PetitParser-Core'!
 Object subclass: #PPToken
 	instanceVariableNames: 'collection start stop'
 	classVariableNames: 'NewLineParser'
 	poolDictionaries: ''
 	category: 'PetitParser-Core'!
-!classDefinition: 'PPToken class' category: 'PetitParser-Core'!
+!classDefinition: 'PPToken class' category: #'PetitParser-Core'!
 PPToken class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPCharSetPredicate category: 'PetitParser-Tools'!
+!classDefinition: #PPCharSetPredicate category: #'PetitParser-Tools'!
 Object subclass: #PPCharSetPredicate
 	instanceVariableNames: 'block classification'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Tools'!
-!classDefinition: 'PPCharSetPredicate class' category: 'PetitParser-Tools'!
+!classDefinition: 'PPCharSetPredicate class' category: #'PetitParser-Tools'!
 PPCharSetPredicate class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPParser category: #'PetitParser-Parsers'!
 Object subclass: #PPParser
 	instanceVariableNames: 'properties'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPParser class' category: #'PetitParser-Parsers'!
 PPParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPUnresolvedParser category: 'PetitParser-Tools'!
+!classDefinition: #PPUnresolvedParser category: #'PetitParser-Tools'!
 PPParser subclass: #PPUnresolvedParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Tools'!
-!classDefinition: 'PPUnresolvedParser class' category: 'PetitParser-Tools'!
+!classDefinition: 'PPUnresolvedParser class' category: #'PetitParser-Tools'!
 PPUnresolvedParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPDelegateParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPDelegateParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPDelegateParser
 	instanceVariableNames: 'parser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPDelegateParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPDelegateParser class' category: #'PetitParser-Parsers'!
 PPDelegateParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPCompositeParser category: 'PetitParser-Tools'!
+!classDefinition: #PPCompositeParser category: #'PetitParser-Tools'!
 PPDelegateParser subclass: #PPCompositeParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Tools'!
-!classDefinition: 'PPCompositeParser class' category: 'PetitParser-Tools'!
+!classDefinition: 'PPCompositeParser class' category: #'PetitParser-Tools'!
 PPCompositeParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPExpressionParser category: 'PetitParser-Tools'!
+!classDefinition: #PPExpressionParser category: #'PetitParser-Tools'!
 PPDelegateParser subclass: #PPExpressionParser
 	instanceVariableNames: 'operators'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Tools'!
-!classDefinition: 'PPExpressionParser class' category: 'PetitParser-Tools'!
+!classDefinition: 'PPExpressionParser class' category: #'PetitParser-Tools'!
 PPExpressionParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPActionParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPActionParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPActionParser
 	instanceVariableNames: 'block'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPActionParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPActionParser class' category: #'PetitParser-Parsers'!
 PPActionParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPWrappingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPWrappingParser category: #'PetitParser-Parsers'!
 PPActionParser subclass: #PPWrappingParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPWrappingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPWrappingParser class' category: #'PetitParser-Parsers'!
 PPWrappingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPAndParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPAndParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPAndParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPAndParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPAndParser class' category: #'PetitParser-Parsers'!
 PPAndParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPEndOfInputParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPEndOfInputParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPEndOfInputParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPEndOfInputParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPEndOfInputParser class' category: #'PetitParser-Parsers'!
 PPEndOfInputParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPFlattenParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPFlattenParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPFlattenParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPFlattenParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPFlattenParser class' category: #'PetitParser-Parsers'!
 PPFlattenParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPTokenParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPTokenParser category: #'PetitParser-Parsers'!
 PPFlattenParser subclass: #PPTokenParser
 	instanceVariableNames: 'tokenClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPTokenParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPTokenParser class' category: #'PetitParser-Parsers'!
 PPTokenParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPMemoizedParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPMemoizedParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPMemoizedParser
 	instanceVariableNames: 'stream buffer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPMemoizedParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPMemoizedParser class' category: #'PetitParser-Parsers'!
 PPMemoizedParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPNotParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPNotParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPNotParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPNotParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPNotParser class' category: #'PetitParser-Parsers'!
 PPNotParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPOptionalParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPOptionalParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPOptionalParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPOptionalParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPOptionalParser class' category: #'PetitParser-Parsers'!
 PPOptionalParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPRepeatingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPRepeatingParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPRepeatingParser
 	instanceVariableNames: 'min max'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPRepeatingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPRepeatingParser class' category: #'PetitParser-Parsers'!
 PPRepeatingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPLimitedRepeatingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPLimitedRepeatingParser category: #'PetitParser-Parsers'!
 PPRepeatingParser subclass: #PPLimitedRepeatingParser
 	instanceVariableNames: 'limit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPLimitedRepeatingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPLimitedRepeatingParser class' category: #'PetitParser-Parsers'!
 PPLimitedRepeatingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPGreedyRepeatingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPGreedyRepeatingParser category: #'PetitParser-Parsers'!
 PPLimitedRepeatingParser subclass: #PPGreedyRepeatingParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPGreedyRepeatingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPGreedyRepeatingParser class' category: #'PetitParser-Parsers'!
 PPGreedyRepeatingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPLazyRepeatingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPLazyRepeatingParser category: #'PetitParser-Parsers'!
 PPLimitedRepeatingParser subclass: #PPLazyRepeatingParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPLazyRepeatingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPLazyRepeatingParser class' category: #'PetitParser-Parsers'!
 PPLazyRepeatingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPPossessiveRepeatingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPPossessiveRepeatingParser category: #'PetitParser-Parsers'!
 PPRepeatingParser subclass: #PPPossessiveRepeatingParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPPossessiveRepeatingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPPossessiveRepeatingParser class' category: #'PetitParser-Parsers'!
 PPPossessiveRepeatingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPTrimmingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPTrimmingParser category: #'PetitParser-Parsers'!
 PPDelegateParser subclass: #PPTrimmingParser
 	instanceVariableNames: 'trimmer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPTrimmingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPTrimmingParser class' category: #'PetitParser-Parsers'!
 PPTrimmingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPEpsilonParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPEpsilonParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPEpsilonParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPEpsilonParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPEpsilonParser class' category: #'PetitParser-Parsers'!
 PPEpsilonParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPFailingParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPFailingParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPFailingParser
 	instanceVariableNames: 'message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPFailingParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPFailingParser class' category: #'PetitParser-Parsers'!
 PPFailingParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPListParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPListParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPListParser
 	instanceVariableNames: 'parsers'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPListParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPListParser class' category: #'PetitParser-Parsers'!
 PPListParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPChoiceParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPChoiceParser category: #'PetitParser-Parsers'!
 PPListParser subclass: #PPChoiceParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPChoiceParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPChoiceParser class' category: #'PetitParser-Parsers'!
 PPChoiceParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPSequenceParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPSequenceParser category: #'PetitParser-Parsers'!
 PPListParser subclass: #PPSequenceParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPSequenceParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPSequenceParser class' category: #'PetitParser-Parsers'!
 PPSequenceParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPLiteralParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPLiteralParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPLiteralParser
 	instanceVariableNames: 'literal message'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPLiteralParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPLiteralParser class' category: #'PetitParser-Parsers'!
 PPLiteralParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPLiteralObjectParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPLiteralObjectParser category: #'PetitParser-Parsers'!
 PPLiteralParser subclass: #PPLiteralObjectParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPLiteralObjectParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPLiteralObjectParser class' category: #'PetitParser-Parsers'!
 PPLiteralObjectParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPLiteralSequenceParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPLiteralSequenceParser category: #'PetitParser-Parsers'!
 PPLiteralParser subclass: #PPLiteralSequenceParser
 	instanceVariableNames: 'size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPLiteralSequenceParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPLiteralSequenceParser class' category: #'PetitParser-Parsers'!
 PPLiteralSequenceParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPPluggableParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPPluggableParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPPluggableParser
 	instanceVariableNames: 'block'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPPluggableParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPPluggableParser class' category: #'PetitParser-Parsers'!
 PPPluggableParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPPredicateParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPPredicateParser category: #'PetitParser-Parsers'!
 PPParser subclass: #PPPredicateParser
 	instanceVariableNames: 'predicate predicateMessage negated negatedMessage'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPPredicateParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPPredicateParser class' category: #'PetitParser-Parsers'!
 PPPredicateParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPPredicateObjectParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPPredicateObjectParser category: #'PetitParser-Parsers'!
 PPPredicateParser subclass: #PPPredicateObjectParser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPPredicateObjectParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPPredicateObjectParser class' category: #'PetitParser-Parsers'!
 PPPredicateObjectParser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PPPredicateSequenceParser category: 'PetitParser-Parsers'!
+!classDefinition: #PPPredicateSequenceParser category: #'PetitParser-Parsers'!
 PPPredicateParser subclass: #PPPredicateSequenceParser
 	instanceVariableNames: 'size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PetitParser-Parsers'!
-!classDefinition: 'PPPredicateSequenceParser class' category: 'PetitParser-Parsers'!
+!classDefinition: 'PPPredicateSequenceParser class' category: #'PetitParser-Parsers'!
 PPPredicateSequenceParser class
 	instanceVariableNames: ''!
 
@@ -809,11 +809,11 @@ initializeOn: aSequenceableCollection start: aStartInteger stop: aStopInteger
 	start := aStartInteger.
 	stop := aStopInteger! !
 
-!PPToken class methodsFor: 'initialization' stamp: 'pmon 6/1/2012 22:35'!
+!PPToken class methodsFor: 'initialization' stamp: 'KenD 3/10/2024 15:09:10'!
 initialize
 	"Platform independent newline sequence. LF: Unix, CR+LF: Windows, and CR: Apple."
 
-	NewLineParser := (Character lfCharacter asParser) / (Character crCharacter asParser , Character lfCharacter asParser optional)! !
+	NewLineParser := (Character lf asParser) / (Character cr asParser , Character lf asParser optional)! !
 
 !PPToken class methodsFor: 'instance creation' stamp: 'lr 4/6/2010 20:58'!
 new
