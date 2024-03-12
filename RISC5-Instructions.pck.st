@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5667] on 28 March 2023 at 3:41:46 pm'!
+'From Cuis 6.0 [latest update: #5760] on 12 March 2024 at 4:11:58 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,1019 +8,1019 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 74!
+!provides: 'RISC5-Instructions' 1 75!
 !requires: 'Cuis-Base' 60 5658 nil!
-SystemOrganization addCategory: 'RISC5-Instructions'!
+SystemOrganization addCategory: #'RISC5-Instructions'!
 
 
-!classDefinition: #RISC5Regs category: 'RISC5-Instructions'!
+!classDefinition: #RISC5Regs category: #'RISC5-Instructions'!
 SharedPool subclass: #RISC5Regs
 	instanceVariableNames: ''
 	classVariableNames: 'Arg0 Arg1 Arg2 Arg3 Arg4 Arg5 Arg6 Arg7 DYNamic F0 F1 F10 F11 F12 F13 F14 F15 F16 F17 F18 F19 F2 F20 F21 F22 F23 F24 F25 F26 F27 F28 F29 F3 F30 F31 F4 F5 F6 F7 F8 F9 FArg0 FArg1 FArg2 FArg3 FArg4 FArg5 FArg6 FArg7 FSav0 FSav1 FSav10 FSav11 FSav2 FSav3 FSav4 FSav5 FSav6 FSav7 FSav8 FSav9 FTmp0 FTmp1 FTmp10 FTmp11 FTmp2 FTmp3 FTmp4 FTmp5 FTmp6 FTmp7 FTmp8 FTmp9 FramePtr GlobalPtr ReturnAddr RoundDown RoundNearestToEven RoundNearestToMax RoundTwordZero RoundUp Sav0 Sav1 Sav10 Sav11 Sav2 Sav3 Sav4 Sav5 Sav6 Sav7 Sav8 Sav9 SizeDouble SizeHalf SizeQuad SizeSingle StackPtr ThreadPtr Tmp0 Tmp1 Tmp2 Tmp3 Tmp4 Tmp5 Tmp6 X0 X1 X10 X11 X12 X13 X14 X15 X16 X17 X18 X19 X2 X20 X21 X22 X23 X24 X25 X26 X27 X28 X29 X3 X30 X31 X4 X5 X6 X7 X8 X9 Zero'
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RISC5Regs class' category: 'RISC5-Instructions'!
+!classDefinition: 'RISC5Regs class' category: #'RISC5-Instructions'!
 RISC5Regs class
 	instanceVariableNames: ''!
 
-!classDefinition: #RISC5InstructionsTests category: 'RISC5-Instructions'!
-TestCase subclass: #RISC5InstructionsTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'RISC5Regs'
-	category: 'RISC5-Instructions'!
-!classDefinition: 'RISC5InstructionsTests class' category: 'RISC5-Instructions'!
-RISC5InstructionsTests class
-	instanceVariableNames: ''!
-
-!classDefinition: #RISC5Instructions category: 'RISC5-Instructions'!
+!classDefinition: #RISC5Instructions category: #'RISC5-Instructions'!
 Object subclass: #RISC5Instructions
 	instanceVariableNames: 'destReg'
 	classVariableNames: 'FRegs IRegs'
 	poolDictionaries: 'RISC5Regs'
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RISC5Instructions class' category: 'RISC5-Instructions'!
+!classDefinition: 'RISC5Instructions class' category: #'RISC5-Instructions'!
 RISC5Instructions class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Branch category: 'RISC5-Instructions'!
+!classDefinition: #RV64Branch category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Branch
 	instanceVariableNames: 'regA regB imm12'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Branch class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Branch class' category: #'RISC5-Instructions'!
 RV64Branch class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BEQ category: 'RISC5-Instructions'!
+!classDefinition: #RV64BEQ category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BEQ
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BEQ class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BEQ class' category: #'RISC5-Instructions'!
 RV64BEQ class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BGE category: 'RISC5-Instructions'!
+!classDefinition: #RV64BGE category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BGE
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BGE class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BGE class' category: #'RISC5-Instructions'!
 RV64BGE class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BGEU category: 'RISC5-Instructions'!
+!classDefinition: #RV64BGEU category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BGEU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BGEU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BGEU class' category: #'RISC5-Instructions'!
 RV64BGEU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BLT category: 'RISC5-Instructions'!
+!classDefinition: #RV64BLT category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BLT
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BLT class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BLT class' category: #'RISC5-Instructions'!
 RV64BLT class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BLTU category: 'RISC5-Instructions'!
+!classDefinition: #RV64BLTU category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BLTU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BLTU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BLTU class' category: #'RISC5-Instructions'!
 RV64BLTU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64BNE category: 'RISC5-Instructions'!
+!classDefinition: #RV64BNE category: #'RISC5-Instructions'!
 RV64Branch subclass: #RV64BNE
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64BNE class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64BNE class' category: #'RISC5-Instructions'!
 RV64BNE class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Immediate category: 'RISC5-Instructions'!
+!classDefinition: #RV64Immediate category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Immediate
 	instanceVariableNames: 'sourceReg immediate12'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Immediate class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Immediate class' category: #'RISC5-Instructions'!
 RV64Immediate class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64ADDI category: 'RISC5-Instructions'!
+!classDefinition: #RV64ADDI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64ADDI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ADDI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ADDI class' category: #'RISC5-Instructions'!
 RV64ADDI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64ANDI category: 'RISC5-Instructions'!
+!classDefinition: #RV64ANDI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64ANDI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ANDI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ANDI class' category: #'RISC5-Instructions'!
 RV64ANDI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64ORI category: 'RISC5-Instructions'!
+!classDefinition: #RV64ORI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64ORI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ORI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ORI class' category: #'RISC5-Instructions'!
 RV64ORI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLLI category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLLI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64SLLI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLLI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLLI class' category: #'RISC5-Instructions'!
 RV64SLLI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLTI category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLTI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64SLTI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLTI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTI class' category: #'RISC5-Instructions'!
 RV64SLTI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLTIU category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLTIU category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64SLTIU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLTIU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTIU class' category: #'RISC5-Instructions'!
 RV64SLTIU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SRAI category: 'RISC5-Instructions'!
+!classDefinition: #RV64SRAI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64SRAI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SRAI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRAI class' category: #'RISC5-Instructions'!
 RV64SRAI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SRLI category: 'RISC5-Instructions'!
+!classDefinition: #RV64SRLI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64SRLI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SRLI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRLI class' category: #'RISC5-Instructions'!
 RV64SRLI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64XORI category: 'RISC5-Instructions'!
+!classDefinition: #RV64XORI category: #'RISC5-Instructions'!
 RV64Immediate subclass: #RV64XORI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64XORI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64XORI class' category: #'RISC5-Instructions'!
 RV64XORI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64JAL category: 'RISC5-Instructions'!
+!classDefinition: #RV64JAL category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64JAL
 	instanceVariableNames: 'bit31 bits21to30 bit20 bits12to19'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64JAL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64JAL class' category: #'RISC5-Instructions'!
 RV64JAL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64JALR category: 'RISC5-Instructions'!
+!classDefinition: #RV64JALR category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64JALR
 	instanceVariableNames: 'baseReg immedOffset'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64JALR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64JALR class' category: #'RISC5-Instructions'!
 RV64JALR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Load category: 'RISC5-Instructions'!
+!classDefinition: #RV64Load category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Load
 	instanceVariableNames: 'immedOffset baseReg'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Load class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Load class' category: #'RISC5-Instructions'!
 RV64Load class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLD category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLD category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64FLD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLD class' category: #'RISC5-Instructions'!
 RV64FLD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLH category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLH category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64FLH
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLH class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLH class' category: #'RISC5-Instructions'!
 RV64FLH class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLQ category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLQ category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64FLQ
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLQ class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLQ class' category: #'RISC5-Instructions'!
 RV64FLQ class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLW category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLW category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64FLW
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLW class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLW class' category: #'RISC5-Instructions'!
 RV64FLW class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LB category: 'RISC5-Instructions'!
+!classDefinition: #RV64LB category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LB class' category: #'RISC5-Instructions'!
 RV64LB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LBU category: 'RISC5-Instructions'!
+!classDefinition: #RV64LBU category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LBU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LBU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LBU class' category: #'RISC5-Instructions'!
 RV64LBU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LD category: 'RISC5-Instructions'!
+!classDefinition: #RV64LD category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LD class' category: #'RISC5-Instructions'!
 RV64LD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LH category: 'RISC5-Instructions'!
+!classDefinition: #RV64LH category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LH
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LH class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LH class' category: #'RISC5-Instructions'!
 RV64LH class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LHU category: 'RISC5-Instructions'!
+!classDefinition: #RV64LHU category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LHU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LHU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LHU class' category: #'RISC5-Instructions'!
 RV64LHU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LW category: 'RISC5-Instructions'!
+!classDefinition: #RV64LW category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LW
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LW class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LW class' category: #'RISC5-Instructions'!
 RV64LW class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LWU category: 'RISC5-Instructions'!
+!classDefinition: #RV64LWU category: #'RISC5-Instructions'!
 RV64Load subclass: #RV64LWU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LWU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LWU class' category: #'RISC5-Instructions'!
 RV64LWU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Reg3Reg category: 'RISC5-Instructions'!
+!classDefinition: #RV64Reg3Reg category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Reg3Reg
 	instanceVariableNames: 'regA regB'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Reg3Reg class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Reg3Reg class' category: #'RISC5-Instructions'!
 RV64Reg3Reg class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64ADD category: 'RISC5-Instructions'!
+!classDefinition: #RV64ADD category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64ADD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ADD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ADD class' category: #'RISC5-Instructions'!
 RV64ADD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64NOOP category: 'RISC5-Instructions'!
+!classDefinition: #RV64NOOP category: #'RISC5-Instructions'!
 RV64ADD subclass: #RV64NOOP
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64NOOP class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64NOOP class' category: #'RISC5-Instructions'!
 RV64NOOP class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOADD category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOADD category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOADD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOADD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOADD class' category: #'RISC5-Instructions'!
 RV64AMOADD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOAND category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOAND category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOAND
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOAND class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOAND class' category: #'RISC5-Instructions'!
 RV64AMOAND class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOMAX category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOMAX category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOMAX
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOMAX class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOMAX class' category: #'RISC5-Instructions'!
 RV64AMOMAX class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOMIN category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOMIN category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOMIN
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOMIN class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOMIN class' category: #'RISC5-Instructions'!
 RV64AMOMIN class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOOR category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOOR category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOOR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOOR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOOR class' category: #'RISC5-Instructions'!
 RV64AMOOR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOSWAP category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOSWAP category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOSWAP
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOSWAP class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOSWAP class' category: #'RISC5-Instructions'!
 RV64AMOSWAP class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AMOXOR category: 'RISC5-Instructions'!
+!classDefinition: #RV64AMOXOR category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AMOXOR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AMOXOR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AMOXOR class' category: #'RISC5-Instructions'!
 RV64AMOXOR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AND category: 'RISC5-Instructions'!
+!classDefinition: #RV64AND category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64AND
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AND class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AND class' category: #'RISC5-Instructions'!
 RV64AND class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64DFloatReg2Reg category: 'RISC5-Instructions'!
+!classDefinition: #RV64DFloatReg2Reg category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64DFloatReg2Reg
 	instanceVariableNames: 'roundingMode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64DFloatReg2Reg class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64DFloatReg2Reg class' category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FCVTD2I category: 'RISC5-Instructions'!
+!classDefinition: #RV64FCVTD2I category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FCVTD2I
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FCVTD2I class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FCVTD2I class' category: #'RISC5-Instructions'!
 RV64FCVTD2I class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FCVTD2UI category: 'RISC5-Instructions'!
+!classDefinition: #RV64FCVTD2UI category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FCVTD2UI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FCVTD2UI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FCVTD2UI class' category: #'RISC5-Instructions'!
 RV64FCVTD2UI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FCVTI2D category: 'RISC5-Instructions'!
+!classDefinition: #RV64FCVTI2D category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FCVTI2D
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FCVTI2D class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FCVTI2D class' category: #'RISC5-Instructions'!
 RV64FCVTI2D class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FCVTUI2D category: 'RISC5-Instructions'!
+!classDefinition: #RV64FCVTUI2D category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FCVTUI2D
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FCVTUI2D class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FCVTUI2D class' category: #'RISC5-Instructions'!
 RV64FCVTUI2D class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMVD2IR category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMVD2IR category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FMVD2IR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMVD2IR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMVD2IR class' category: #'RISC5-Instructions'!
 RV64FMVD2IR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMVI2DR category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMVI2DR category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FMVI2DR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMVI2DR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMVI2DR class' category: #'RISC5-Instructions'!
 RV64FMVI2DR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSQRT category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSQRT category: #'RISC5-Instructions'!
 RV64DFloatReg2Reg subclass: #RV64FSQRT
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSQRT class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSQRT class' category: #'RISC5-Instructions'!
 RV64FSQRT class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64DFloatReg3Reg category: 'RISC5-Instructions'!
+!classDefinition: #RV64DFloatReg3Reg category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64DFloatReg3Reg
 	instanceVariableNames: 'roundingMode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64DFloatReg3Reg class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64DFloatReg3Reg class' category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FADD category: 'RISC5-Instructions'!
+!classDefinition: #RV64FADD category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FADD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FADD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FADD class' category: #'RISC5-Instructions'!
 RV64FADD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FDIV category: 'RISC5-Instructions'!
+!classDefinition: #RV64FDIV category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FDIV
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FDIV class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FDIV class' category: #'RISC5-Instructions'!
 RV64FDIV class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FEQ category: 'RISC5-Instructions'!
+!classDefinition: #RV64FEQ category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FEQ
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FEQ class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FEQ class' category: #'RISC5-Instructions'!
 RV64FEQ class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLE category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLE category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FLE
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLE class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLE class' category: #'RISC5-Instructions'!
 RV64FLE class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FLT category: 'RISC5-Instructions'!
+!classDefinition: #RV64FLT category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FLT
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FLT class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FLT class' category: #'RISC5-Instructions'!
 RV64FLT class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMAX category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMAX category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FMAX
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMAX class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMAX class' category: #'RISC5-Instructions'!
 RV64FMAX class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMIN category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMIN category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FMIN
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMIN class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMIN class' category: #'RISC5-Instructions'!
 RV64FMIN class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMUL category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMUL category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FMUL
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMUL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMUL class' category: #'RISC5-Instructions'!
 RV64FMUL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSUB category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSUB category: #'RISC5-Instructions'!
 RV64DFloatReg3Reg subclass: #RV64FSUB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSUB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSUB class' category: #'RISC5-Instructions'!
 RV64FSUB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64DIV category: 'RISC5-Instructions'!
+!classDefinition: #RV64DIV category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64DIV
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64DIV class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64DIV class' category: #'RISC5-Instructions'!
 RV64DIV class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64DIVU category: 'RISC5-Instructions'!
+!classDefinition: #RV64DIVU category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64DIVU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64DIVU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64DIVU class' category: #'RISC5-Instructions'!
 RV64DIVU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LR category: 'RISC5-Instructions'!
+!classDefinition: #RV64LR category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64LR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LR class' category: #'RISC5-Instructions'!
 RV64LR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64MUL category: 'RISC5-Instructions'!
+!classDefinition: #RV64MUL category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64MUL
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64MUL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MUL class' category: #'RISC5-Instructions'!
 RV64MUL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64MULH category: 'RISC5-Instructions'!
+!classDefinition: #RV64MULH category: #'RISC5-Instructions'!
 RV64MUL subclass: #RV64MULH
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64MULH class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULH class' category: #'RISC5-Instructions'!
 RV64MULH class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64MULSU category: 'RISC5-Instructions'!
+!classDefinition: #RV64MULSU category: #'RISC5-Instructions'!
 RV64MUL subclass: #RV64MULSU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64MULSU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULSU class' category: #'RISC5-Instructions'!
 RV64MULSU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64MULU category: 'RISC5-Instructions'!
+!classDefinition: #RV64MULU category: #'RISC5-Instructions'!
 RV64MUL subclass: #RV64MULU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64MULU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64MULU class' category: #'RISC5-Instructions'!
 RV64MULU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64OR category: 'RISC5-Instructions'!
+!classDefinition: #RV64OR category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64OR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64OR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64OR class' category: #'RISC5-Instructions'!
 RV64OR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64REM category: 'RISC5-Instructions'!
+!classDefinition: #RV64REM category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64REM
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64REM class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64REM class' category: #'RISC5-Instructions'!
 RV64REM class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64REMU category: 'RISC5-Instructions'!
+!classDefinition: #RV64REMU category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64REMU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64REMU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64REMU class' category: #'RISC5-Instructions'!
 RV64REMU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SC category: 'RISC5-Instructions'!
+!classDefinition: #RV64SC category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SC
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SC class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SC class' category: #'RISC5-Instructions'!
 RV64SC class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLL category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLL category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SLL
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLL class' category: #'RISC5-Instructions'!
 RV64SLL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLT category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLT category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SLT
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLT class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLT class' category: #'RISC5-Instructions'!
 RV64SLT class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SLTU category: 'RISC5-Instructions'!
+!classDefinition: #RV64SLTU category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SLTU
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SLTU class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SLTU class' category: #'RISC5-Instructions'!
 RV64SLTU class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SRA category: 'RISC5-Instructions'!
+!classDefinition: #RV64SRA category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SRA
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SRA class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRA class' category: #'RISC5-Instructions'!
 RV64SRA class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SRL category: 'RISC5-Instructions'!
+!classDefinition: #RV64SRL category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SRL
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SRL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SRL class' category: #'RISC5-Instructions'!
 RV64SRL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SUB category: 'RISC5-Instructions'!
+!classDefinition: #RV64SUB category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64SUB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SUB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SUB class' category: #'RISC5-Instructions'!
 RV64SUB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64XOR category: 'RISC5-Instructions'!
+!classDefinition: #RV64XOR category: #'RISC5-Instructions'!
 RV64Reg3Reg subclass: #RV64XOR
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64XOR class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64XOR class' category: #'RISC5-Instructions'!
 RV64XOR class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Reg4Reg category: 'RISC5-Instructions'!
+!classDefinition: #RV64Reg4Reg category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Reg4Reg
 	instanceVariableNames: 'regA regB regC roundMode precision'
 	classVariableNames: 'DYN Dfmt Hfmt Qfmr RDN RME RMM RTZ RUP Sfmt'
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Reg4Reg class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Reg4Reg class' category: #'RISC5-Instructions'!
 RV64Reg4Reg class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMADD category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMADD category: #'RISC5-Instructions'!
 RV64Reg4Reg subclass: #RV64FMADD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMADD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMADD class' category: #'RISC5-Instructions'!
 RV64FMADD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FMSUB category: 'RISC5-Instructions'!
+!classDefinition: #RV64FMSUB category: #'RISC5-Instructions'!
 RV64Reg4Reg subclass: #RV64FMSUB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FMSUB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FMSUB class' category: #'RISC5-Instructions'!
 RV64FMSUB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FNMADD category: 'RISC5-Instructions'!
+!classDefinition: #RV64FNMADD category: #'RISC5-Instructions'!
 RV64Reg4Reg subclass: #RV64FNMADD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FNMADD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FNMADD class' category: #'RISC5-Instructions'!
 RV64FNMADD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FNMSUB category: 'RISC5-Instructions'!
+!classDefinition: #RV64FNMSUB category: #'RISC5-Instructions'!
 RV64Reg4Reg subclass: #RV64FNMSUB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FNMSUB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FNMSUB class' category: #'RISC5-Instructions'!
 RV64FNMSUB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64Store category: 'RISC5-Instructions'!
+!classDefinition: #RV64Store category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64Store
 	instanceVariableNames: 'baseReg immLo immHi'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64Store class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64Store class' category: #'RISC5-Instructions'!
 RV64Store class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSD category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSD category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64FSD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSD class' category: #'RISC5-Instructions'!
 RV64FSD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSH category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSH category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64FSH
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSH class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSH class' category: #'RISC5-Instructions'!
 RV64FSH class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSQ category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSQ category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64FSQ
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSQ class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSQ class' category: #'RISC5-Instructions'!
 RV64FSQ class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64FSW category: 'RISC5-Instructions'!
+!classDefinition: #RV64FSW category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64FSW
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64FSW class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64FSW class' category: #'RISC5-Instructions'!
 RV64FSW class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SB category: 'RISC5-Instructions'!
+!classDefinition: #RV64SB category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64SB
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SB class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SB class' category: #'RISC5-Instructions'!
 RV64SB class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SD category: 'RISC5-Instructions'!
+!classDefinition: #RV64SD category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64SD
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SD class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SD class' category: #'RISC5-Instructions'!
 RV64SD class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SH category: 'RISC5-Instructions'!
+!classDefinition: #RV64SH category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64SH
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SH class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SH class' category: #'RISC5-Instructions'!
 RV64SH class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SW category: 'RISC5-Instructions'!
+!classDefinition: #RV64SW category: #'RISC5-Instructions'!
 RV64Store subclass: #RV64SW
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SW class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SW class' category: #'RISC5-Instructions'!
 RV64SW class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64SysCall category: 'RISC5-Instructions'!
+!classDefinition: #RV64SysCall category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64SysCall
 	instanceVariableNames: 'classifier'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64SysCall class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64SysCall class' category: #'RISC5-Instructions'!
 RV64SysCall class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64EBREAK category: 'RISC5-Instructions'!
+!classDefinition: #RV64EBREAK category: #'RISC5-Instructions'!
 RV64SysCall subclass: #RV64EBREAK
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64EBREAK class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64EBREAK class' category: #'RISC5-Instructions'!
 RV64EBREAK class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64ECALL category: 'RISC5-Instructions'!
+!classDefinition: #RV64ECALL category: #'RISC5-Instructions'!
 RV64SysCall subclass: #RV64ECALL
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64ECALL class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64ECALL class' category: #'RISC5-Instructions'!
 RV64ECALL class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64UpperAddr category: 'RISC5-Instructions'!
+!classDefinition: #RV64UpperAddr category: #'RISC5-Instructions'!
 RISC5Instructions subclass: #RV64UpperAddr
 	instanceVariableNames: 'immediate20'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64UpperAddr class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64UpperAddr class' category: #'RISC5-Instructions'!
 RV64UpperAddr class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64AUIPC category: 'RISC5-Instructions'!
+!classDefinition: #RV64AUIPC category: #'RISC5-Instructions'!
 RV64UpperAddr subclass: #RV64AUIPC
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64AUIPC class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64AUIPC class' category: #'RISC5-Instructions'!
 RV64AUIPC class
 	instanceVariableNames: ''!
 
-!classDefinition: #RV64LUI category: 'RISC5-Instructions'!
+!classDefinition: #RV64LUI category: #'RISC5-Instructions'!
 RV64UpperAddr subclass: #RV64LUI
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'RISC5-Instructions'!
-!classDefinition: 'RV64LUI class' category: 'RISC5-Instructions'!
+!classDefinition: 'RV64LUI class' category: #'RISC5-Instructions'!
 RV64LUI class
+	instanceVariableNames: ''!
+
+!classDefinition: #RISC5InstructionsTests category: #'RISC5-Instructions'!
+TestCase subclass: #RISC5InstructionsTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'RISC5Regs'
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RISC5InstructionsTests class' category: #'RISC5-Instructions'!
+RISC5InstructionsTests class
 	instanceVariableNames: ''!
 
 
@@ -1560,187 +1560,6 @@ initialize
 	SizeQuad    := 2r11. "Quad Precision   128-bits"
 
 ! !
-
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
-testRV64I
-
-	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
-		= 2r0000000001000001000000110110011.
-	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) instruction
-		= 2r1000000001000001000000110110011.
-	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) printString 
-		= 'sub  GlobalPtr, ReturnAddr,StackPtr' .
-	"... ... ..."
-	self assert: 
-	  (RV64LD regDest: 1 regBase: 3 offset: 16rFFF) 
-		instruction 
-		= 2r11111111111100011011000010000011.
-		    "10987654321098765432109876543210"
-	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
-	self assert: ((RV64LB regDest: 10 regBase: 12 offset: 16rFFF) 
-				offset printStringBase: 16)
-				= 'FFF'.
-	self assert: 
-		((RV64LB regDest: 10 regBase: 12 offset: 16rA5A) 
-			printString )
-			=  'lb  Arg0, Arg2, 16rA5A' .
-	self assert:
-		(RV64JAL regDest: 1 offset: 2r11000000111000000001) instruction
-		= 2r11000000001110000001000011101111.
-		
-	self assert:
-		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
-		= 2r110000001110000000110.
-	
-	self assert: 
-		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
-		= 'jal  ReturnAddr, 16r181C02' .
-	self assert:
-		(RV64LUI regDest: 1 immediate: 16rC0E03)  printString 
-		 = 'lui  ReturnAddr, 16rC0E03' 
-		! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 11:44:25'!
-testB
-	"Test encode+decode B-type instructions"
-	
-	 #(#RV64BEQ #RV64BGE #RV64BGEU 
-	     #RV64BLT #RV64BLTU #RV64BNE)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	"Check immediate 12 swizzle/unswizzle. NB: treat immediate as unsigned"
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0100000000000) instruction rv64gBtypeImmediate ) 
-							 = 2r0100000000000.
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0010000000000) instruction rv64gBtypeImmediate ) 
-							 = 2r0010000000000.		
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0001111110000) instruction rv64gBtypeImmediate ) 
-							 = 2r0001111110000.				
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0000000001111) instruction rv64gBtypeImmediate ) 
-							 = 2r0000000001111.	
-
-
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
-testI
-	"Test encode+decode I-type instructions"
-	
-	 #(   RV64ADDI RV64ANDI 
-		RV64ORI RV64SLLI RV64SLTI 
-		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
-		RV64FLW RV64FLD RV64FLH RV64FLQ
-		RV64LB RV64LBU RV64LD
-		RV64LH RV64LHU RV64LW RV64LWU)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 15:41:32'!
-testJ
-	"Test encode+decode J-type instructions"
-	
-	 #(#RV64JAL)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 offset: 16rFADED) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	"Check immediate20 swizzle"
-	self assert: (RV64JAL regDest: 10 offset:  16rFFFFF) 
-		  instruction rv64gJtypeImmediate = 16rFFFFF.    
-		
-	self assert: (RV64JAL regDest: 10 offset: 2r010000000000000000000) 
-		  instruction rv64gJtypeImmediate = 2r010000000000000000000.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r000000000001111111111) 
-		  instruction rv64gJtypeImmediate = 2r000000000001111111111.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r000000000010000000000) 
-		  instruction rv64gJtypeImmediate = 2r000000000010000000000.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r001111111100000000000) 
-		  instruction rv64gJtypeImmediate = 2r001111111100000000000.
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
-testR
-	"Test encode+decode R-type instructions"
-	
-	#(#RV64ADD #RV64AND  
-	#RV64DIV #RV64DIVU #RV64MUL 
-	#RV64OR #RV64REM #RV64REMU 
-	#RV64SLL #RV64SLT #RV64SLTU 
-	#RV64SRA #RV64SRL #RV64SUB 
-	#RV64XOR #RV64LR #RV64SC 
-	#RV64AMOSWAP #RV64AMOADD #RV64AMOAND 
-	#RV64AMOOR #RV64AMOXOR 
-	#RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 12:05:13'!
-testS
-	"Test encode+decode S-type instructions"
-	
-	 #( RV64SB RV64SH RV64SW RV64SD
-	     RV64FSQ RV64FSH RV64FSW RV64FSD )  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regSource: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:42'!
-testSysCall
-	"Test encode+decode SysCall instructions"
-	
-	#( RV64EBREAK 
-	     RV64ECALL ) do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class new) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:06:40'!
-testU
-	"Test encode+decode U-type instructions"
-	
-	 #(RV64LUI RV64AUIPC)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 immediate: 16rFADED) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
 
 !RISC5Instructions methodsFor: 'initialization' stamp: 'KenD 10/5/2022 11:37:08'!
 destReg: regDest
@@ -2485,8 +2304,8 @@ opcode
 	"Opcode for JALR instruction"
 	^2r1100111! !
 
-!RV64JALR methodsFor: 'initialization' stamp: 'KenD 5/9/2021 15:56:34'!
-destReg: regDest baseReg: reg1 immedOffset: immed12
+!RV64JALR methodsFor: 'initialization' stamp: 'KenD 3/12/2024 16:03:32'!
+destReg: regDest baseReg: reg1 imm12: immed12
 
 	super destReg: regDest .
 	baseReg := reg1.
@@ -2500,7 +2319,7 @@ printString
 		(self class regName: baseReg), ', ', 
 		'16r', (self offset printStringBase: 16).  ! !
 
-!RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 5/9/2021 15:53:56'!
+!RV64JALR class methodsFor: 'instance creation' stamp: 'KenD 3/12/2024 16:04:49'!
 regDest: rd regBase: rb offset: immediate12
 
 	(immediate12 bitAnd: 16rFFF) = immediate12 
@@ -2509,7 +2328,7 @@ regDest: rd regBase: rb offset: immediate12
 	^self new 
 			destReg: rd 
 			baseReg: rb 
-			immedOffset: immediate12 	! !
+			imm12: immediate12 	! !
 
 !RV64Load methodsFor: 'accessing' stamp: 'KenD 5/4/2021 08:06:50'!
 func3
@@ -2546,8 +2365,8 @@ opcode
 	"Opcode for all L-type instructions"
 	^2r0000011! !
 
-!RV64Load methodsFor: 'initialization' stamp: 'KenD 5/7/2021 16:07:32'!
-destReg: regDest baseReg: reg1 immedOffset: immed12
+!RV64Load methodsFor: 'initialization' stamp: 'KenD 3/12/2024 16:05:29'!
+destReg: regDest baseReg: reg1 imm12: immed12
 
 	super destReg: regDest .
 	baseReg := reg1.
@@ -2561,7 +2380,7 @@ printString
 		(self class regName: baseReg ), ', 16r', 
 		(self offset printStringBase: 16)! !
 
-!RV64Load class methodsFor: 'instance creation' stamp: 'KenD 3/25/2023 09:10:42'!
+!RV64Load class methodsFor: 'instance creation' stamp: 'KenD 3/12/2024 16:04:54'!
 regDest: rd regBase: rb offset: immediate12
 	
 	(immediate12 bitAnd: 16rFFF) = immediate12 
@@ -2570,7 +2389,7 @@ regDest: rd regBase: rb offset: immediate12
 	^self new 
 			destReg: rd 
 			baseReg: rb 
-			immedOffset: immediate12 ! !
+			imm12: immediate12 ! !
 
 !RV64FLD methodsFor: 'accessing' stamp: 'KenD 3/26/2023 14:26:05'!
 func3
@@ -2752,6 +2571,11 @@ destReg: regDest regA: reg1 regB: reg2
 opcode
 	"Opcode for all R-type instructions"
 	^2r0110011! !
+
+!RV64Reg3Reg class methodsFor: 'instance creation' stamp: 'KenD 3/12/2024 15:47:58'!
+destReg: destReg regA: reg1 regB: reg2
+
+	^self new destReg: destReg regA: reg1 regB: reg2! !
 
 !RV64Reg3Reg class methodsFor: 'instance creation' stamp: 'KenD 5/1/2021 16:07:42'!
 regDest: destReg regA: reg1 regB: reg2
@@ -3218,6 +3042,11 @@ func3
 opcode
 	"Opcode for all floating point R-format instructions"
 	^ 2r1010011! !
+
+!RV64DFloatReg3Reg class methodsFor: 'instance creation' stamp: 'KenD 3/12/2024 15:47:36'!
+destReg: destReg regA: reg1 regB: reg2
+
+	^self regDest: destReg regA: reg1 regB: reg2 roundingMode: self class defaultRoundingMode! !
 
 !RV64DFloatReg3Reg class methodsFor: 'instance creation' stamp: 'KenD 10/8/2022 13:42:49'!
 regDest: destReg regA: reg1 regB: reg2
@@ -3963,8 +3792,8 @@ printString
 
 	^self opName ! !
 
-!RV64UpperAddr methodsFor: 'initialization' stamp: 'KenD 5/11/2021 09:03:52'!
-destReg: rd immediate: imm20
+!RV64UpperAddr methodsFor: 'initialization' stamp: 'KenD 3/12/2024 16:09:46'!
+destReg: rd imm20: imm20
 
 	super destReg: rd.
 	immediate20 := imm20 ! !
@@ -3998,14 +3827,14 @@ printString
 		(self class regName: destReg), ', 16r', 
 		(immediate20 printStringBase: 16)! !
 
-!RV64UpperAddr class methodsFor: 'instance creation' stamp: 'KenD 5/11/2021 09:04:20'!
+!RV64UpperAddr class methodsFor: 'instance creation' stamp: 'KenD 3/12/2024 16:09:46'!
 regDest: rd immediate: imm20
 
  	(imm20 bitAnd: 16rFFFFF) = imm20 
 		ifFalse: [DomainError signal: 'too big for 20 bit immediate'].
 		
 	^self new
-		destReg: rd immediate: imm20
+		destReg: rd imm20: imm20
 ! !
 
 !RV64AUIPC methodsFor: 'accessing' stamp: 'KenD 9/5/2022 13:00:03'!
@@ -4029,6 +3858,187 @@ opName
 opcode
 	"Opcode for LUI"
 	^2r0110111! !
+
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
+testRV64I
+
+	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
+		= 2r0000000001000001000000110110011.
+	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) instruction
+		= 2r1000000001000001000000110110011.
+	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) printString 
+		= 'sub  GlobalPtr, ReturnAddr,StackPtr' .
+	"... ... ..."
+	self assert: 
+	  (RV64LD regDest: 1 regBase: 3 offset: 16rFFF) 
+		instruction 
+		= 2r11111111111100011011000010000011.
+		    "10987654321098765432109876543210"
+	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
+	self assert: ((RV64LB regDest: 10 regBase: 12 offset: 16rFFF) 
+				offset printStringBase: 16)
+				= 'FFF'.
+	self assert: 
+		((RV64LB regDest: 10 regBase: 12 offset: 16rA5A) 
+			printString )
+			=  'lb  Arg0, Arg2, 16rA5A' .
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001) instruction
+		= 2r11000000001110000001000011101111.
+		
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
+		= 2r110000001110000000110.
+	
+	self assert: 
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
+		= 'jal  ReturnAddr, 16r181C02' .
+	self assert:
+		(RV64LUI regDest: 1 immediate: 16rC0E03)  printString 
+		 = 'lui  ReturnAddr, 16rC0E03' 
+		! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 11:44:25'!
+testB
+	"Test encode+decode B-type instructions"
+	
+	 #(#RV64BEQ #RV64BGE #RV64BGEU 
+	     #RV64BLT #RV64BLTU #RV64BNE)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	"Check immediate 12 swizzle/unswizzle. NB: treat immediate as unsigned"
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0100000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0100000000000.
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0010000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0010000000000.		
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0001111110000) instruction rv64gBtypeImmediate ) 
+							 = 2r0001111110000.				
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0000000001111) instruction rv64gBtypeImmediate ) 
+							 = 2r0000000001111.	
+
+
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
+testI
+	"Test encode+decode I-type instructions"
+	
+	 #(   RV64ADDI RV64ANDI 
+		RV64ORI RV64SLLI RV64SLTI 
+		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
+		RV64FLW RV64FLD RV64FLH RV64FLQ
+		RV64LB RV64LBU RV64LD
+		RV64LH RV64LHU RV64LW RV64LWU)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 15:41:32'!
+testJ
+	"Test encode+decode J-type instructions"
+	
+	 #(#RV64JAL)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 offset: 16rFADED) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	"Check immediate20 swizzle"
+	self assert: (RV64JAL regDest: 10 offset:  16rFFFFF) 
+		  instruction rv64gJtypeImmediate = 16rFFFFF.    
+		
+	self assert: (RV64JAL regDest: 10 offset: 2r010000000000000000000) 
+		  instruction rv64gJtypeImmediate = 2r010000000000000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000001111111111) 
+		  instruction rv64gJtypeImmediate = 2r000000000001111111111.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000010000000000) 
+		  instruction rv64gJtypeImmediate = 2r000000000010000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r001111111100000000000) 
+		  instruction rv64gJtypeImmediate = 2r001111111100000000000.
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
+testR
+	"Test encode+decode R-type instructions"
+	
+	#(#RV64ADD #RV64AND  
+	#RV64DIV #RV64DIVU #RV64MUL 
+	#RV64OR #RV64REM #RV64REMU 
+	#RV64SLL #RV64SLT #RV64SLTU 
+	#RV64SRA #RV64SRL #RV64SUB 
+	#RV64XOR #RV64LR #RV64SC 
+	#RV64AMOSWAP #RV64AMOADD #RV64AMOAND 
+	#RV64AMOOR #RV64AMOXOR 
+	#RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 12:05:13'!
+testS
+	"Test encode+decode S-type instructions"
+	
+	 #( RV64SB RV64SH RV64SW RV64SD
+	     RV64FSQ RV64FSH RV64FSW RV64FSD )  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regSource: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:42'!
+testSysCall
+	"Test encode+decode SysCall instructions"
+	
+	#( RV64EBREAK 
+	     RV64ECALL ) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class new) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:06:40'!
+testU
+	"Test encode+decode U-type instructions"
+	
+	 #(RV64LUI RV64AUIPC)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 immediate: 16rFADED) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 14:08:15'!
 rv64gBtypeImmediate

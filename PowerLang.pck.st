@@ -1,16 +1,18 @@
-'From Cuis6.3 [latest update: #6253] on 10 March 2024 at 3:10:58 pm'!
+'From Cuis 6.0 [latest update: #5760] on 12 March 2024 at 4:11:45 pm'!
 'Description Original + Bee RiscV64G code generation back end.'!
 !provides: 'Powerlang' 1 68!
-!requires: 'BeeCompatibility' 1 61 nil!
-!requires: 'RISC5-Instructions' 1 74 nil!
-!requires: 'BeePParser' 1 22 nil!
+!requires: 'BeeCompatibility' 1 25 nil!
+!requires: 'RISC5-Instructions' 1 28 nil!
+!requires: 'BeePParser' 1 19 nil!
 SystemOrganization addCategory: #'Powerlang-Core'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembler-Intel'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembly'!
 SystemOrganization addCategory: #'Powerlang-Core-Assembly-RISCV'!
 SystemOrganization addCategory: #'Powerlang-Core-Building'!
+SystemOrganization addCategory: #'Powerlang-Core-Emulation'!
 SystemOrganization addCategory: #'Powerlang-Core-Execution'!
 SystemOrganization addCategory: #'Powerlang-Core-Execution-LMR'!
+SystemOrganization addCategory: #'Powerlang-Core-Execution-Ring'!
 SystemOrganization addCategory: #'Powerlang-Core-Metaphysics'!
 SystemOrganization addCategory: #'Powerlang-Core-Mirrors'!
 SystemOrganization addCategory: #'Powerlang-Core-Nativization'!
@@ -19,13 +21,11 @@ SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Bindings'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk'!
 SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
-SystemOrganization addCategory: #'Powerlang-Core-Emulation'!
-SystemOrganization addCategory: #'Powerlang-Tests-SCompiler'!
-SystemOrganization addCategory: #'Powerlang-Core-Execution-Ring'!
 SystemOrganization addCategory: #'Powerlang-Tests'!
 SystemOrganization addCategory: #'Powerlang-Tests-Bootstrap'!
-SystemOrganization addCategory: #'Powerlang-TestsFailing-SExpressions'!
+SystemOrganization addCategory: #'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: #'Powerlang-TestsFailing-Metaphysics'!
+SystemOrganization addCategory: #'Powerlang-TestsFailing-SExpressions'!
 
 
 !classDefinition: #PowerLangPackage category: #'Powerlang-Core'!
@@ -62,6 +62,96 @@ prePackageInstall
 		ifNil: [ Smalltalk at: #globals put: Smalltalk copy ].
 ! !
 PowerLangPackage prePackageInstall!
+!classDefinition: #ObjectHeaderMasks category: #'Powerlang-Core-Metaphysics'!
+PSharedPool subclass: #ObjectHeaderMasks
+	instanceVariableNames: ''
+	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderMasks class' category: #'Powerlang-Core-Metaphysics'!
+ObjectHeaderMasks class
+	instanceVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'!
+
+!classDefinition: #ObjectHeaderOffsets category: #'Powerlang-Core-Metaphysics'!
+PSharedPool subclass: #ObjectHeaderOffsets
+	instanceVariableNames: ''
+	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Metaphysics'!
+!classDefinition: 'ObjectHeaderOffsets class' category: #'Powerlang-Core-Metaphysics'!
+ObjectHeaderOffsets class
+	instanceVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'!
+
+!classDefinition: #CompiledBlockFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #CompiledBlockFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledBlockFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+CompiledBlockFormatMasks class
+	instanceVariableNames: ''!
+
+!classDefinition: #CompiledMethodFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #CompiledMethodFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: 'ArgCount BlockCount TempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'CompiledMethodFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+CompiledMethodFormatMasks class
+	instanceVariableNames: 'ArgCount BlockCount TempCount'!
+
+!classDefinition: #FrameOffsets category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #FrameOffsets
+	instanceVariableNames: ''
+	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'FrameOffsets class' category: #'Powerlang-Core-Mirrors'!
+FrameOffsets class
+	instanceVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'!
+
+!classDefinition: #SpeciesFormatMasks category: #'Powerlang-Core-Mirrors'!
+PSharedPool subclass: #SpeciesFormatMasks
+	instanceVariableNames: ''
+	classVariableNames: 'InstSize IsPointers'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Mirrors'!
+!classDefinition: 'SpeciesFormatMasks class' category: #'Powerlang-Core-Mirrors'!
+SpeciesFormatMasks class
+	instanceVariableNames: 'InstSize IsPointers'!
+
+!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstBindingTypes
+	instanceVariableNames: ''
+	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
+AstBindingTypes class
+	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
+
+!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #AstNodeTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
+AstNodeTypes class
+	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
+
+!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
+PSharedPool subclass: #ClosureElementTypes
+	instanceVariableNames: ''
+	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SExpressions'!
+!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
+ClosureElementTypes class
+	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
+
 !classDefinition: #CharacterConstants category: #'Powerlang-Core'!
 SharedPool subclass: #CharacterConstants
 	instanceVariableNames: ''
@@ -230,146 +320,6 @@ SCompilationError subclass: #SUndeclaredIdentifierError
 	category: 'Powerlang-Core-SCompiler'!
 !classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-Core-SCompiler'!
 SUndeclaredIdentifierError class
-	instanceVariableNames: ''!
-
-!classDefinition: #ScriptScopeTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #ScriptScopeTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'ScriptScopeTest class' category: #'Powerlang-Tests-SCompiler'!
-ScriptScopeTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkParserTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #SmalltalkParserTest
-	instanceVariableNames: 'parser'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'SmalltalkParserTest class' category: #'Powerlang-Tests-SCompiler'!
-SmalltalkParserTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #SmalltalkScannerTest
-	instanceVariableNames: 'scanner'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'SmalltalkScannerTest class' category: #'Powerlang-Tests-SCompiler'!
-SmalltalkScannerTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectMapTest category: #'Powerlang-Tests-Bootstrap'!
-TestCase subclass: #ObjectMapTest
-	instanceVariableNames: 'kernel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'ObjectMapTest class' category: #'Powerlang-Tests-Bootstrap'!
-ObjectMapTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkLMRBootstrapTest category: #'Powerlang-Tests-Bootstrap'!
-TestCase subclass: #PowertalkLMRBootstrapTest
-	instanceVariableNames: 'runtime bootstrapper'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'PowertalkLMRBootstrapTest class' category: #'Powerlang-Tests-Bootstrap'!
-PowertalkLMRBootstrapTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkLMRTest category: #'Powerlang-Tests-Bootstrap'!
-TestCase subclass: #PowertalkLMRTest
-	instanceVariableNames: 'runtime'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'PowertalkLMRTest class' category: #'Powerlang-Tests-Bootstrap'!
-PowertalkLMRTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkRingImageTest category: #'Powerlang-Tests-Bootstrap'!
-TestCase subclass: #PowertalkRingImageTest
-	instanceVariableNames: 'image'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'PowertalkRingImageTest class' category: #'Powerlang-Tests-Bootstrap'!
-PowertalkRingImageTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkRingRuntimeTest category: #'Powerlang-Tests-Bootstrap'!
-TestCase subclass: #PowertalkRingRuntimeTest
-	instanceVariableNames: 'image runtime'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'PowertalkRingRuntimeTest class' category: #'Powerlang-Tests-Bootstrap'!
-PowertalkRingRuntimeTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstcodeTest category: #'Powerlang-TestsFailing-SExpressions'!
-TestCase subclass: #AstcodeTest
-	instanceVariableNames: 'method'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes'
-	category: 'Powerlang-TestsFailing-SExpressions'!
-!classDefinition: 'AstcodeTest class' category: #'Powerlang-TestsFailing-SExpressions'!
-AstcodeTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #MirrorTest category: #'Powerlang-TestsFailing-Metaphysics'!
-TestCase subclass: #MirrorTest
-	instanceVariableNames: 'runtime builder'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-TestsFailing-Metaphysics'!
-!classDefinition: 'MirrorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
-MirrorTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #ObjectMirrorTest category: #'Powerlang-TestsFailing-Metaphysics'!
-TestCase subclass: #ObjectMirrorTest
-	instanceVariableNames: 'storage'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-TestsFailing-Metaphysics'!
-!classDefinition: 'ObjectMirrorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
-ObjectMirrorTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpressionEmulatorTest category: #'Powerlang-TestsFailing-Metaphysics'!
-TestCase subclass: #SExpressionEmulatorTest
-	instanceVariableNames: 'builder writer runtime kernel'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes SExpressionTypes'
-	category: 'Powerlang-TestsFailing-Metaphysics'!
-!classDefinition: 'SExpressionEmulatorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
-SExpressionEmulatorTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SExpressionInterpreterTest category: #'Powerlang-TestsFailing-Metaphysics'!
-TestCase subclass: #SExpressionInterpreterTest
-	instanceVariableNames: 'builder writer runtime kernel'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes SExpressionTypes'
-	category: 'Powerlang-TestsFailing-Metaphysics'!
-!classDefinition: 'SExpressionInterpreterTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
-SExpressionInterpreterTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkLMRTestResource category: #'Powerlang-Tests-Bootstrap'!
-TestResource subclass: #PowertalkLMRTestResource
-	instanceVariableNames: 'image bootstrapper'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-Bootstrap'!
-!classDefinition: 'PowertalkLMRTestResource class' category: #'Powerlang-Tests-Bootstrap'!
-PowertalkLMRTestResource class
 	instanceVariableNames: ''!
 
 !classDefinition: #NumberParser2 category: #'Powerlang-Core'!
@@ -620,6 +570,16 @@ SmalltalkBootstrapper subclass: #DMRBootstrapper
 	category: 'Powerlang-Core-Building'!
 !classDefinition: 'DMRBootstrapper class' category: #'Powerlang-Core-Building'!
 DMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodEvaluator category: #'Powerlang-Core-Emulation'!
+Object subclass: #MethodEvaluator
+	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
+	classVariableNames: 'Undermessages'
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'Powerlang-Core-Emulation'!
+!classDefinition: 'MethodEvaluator class' category: #'Powerlang-Core-Emulation'!
+MethodEvaluator class
 	instanceVariableNames: ''!
 
 !classDefinition: #EvaluationContext category: #'Powerlang-Core-Execution'!
@@ -890,6 +850,26 @@ Object subclass: #RingBasedLMRBootstrapper
 	category: 'Powerlang-Core-Execution-LMR'!
 !classDefinition: 'RingBasedLMRBootstrapper class' category: #'Powerlang-Core-Execution-LMR'!
 RingBasedLMRBootstrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRingModule category: #'Powerlang-Core-Execution-Ring'!
+Object subclass: #PowertalkRingModule
+	instanceVariableNames: 'nilObj falseObj trueObj classes metaclasses runtime symbols identityMap specs vmPrimitivesSpec module kernel'
+	classVariableNames: 'KernelSpec LMRBootstrapperSpec RootDirName VMPrimitivesSpec'
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'PowertalkRingModule class' category: #'Powerlang-Core-Execution-Ring'!
+PowertalkRingModule class
+	instanceVariableNames: 'KernelSpec LMRBootstrapperSpec VMPrimitivesSpec'!
+
+!classDefinition: #PowertalkRingImage category: #'Powerlang-Core-Execution-Ring'!
+PowertalkRingModule subclass: #PowertalkRingImage
+	instanceVariableNames: 'bootstrapDicts arraySpec closureSpec smiSpec symbolSpec wordSize minSMI maxSMI'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-Execution-Ring'!
+!classDefinition: 'PowertalkRingImage class' category: #'Powerlang-Core-Execution-Ring'!
+PowertalkRingImage class
 	instanceVariableNames: ''!
 
 !classDefinition: #Bridge category: #'Powerlang-Core-Metaphysics'!
@@ -2532,36 +2512,6 @@ SScript subclass: #SMethod
 SMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodEvaluator category: #'Powerlang-Core-Emulation'!
-Object subclass: #MethodEvaluator
-	instanceVariableNames: 'parent method receiver arguments temporaries environment returnValue closures blockAstcodes system returning isBlock'
-	classVariableNames: 'Undermessages'
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-Emulation'!
-!classDefinition: 'MethodEvaluator class' category: #'Powerlang-Core-Emulation'!
-MethodEvaluator class
-	instanceVariableNames: ''!
-
-!classDefinition: #PowertalkRingModule category: #'Powerlang-Core-Execution-Ring'!
-Object subclass: #PowertalkRingModule
-	instanceVariableNames: 'nilObj falseObj trueObj classes metaclasses runtime symbols identityMap specs vmPrimitivesSpec module kernel'
-	classVariableNames: 'KernelSpec LMRBootstrapperSpec RootDirName VMPrimitivesSpec'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Execution-Ring'!
-!classDefinition: 'PowertalkRingModule class' category: #'Powerlang-Core-Execution-Ring'!
-PowertalkRingModule class
-	instanceVariableNames: 'KernelSpec LMRBootstrapperSpec VMPrimitivesSpec'!
-
-!classDefinition: #PowertalkRingImage category: #'Powerlang-Core-Execution-Ring'!
-PowertalkRingModule subclass: #PowertalkRingImage
-	instanceVariableNames: 'bootstrapDicts arraySpec closureSpec smiSpec symbolSpec wordSize minSMI maxSMI'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Execution-Ring'!
-!classDefinition: 'PowertalkRingImage class' category: #'Powerlang-Core-Execution-Ring'!
-PowertalkRingImage class
-	instanceVariableNames: ''!
-
 !classDefinition: #MessageCollector category: #'Powerlang-Tests'!
 Object subclass: #MessageCollector
 	instanceVariableNames: 'subject'
@@ -2572,25 +2522,145 @@ Object subclass: #MessageCollector
 MessageCollector class
 	instanceVariableNames: 'Messages'!
 
-!classDefinition: #ObjectHeaderMasks category: #'Powerlang-Core-Metaphysics'!
-ProtoObject subclass: #ObjectHeaderMasks
-	instanceVariableNames: ''
-	classVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'
+!classDefinition: #ObjectMapTest category: #'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #ObjectMapTest
+	instanceVariableNames: 'kernel'
+	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderMasks class' category: #'Powerlang-Core-Metaphysics'!
-ObjectHeaderMasks class
-	instanceVariableNames: 'IsArrayed IsBytes IsNamed IsSmall'!
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'ObjectMapTest class' category: #'Powerlang-Tests-Bootstrap'!
+ObjectMapTest class
+	instanceVariableNames: ''!
 
-!classDefinition: #ObjectHeaderOffsets category: #'Powerlang-Core-Metaphysics'!
-ProtoObject subclass: #ObjectHeaderOffsets
-	instanceVariableNames: ''
-	classVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'
+!classDefinition: #PowertalkLMRBootstrapTest category: #'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkLMRBootstrapTest
+	instanceVariableNames: 'runtime bootstrapper'
+	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-Metaphysics'!
-!classDefinition: 'ObjectHeaderOffsets class' category: #'Powerlang-Core-Metaphysics'!
-ObjectHeaderOffsets class
-	instanceVariableNames: 'BehaviorOffset FlagsOffset HashOffset LargeSizeOffset SizeOffset'!
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRBootstrapTest class' category: #'Powerlang-Tests-Bootstrap'!
+PowertalkLMRBootstrapTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMRTest category: #'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkLMRTest
+	instanceVariableNames: 'runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRTest class' category: #'Powerlang-Tests-Bootstrap'!
+PowertalkLMRTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRingImageTest category: #'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkRingImageTest
+	instanceVariableNames: 'image'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkRingImageTest class' category: #'Powerlang-Tests-Bootstrap'!
+PowertalkRingImageTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkRingRuntimeTest category: #'Powerlang-Tests-Bootstrap'!
+TestCase subclass: #PowertalkRingRuntimeTest
+	instanceVariableNames: 'image runtime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkRingRuntimeTest class' category: #'Powerlang-Tests-Bootstrap'!
+PowertalkRingRuntimeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ScriptScopeTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #ScriptScopeTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'ScriptScopeTest class' category: #'Powerlang-Tests-SCompiler'!
+ScriptScopeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkParserTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkParserTest
+	instanceVariableNames: 'parser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkParserTest class' category: #'Powerlang-Tests-SCompiler'!
+SmalltalkParserTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkScannerTest
+	instanceVariableNames: 'scanner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkScannerTest class' category: #'Powerlang-Tests-SCompiler'!
+SmalltalkScannerTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #MirrorTest category: #'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #MirrorTest
+	instanceVariableNames: 'runtime builder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'MirrorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
+MirrorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ObjectMirrorTest category: #'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #ObjectMirrorTest
+	instanceVariableNames: 'storage'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'ObjectMirrorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
+ObjectMirrorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionEmulatorTest category: #'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #SExpressionEmulatorTest
+	instanceVariableNames: 'builder writer runtime kernel'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes SExpressionTypes'
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'SExpressionEmulatorTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
+SExpressionEmulatorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionInterpreterTest category: #'Powerlang-TestsFailing-Metaphysics'!
+TestCase subclass: #SExpressionInterpreterTest
+	instanceVariableNames: 'builder writer runtime kernel'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes SExpressionTypes'
+	category: 'Powerlang-TestsFailing-Metaphysics'!
+!classDefinition: 'SExpressionInterpreterTest class' category: #'Powerlang-TestsFailing-Metaphysics'!
+SExpressionInterpreterTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeTest category: #'Powerlang-TestsFailing-SExpressions'!
+TestCase subclass: #AstcodeTest
+	instanceVariableNames: 'method'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes'
+	category: 'Powerlang-TestsFailing-SExpressions'!
+!classDefinition: 'AstcodeTest class' category: #'Powerlang-TestsFailing-SExpressions'!
+AstcodeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #PowertalkLMRTestResource category: #'Powerlang-Tests-Bootstrap'!
+TestResource subclass: #PowertalkLMRTestResource
+	instanceVariableNames: 'image bootstrapper'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-Bootstrap'!
+!classDefinition: 'PowertalkLMRTestResource class' category: #'Powerlang-Tests-Bootstrap'!
+PowertalkLMRTestResource class
+	instanceVariableNames: ''!
 
 !classDefinition: #Subject category: #'Powerlang-Core-Metaphysics'!
 ProtoObject subclass: #Subject
@@ -2601,76 +2671,6 @@ ProtoObject subclass: #Subject
 !classDefinition: 'Subject class' category: #'Powerlang-Core-Metaphysics'!
 Subject class
 	instanceVariableNames: 'Counts'!
-
-!classDefinition: #CompiledBlockFormatMasks category: #'Powerlang-Core-Mirrors'!
-ProtoObject subclass: #CompiledBlockFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledBlockFormatMasks class' category: #'Powerlang-Core-Mirrors'!
-CompiledBlockFormatMasks class
-	instanceVariableNames: ''!
-
-!classDefinition: #CompiledMethodFormatMasks category: #'Powerlang-Core-Mirrors'!
-ProtoObject subclass: #CompiledMethodFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: 'ArgCount BlockCount TempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'CompiledMethodFormatMasks class' category: #'Powerlang-Core-Mirrors'!
-CompiledMethodFormatMasks class
-	instanceVariableNames: 'ArgCount BlockCount TempCount'!
-
-!classDefinition: #FrameOffsets category: #'Powerlang-Core-Mirrors'!
-ProtoObject subclass: #FrameOffsets
-	instanceVariableNames: ''
-	classVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'FrameOffsets class' category: #'Powerlang-Core-Mirrors'!
-FrameOffsets class
-	instanceVariableNames: 'CallerIndex LastArgumentIndex MethodIndex ReceiverIndex ReturnAddressIndex'!
-
-!classDefinition: #SpeciesFormatMasks category: #'Powerlang-Core-Mirrors'!
-ProtoObject subclass: #SpeciesFormatMasks
-	instanceVariableNames: ''
-	classVariableNames: 'InstSize IsPointers'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-Mirrors'!
-!classDefinition: 'SpeciesFormatMasks class' category: #'Powerlang-Core-Mirrors'!
-SpeciesFormatMasks class
-	instanceVariableNames: 'InstSize IsPointers'!
-
-!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
-ProtoObject subclass: #AstBindingTypes
-	instanceVariableNames: ''
-	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
-AstBindingTypes class
-	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
-
-!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
-ProtoObject subclass: #AstNodeTypes
-	instanceVariableNames: ''
-	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
-AstNodeTypes class
-	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
-
-!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
-ProtoObject subclass: #ClosureElementTypes
-	instanceVariableNames: ''
-	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
-ClosureElementTypes class
-	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
 
 
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
@@ -2770,6 +2770,15 @@ and barely anything else. I am in charge of adding the Kernel module object to i
 methods to the classes.
 !
 
+!PowertalkRingModule commentStamp: '<historical>' prior: 0!
+I'm in charge of creating and managing the objects of an image. I'm created from a spec,
+and I know how to bootstrap and connect an initial graph of objects and classes.
+
+I do not add the spec methods to classes, as it requires some emulation done by
+the `VirtualRuntime`. That step is left to the `VirtualImage`
+that also creates the Kernel module.
+!
+
 !Bridge commentStamp: '<historical>' prior: 0!
 I am the one in charge of 'discovering' well known objects in
 the remote image, giving my clients handles to them. For example,
@@ -2813,14 +2822,85 @@ the offsets of the instVars.
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
 
-!PowertalkRingModule commentStamp: '<historical>' prior: 0!
-I'm in charge of creating and managing the objects of an image. I'm created from a spec,
-and I know how to bootstrap and connect an initial graph of objects and classes.
+!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+initialize
+		IsBytes := 16r1.
+		IsArrayed := 16r2.
+		IsNamed := 16r4.
+		IsSmall := 16r80
 
-I do not add the spec methods to classes, as it requires some emulation done by
-the `VirtualRuntime`. That step is left to the `VirtualImage`
-that also creates the Kernel module.
-!
+! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
+behaviorOffset
+
+	^BehaviorOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
+flagsOffset
+
+	^FlagsOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
+hashOffset
+
+	^HashOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
+largeSizeOffset
+
+	^LargeSizeOffset! !
+
+!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
+sizeOffset
+
+	^SizeOffset! !
+
+!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+initialize
+	BehaviorOffset := -4.
+	FlagsOffset := -5.
+	SizeOffset := -6.
+	HashOffset := -8.
+	LargeSizeOffset := -16
+! !
+
+!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
+initialize
+	NilId := 1.
+	TrueId := 2.
+	FalseId := 3.
+	ArgumentId := 4.
+	TemporaryId := 5.
+	SelfId := 6.
+	SuperId := 7.
+	DynamicVarId := 14.
+	NestedDynamicVarId := 15.
+	PushRid := 50.
+	PopRid := 51
+! !
+
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:51'!
+initialize
+	MethodId := 101.
+	BlockId := 102.
+	IdentifierId := 103.
+	LiteralId := 104.
+	MessageId := 105.
+	CascadeId := 106.
+	BraceId := 107.
+	AssignmentId := 108.
+	ReturnId := 109.
+	PragmaId := 110
+! !
+
+!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
+initialize
+	Self := 0.
+	LocalArgument := 1.
+	Environment := 2.
+	EnvironmentValue := 3
+! !
 
 !CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 5/31/2021 15:35:17'!
 initialize 
@@ -3532,3909 +3612,6 @@ stretch: aStretch
 !SUndeclaredIdentifierError methodsFor: 'accessing-token' stamp: 'KenD 9/29/2022 14:21:58'!
 assignment: aBoolean
 	assigned := aBoolean
-! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:16:41'!
-test010resolveClass 
-	| binding |
-	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Point'.
-	self
-		assert: binding isGlobal;
-		assert: binding isClassBinding;
-		assert: binding name = #Point;
-		assert: binding association == (Smalltalk globals associationAt: #Point)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:12'!
-test010resolveClassVariables 
-	| scope |
-	scope := self scopeFor: Symbol.
-	self checkClassVarsOf: Symbol in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:24'!
-test010resolveGlobal 
-	| binding |
-	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Smalltalk'.
-	self
-		assert: binding isGlobal;
-		deny: binding isClassBinding;
-		assert: binding name = #Smalltalk;
-		assert: binding association == (Smalltalk globals associationAt: #Smalltalk)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:35'!
-test010resolveInstanceVariables 
-	| scope |
-	scope := self scopeFor: Point.
-	self checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:46'!
-test010resolveSelf 
-	| scope receiver sup |
-	scope := self scopeFor: Object.
-	receiver := scope resolve: 'self'.
-	sup := scope resolve: 'super'.
-	self
-		assert: receiver isSelf;
-		assert: receiver name = 'self';
-		assert: sup isSuper;
-		assert: sup name = 'super'! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:57'!
-test011resolveUnknownGlobal 
-	| binding point |
-	self precondition: (Smalltalk includesKey: 'Foo678' existingSymbol) not.
-	binding := MethodScope new resolve: 'Foo678'.
-	self assert: binding isUnresolved.
-	point := self scopeFor: Point.
-	binding := point resolve: 'Foo678'.
-	self assert: binding isUnresolved! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:11'!
-test020resolveMethodArguments 
-	| scope |
-	scope := self scopeFor: Point.
-	scope
-		defineArgument: 'arg1';
-		defineArgument: 'arg2';
-		positionDefinedLocals.
-	self
-		checkArgs: #('arg1' 'arg2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:21'!
-test021resolveMethodTemporaries 
-	| scope |
-	scope := self scopeFor: Point.
-	scope defineTemporary: 't1'; defineTemporary: 't2'; positionDefinedLocals.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:32'!
-test030resolveNestedTemporaryConflictingWithIvar 
-	| ast b3 x |
-	ast := self compile: 'foo  [ | x | [[x]] ]' in: Point.
-	b3 := ast children first children first children first.
-	x := b3 statements first binding.
-	self
-		assert: x
-		isEnvTemp: 'x'
-		at: 1
-		index: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:46'!
-test040declareMethodArguments 
-	| ast scope |
-	ast := self compile: 'foo: anArg bar: anotherArg' in: Point.
-	scope := ast scope.
-	self
-		checkArgs: #('anArg' 'anotherArg') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:24'!
-test041declareMethodTemporaries 
-	| ast scope |
-	ast := self compile: 'foo | t1 t2 | ' in: Point.
-	scope := ast scope.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:39'!
-test042declareMethodTempsWithArgs 
-	| ast scope |
-	ast := self compile: 'foo: arg1 bar: arg2 | t1 t2 | ' in: Point.
-	scope := ast scope.
-	self
-		checkArgs: #('arg1' 'arg2') in: scope;
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:05'!
-test050useMethodTemps 
-	| ast scope t1 t2 |
-	ast := self compile: 'foo | t1 t2 | t1. t2' in: Point.
-	scope := ast scope.
-	t1 := ast statements first binding.
-	t2 := ast statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: t1 isTemporary;
-		assert: t1 isInStack;
-		assert: t1 name = 't1';
-		assert: t1 index = 1;
-		assert: t2 isTemporary;
-		assert: t2 isInStack;
-		assert: t2 name = 't2';
-		assert: t2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:16'!
-test051useMethodArgs 
-	| ast scope a1 a2 |
-	ast := self compile: 'foo: a1 bar: a2 a1. a2' in: Point.
-	scope := ast scope.
-	a1 := ast statements first binding.
-	a2 := ast statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: a1 isArgument;
-		assert: a1 isInStack;
-		assert: a1 name = 'a1';
-		assert: a1 index = 1;
-		assert: a2 isArgument;
-		assert: a2 isInStack;
-		assert: a2 name = 'a2';
-		assert: a2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:33'!
-test052useMethodTempsAndArgs 
-	| ast scope a1 a2 t1 t2 |
-	ast := self compile: 'foo: a1 bar: a2 | t1 t2 | t1. t2. a1. a2' in: Point.
-	scope := ast scope.
-	t1 := ast statements first binding.
-	t2 := ast statements second binding.
-	a1 := ast statements third binding.
-	a2 := ast statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: t1 isTemporary;
-		assert: t1 isInStack;
-		assert: t1 name = 't1';
-		assert: t1 index = 1;
-		assert: t2 isTemporary;
-		assert: t2 isInStack;
-		assert: t2 name = 't2';
-		assert: t2 index = 2;
-		assert: a1 isArgument;
-		assert: a1 isInStack;
-		assert: a1 name = 'a1';
-		assert: a1 index = 1;
-		assert: a2 isArgument;
-		assert: a2 isInStack;
-		assert: a2 name = 'a2';
-		assert: a2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:49'!
-test053useBlockArgs 
-	| ast block scope a1 a2 |
-	ast := self compile: 'foo [:a1 :a2 | a1. a2]' in: Point.
-	block := ast children first.
-	scope := block scope.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:59'!
-test053useSiblingBlockArgs 
-	| ast block1 block2 a1 a2 |
-	ast := self compile: 'foo [:a1 | a1]. [:a2 | a2]' in: Point.
-	block1 := ast children first.
-	block2 := ast children second.
-	a1 := block1 statements first binding.
-	a2 := block2 statements first binding.
-	self
-		checkArgs: #('a1') in: block1 scope;
-		checkArgs: #('a2') in: block2 scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:10'!
-test054useBlockTemps 
-	| ast block scope t1 t2 |
-	ast := self compile: 'foo [| t1 t2 | t1. t2]' in: Point.
-	block := ast children first.
-	scope := block scope.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:24'!
-test055methodUseGlobal 
-	| ast global |
-	ast := self compile: 'foo Collection' in: Point.
-	global := ast statements first binding.
-	self
-		assert: global isClassBinding;
-		assert: global name = #Collection;
-		assert: global association = (Smalltalk globals associationAt: #Collection)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:36'!
-test060useNestedMethodArgs 
-	| ast block ma1 ma2 ba1 ba2 |
-	ast := self compile: 'foo: a1 bar: a2  a1. a2. [a1. a2]' in: Object.
-	block := ast children first.
-	ma1 := ast statements first binding.
-	ma2 := ast statements second binding.
-	ba1 := block statements first binding.
-	ba2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: ma1 isStackArg: 'a1' at: 1;
-		assert: ma2 isStackArg: 'a2' at: 2;
-		assert: ba1 isEnvArg: 'a1' at: 1;
-		assert: ba2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:48'!
-test061useNestedMethodSiblingBlockTemps 
-	| ast block1 block2 b1t1 b2t2 |
-	ast := self compile: 'foo | t1 t2 | [t1]. [t2]' in: Object.
-	block1 := ast children first.
-	block2 := ast children second.
-	b1t1 := block1 statements first binding.
-	b2t2 := block2 statements first binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:14'!
-test061useNestedMethodTemps 
-	| ast block bt1 bt2 |
-	ast := self compile: 'foo | t1 t2 | [t1. t2]' in: Object.
-	block := ast children first.
-	bt1 := block statements first binding.
-	bt2 := block statements second binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: bt1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: bt2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:26'!
-test062useNestedBlockArgs 
-	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
-	ast := self compile: 'foo [:a1 :a2 | [a1. a2] ]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: block1 scope;
-		assert: b1a1 isStackArg: 'a1' at: 1;
-		assert: b1a2 isStackArg: 'a2' at: 2;
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b2a2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:38'!
-test063useNestedBlockTemps 
-	| ast block1 block2 b2t1 b2t2 |
-	ast := self compile: 'foo [| t1 t2 | [t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:49'!
-test064useSiblingBlocksNestedTemps 
-	| ast block1 block2 block3 b2t1 b3t2 |
-	ast := self compile: 'foo [| t1 t2 | [t1]. [t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block1 children second.
-	b2t1 := block2 statements first binding.
-	b3t2 := block3 statements first binding.
-	self
-		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b3t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:24:01'!
-test065useNestedBlockAndMethodTemps 
-	| ast block1 block2 b2t1 b2t2 |
-	ast := self compile: 'foo | t1 | [| t2 | [t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkEnvTemps: #('t1') in: ast scope at: nil;
-		checkClosureEnvTemps: #('t2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 2
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:36'!
-test070useDoublyNestedMethodArgs 
-	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
-	ast := self compile: 'foo: a1 bar: a2  [[a1. a2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b1a2 isEnvArg: 'a2' at: 2;
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b2a2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:49'!
-test071useDoublyNestedMethodTemps 
-	| ast block1 block2 b1t1 b1t2 b2t1 b2t2 |
-	ast := self compile: 'foo | t1 t2 | [[t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1t1 := block1 scope resolve: 't1'.
-	b1t2 := block1 scope resolve: 't2'.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:03'!
-test075useDoublyNestedMethodArgsWithTemps 
-	| ast block1 block2 b1a1 b1a2 b1t1 b1t2 b2a1 b2a2 b2t1 b2t2 |
-	ast := self
-		compile: 'foo: a1 bar: a2 | t1 | [| t2 | [a1. a2. t1. t2]]'
-		in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b1t1 := block1 scope resolve: 't1'.
-	b1t2 := block1 scope resolve: 't2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	b2t1 := block2 statements third binding.
-	b2t2 := block2 statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: b1a1 isEnvArg: 'a1' at: 2;
-		assert: b1a2 isEnvArg: 'a2' at: 3;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: nil
-			index: 4;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 2
-			index: 4;
-		assert: b2a1 isEnvArg: 'a1' at: 3;
-		assert: b2a2 isEnvArg: 'a2' at: 4! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:16'!
-test080captureSelf 
-	| ast block receiver |
-	ast := self compile: 'foo [self]' in: Object.
-	block := ast children first.
-	receiver := block statements first binding.
-	self
-		assert: receiver isSelf;
-		assert: ast environmentSize = 0;
-		assert: block scope capturesSelf;
-		assert: block environmentSize equals: 1;
-		assert: block scope home == nil! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:28'!
-test090useNonLocalReturn 
-	| ast block |
-	ast := self compile: 'foo [^1]' in: Object.
-	block := ast children first.
-	self
-		assert: ast environmentSize = 0;
-		assert: ast needsEnvironment;
-		assert: block environmentSize = 1;
-		assert: block scope home == ast! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:39'!
-test091nonLocalReturnSelf 
-	| ast block |
-	ast := self compile: 'foo [^self]' in: Object.
-	block := ast children first.
-	self
-		assert: ast environmentSize = 0;
-		assert: ast needsEnvironment;
-		assert: block environmentSize = 2;
-		assert: block scope home == ast! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:52'!
-test100inlineUseMethodArgs 
-	| ast block a1 a2 |
-	ast := self compile: 'foo: a1 bar: a2  1 ifTrue: [a1. a2]' in: Point.
-	block := ast children first.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:05'!
-test101inlineUseMethodTemps 
-	| ast t1 t2 block |
-	ast := self compile: 'foo | t1 t2 | 1 ifTrue: [t1. t2]' in: Point.
-	block := ast children first.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: ast scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:19'!
-test102inlineUseMethodArgsAndTemps 
-	| ast block a1 a2 t1 t2 |
-	ast := self
-		compile: 'foo: a1 bar: a2  | t1 t2 | 1 ifTrue: [a1. a2. t1. t2]'
-		in: Point.
-	block := ast children first.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	t1 := block statements third binding.
-	t2 := block statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:29'!
-test110inlineUseMixedMethodTemps 
-	| ast t1 t2 block |
-	ast := self compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. t2]' in: Point.
-	block := ast children first.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1') in: ast scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:42'!
-test120inlineEnvironmentTemp 
-	| ast block1 block2 mt1 mt2 b1t1 b1t2 b2t2 |
-	ast := self
-		compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. [t2]]'
-		in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	mt1 := ast scope resolve: 't1'.
-	mt2 := ast scope resolve: 't2'.
-	b1t1 := block1 statements first binding.
-	b1t2 := block1 scope resolve: 't2'.
-	b2t2 := block2 scope resolve: 't2'.
-	self
-		checkTemps: #('t1') in: ast scope;
-		assert: mt2 isUnresolved;
-		assert: mt1 isStackTemp: 't1' at: 1;
-		assert: b1t1 isStackTemp: 't1' at: 1;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: nil
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 1;
-		assert: ast scope environmentSize = 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:54'!
-test130inlineBlockArg 
-	| ast block a1 |
-	ast := self compile: 'foo  1 ifNotNil: [:a1 | 1 ]' in: Point.
-	block := ast children first.
-	a1 := block scope resolve: 'a1'.
-	self assert: a1 isStackInlineArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:04'!
-test131inlineBlockArgWithTemp 
-	| ast block t1 a1 |
-	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | 1 ]' in: Point.
-	block := ast children first.
-	t1 := ast scope resolve: 't1'.
-	a1 := block scope resolve: 'a1'.
-	self
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: a1 isStackInlineArg: 'a1' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:15'!
-test132inlineBlockArgWithTemps 
-	| ast block t1 a1 t2 |
-	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1 ]' in: Point.
-	block := ast children first.
-	t1 := ast scope resolve: 't1'.
-	a1 := block scope resolve: 'a1'.
-	t2 := block scope resolve: 't2'.
-	self
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2;
-		assert: a1 isStackInlineArg: 'a1' at: 3! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:25'!
-test133inlineBlockArgWithEnvTemps 
-	| ast block1 mt1 b1a1 b1t2 |
-	ast := self
-		compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1. [t2] ]'
-		in: Point.
-	block1 := ast children first.
-	mt1 := ast scope resolve: 't1'.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1t2 := block1 scope resolve: 't2'.
-	self
-		assert: mt1 isStackTemp: 't1' at: 1;
-		assert: b1t2 isEnvTemp: 't2' at: nil index: 1;
-		assert: b1a1 isStackInlineArg: 'a1' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:36'!
-test134inlineBlockArgNestedAccess 
-	| ast block1 block2 b1a1 b2a1 |
-	ast := self compile: 'foo  1 ifNotNil: [:a1 | [a1] ]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b2a1 := block2 scope resolve: 'a1'.
-	self
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b2a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:46'!
-test135inlineBlockWithArgInRealBlockCaptured 
-	| ast block1 block2 block3 b2a1 b3a1 |
-	"Args of inlined blocks can go to the stack of the real block, unless captured. Because the
-	 capture bytecode doesn't have a slot type for 'copy from stack temps' (it has capture from
-	 stack in 	 args zone, capture the current env, and capture a value in the current env)"
-	ast := self compile: 'foo  [1 ifNotNil: [:a1 | [a1] ]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b2a1 := block2 scope resolve: 'a1'.
-	b3a1 := block3 scope resolve: 'a1'.
-	self
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b3a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:56'!
-test136inlineBlockWithArgCapturedByInlinedBlock 
-	| ast block1 block2 b1a1 b2a1 |
-	ast := self compile: 'foo 1 ifNotNil: [:a1 | a1. 2 ifTrue: [a1]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b2a1 := block2 scope resolve: 'a1'.
-	self
-		assert: b1a1 isStackInlineArg: 'a1' at: 1;
-		assert: b2a1 isStackInlineArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:10'!
-test137inlineBlockWithArgCapturedByInlinedBlockInRealBlock 
-	| ast block1 block2 block3 b1a1 b3a1 |
-	ast := self
-		compile: 'foo 1 ifNotNil: [:a1 | [2 ifTrue: [a1]]]'
-		in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b3a1 := block3 scope resolve: 'a1'.
-	self
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b3a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:23'!
-test138blockWithInlinedBlockWithTempCaptured 
-	| ast block1 block2 block3 b2t1 b3t1 block |
-	ast := self compile: 'foo [true ifTrue: [| t1 | [t1]]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b2t1 := block2 scope resolve: 't1'.
-	b3t1 := block3 scope resolve: 't1'.
-	self
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: nil
-			index: 1;
-		assert: b3t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:54'!
-test140blockWithInlinedBlockHasEnv 
-	| ast |
-	ast := self compile: 'foo [true ifTrue: [^self]]'.
-	self assert: ast needsEnvironment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:12'!
-assert: binding isEnvArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding isInArray;
-		assert: binding environmentIndex = nil! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:28'!
-assert: binding
-isEnvTemp: name
-at: environment
-index: index 
-
-	self
-		assert: binding isTemporary;
-		assert: binding isInArray;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding environment = environment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:40'!
-assert: binding isStackArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:55'!
-assert: binding isStackInlineArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding environmentObject class = InlinedArgEnvironment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:14:08'!
-assert: binding isStackTemp: name at: index 
-
-	self
-		assert: binding isTemporary;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:19'!
-checkArgs: names in: scope 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isArgument;
-			assert: binding name = name;
-			assert: binding index = index]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:30'!
-checkClassVarsOf: aSpecies in: scope 
-
-	aSpecies withAllSuperclasses do: [:c | 
-		c classPool associationsDo: [:assoc | | name binding |
-			name := assoc key.
-			binding := scope resolve: name.
-			self
-				assert: binding isClassVariable;
-				assert: binding name = name;
-				assert: binding association == assoc]]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:42'!
-checkClosureEnvTemps: names in: scope at: environment 
-	| offset |
-	offset := scope environmentSizeUpToCapturedArguments.
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isTemporary;
-			assert: binding isInArray;
-			assert: binding name = name;
-			assert: binding index = (index + offset);
-			assert: binding environment = environment]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:54'!
-checkEnvTemps: names in: scope at: environment 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isTemporary;
-			assert: binding isInArray;
-			assert: binding name = name;
-			assert: binding index = index;
-			assert: binding environment = environment]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:07'!
-checkInstVarsOf: aSpecies in: scope 
-
-	aSpecies allInstVarNames withIndexDo: [:name :i | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isInstVar;
-			assert: binding name = name;
-			assert: binding index = i]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:18'!
-checkTemps: names in: scope 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self assert: binding isStackTemp: name at: index]! !
-
-!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:31'!
-compile: aString 
-
-	^self compile: aString in: UndefinedObject! !
-
-!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:44'!
-compile: aString in: aClass 
-
-	^SCompiler parse: aString in: aClass! !
-
-!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:15:57'!
-precondition: aBoolean 
-
-	self assert: aBoolean description: 'Precondition for this test is not met'! !
-
-!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:16:08'!
-scopeFor: aSpecies 
-
-	^MethodScope new species: aSpecies! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment1
-	| node |
-	node := parser parse: 'unary
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment10
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	[2. "comment3" 3]'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second statements second comment value = 'comment3'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment11
-	| node |
-	node := parser parse: 'unary
-	1. "comment"'.
-	self assert: node comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment12
-	| node |
-	node := parser parse: 'unary
-	[1. "comment"]'.
-	self assert: node statements anyOne comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment2
-	| node |
-	node := parser parse: '+ binary
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment3
-	| node |
-	node := parser parse: 'keyword: arg
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment4
-	| node |
-	node := parser parse: 'unary
-	^true "comment"'.
-	self
-		assert: node statements anyOne expression comment value = 'comment';
-		deny: node comment value = 'comment';
-		assert: node comment isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment5
-	| node |
-	node := parser parse: '+ binary
-	^true "comment"'.
-	self assert: node statements anyOne expression comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment6
-	| node |
-	node := parser parse: 'keyword: arg
-	^true "comment"'.
-	self assert: node statements anyOne expression comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment7
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	2 "comment2"'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment8
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	^2 "comment2"'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second expression comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment9
-	| node |
-	node := parser parse: 'unary
-	1. "comment2" 2'.
-	self assert: node statements second comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray
-	| node |
-	node := parser parseExpression: '#[16rFE]'.
-	self assert: node statements anyOne source = '#[16rFE]'.
-	node := parser parse: 'b #[16rFE]'.
-	self assert: node statements anyOne source = '#[16rFE]'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray2
-	| array |
-	parser on: '#[16rFE]'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #[16rFE];
-		assert: array source = '#[16rFE]'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray3
-	| array |
-	parser on: '#[16rFE 2]'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #[16rFE 2];
-		assert: array source = '#[16rFE 2]'.
-	parser on: '#[16rFE 256 2]'.
-	parser step.
-	self should: [array := parser primary] raise: Exception
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol1
-	| array |
-	parser on: '#(#++)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array with: #'++').
-	parser on: '#(#-- )'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array with: #'--')
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol2
-	| symbol |
-	parser on: '#++'.
-	parser step.
-	symbol := parser primary.
-	self
-		assert: symbol isLiteral;
-		assert: symbol value = #'++'.
-	parser on: '#--'.
-	parser step.
-	symbol := parser primary.
-	self
-		assert: symbol isLiteral;
-		assert: symbol value = #'--'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testExpression
-	| expression |
-	parser on: '(x)'; step.
-	expression := parser primary.
-	self
-		assert: expression isIdentifier;
-		assert: expression source = 'x'.
-	parser on: '(x + 1)'; step.
-	expression := parser primary.
-	self
-		assert: expression class == SMessageNode;
-		assert: expression selector isBinary;
-		assert: expression source = '(x + 1)'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testFloat
-	| source node |
-	source := '3.14159265358979323846'.
-	node := parser parseExpression: source.
-	self assert: node statements anyOne source = source.
-	node := parser parse: 'm ' , source.
-	self assert: node statements anyOne source = source
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralArray
-	| array |
-	parser on: '#(16rFE)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(16rFE);
-		assert: array source = '#(16rFE)'.
-	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(16rFE $a 'hello' #s #(1 2));
-		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralArray2
-	| array |
-	parser on: '#(a:b:)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(#a:b:);
-		assert: array source = '#(a:b:)'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralKeywordArray
-	| ast literal |
-	ast := parser parseExpression: '#(a:b: c: d:)'.
-	literal := ast statements anyOne value.
-	self
-		assert: literal isArray;
-		assert: literal size = 3;
-		assert: literal first == #a:b:;
-		assert: literal second == #c:;
-		assert: literal third == #d:
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNegativeElementInArray
-	| array |
-	parser on: '#(-21)'.
-	parser step.
-	array := parser primary.
-	self assert: array isLiteral.
-	parser on: '#(-21 1 -5 4)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array
-			with: -21
-			with: 1
-			with: -5
-			with: 4)
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNegativeNumber
-	| number |
-	parser on: '-3'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -3;
-		assert: number source = '-3'.
-	parser on: '-3.14'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -3.14;
-		assert: number source = '-3.14'.
-	parser on: '-3.14e-10'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -0.000000000314;
-		assert: number source = '-3.14e-10'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNotAFloat
-	| method |
-	method := parser parseExpression: '0.a'.
-	self
-		assert: method statements size = 2;
-		assert: method statements first value = 0
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testScientificNotation
-	| method |
-	method := parser parseExpression: '
-	0.1e-2.
-	0.1E2'.
-	self
-		assert: method statements size = 2;
-		assert: method statements first value = 0.001;
-		assert: method statements second value = 10
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock
-	| block |
-	parser on: '[]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[]'.
-	parser on: '[x]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[x]';
-		assert: block temporaries isEmpty;
-		assert: block arguments isEmpty;
-		assert: block statements size = 1;
-		assert: block statements anyOne isIdentifier
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock2
-	| block |
-	parser on: '[:i | i]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i | i]';
-		assert: block arguments size = 1.
-	parser on: '[:i :j |]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i :j |]';
-		assert: block temporaries isEmpty;
-		assert: block arguments size = 2;
-		assert: block statements isEmpty;
-		assert: block arguments first isIdentifier;
-		assert: block arguments second isIdentifier
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock3
-	| block |
-	parser on: '[:i | | a b | a + b]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i | | a b | a + b]';
-		assert: block arguments size = 1;
-		assert: block temporaries size = 2.
-	parser on: '[:i ||a b|a|b]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i ||a b|a|b]';
-		assert: block temporaries size = 2;
-		assert: block arguments size = 1;
-		assert: block statements size = 1;
-		assert: block statements anyOne selector value = #'|'
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testParseFragment
-	| source ast |
-	source := 'm
-	self do: [:x | Object'.
-	ast := parser compiler parseFragment: source.
-	self
-		assert: ast selector == #m;
-		assert: ast statements isEmpty
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testParseTemporaries
-	| temporaries |
-	temporaries := SCompiler new smalltalkParser
-		parseTemporaries:
-			'm: arg
-	| t1 t2 t3 |
-	^:= will not even parse'.
-	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testTemporaries
-	| temporaries |
-	parser on: '||'.
-	parser step.
-	self assert: parser temporaries isEmpty.
-	parser on: '| |'.
-	parser step.
-	self assert: parser temporaries isEmpty.
-	parser on: '| a b c |'.
-	parser step.
-	temporaries := parser temporaries.
-	self
-		assert: temporaries size = 3;
-		assert: temporaries first isIdentifier;
-		assert: temporaries first name = 'a';
-		assert: temporaries second isIdentifier;
-		assert: temporaries second name = 'b';
-		assert: temporaries third isIdentifier;
-		assert: temporaries third name = 'c'
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testTemporaryDeclarations
-	| temporaries |
-	parser on: '| | | a b |'.
-	parser step.
-	temporaries := parser temporaries.
-	self assert: temporaries size = 0.
-	parser on: '|| | a b |'.
-	parser step.
-	temporaries := parser temporaries.
-	self assert: temporaries size = 0.
-	parser on: 'a || b'.
-	parser step.
-	self assert: parser token value = 'a'.
-	parser step.
-	self assert: parser token value = #'||'.
-	parser step.
-	self assert: parser token value = 'b'
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryHeader
-	| method selector |
-	parser on: '+++ x'.
-	parser step.
-	method := parser binarySignature.
-	self
-		assert: method notNil;
-		assert: method class == SMethodNode;
-		assert: method selector keywords size = 1;
-		assert: method selector value == #'+++';
-		assert: method arguments size = 1.
-	parser on: 'a'.
-	parser step.
-	selector := parser binarySignature.
-	self assert: selector isNil.
-	parser on: 'a: x'.
-	parser step.
-	selector := parser binarySignature.
-	self assert: selector isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeywordHeader
-	| method selector |
-	parser on: 'x: x y: y z: z'.
-	parser step.
-	method := parser keywordSignature.
-	self
-		assert: method notNil;
-		assert: method class == SMethodNode;
-		assert: method selector keywords size = 3;
-		assert: method selector value == #x:y:z:;
-		assert: method arguments size = 3.
-	parser on: 'a'.
-	parser step.
-	selector := parser keywordSignature.
-	self assert: selector isNil.
-	parser on: '+ x'.
-	parser step.
-	selector := parser keywordSignature.
-	self assert: selector isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeywordHeader2
-	| method |
-	parser on: 'x: xx y: yy z: zz'.
-	parser step.
-	method := parser methodSignature.
-	self
-		assert: method class == SMethodNode;
-		assert: method header = 'x: xx y: yy z: zz'.
-	parser on: 'x'.
-	parser step.
-	method := parser methodSignature.
-	self assert: method header = 'x'.
-	parser on: '+= arg value := value + arg'.
-	parser step.
-	method := parser methodSignature.
-	self assert: method header = '+= arg'
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnaryHeader
-	| selector |
-	parser on: 'a'.
-	parser step.
-	self assert: parser token isNameToken.
-	selector := parser unarySelector.
-	self
-		assert: selector notNil;
-		assert: selector class == SSelectorNode;
-		assert: selector keywords size = 1;
-		assert: selector value == #a.
-	parser on: 'a: x'.
-	parser step.
-	self deny: parser token isNameToken.
-	parser on: '+ x'.
-	parser step.
-	self deny: parser token isNameToken
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmbeddedDots
-	| node |
-	node := parser parse: 'm
-	A.B.C name.
-	self m: A.B.C.
-	^true'.
-	self
-		assert: node statements first receiver name = 'A.B.C';
-		assert: node statements second arguments anyOne name = 'A.B.C'
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmbeddedDots2
-	self
-		should: [parser parse: '
-	m
-		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
-		raise: SCompilationError.
-	self
-		should: [parser
-			parse: '
-	m
-		| funny.local |
-		funny.local := 1.
-		^funny.local']
-		raise: SCompilationError.
-	self
-		should: [parser
-			parse: '
-	m
-		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
-		raise: SCompilationError
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testPeekForIdentifier
-	| strm |
-	strm := 'abc.de' readStream.
-	self
-		assert: (SCompiler new peekForIdentifier: strm);
-		assert: strm position = 1.
-	strm position: 3.
-	self assert: (SCompiler new peekForIdentifier: strm).
-	strm := 'a2.c' readStream.
-	strm position: 2.
-	self deny: (SCompiler new peekForIdentifier: strm)
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryColon
-	| statements binary |
-	parser on: '3:4'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	binary := statements anyOne.
-	self
-		assert: binary receiver source = '3';
-		assert: binary symbol = #':';
-		assert: binary arguments anyOne source = '4'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryColon2
-	| m |
-	m := parser parse: ': b ^self / b'.
-	self assert: m selector = #':'.
-	self assert: m arguments anyOne source = 'b'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryPower
-	| statements binary |
-	parser on: '2^3'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	binary := statements anyOne.
-	self
-		assert: binary receiver source = '2';
-		assert: binary symbol = #'^';
-		assert: binary arguments anyOne source = '3'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryPower2
-	| m |
-	m := parser parse: '^ n ^self raisedTo: n'.
-	self assert: m selector = #'^'.
-	self assert: m arguments anyOne source = 'n'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testCascade
-	| cascade statements |
-	parser on: 'r m1; m2'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	cascade := statements anyOne.
-	self
-		assert: cascade receiver source = 'r';
-		assert: cascade messages size = 2;
-		assert: cascade messages first source = 'r m1';
-		assert: cascade messages first selector source = 'm1';
-		assert: cascade messages second selector source = 'm2'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testCascade2
-	| cascade statements |
-	parser on: 'r m: 1; + 2'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	cascade := statements anyOne.
-	self
-		assert: cascade receiver source = 'r';
-		assert: cascade messages size = 2;
-		assert: cascade messages first selector keywords size = 1;
-		assert: cascade messages first arguments anyOne value = 1;
-		assert: cascade messages second selector isBinary;
-		assert: cascade messages second arguments anyOne value = 2
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testMissingPrimary
-	| source |
-	source := 'pendingReservesAtTime: time well: index
-	i0 := startings at: index.
-	ti := self timeAt: i0.
-	dt := time - ti.
-	c := single primaryCurve.
-	^c reserves - (cumAtTime: dt)'.
-	self should: [parser parse: source] raise: Error
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testSelector
-	| source ast |
-	source := 'k1: arg1 k2: arg2'.
-	ast := parser parse: source.
-	self
-		assert: ast selectorNode positions first
-			= (source indexOfSubCollection: 'k1:');
-		assert: ast selectorNode positions second
-			= (source indexOfSubCollection: 'k2:');
-		assert: ast selector == #k1:k2:
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnarySelector
-	| source ast |
-	source := 'm a notNil'.
-	ast := parser parse: source.
-	self
-		assert: (ast nodeWithLiteral: #notNil) positions first
-			= (source indexOfSubCollection: 'notNil')
-! !
-
-!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 1/30/2023 10:10:47'!
-testBraceNode
-	| ast brace sum |
-	ast := parser parseExpression: '{1. 3 + 4}'.
-	brace := ast statements anyOne.
-	sum := parser parseExpression: '3 + 4'.
-	self
-		assert: brace elements size = 2;
-		assert: brace elements first value = 1;
-		assert: brace elements second class = sum statements anyOne class;
-		assert: brace elements second arguments anyOne value = 4
-! !
-
-!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnicode
-	| source ast |
-	source := 8855 asCharacter asString , ' aFreeTensor'.
-	ast := parser parse: source.
-	self
-		assert: ast selectorNode position
-			= (source indexOfSubCollection: 8855 asCharacter asString);
-		assert: ast selector == 8855 asCharacter asString asSymbol
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment
-	| assignment |
-	parser on: 'a := nil + 4'.
-	parser step.
-	assignment := parser expression.
-	self
-		assert: assignment isAssign;
-		assert: assignment assignees size = 1;
-		assert: assignment assignees anyOne source = 'a';
-		assert: assignment expression source = 'nil + 4'
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment2
-	| assignment |
-	parser on: 'a := b := nil + 4'.
-	parser step.
-	assignment := parser expression.
-	self
-		assert: assignment isAssign;
-		assert: assignment assignees size = 2;
-		assert: assignment assignees first name = 'b';
-		assert: assignment assignees second name = 'a'
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment3
-	| node |
-	node := parser parseExpression: 'a : = 1'.
-	self
-		assert: node statements anyOne isAssign.
-	node := parser parseExpression: 'a :	= 1'.
-	self
-		assert: node statements anyOne isAssign
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnderscoreAssignment
-	| assignment |
-	parser on: 'a _ 3 + 4'.
-	parser step.
-	assignment := parser expression.
-	self assert: assignment isAssign
-! !
-
-!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 1/30/2023 10:10:47'!
-testAllNodesDo
-	| source nodes |
-	source := 'rcvr msg1; msg2'.
-	parser on: source.
-	parser step.
-	nodes := OrderedCollection new.
-	parser expression allNodesDo: [:n | nodes add: n].
-	self assert: nodes size = 4
-! !
-
-!SmalltalkParserTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	super setUp.
-	parser := SCompiler new smalltalkParser
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinary
-	| node |
-	scanner on: '-
-		--
-		---
-		==>
-		~!!|\/%&*+=><'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'-';
-		assert: node source = '-'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'--';
-		assert: node source = '--'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'---';
-		assert: node source = '---'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'==>';
-		assert: node source = '==>'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'~!!|\/%&*+=><';
-		assert: node source = '~!!|\/%&*+=><'
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testCharacter
-	| node |
-	scanner on: '$a$b'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = $a;
-		assert: node source = '$a'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = $b;
-		assert: node source = '$b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmpty
-	scanner on: ''.
-	self assert: scanner next isEnd
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testString
-	| node quote |
-	scanner on: '' storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = '';
-		assert: node source = (String with: $' with: $').
-	scanner on: 'Hello World!!' storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = 'Hello World!!';
-		assert: node source = 'Hello World!!' storeString.
-	quote := String with: $'.
-	scanner on: quote storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = quote;
-		assert: node source = quote storeString
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-test0xNotation
-	| node |
-	node := SCompiler new smalltalkParser parseExpression: '0x10'.
-	self assert: node statements first value = 16.
-	node := SCompiler new smalltalkParser parseExpression: '0X10'.
-	self assert: node statements first value = 16
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testFloat
-	| node |
-	scanner on: '0.1'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0.1;
-		assert: node source = '0.1'.
-	scanner on: '0.1e-35'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0.1e-35;
-		assert: node source = '0.1e-35'
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testInteger
-	| node |
-	scanner on: '0 12 -35'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0;
-		assert: node source = '0'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 12;
-		assert: node source = '12'.
-	node := scanner next.
-	self
-		deny: node isNumberNode;
-		assert: (node is: #'-');
-		assert: node source = '-'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 35;
-		assert: node source = '35'
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testIntegerRadix
-	| node |
-	scanner on: '16rFA2'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 16rFA2;
-		assert: node source = '16rFA2'
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinarySymbol
-	| node |
-	scanner on: '#='.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node hasSymbol;
-		assert: node value = #'='
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol
-	| node |
-	scanner on: '#++'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'++';
-		assert: node source = '#++'.
-	scanner on: '#//'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'//';
-		assert: node source = '#//'.
-	scanner on: '#--'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'--';
-		assert: node source = '#--'.
-	scanner on: '#+-'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'+-';
-		assert: node source = '#+-'
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testNumericSymbol
-	scanner on: '#35'.
-	self assert: scanner next value = '35' asSymbol
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testSymbol
-	| node |
-	scanner on: '#-'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'-';
-		assert: node source = '#-'.
-	scanner on: '#a:'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:;
-		assert: node source = '#a:'.
-	scanner on: '#-!!'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'-!!';
-		assert: node source = '#-!!'.
-	scanner on: '#a:b:'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:b:;
-		assert: node source = '#a:b:'.
-	scanner on: '#a:b'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:;
-		assert: node source = '#a:'.
-	node := scanner next.
-	self assert: node value = 'b'; assert: node source = 'b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 1/30/2023 10:10:47'!
-testArrayStart
-	| node |
-	scanner on: '#()'.
-	node := scanner next.
-	self
-		assert: (node is: #'#(');
-		assert: node source = '#('.
-	scanner on: '#['.
-	node := scanner next.
-	self
-		assert: (node is: #'#[');
-		assert: node source = '#['.
-	scanner on: '#''hello'''.
-	node := scanner next.
-	self
-		assert: node value = #hello;
-		assert: node source = '#''hello'''
-! !
-
-!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
-testIdentifier
-	| node |
-	scanner on: 'a'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	scanner on: ' a1'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a1';
-		assert: node source = 'a1'.
-	scanner on: '_a'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = '_a';
-		assert: node source = '_a'.
-	scanner on: 'a_1b'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a_1b';
-		assert: node source = 'a_1b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeyword
-	| node node2 |
-	scanner on: 'a:'.
-	node := scanner next.
-	self
-		assert: node isKeyword;
-		assert: node value = 'a:';
-		assert: node source = 'a:'.
-	scanner on: 'ab:cd:'.
-	node := scanner next.
-	node2 := scanner next.
-	self
-		assert: node isKeyword;
-		assert: node value = 'ab:';
-		assert: node source = 'ab:';
-		assert: node2 isKeyword;
-		assert: node2 value = 'cd:';
-		assert: node2 source = 'cd:'
-! !
-
-!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnicodeScanning
-	| next three tensor |
-	scanner on: '3 + 4' asWideString.
-	self assert: scanner next value = 3.
-	next := scanner next.
-	self
-		assert: next value == #'+';
-		assert: scanner next value = 4.
-	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
-	three := scanner next.
-	self assert: three value = 3.
-	tensor := scanner next.
-	self assert: tensor value = 8855 asCharacter asString asSymbol
-! !
-
-!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment
-	| node |
-	scanner on: '"comment"a'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node value = 'comment';
-		assert: node source = '"comment"'.
-	scanner on: '"comment"'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node source = '"comment"';
-		assert: node position = 1.
-	scanner on: 'a"comment"'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node position = ('a' size + 1)
-! !
-
-!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
-testColon
-	| node |
-	scanner on: ':a'.
-	node := scanner next.
-	self
-		assert: (node is: $:);
-		assert: node source = ':'.
-	node := scanner next.
-	self
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	scanner on: ':='.
-	node := scanner next.
-	self
-		assert: node isAssignment;
-		assert: node source = ':='
-! !
-
-!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
-testColon2
-	| node |
-	scanner on: '::'.
-	node := scanner next.
-	self
-		assert: node class = SStringToken;
-		assert: node source = '::'
-! !
-
-!SmalltalkScannerTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	super setUp.
-	scanner := SCompiler new smalltalkScanner
-! !
-
-!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
-test_01a
-	| map |
-	
-	map := ObjectMap new: (kernel at: #Object).
-	self assert: map class == SlotObjectMap.
-	self assert: map size == 0.
-	
-! !
-
-!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
-test_01b
-	| undefined fraction null frac |
-	undefined := kernel at: #UndefinedObject.
-	fraction := kernel at: #Fraction.
-	
-	null := ObjectMap new: undefined.
-	frac := ObjectMap new: fraction.
-	self assert: frac class == SlotObjectMap.
-	self assert: frac size == 2.
-	
-	frac slotAt: 1 put: null.
-	frac slotAt: 2 put: frac.
-	self assert: (frac slotAt: 1) == null.
-	self assert: (frac slotAt: 2) == frac.
-	self assert: (frac slotNamed: 'numerator') == null.
-	self assert: (frac slotNamed: 'denominator') == frac.
-	
-	self assert: (frac numerator) == null.
-	self assert: (frac denominator) == frac.
-
-	frac slotNamed: 'numerator' put: frac.
-	frac slotNamed: 'denominator' put: null.
-	self assert: (frac slotAt: 1) == frac.
-	self assert: (frac slotAt: 2) == null.
-	self assert: (frac slotNamed: 'numerator') == frac.
-	self assert: (frac slotNamed: 'denominator') == null.
-	
-	frac numerator: null.
-	frac denominator: frac.
-	self assert: (frac slotAt: 1) == null.
-	self assert: (frac slotAt: 2) == frac.
-	
-	self should: [ frac slotAt: 0 ] raise: Error.
-	self should: [ frac slotAt: 3 ] raise: Error.
-	self should: [ frac slotAt: 0 put: null ] raise: Error.
-	self should: [ frac slotAt: 3 put: null ] raise: Error.
-	self should: [ frac slotAt: 1 put: 1 ] raise: Error.
-	
-	self should: [ frac slotNamed: 'bogus' ] raise: Error.
-	self should: [ frac slotNamed: 'bogus' put: null] raise: Error.
-
-	
-	
-	
-	
-	
-	
-! !
-
-!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
-test_01c
-	| undefined array null indexed |
-	
-	undefined := kernel at: #UndefinedObject.
-	array := kernel at: #Array.
-	null := ObjectMap new: undefined.
-	indexed := ObjectMap new: array size: 2.
-	self assert: indexed class == SlotObjectMap.
-	self assert: indexed size == 2.
-	
-	indexed at: 1 put: null.
-	indexed at: 2 put: indexed.
-	self assert: (indexed at: 1) == null.
-	self assert: (indexed at: 2) == indexed.
-	
-	indexed at: 1 put: indexed.
-	indexed at: 2 put: null.
-	self assert: (indexed at: 1) == indexed.
-	self assert: (indexed at: 2) == null.
-	
-	self should: [ indexed at: 0 ] raise: Error.
-	self should: [ indexed at: 3 ] raise: Error.
-	self should: [ indexed at: 0 put: null ] raise: Error.
-	self should: [ indexed at: 3 put: null ] raise: Error.
-	self should: [ indexed at: 1 put: 1] raise: Error.
-	
-	
-	
-	
-	
-	
-! !
-
-!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
-setUp
-	super setUp.
-	kernel := PowertalkRingImage kernelSpec
-! !
-
-!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
-tearDown
-	super tearDown.
-	kernel := nil
-! !
-
-!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	bootstrapper := PowertalkLMRTestResource new
-		setUp;
-		bootstrapper.
-	runtime := bootstrapper result.
-! !
-
-!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test010GenenerateKernelSegment
-	| output module |
-	output := bootstrapper outputDirectory / 'bootstrap' / 'Kernel.is'.
-	output exists
-		ifTrue: [ output deleteFile ].
-	module := bootstrapper loadBootstrapModule.
-	"runtime sendLocal: #writeModules to: module.
-	self assert: output exists"
-! !
-
-!PowertalkLMRBootstrapTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
-defaultTimeLimit
-	^ 1000 seconds
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:30'!
-==> anObject
-	| class |
-	class := anObject class.
-	anObject isInteger
-		ifTrue: [ ^ runtime newInteger: anObject ].
-	anObject == nil
-		ifTrue: [ ^ runtime nil ].
-	anObject == false
-		ifTrue: [ ^ runtime false ].
-	anObject == true
-		ifTrue: [ ^ runtime true ].
-	(class == Symbol or: [ class inheritsFrom: Symbol ])
-		ifTrue: [ ^ runtime symbolFromLocal: anObject ].
-	anObject isString
-		ifTrue: [ ^ runtime newString: anObject ].
-	class = ByteArray
-		ifTrue: [ ^ runtime newBytesFrom: anObject ].
-	self assert: false
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-assertNoLeftoverFrames
-	self assert: runtime interpreter hasFinished
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-compile: aString in: classname during: aBlock
-	| class behavior md selector method |
-	class := self globalNamed: classname.
-	behavior := runtime speciesInstanceBehavior: class.
-	md := runtime behaviorMethodDictionary: behavior.
-	method := SCompiler new compile: aString.
-	self assert: method notNil.
-	method := self convertMethod: method.
-	selector := method slotAt: 5.
-	runtime
-		sendLocal: #at:put:
-		to: md
-		with:
-			{selector.
-			method}
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:47'!
-convert: anObject with: map
-	map at: anObject ifPresent: [:mapped | ^mapped ].
-	anObject ifNil: [ ^runtime nil ].
-	anObject isInteger
-		ifTrue: [ ^ runtime newInteger: anObject ].
-	anObject isSymbol
-		ifTrue: [ ^ runtime addSymbol: anObject ].
-	anObject isString
-		ifTrue: [ ^ runtime newString: anObject ].
-	anObject class = ByteArray
-		ifTrue: [ ^ runtime newByteArray: anObject ].
-	anObject class = SCompiledBlock ifTrue: [ ^self convertBlock: anObject with: map ].
-	self assert: false
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-convertBlock: anSCompiledBlock with: map
-	| class result instsize slot |
-	class := self globalNamed: #CompiledBlock.
-	result := runtime newSlots: class size: 0.
-	map at: anSCompiledBlock put: result.
-	instsize := anSCompiledBlock class instSize.
-	1 to: instsize do: [ :i | 
-		slot := anSCompiledBlock instVarAt: i.
-		result slotAt: i put: (self convert: slot with: map) ].
-	^ result
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-convertMethod: anSCompiledMethod
-	| class result map instsize slot |
-	class := self globalNamed: #CompiledMethod.
-	result := runtime newSlots: class size: anSCompiledMethod size.
-	map := IdentityDictionary new.
-	map at: anSCompiledMethod put: result.
-	instsize := anSCompiledMethod class instSize.
-	1 to: instsize do: [ :i | 
-		slot := anSCompiledMethod instVarAt: i.
-		result slotAt: i put: (self convert: slot with: map) ].
-	1 to: anSCompiledMethod size
-		do: [ :i | 
-			slot := anSCompiledMethod at: i.
-			result slotAt: i + instsize put: (self convert: slot with: map) ].
-	^ result
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-globalNamed: aSymbol
-	| symbol namespace assoc |
-	symbol := runtime symbolFromLocal: aSymbol.
-	namespace := runtime moduleNamespace: runtime kernel.
-	assoc := runtime lookupAssociationFor: symbol in: namespace.
-	^runtime loadAssociationValue: assoc
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test100yourself
-	| result |
-	result := runtime sendLocal: #yourself to: runtime nil.
-	self assert: result equals: runtime nil
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test110compute1plus1
-	| one result |
-	one := self ==> 1.
-	result := runtime sendLocal: #+ to: one with: {one}.
-	self assert: result equals: self ==> 2; assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test111compute1minus1
-	| one result |
-	one := self ==> 1.
-	result := runtime sendLocal: #- to: one with: {one}.
-	self assert: result equals: self ==> 0
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test112compute3times4
-	| result |
-	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
-	self assert: result equals: self ==> 12
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test113compute20quotient5
-	|  result |
-
-	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
-	self assert: result equals: self ==>4
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test130sendIfTrueToFalse
-	| result |
-	self
-		compile: 'foo ^false ifTrue: [#failed]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: runtime nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test131sendIfFalseToTrue
-	| result |
-	self
-		compile: 'foo ^true ifFalse: [#failed]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: runtime nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test132sendIfTrueToTrue
-	| result |
-	self
-		compile: 'foo ^true ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test140evaluateClosure
-	| result |
-	self
-		compile: 'foo ^[5] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test141evaluateClosureFrames
-	| result |
-	self
-		compile: 'foo [5] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: runtime true ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test150sendWhileTrue
-	| result |
-	self
-		compile:
-			'foo
-			 | a |
-			a := true.
-			[a] whileTrue: [a := false].
-			^a'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: runtime false ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test151sendToDo
-	| result |
-	self
-		compile:
-			'foo
-			 | a |
-			a := 0.
-			3 to: 4 do: [:i | a := a + i].
-			^a'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test152compute20dividedBy5
-	| result |
-	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
-	self 
-		assert: result equals: self ==> 4;
-		assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test161evaluateClosureWithArgs
-	| result |
-	self
-		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test162evaluateClosureWithArgsAndTemps
-	| result |
-	self
-		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test163evaluateClosureWithArgsAndMethodTemps
-	| result |
-	self
-		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test164evaluateClosureWithArgsAndMultipleTemps
-	| result |
-	self
-		compile:
-			'foo 
-				| s |
-				s := 3.
-				^[:a | | t | 
-					t := a.
-					t := t + s.
-					t] value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test165evaluateClosureNonLocalReturn
-	| result |
-	self
-		compile:
-			'foo 
-				| s |
-				[s := 3. ^s] value.
-				s := 4.
-				^s'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 3 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test166evaluateNestedClosure
-	| result |
-	self
-		compile: 'foo ^[ [ 7 ] value ] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test167evaluateNestedClosureWithArgs
-	| result |
-	self
-		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test168evaluateNestedClosureWithTemps
-	| result |
-	self
-		compile:
-			'foo 
-			| a |
-			a := 2.
-			^[ | b |
-				b := 3.
-				[ | c |
-				c := 4.
-				a + b + c ] value] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 9 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test169evaluateInlinedClosureInClosureWithMethodTemps
-	| result |
-	self
-		compile:
-			'foo 
-			| a result |
-			a := 3.
-			[ true ifTrue: [ result := a + 4 ] ] value.
-			^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test180evaluateToDo
-	| result |
-	self
-		compile:
-			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test190evaluateStringConcatenation
-	| result |
-	self
-		compile: 'foo ^''ABC'', ''DE'''
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self assert: result asLocalString equals: 'ABCDE' ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test200createDictionary
-	| class d |
-	class := self globalNamed: #Dictionary.
-	d := runtime sendLocal: #new to: class with: {}.
-	self
-		assert: d localClassName equals: 'Dictionary';
-		assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test210addAssociationToDictionary
-	| class symbol assoc d |
-	class := self globalNamed: #Dictionary.
-	symbol := runtime addSymbol: #foo.
-	assoc := runtime sendLocal: #-> to: symbol with: { runtime nil }.
-	d := runtime sendLocal: #new to: class with: {}.
-	runtime sendLocal: #add: to: d with: {assoc}.
-	self
-		assert: d localClassName equals: 'Dictionary';
-		assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test300smallIntegerPrintString
-	| result |
-	self
-		compile: 'foo | result | result := 16r1000 printString. ^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self
-				assert: result isBytes;
-				assert: result value asLocalString equals: 16r1000 printString ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test301smallIntegerPrintString
-	| result |
-	self
-		compile: 'foo | result | result := 4611686018427387903 printString. ^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self
-				assert: result isBytes;
-				assert: result value asLocalString equals: 4611686018427387903 printString ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test302smallIntegerPrintString
-	| result |
-	self
-		compile: 'foo | result | result := -4. ^result printString'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self
-				assert: result isBytes;
-				assert: result value asLocalString
-					equals: -4 printString ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test310smiFallbackToLNI
-	| result |
-	self
-		compile:
-			'foo | result | result := (16r100000000 * -16r100000000) printString. ^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			self
-				assert: result isBytes;
-				assert: result value asLocalString
-					equals: (16r100000000 * -16r100000000) printString ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test310smiFallbackToLPI
-	| result expected |
-	self
-		compile:
-			'foo | result | result := 1. 18 timesRepeat: [result := result * 10]. ^result printString'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: runtime true.
-			expected := 1.
-			18 timesRepeat: [ expected := expected * 10 ].
-			self
-				assert: result isBytes;
-				assert: result value asLocalString equals: expected printString ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkLMRTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	runtime := PowertalkLMRTestResource current runtime
-! !
-
-!PowertalkLMRTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
-resources
-	^ Array with: PowertalkLMRTestResource
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	image := PowertalkRingImage fromSpec
-		wordSize: 8;
-		genesis
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test010nil
-	| nilObj class classname |
-	nilObj := image nil.
-	class := image classNamed: #UndefinedObject.
-	classname := class slotNamed: #name.
-	self
-		assert: nilObj size equals: 0;
-		assert: nilObj classname equals: 'UndefinedObject';
-		assert: classname asString 
-			equals: 'UndefinedObject'
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test020true
-	| trueObj class classname |
-	trueObj := image true.
-	class := image classNamed: #True.
-	classname := class slotNamed: #name.
-	self
-		assert: trueObj size equals: 0;
-		assert: trueObj classname equals: 'True';
-		assert: classname asString equals: 'True'
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test030false
-	| falseObj class classname |
-	falseObj := image false.
-	class := image classNamed: #False.
-	classname := class slotNamed: #name.
-	self
-		assert: falseObj size equals: 0;
-		assert: falseObj classname equals: 'False';
-		assert: classname asString equals: 'False'
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test040superclasses
-	|  proto object collection class metaproto |
-	proto := image classNamed: #ProtoObject.
-	object := image classNamed: #Object.
-	collection := image classNamed: #Collection.
-	class := image classNamed: #Class.
-	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
-	self
-		assert: proto superclass equals: image nil;
-		assert: object superclass equals: proto;
-		assert: collection superclass equals: object;
-		assert: metaproto superclass equals: class
-! !
-
-!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test050metaclasses
-	| proto metaproto |
-	proto := image classNamed: #ProtoObject.
-	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
-	self assert: metaproto instanceSide equals: proto
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-==> anObject
-	^image transferLiteralDeep: anObject
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-assertNoLeftoverFrames
-	self assert: runtime interpreter hasFinished
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-compile: aString in: classname during: aBlock
-	| class selector method |
-	class := image => classname.
-	selector := class compile: aString notifying: nil.
-	method := class methodNamed: selector.
-	self assert: method notNil.
-	aBlock 		ensure: [ class removeLocalMethod: method ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test100yourself
-	| result |
-	result := runtime sendLocal: #yourself to: image nil.
-	self assert: result equals: image nil
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test110compute1plus1
-	| one result |
-	one := self ==> 1.
-	result := runtime sendLocal: #+ to: one with: {one}.
-	self assert: result equals: self ==> 2; assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test111compute1minus1
-	| one result |
-	one := self ==> 1.
-	result := runtime sendLocal: #- to: one with: {one}.
-	self assert: result equals: self ==> 0
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test112compute3times4
-	| result |
-	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
-	self assert: result equals: self ==> 12
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test113compute20quotient5
-	|  result |
-
-	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
-	self assert: result equals: self ==>4
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test120sendSizeMinusOne
-	| result |
-	self
-		compile: 'foo ^#abc _size - 1'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 3 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test121sendCascade
-	| result |
-	self
-		compile: 'foo ^#abc yourself; size'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 3 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test130sendIfTrueToFalse
-	| result |
-	self
-		compile: 'foo ^false ifTrue: [#failed]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image nil ].
-		
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test131sendIfFalseToTrue
-	| result |
-	self
-		compile: 'foo ^true ifFalse: [#failed]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test132sendIfTrueToTrue
-	| result |
-	self
-		compile: 'foo ^true ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test133sendIfTrueToTrueAndTrue
-	| result |
-	self
-		compile: 'foo ^(true and: [true]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test134sendIfTrueToTrueAndFalse
-	| result |
-	self
-		compile: 'foo ^(true and: [false]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test135sendIfTrueToFalseAndTrue
-	| result |
-	self
-		compile: 'foo ^(false and: [true]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test136sendIfTrueToFalseOrTrue
-	| result |
-	self
-		compile: 'foo ^(false or: [true]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test137sendIfTrueToFalseOrFalse
-	| result |
-	self
-		compile: 'foo ^(false or: [false]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> nil ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test138sendIfTrueToTrueOrFalse
-	| result |
-	self
-		compile: 'foo ^(true or: [false]) ifTrue: [5]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilIfNotNilToNil
-	| result |
-	self
-		compile: 'foo ^nil ifNil: [3] ifNotNil: [4]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 3 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilIfNotNilToNotNil
-	| result |
-	self
-		compile: 'foo ^#abc ifNil: [3] ifNotNil: [4]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 4 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilIfNotNilWithArg
-	| result |
-	self
-		compile: 'foo ^5 ifNil: [3] ifNotNil: [:a | a]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilIfNotNilWithArgToNil
-	| result |
-	self
-		compile: 'foo ^nil ifNil: [3] ifNotNil: [:a | a]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 3 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilToNil
-	| result |
-	self
-		compile: 'foo ^nil ifNil: [self]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image true ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNilToNotNil
-	| result |
-	self
-		compile: 'foo ^false ifNil: [self]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image false ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test139sendIfNotNilWithArg
-	| result |
-	self
-		compile: 'foo ^5 ifNotNil: [:a | a]'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test140evaluateClosure
-	| result |
-	self
-		compile: 'foo ^[5] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test141evaluateClosureFrames
-	| result |
-	self
-		compile: 'foo [5] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image true ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test142evaluateClosureReceiver
-	| result |
-	self
-		compile: 'foo [self] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image true ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test150sendWhileTrue
-	| result |
-	self
-		compile: 'foo
-			 | a |
-			a := true.
-			[a] whileTrue: [a := false].
-			^a'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: image false ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test151sendToDo
-	| result |
-	self
-		compile:
-			'foo
-			 | a |
-			a := 0.
-			3 to: 4 do: [:i | a := a + i].
-			^a'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test152compute20dividedBy5
-	| result |
-	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
-	self 
-		assert: result equals: self ==> 4;
-		assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test152sendToDoWithInterval
-	| result |
-	self
-		compile:
-			'foo
-			 | a |
-			a := 0.
-			(3 to: 4) do: [:i | a := a + i].
-			^a'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test161evaluateClosureWithArgs
-	| result |
-	self
-		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test162evaluateClosureWithArgsAndTemps
-	| result |
-	self
-		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test163evaluateClosureWithArgsAndMethodTemps
-	| result |
-	self
-		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test164evaluateClosureWithArgsAndMultipleTemps
-	| result |
-	self
-		compile:
-			'foo 
-				| s |
-				s := 3.
-				^[:a | | t | 
-					t := a.
-					t := t + s.
-					t] value: 4'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test165evaluateClosureNonLocalReturn
-	| result |
-	self
-		compile:
-			'foo 
-				| s |
-				[s := 3. ^s] value.
-				s := 4.
-				^s'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 3 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test166evaluateNestedClosure
-	| result |
-	self
-		compile: 'foo ^[ [ 7 ] value ] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test167evaluateNestedClosureWithArgs
-	| result |
-	self
-		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test168evaluateNestedClosureNonLocalReturn
-	| result |
-	self
-		compile: 'foo [ [ ^7 ] value ] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test168evaluateNestedClosureWithTemps
-	| result |
-	self
-		compile:
-			'foo 
-			| a |
-			a := 2.
-			^[ | b |
-				b := 3.
-				[ | c |
-				c := 4.
-				a + b + c ] value] value'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 9 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test169evaluateInlinedClosureInClosureWithMethodTemps
-	| result |
-	self
-		compile:
-			'foo 
-			| a result |
-			a := 3.
-			[ true ifTrue: [ result := a + 4 ] ] value.
-			^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7 ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test170evaluateNonInlinedClosureIfTrue
-	| result |
-	self
-		compile:
-			'foo 
-			| a result closure |
-			a := 3.
-			closure := [ a + 4 ].
-			result := true ifTrue: closure.
-			^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result equals: self ==> 7;  assertNoLeftoverFrames ]
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test180evaluateToDo
-	| result |
-	self
-		compile:
-			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test181evaluateIntervalSize
-	| result |
-	self
-		compile:
-			'foo ^(1 to: 2) size'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals:  2 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test185evaluateArrayDo
-	| result |
-	self
-		compile:
-			'foo | result a |
-				result := 0.
-				a := Array new: 5.
-				a at: 1 put: 1; at: 2 put: 2; at: 3 put: 3; at: 4 put: 4; at: 5 put: 5.
-				a do: [:i | result := result + i].
-				^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test186evaluateOrderedCollectionDo
-	| result |
-	self
-		compile:
-			'foo | result o |
-				result := 0.
-				o:= OrderedCollection new: 5.
-				o add: 1; add: 2; add: 3; add: 4; add: 5.
-				o do: [:i | result := result + i].
-				^result'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test187evaluateArrayToDo
-	| result |
-	self
-		compile:
-			'foo | a |
-				a := Array new: 2.
-				1 to: 2 do: [ :i | a at: i put: i ].
-				^a first + a second'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test188evaluateReplaceFromToWith
-	| result |
-	self
-		compile: 'foo ^#(1 2) replaceFrom: 1 to: 2 with: #(3 4) startingAt: 1'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result size = 2;
-				assert: (result at: 1) value equals: 3;
-				assert: (result at: 2) value equals: 4 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test189evaluateArrayConcatenation
-	| result |
-	self
-		compile: 'foo ^#(3), #(4)'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result size equals: 2; assert: (result at: 1 ) value equals: 3; assert: (result at: 2) value equals: 4 ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test190evaluateStringConcatenation
-	| result |
-	self
-		compile: 'foo ^''ABC'', ''DE'''
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self assert: result asString equals: 'ABCDE' ].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test191evaluateIntervalCollect
-	| result |
-	self
-		compile:
-			'foo | result |
-				result := (1 to: 2) collect: [:i | i].
-				^result first + result second'
-		in: #ProtoObject
-		during: [ result := runtime sendLocal: #foo to: image true.
-			self
-				assert: result isImmediate;
-				assert: result value equals: 1 + 2].
-	self assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test200createDictionary
-	| class d |
-	class := image classNamed: #Dictionary.
-	d := runtime sendLocal: #new to: class with: {}.
-	self assert: d spec name equals: 'Dictionary'; assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
-test210addAssociationToDictionary
-	| class d assoc |
-	class := image classNamed: #Dictionary.
-	assoc := image newAssociation: #foo -> nil.
-	d := runtime sendLocal: #new to: class with: {}.
-	self assertNoLeftoverFrames.
-	runtime sendLocal: #add: to: d with: {assoc}.
-	self
-		assert: d spec name equals: 'Dictionary';
-		assertNoLeftoverFrames
-! !
-
-!PowertalkRingRuntimeTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	image := PowertalkRingImage fromSpec
-		wordSize: 8;
-		genesis.
-	runtime := image runtime
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-compile: source in: aSpecies
-	^SCompiler compile: source in: aSpecies
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-decode: anArray of: aCompiledMethod
-	| decoder |
-	decoder := AstcodeDecoder new
-		stream: anArray readStream;
-		method: aCompiledMethod.
-	^decoder decodeMethod
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-encode: source
-	^self encode: source in: UndefinedObject
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-encode: source in: aSpecies
-	| ring compiler |
-	ring := VirtualImage kernelSpec bindingOf: aSpecies name.
-	compiler := SCompiler forClass: ring value.
-	method := compiler compile: source.
-	^ method astcodes
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test010emptyMethod
-	| astcodes root |
-	astcodes := self encode: 'm'.
-	self assert: astcodes = {MethodId}.
-	root := self decode: astcodes of: method.
-	self assert: root isMethod; assert: root statements isEmpty
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test020encodeFalse
-	| astcodes root identifier |
-	astcodes := self encode: 'm false'.
-	self assert: astcodes = {MethodId. {IdentifierId. FalseId}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isLiteral;
-		assert: identifier binding value = false
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test020encodeNil
-	| astcodes root identifier |
-	astcodes := self encode: 'm nil'.
-	self assert: astcodes = {MethodId. {IdentifierId. NilId}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isLiteral;
-		assert: identifier binding value = nil
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test020encodeSelf
-	| astcodes root identifier |
-	astcodes := self encode: 'm self'.
-	self assert: astcodes = {MethodId. {IdentifierId. SelfId}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self assert: identifier isVariable; assert: identifier binding isSelf
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test020encodeTrue
-	| astcodes root identifier |
-	astcodes := self encode: 'm true'.
-	self assert: astcodes = {MethodId. {IdentifierId. TrueId}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isLiteral;
-		assert: identifier binding value = true
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test021encodeClassVar
-	| astcodes root identifier |
-	astcodes := self encode: 'm Flags' in: Class.
-	self assert: astcodes = {MethodId. {IdentifierId. ClassVarId. 1}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isClassVar;
-		assert: identifier binding association class = Association;
-		assert: identifier binding association key = 'Flags';
-		assert: identifier binding association value class = PoolDictionary
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test021encodeInstVar
-	| astcodes root identifier |
-	astcodes := self encode: 'm name' in: Class.
-	self assert: astcodes = {MethodId. {IdentifierId. InstVarId. 6}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isInstVar;
-		assert: identifier binding index = 6
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test021encodePoolVar
-	| astcodes root identifier |
-	astcodes := self encode: 'm Pointers' in: Class.
-	self assert: astcodes = {MethodId. {IdentifierId. PoolVarId. 1}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	identifier := root statements first.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isPoolVar;
-		assert: identifier binding association class = Association;
-		assert: identifier binding association key = 'Pointers';
-		assert: identifier binding association value = 16r200
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test022encodeReturn
-	| astcodes root return identifier |
-	astcodes := self encode: 'm ^self'.
-	self assert: astcodes = {MethodId. {ReturnId. true. {IdentifierId. SelfId}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	return := root statements first.
-	self assert: return isReturn.
-	identifier := return expression.
-	self assert: identifier isVariable; assert: identifier binding isSelf
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test023encodeClass
-	| astcodes root return identifier |
-	astcodes := self encode: 'm ^Array'.
-	self
-		assert: astcodes
-			= {MethodId. {ReturnId. true. {IdentifierId. GlobalClassId. 1}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	return := root statements first.
-	self assert: return isReturn.
-	identifier := return expression.
-	self
-		assert: identifier isVariable;
-		assert: identifier binding isClassBinding;
-		assert: identifier binding association key = #Array;
-		assert: identifier binding association value = Array
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test024encodeLiteral
-	| astcodes root literal |
-	astcodes := self encode: 'm #foo'.
-	self assert: astcodes = {MethodId. {LiteralId. 1}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	literal := root statements first.
-	self
-		assert: literal isLiteral;
-		assert: literal value = #foo
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test030encodeUnaryMessage
-	| astcodes root return message identifier |
-	astcodes := self encode: 'm ^self foo'.
-	self
-		assert: astcodes
-			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	return := root statements first.
-	self assert: return isReturn.
-	message := return expression.
-	self assert: message isMessage.
-	identifier := message receiver.
-	self
-		assert: message arguments isEmpty;
-		assert: identifier isVariable;
-		assert: identifier binding isSelf
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test035encodeBinaryMessage
-	| astcodes root return message receiver argument |
-	astcodes := self encode: 'm ^self foo: true'.
-	self
-		assert: astcodes
-			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}. {IdentifierId. TrueId}}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	return := root statements first.
-	self assert: return isReturn.
-	message := return expression.
-	self assert: message isMessage.
-	receiver := message receiver.
-	argument := message arguments first.
-	self
-		assert: receiver isVariable;
-		assert: receiver binding isSelf;
-		assert: argument isVariable;
-		assert: argument binding isLiteral;
-		assert: argument binding value = true
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test036encodeTernaryMessage
-	| astcodes root return message receiver arg1 arg2 |
-	astcodes := self encode: 'm ^self foo: true bar: false'.
-	self
-		assert: astcodes = {MethodId. {ReturnId. true. {MessageId. 1.
-					{IdentifierId. SelfId}.
-					{IdentifierId. TrueId}.
-					{IdentifierId. FalseId}}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	return := root statements first.
-	self assert: return isReturn.
-	message := return expression.
-	self assert: message isMessage.
-	receiver := message receiver.
-	arg1 := message arguments first.
-	arg2 := message arguments second.
-	self
-		assert: receiver isVariable;
-		assert: receiver binding isSelf;
-		assert: arg1 isVariable;
-		assert: arg1 binding isLiteral;
-		assert: arg1 binding value = true;
-		assert: arg2 isVariable;
-		assert: arg2 binding isLiteral;
-		assert: arg2 binding value = false
-! !
-
-!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test050instVarAssignment
-	| astcodes root assignment assignee expression |
-	astcodes := self encode: 'm name := true' in: Class.
-	self
-		assert: astcodes
-			= {MethodId. {AssignmentId. {IdentifierId. InstVarId. 6}. {IdentifierId. TrueId}}}.
-	root := self decode: astcodes of: method.
-	self
-		assert: root isMethod;
-		assert: root statements size = 1.
-	assignment := root statements first.
-	self
-		assert: assignment isAssignment;
-		assert: assignment assignees size = 1.
-	assignee := assignment assignees first.
-	expression := assignment expression.
-	self
-		assert: assignee isVariable;
-		assert: assignee binding isInstVar;
-		assert: assignee binding index = 6;
-		assert: expression isVariable;
-		assert: expression binding isLiteral;
-		assert: expression binding value = true
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-maneuvererForObjects
-	| mirror |
-	mirror := runtime objectNamed: 'Object'.
-	^ mirror handle maneuverer
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-mirageForObject
-	| mirror |
-	mirror := runtime objectNamed: 'Object'.
-	^ mirror handle mirage
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-mirrorForObject
-	| address |
-	address := runtime objectNamed: 'Object'.
-	^ address asClassMirror
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test010nilHandle
-	| handle |
-	handle := runtime nil.
-	self
-		assert: handle isSmall;
-		deny: handle isBytes;
-		deny: handle isArrayed;
-		assert: handle basicSize equals: 0
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test020nilBehaviorHandle
-	| handle |
-	handle := runtime nil getBehavior.
-	self
-		assert: handle isSmall;
-		deny: handle isBytes;
-		deny: handle isArrayed;
-		assert: handle size equals: 3
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test030nilClassHandle
-	| behavior class name |
-	behavior := runtime nil getBehavior.
-	class := behavior slotAt: 1.
-	self
-		assert: class isSmall;
-		deny: class isBytes;
-		deny: class isArrayed;
-		assert: class size equals: 9.
-	name := class slotAt: 6.
-	self assert: name asLocalString equals: 'UndefinedObject'
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test040nilClassMirror
-	| class hierarchy |
-	class := runtime nil mirror reflectedClass.
-	hierarchy := class allSuperclasses collect: #localName.
-	self assert: class localName equals: 'UndefinedObject';
-		assert: hierarchy asArray equals: #('Object' 'ProtoObject')
-! !
-
-!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-testObjectMirrorBasics
-	| class definition |
-	class := self mirrorForObject.
-	self
-		deny: class reflectsInteger;
-		deny: class reflectsBytesObject;
-		deny: class reflectsLargeObject;
-		deny: class reflectsNil.
-	definition := builder => 'Class'.
-	self assert: class slotSize equals: definition allInstVarNames size
-! !
-
-!MirrorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
-setUp
-	| vimage image |
-	super setUp.
-	vimage := PowertalkRingImage fromSpec
-		wordSize: 8;
-		genesis;
-		bootstrap.
-	builder := vimage builder.
-	builder addGenesisObjects.
-	image := builder writer write image.
-	runtime := Runtime
-		forSimulating: PowertalkRingImage kernelSpec
-		memory: image
-! !
-
-!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test010nilObjectHandle
-	| runtime handle |
-	runtime := self runtime.
-	handle := runtime nil.
-	self
-		assert: handle isFixed;
-		assert: handle isSmall;
-		assert: handle size = 0
-! !
-
-!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test015nilObjectMirror
-	| runtime handle mirror |
-	runtime := self runtime.
-	handle := runtime nil.
-	mirror := handle mirror.
-	self
-		assert: mirror = handle mirror;
-		assert: mirror reflectsNil;
-		deny: mirror reflectsInteger;
-		assert: mirror size = 0;
-		deny: mirror reflectsLargeObject;
-		deny: mirror reflectsBytesObject;
-		assert: mirror reflectedClass localName = 'UndefinedObject'
-! !
-
-!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test040UndefinedObjectMirror
-	| runtime nilMirror mirror |
-	runtime := self runtime.
-	nilMirror := runtime nil mirror.
-	mirror := nilMirror reflectedBehavior methodDictionary.
-	self
-		assert: mirror reflectsMethodDictionary
-! !
-
-!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
-test100findKernel
-	| smalltalk |
-	smalltalk := self runtime objectNamed: 'kernel'.
-	self
-		assert: smalltalk reflectedClass localName
-		equals: 'Kernel'
-! !
-
-!ObjectMirrorTest methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:45'!
-runtime
-	| vimage builder |
-	vimage := PowertalkRingImage fromSpec
-		wordSize: 8;
-		genesis;
-		bootstrap.
-	builder := vimage builder.
-	builder addGenesisObjects.
-	^ Runtime
-		forSimulating: PowertalkRingImage kernelSpec
-		memory: builder writer write image
-! !
-
-!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-handleFor: anObjectMap
-	| oid |
-	oid := writer offsetOf: anObjectMap.
-	^runtime handleOn: oid
-
-! !
-
-!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-injectMethod: anAstcode selector: selector for: classname
-	^ builder
-		newMethod: anAstcode
-		selector: selector
-		in: classname
-		format: 0
-		literals: #()
-! !
-
-!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-injectObject
-	^ builder newSlots: 'Object'
-! !
-
-!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-invoke: method with: object
-	| m receiver |
-	m := self handleFor: method.
-	receiver := self handleFor: object.
-	^receiver mirror invoke: m mirror asMethodMirror with: #()
-! !
-
-!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test100yourself
-	| object handle result |
-	object := self injectObject.
-	handle := builder emulator handleOn: object.
-	result := handle maneuverer yourself.
-	self
-		assert: object == result
-! !
-
-!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
-setUp
-	super setUp.
-	builder := VirtualImage kernelSpec build
-! !
-
-!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
-write
-	writer := builder writer write.
-	runtime := Runtime
-		forSimulating: VirtualImage kernelSpec
-		memory: writer image
-! !
-
-!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-handleFor: anObjectMap
-	| oid |
-	oid := writer offsetOf: anObjectMap.
-	^runtime handleOn: oid
-
-! !
-
-!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-injectMethod: anAstcode selector: selector for: classname
-	^ builder
-		newMethod: anAstcode
-		selector: selector
-		in: classname
-		format: 0
-		literals: #()
-! !
-
-!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-injectObject
-	^ builder newSlots: 'Object'
-! !
-
-!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-invoke: method with: object
-	| m receiver |
-	m := self handleFor: method.
-	receiver := self handleFor: object.
-	^receiver mirror invoke: m mirror asMethodMirror with: #()
-! !
-
-!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
-test100empty
-	| object astcodes method result original |
-	object := self injectObject.
-	astcodes := {MethodId. {IdentifierId. SelfId}}.	"foo self"
-	method := self injectMethod: astcodes selector: #foo for: 'Object'.
-	self write.
-	result := self invoke: method with: object.
-	original := self handleFor: object.
-	self
-		assert: result localClassname equals: 'Object';
-		assert: (result equals: original mirror)
-! !
-
-!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
-setUp
-	super setUp.
-	builder := VirtualImage kernelSpec build
-! !
-
-!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
-write
-	writer := builder writer write.
-	runtime := Runtime
-		forSimulating: VirtualImage kernelSpec
-		memory: writer image
-! !
-
-!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
-bootstrapper
-	^bootstrapper ifNil: [ bootstrapper := image generateLMR ]
-
-! !
-
-!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
-runtime
-	^ self bootstrapper result
-! !
-
-!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
-setUp
-	super setUp.
-	image := PowertalkRingImage fromSpec
-		wordSize: 8;
-		genesis;
-		bootstrap;
-		fillClasses;
-		fillSymbols
 ! !
 
 !NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:14:24'!
@@ -11616,14 +7793,14 @@ subImm: anInteger from: srcAndDstReg
 
 ! !
 
-!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 10/16/2022 08:52:02'!
+!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/12/2024 15:51:29'!
 noOp
 	"Add 32 bits of space to the instruction stream.
 	This is required in some cases to keep 64 bit (8 byte) memory address alignment."
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: RegZero regSource: RegZero imm12: 0).! !
+		(RV64ADDI destReg: RegZero regSource: RegZero imm12: 0).! !
 
-!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 10/16/2022 08:50:05'!
+!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/12/2024 15:51:34'!
 noOp: count
 
 	"assemble `count` noOps
@@ -11631,7 +7808,7 @@ noOp: count
 	 to avoid prefetch signalling an illegal instruction (which would never be executed)"
 	1 to count do: [
 		memory nextInstructionPut: 
-			(RV64ADDI regDest: RegZero regSource: RegZero imm12: 0)
+			(RV64ADDI destReg: RegZero regSource: RegZero imm12: 0)
 	]! !
 
 !RV64GCodeGenerator methodsFor: 'floating point' stamp: 'KenD 10/9/2022 10:53:32'!
@@ -11686,18 +7863,18 @@ target: aNativizationTarget
 	linkReg := abi regLink.
 ! !
 
-!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 10/5/2022 15:38:44'!
+!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 3/12/2024 16:03:55'!
 call: srcReg
 	"Goto address #srcReg, placing return address in #linkReg"
 	memory nextInstructionPut: 
-		(RV64JALR destReg: linkReg baseReg: srcReg immedOffset: 0).
+		(RV64JALR destReg: linkReg baseReg: srcReg imm12: 0).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 10/5/2022 15:35:26'!
+!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 3/12/2024 16:04:00'!
 call: srcReg withOffset: imm
 
 	memory nextInstructionPut: 
-		(RV64JALR destReg: linkReg baseReg: srcReg immedOffset: imm).
+		(RV64JALR destReg: linkReg baseReg: srcReg imm12: imm).
 ! !
 
 !RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 11/8/2022 15:08:50'!
@@ -11742,7 +7919,7 @@ memRef
 		yourself
 ! !
 
-!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 11/2/2022 08:00:39'!
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 15:51:08'!
 lea: addressReg withMem: memRef
 
 	"Answer baseRegister + (indexRegister*scale) + offset.
@@ -11759,9 +7936,9 @@ lea: addressReg withMem: memRef
 		ifTrue: [ self add: memRef index to: addressReg 		] 
 		ifFalse: [
 			memory nextInstructionPut:  "(index * scale) is just a shift"
-				(RV64SLLI 		regDest: RegTmp0 regSource: memRef indexRegister imm12: memRef scale).
+				(RV64SLLI 		destReg: RegTmp0 regSource: memRef indexRegister imm12: memRef scale).
 			memory nextInstructionPut: 
-				(RV64ADD regDest: addressReg regA: addressReg regB: RegTmp0).
+				(RV64ADD destReg: addressReg regA: addressReg regB: RegTmp0).
 		]
 	]
  	
@@ -11777,7 +7954,7 @@ load: dstReg convertingDoubleToIntegerFromMem: srcMemRef
 				regA: FTmp0 
 				roundingMode: RoundNearestToEven).! !
 
-!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 11/2/2022 12:51:11'!
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 16:04:24'!
 load: dstReg fromMem: srcMemRef
 
 	"Load `dstReg` from memory location `srcMemRef`.
@@ -11802,66 +7979,66 @@ load: dstReg fromMem: srcMemRef
 	(bitWidth = 64)
 	ifTrue: [ "load 64 bit Double-wide Integer"
 		memory nextInstructionPut: 
-			(RV64LD regDest: dstReg regBase: RegTmp1 immediateOffset: 0)
+			(RV64LD destReg: dstReg baseReg: RegTmp1 imm12: 0)
 	]
 	ifFalse: [
 		(bitWidth = 32)
 		ifTrue: [
 			memory nextInstructionPut: 
 				(RV64LWU "zero extended Load Word Unsigned"
-					regDest: dstReg regBase: RegTmp1 immediateOffset: 0)
+					destReg: dstReg baseReg: RegTmp1 imm12: 0)
 		] 
 		ifFalse: [
 			(bitWidth = 16)
 			ifTrue: [
 				memory nextInstructionPut: "load 16 bit HalfWord"
-					(RV64LHU regDest: tmp0Reg regBase: RegTmp1 immediateOffset: 0).
+					(RV64LHU destReg: tmp0Reg baseReg: RegTmp1 imm12: 0).
 				memory nextInstructionPut: "shift out lower 16 bits"
 					(RV64SRLI destReg: dstReg  regSource: dstReg imm12: 16).
 				memory nextInstructionPut: "upper bits back where they started"
 					(RV64SLLI destReg: dstReg  regSource: dstReg imm12: 16).
 				memory nextInstructionPut: "glue the pieces together"
-					(RV64AND regDest: dstReg regA: dstReg regB: tmp0Reg)
+					(RV64AND destReg: dstReg regA: dstReg regB: tmp0Reg)
 			] 
 			ifFalse: [
 				self assert: (bitWidth = 8).
 				memory nextInstructionPut: "load 8 bit Byte"
-					(RV64LB regDest: tmp0Reg regBase: RegTmp1 immediateOffset: 0).
+					(RV64LB destReg: tmp0Reg baseReg: RegTmp1 imm12: 0).
 				memory nextInstructionPut: "shift out lower 8 bits"
 					(RV64SRLI  destReg: dstReg  regSource: dstReg imm12: 8).
 				memory nextInstructionPut: "upper bits back where they started"
 					(RV64SLLI  destReg: dstReg  regSource: dstReg imm12: 8).
 				memory nextInstructionPut: "glue the pieces together"
-					(RV64AND regDest: dstReg regA: dstReg regB: tmp0Reg)
+					(RV64AND destReg: dstReg regA: dstReg regB: tmp0Reg)
 			] 
 		]
 	]
 		! !
 
-!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 10/23/2022 15:32:51'!
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 16:04:31'!
 loadDouble: dstReg fromMem: srcMemRef
 	"Load 64-bit floating point `dstReg` from memory location spec: `srcMemRef`"
 	self lea: RegTmp1 withMem: srcMemRef.
 	memory nextInstructionPut: 
-		(RV64FLD destReg: dstReg baseReg: RegTmp1 immedOffset: 0)! !
+		(RV64FLD destReg: dstReg baseReg: RegTmp1 imm12: 0)! !
 
-!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 10/23/2022 08:36:53'!
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 16:04:41'!
 loadReg: destReg withBase: baseReg offset: imm
 
 	(self fitsIn12bits: imm) 
 	ifTrue: [
 		memory nextInstructionPut: 
-			(RV64LD destReg: destReg baseReg: baseReg immedOffset: imm)
+			(RV64LD destReg: destReg baseReg: baseReg imm12: imm)
 	]
 	ifFalse: [
 		self moveImm: imm to: tmp0Reg.
 		memory nextInstructionPut: 
 			(RV64ADD regDest: tmp0Reg regA: baseReg regB: tmp0Reg).
 		memory nextInstructionPut: 
-			(RV64LD destReg: destReg baseReg: tmp0Reg immedOffset: 0)
+			(RV64LD destReg: destReg baseReg: tmp0Reg imm12: 0)
 	]! !
 
-!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 11/2/2022 07:46:40'!
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 16:00:30'!
 store: srcReg intoMem: dstMemRef
 
 	"Store `srcReg` value into memory location `dstMemRef`.
@@ -11877,30 +8054,30 @@ store: srcReg intoMem: dstMemRef
 	(bitWidth = 64)
 	ifTrue: [ 
 		memory nextInstructionPut:  "store 64 bit DoubleWord"
-			(RV64SD regSource: srcReg regBase: RegTmp1 immediateOffset: 0)
+			(RV64SD srcReg: srcReg baseReg: RegTmp1 immLo: 0 immHi: 0)
 	]
 	ifFalse: [
 		(bitWidth = 32)
 		ifTrue: [
 			memory nextInstructionPut: "store 32 bit Word"
-				(RV64SW regSource: srcReg regBase: RegTmp1 immediateOffset: 0)
+				(RV64SW srcReg: srcReg baseReg: RegTmp1 immLo: 0 immHi: 0)
 		] 
 		ifFalse: [
 			(bitWidth = 16)
 			ifTrue: [
 				memory nextInstructionPut: "store 16 bit HalfWord"
-					(RV64SH regSource: srcReg regBase: RegTmp1 immediateOffset: 0)
+					(RV64SH srcReg: srcReg baseReg: RegTmp1 immLo: 0 immHi: 0)
 			] 
 			ifFalse: [
 				self assert: (bitWidth = 8).
 				memory nextInstructionPut: "store 8 bit Byte"
-					(RV64SB regSource: srcReg regBase: RegTmp1 immediateOffset: 0)
+					(RV64SB srcReg: srcReg baseReg: RegTmp1 immLo: 0 immHi: 0)
 			] 
 		]
 	]
 		! !
 
-!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 11/2/2022 07:59:07'!
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/12/2024 15:49:00'!
 add: src1Reg to: src2andDstReg
 	"Signed Addition with flagsReg nonZero on overflow
 
@@ -11911,15 +8088,15 @@ add: src1Reg to: src2andDstReg
 
 	 "tmp1Reg to 1 if (regB < 0)"
 	memory nextInstructionPut: 
-		(RV64SLTI regDest: tmp1Reg regSource: src2andDstReg imm12: 0).
+		(RV64SLTI destReg: tmp1Reg regSource: src2andDstReg imm12: 0).
 		
 	 "Do the addition that may overflow"
 	memory nextInstructionPut: 
-		(RV64ADD regDest: src2andDstReg regA: src1Reg regB: src2andDstReg).
+		(RV64ADD destReg: src2andDstReg regA: src1Reg regB: src2andDstReg).
 		
 	"set flagsReg to 1 if (regA+regB < regA)"
 	memory nextInstructionPut: 
-		(RV64SLT regDest: flagsReg regA: src2andDstReg regB: src1Reg).
+		(RV64SLT destReg: flagsReg regA: src2andDstReg regB: src1Reg).
 "
 	tmp1   flags   overflow? condition
 	 0           0             0         NO-overflow
@@ -11942,18 +8119,18 @@ addImm: imm to: srcAndDst
 	self add: tmp1Reg to: srcAndDst.
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 10/9/2022 11:09:47'!
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/12/2024 15:50:51'!
 dec: srcAndDstReg
 	"Decriment register value"
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: srcAndDstReg regSource: srcAndDstReg imm12: -1).
+		(RV64ADDI destReg: srcAndDstReg regSource: srcAndDstReg imm12: -1).
 	! !
 
-!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 10/9/2022 11:09:59'!
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/12/2024 15:50:56'!
 inc: srcAndDstReg
 	"Incriment register value"
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: srcAndDstReg regSource: srcAndDstReg imm12: 1).
+		(RV64ADDI destReg: srcAndDstReg regSource: srcAndDstReg imm12: 1).
 	! !
 
 !RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 10/15/2022 17:01:11'!
@@ -12031,14 +8208,14 @@ shiftLeft: srcAndDstReg by: countReg
 		(RV64SLL regDest: srcAndDstReg regA: srcAndDstReg  regB: countReg).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 10/16/2022 13:56:25'!
+!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 3/12/2024 15:51:38'!
 shiftLeft: srcAndDstReg byImm: imm
 
 	"logical shiift left"
 	(self fitsIn12bits: imm)
 	ifTrue: [
 		memory nextInstructionPut: 
-			(RV64SLLI regDest: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
+			(RV64SLLI destReg: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
 	]
 	ifFalse: [
 		self moveImm: imm to: tmp0Reg.
@@ -12055,14 +8232,14 @@ shiftRight: srcAndDstReg by: countReg
 		(RV64SRL regDest: srcAndDstReg regA: srcAndDstReg regB: countReg ).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 10/16/2022 13:58:38'!
+!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 3/12/2024 15:51:42'!
 shiftRight: srcAndDstReg byImm: imm
 
 	"logical shiift right"
 	(self fitsIn12bits: imm)
 	ifTrue: [
 		memory nextInstructionPut: 
-			(RV64SRLI regDest: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
+			(RV64SRLI destReg: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
 	]
 	ifFalse: [
 		self moveImm: imm to: tmp0Reg.
@@ -12079,27 +8256,27 @@ shiftRightArithmetic: srcAndDstReg by: countReg
 		(RV64SRA regDest: srcAndDstReg regA: srcAndDstReg  regB: countReg ).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 10/16/2022 13:59:18'!
+!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 3/12/2024 15:51:53'!
 shiftRightArithmetic: srcAndDstReg byImm: imm
 
 	"arithmetic shiift right"
 	(self fitsIn12bits: imm)
 	ifTrue: [
 		memory nextInstructionPut: 
-			(RV64SRAI regDest: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
+			(RV64SRAI destReg: srcAndDstReg regSource: srcAndDstReg  imm12: imm).
 	]
 	ifFalse: [
 		self moveImm: imm to: tmp0Reg.
 		memory nextInstructionPut: 
-				(RV64SRA regDest: srcAndDstReg regA: srcAndDstReg regB: tmp0Reg).
+				(RV64SRA destReg: srcAndDstReg regA: srcAndDstReg regB: tmp0Reg).
 	].
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 10/16/2022 13:03:38'!
+!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 3/12/2024 15:50:44'!
 clearReg: reg
 
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: reg regSource: zeroReg imm12: 0).
+		(RV64ADDI destReg: reg regSource: zeroReg imm12: 0).
 	! !
 
 !RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 10/22/2022 16:25:58'!
@@ -12148,14 +8325,14 @@ loadSwithAddressOfSatA
 	memory nextInstructionPut: 
 			(RV64ADDI destReg: RegS regSource: RegTmp0 imm12: wordSize negated)! !
 
-!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 10/5/2022 13:04:50'!
+!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 3/12/2024 15:51:13'!
 move: srcReg to: dstReg
 
 	memory nextInstructionPut:
-		(RV64ADDI regDest: dstReg regSource: srcReg imm12: 0).
+		(RV64ADDI destReg: dstReg regSource: srcReg imm12: 0).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 10/16/2022 07:59:06'!
+!RV64GCodeGenerator methodsFor: 'operations - register' stamp: 'KenD 3/12/2024 16:09:46'!
 moveImm: imm to: dstReg
 	"Load Integer constant to register `dstReg`"
 
@@ -12164,7 +8341,7 @@ moveImm: imm to: dstReg
 	(self fitsIn12bits: imm)
 	ifTrue: [ 
 		memory nextInstructionPut: 
-			(RV64ORI regDest: dstReg regSource: zeroReg imm12: imm).
+			(RV64ORI destReg: dstReg regSource: zeroReg imm12: imm).
 	]
 	ifFalse: [ | bitWidth |
 		bitWidth := self bitLengthOf: imm.
@@ -12172,9 +8349,9 @@ moveImm: imm to: dstReg
 		(bitWidth <= 32) "Fits in 32 bits"
 		ifTrue: [
 			memory nextInstructionPut: "Upper 20 bits"
-				(RV64LUI regDest: dstReg immediate: imm >> 12).
+				(RV64LUI destReg: dstReg imm20: imm >> 12).
 			memory nextInstructionPut: "Lower 12 bits"
-				(RV64ORI regDest: dstReg regSource: zeroReg imm12: (imm bitAnd: 16rFFF)).
+				(RV64ORI destReg: dstReg regSource: zeroReg imm12: (imm bitAnd: 16rFFF)).
 		]
 		ifFalse: [ 	"Fits in 64 bits"
 			self assert: (bitWidth <= 64).
@@ -12183,12 +8360,12 @@ moveImm: imm to: dstReg
 			so following recursive call never tries to use `tmp0Reg` recursively."
 			self moveImm: ((imm bitAnd: 16rFFFF0000) >> 32) to: tmp0Reg.
 			memory nextInstructionPut:  "shift back into top"
-				(RV64SLLI regDest: tmp0Reg regSource: tmp0Reg imm12: 32).
+				(RV64SLLI destReg: tmp0Reg regSource: tmp0Reg imm12: 32).
 			"Lower 32 bits to `dstReg`"
 			self moveImm: (imm bitAnd: 16r0000FFFF) to: dstReg.
 			"Or upper and lower bits back together into `dstReg`"
 			memory nextInstructionPut: 
-				(RV64OR regDest: dstReg regA: dstReg regB: tmp0Reg).
+				(RV64OR destReg: dstReg regA: dstReg regB: tmp0Reg).
 		]
 	]
 ! !
@@ -12211,7 +8388,7 @@ breakpoint
 	memory nextInstructionPut: (RV64EBREAK new).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:54:41'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:51:59'!
 syscall: callNumber 
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self clearReg: 10. "arg0"
@@ -12221,12 +8398,12 @@ syscall: callNumber
 	self clearReg: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:54:16'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:52:04'!
 syscall: callNumber arg: reg0 
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12236,12 +8413,12 @@ syscall: callNumber arg: reg0
 	self clearReg: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:54:01'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:52:10'!
 syscall: callNumber arg: reg0 arg: reg1 
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12251,12 +8428,12 @@ syscall: callNumber arg: reg0 arg: reg1
 	self clearReg: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:53:30'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 16:02:23'!
 syscall: callNumber arg: reg0 arg: reg1 arg: reg2
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12266,12 +8443,12 @@ syscall: callNumber arg: reg0 arg: reg1 arg: reg2
 	self clearReg: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:55:33'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:52:16'!
 syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12281,12 +8458,12 @@ syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3
 	self clearReg: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:56:00'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:52:21'!
 syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3 arg: reg4
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12296,12 +8473,12 @@ syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3 arg: reg4
 	self move: reg4 to: 14.
 	self clearReg: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
 
-!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:56:25'!
+!RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 3/12/2024 15:52:25'!
 syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3 arg: reg4 arg: reg5
 	"Low level Linux Syscall.  Args in a0..a5; call# in a7; result in a0"
 	self move: reg0 to: 10. "arg0"
@@ -12311,7 +8488,7 @@ syscall: callNumber arg: reg0 arg: reg1 arg: reg2 arg: reg3 arg: reg4 arg: reg5
 	self move: reg4 to: 14.
 	self move: reg5 to: 15.
 	memory nextInstructionPut: 
-		(RV64ADDI regDest: 17 regSource: RegZero imm12: callNumber).
+		(RV64ADDI destReg: 17 regSource: RegZero imm12: callNumber).
 	memory nextInstructionPut: (RV64ECALL new).
 	self move: 10 to: RegR.  "Result from A0 into RegR"
 	 ! !
@@ -14217,6 +10394,668 @@ nativizer
 undermethods 
 
 	^builder undermethods! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
+argumentAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:05'!
+arguments 
+
+	^arguments! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:16'!
+arguments: aCollection 
+
+	arguments := aCollection! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:24'!
+associationValueAt: anInteger 
+
+	^ (method at: anInteger) value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:34'!
+associationValueAt: anInteger put: value 
+	| association |
+	association := (method at: anInteger).
+	^association value: value! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:01'!
+beBlock 
+	
+	isBlock := true! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:11'!
+blockAstcodesOf: anSCompiledBlock 
+
+	^blockAstcodes at: anSCompiledBlock! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:23'!
+blockOf: anObjectMap 
+
+	^closures at: anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:36'!
+booleanFor: aBoolean 
+
+	^ aBoolean
+		ifTrue: [ system true ]
+		ifFalse: [ system false ]! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:11:10'!
+captureClosure: anSBlock with: block 
+	| closure s i type env arg |
+	closure := system newClosure: block environmentCount.
+	closures at: closure put: block.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment ].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:08'!
+closures 
+
+	^closures! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:20'!
+constPoolValueAt: anInteger 
+
+	^ method at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:13:59'!
+environment: anObjectMap 
+
+	environment := anObjectMap! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:14:24'!
+environmentFor: anInteger 
+"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. 
+"
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:22:34'!
+falseLiteral 
+
+	^ system false! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:06'!
+instanceVarAt: anInteger 
+
+	^ receiver slotAt: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:17'!
+instanceVarAt: index put: aValue 
+
+	^ receiver slotAt: index put: aValue! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:28'!
+integerFor: anInteger 
+
+	^ system newInteger: anInteger! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:11'!
+literal: anObject 
+
+	^anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:22'!
+method 
+
+	^method! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:36'!
+method: anSCompiledMethod 
+
+	method := anSCompiledMethod.
+	temporaries := Array new: anSCompiledMethod tempCount! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:48'!
+nilLiteral 
+
+	^ system nil! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:57'!
+parent 
+
+	^parent! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:05'!
+parent: anInterpreter 
+
+	parent := anInterpreter! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:29'!
+primitive: primitive 
+	| result |
+	result := self evaluatePrimitive: primitive.
+	returning ifTrue: [ ^self ].
+	system popFrame.
+	self returning: result! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:26:59'!
+receiver 
+
+	^receiver! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:10'!
+receiver: anObject 
+
+	receiver := anObject.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:24'!
+returning: anObject 
+
+	returning := true.
+	returnValue := anObject! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:15'!
+system: anEmulator 
+
+	system := anEmulator! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:27'!
+temporaryAt: index in: anInteger 
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:40'!
+temporaryAt: index in: anInteger put: aValue 
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue
+! !
+
+!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:55'!
+trueLiteral 
+
+	^system true! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:09:45'!
+backtrace 
+	| bt next |
+	bt := OrderedCollection new.
+	next := self.
+	[ next notNil ]
+		whileTrue: [ bt
+				add:
+					{next method signature.
+					next receiver} , next arguments.
+			next := next parent ].
+	^ bt! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:14:55'!
+evaluate 
+
+	system pushFrame: self.
+	^ self visitMethod: method sexpressions! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:18'!
+evaluateBlock: sblock args: anArray 
+	" as this block is inlined, we didn't capture parent environment.
+	Thus, we don't know if environment is a closure or a method home.
+	We unwind to that environment and clean up later if it was a closure. "
+
+	anArray
+		with: sblock inlinedArgs
+		do: [ :arg :i | temporaries at: i put: arg ].
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:36'!
+evaluateBlock: sblock args: anArray closure: closure 
+	" inlined blocks can only return to their real parent environment.
+	Here we complete the non-local return process for them, unwinding
+	to the real home environment "
+
+	temporaries := Array new: sblock tempCount.
+	environment := closure.
+	arguments := anArray.
+	^ self visitScript: sblock! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:51'!
+evaluateClosure: aPClosure 
+
+	^self evaluateClosure: aPClosure withArgs: {}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:45'!
+evaluateClosure: aPClosure with: anObject 
+
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:58'!
+evaluateClosure: aPClosure with: anObject with: anotherObject 
+
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:17:12'!
+evaluateClosure: closure withArgs: anArray 
+	| frame block sblock evaluator result |
+	frame := system builderOf: closure.
+	block := frame blockOf: closure.
+	sblock := frame blockAstcodesOf: block.
+	evaluator := frame copy beBlock.
+	system pushFrame: evaluator.
+	result := sblock isInlined
+		ifTrue: [ evaluator evaluateBlock: sblock args: anArray ]
+		ifFalse: [ evaluator evaluateBlock: sblock args: anArray closure: closure ].
+	returning ifFalse: [ system popFrame ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:19:55'!
+evaluatePrimitive: primitive 
+	| index size argument value |
+	primitive = #Behavior
+		ifTrue: [ ^ receiver isImmediate
+				ifTrue: [ system smallintBehavior ]
+				ifFalse: [ receiver behavior ] ].
+	primitive = #UnderSize
+		ifTrue: [ ^ self integerFor: receiver size ].
+	primitive = #Size
+		ifTrue: [ ^ self integerFor: receiver arrayedSize ].
+	primitive = #At
+		ifTrue: [ index := arguments first value.
+			value := receiver at: index.
+			^ receiver isBytes
+				ifTrue: [ self integerFor: value ]
+				ifFalse: [ value ] ].
+	primitive = #AtPut
+		ifTrue: [ index := arguments first value.
+			^ receiver at: index put: arguments second ].
+	primitive = #New
+		ifTrue: [ ^ system newSlotsOf: receiver spec instanceSide sized: 0].
+	primitive = #NewSized
+		ifTrue: [ size := arguments first value.
+			^ system newOf: receiver spec instanceSide sized: size ].
+	primitive = #NewBytes
+		ifTrue: [ size := arguments first value.
+			^ system newBytesOf: receiver spec instanceSide sized: size ].
+	primitive = #Equal
+		ifTrue: [ argument := arguments first.
+			^ self
+				booleanFor:
+					(receiver == argument
+						or: [ receiver isImmediate
+								and: [ argument isImmediate and: [ receiver value = argument value ] ] ]) ].
+	primitive = #SMIPlus
+		ifTrue: [ ^ self integerFor: receiver value + arguments first value ].
+	primitive = #SMIMinus
+		ifTrue: [ ^ self integerFor: receiver value - arguments first value ].
+	primitive = #SMITimes
+		ifTrue: [ ^ self integerFor: receiver value * arguments first value ].
+	primitive = #SMIIntDiv
+		ifTrue: [ ^ self integerFor: receiver value // arguments first value ].
+	primitive = #SMIIntQuot
+		ifTrue: [ ^ self integerFor: receiver value \\ arguments first value ].
+	primitive = #SMIBitAnd
+		ifTrue: [ ^ self integerFor: (receiver value bitAnd: arguments first value) ].
+	primitive = #SMIBitXor
+		ifTrue: [ ^ self integerFor: (receiver value bitXor: arguments first value) ].
+	primitive = #SMIBitShift
+		ifTrue:
+			[ ^ self integerFor: (receiver value bitShift: arguments first value) ].
+	primitive = #SMIHighBit
+		ifTrue: [ ^ self integerFor: receiver value highBit ].
+	primitive = #SMIGreaterThan
+		ifTrue: [ ^ self booleanFor: receiver value > arguments first value ].
+	primitive = #SMIGreaterEqualThan
+		ifTrue: [ ^ self booleanFor: receiver value >= arguments first value ].
+	primitive = #SMIEqual
+		ifTrue: [ ^ self booleanFor: receiver value = arguments first value ].
+	primitive = #SMINotEqual
+		ifTrue: [ ^ self booleanFor: receiver value !!= arguments first value ].
+	primitive = #SMISize
+		ifTrue: [ ^ self integerFor: receiver value bytesCount ].
+	primitive = #ClosureValue
+		ifTrue: [ ^ self evaluatePrimitiveClosureValue ].
+	primitive = #ClosureValueWithArgs
+		ifTrue: [ ^ self evaluatePrimitiveClosureValueWithArgs ].
+	primitive = #ClosureWhileTrue
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileTrue ].
+	primitive = #ClosureWhileFalse
+		ifTrue: [ ^ self evaluatePrimitiveClosureWhileFalse ].
+	primitive = #ClosureArgumentCount
+		ifTrue: [ ^ self evaluatePrimitiveClosureArgumentCount ].
+	primitive = #StringReplaceFromToWithStartingAt
+		ifTrue: [ receiver bytes
+				replaceFrom: arguments first value
+				to: arguments second value
+				with: arguments third bytes
+				startingAt: arguments fourth value.
+			^ receiver ].
+	primitive = #FloatNew
+		ifTrue: [ ^ system newBytesOf: receiver spec instanceSide sized: 8 ].
+	primitive = #PrimeFor
+		ifTrue: [ ^ self evaluatePrimitivePrimeFor ].
+	self assert: false
+! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:20:47'!
+evaluatePrimitiveClosureArgumentCount 
+	| frame block |
+	frame := system builderOf: receiver. 
+	block := frame blockOf: receiver.
+	^ self integerFor: block argumentCount! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:01'!
+evaluatePrimitiveClosureValue 
+
+	^ self evaluateClosure: receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:11'!
+evaluatePrimitiveClosureValueWithArgs 
+
+	^ self evaluateClosure: receiver withArgs: arguments! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:23'!
+evaluatePrimitiveClosureWhileFalse 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver.
+	returning
+		ifTrue: [ ^ returnValue ].
+	system booleanFrom: result ]
+		whileFalse: [ self evaluateClosure: arg.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:45'!
+evaluatePrimitiveClosureWhileTrue 
+	| result arg |
+	arg := arguments first.
+	[ result := self evaluateClosure: receiver. returning ifTrue: [^returnValue].
+	system booleanFrom: result ] whileTrue: [ self evaluateClosure: arg. returning ifTrue: [^returnValue]].
+	^ receiver! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:00'!
+evaluatePrimitiveHash 
+	| hash |
+	hash := receiver headerHash.
+	hash = 0 ifTrue: [ hash := system nextHash. receiver headerHash: hash ].
+	^ self integerFor: hash! !
+
+!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:16'!
+evaluatePrimitivePrimeFor 
+	| num result |
+	num := arguments first value.
+	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
+		detect: [ :i | i >= num ].
+	^ self integerFor: result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:27'!
+visitArgument: anSIdentifier 
+
+	^arguments at: anSIdentifier binding index! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:37'!
+visitAssignment: anSAssignment 
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:53'!
+visitBlock: anSBlock 
+	| block closure |
+	block := anSBlock isInlined
+		ifTrue: [ SCompiledBlock new ]
+		ifFalse: [ anSBlock compiledCode ].
+	closure := self captureClosure: anSBlock with: block.
+	blockAstcodes at: block put: anSBlock.
+	^ closure! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:04'!
+visitCascade: anSCascade 
+	| recv args selector last |
+	recv := anSCascade receiver acceptVisitor: self.
+	anSCascade messages
+		do: [ :msg | 
+			args := msg arguments collect: [ :code | code acceptVisitor: self ].
+			selector := system symbolFrom: msg selector.
+			last := system
+				send: selector
+				to: recv
+				with: args
+				super: anSCascade receiver isSuper ].
+	^ last! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:25'!
+visitIdentifier: anSIdentifier 
+
+	^anSIdentifier binding valueWithin: self! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:36'!
+visitLiteral: anSLiteral 
+
+	^ system transferLiteral: anSLiteral value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:49'!
+visitMessage: anSMessage 
+	| recv args selector message |
+	recv := anSMessage receiver acceptVisitor: self.
+	args := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := system symbolFrom: anSMessage selector.
+	self assert: selector !!== #error:.
+	^ system send: selector to: recv with: args super: anSMessage receiver isSuper! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:39'!
+visitMethod: anSMethod 
+	| primitive |
+	primitive := anSMethod primitive.
+	primitive 
+		ifNil: [	self visitScript: anSMethod] 
+		ifNotNil: [ self primitive: primitive ].
+	^ returning
+		ifTrue: [ returnValue ]
+		ifFalse: [ system popFrame.  receiver ]! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:58'!
+visitReturn: anSReturn 
+	| value home |
+	value := anSReturn expression acceptVisitor: self.
+	"it could happen that while we were going to return, the
+	expression contained a non-local return that was reached.
+	In that case we just keep unwinding without altering the
+	unwindLimit"
+	returning
+		ifTrue: [ ^ returnValue ].
+	home := anSReturn local
+		ifTrue: [ environment ]
+		ifFalse: [ environment at: 1 ].
+	system unwindUpTo: home returning: value! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:12'!
+visitScript: anSScript 
+	| result |
+	anSScript statements
+		do: [ :node | 
+			result := node acceptVisitor: self.
+			returning
+				ifTrue: [ ^ returnValue ] ].
+	^ result! !
+
+!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:26'!
+visitTemporary: anSIdentifier 
+
+	^temporaries at: anSIdentifier binding index! !
+
+!MethodEvaluator methodsFor: 'services' stamp: 'KenD 3/3/2021 11:11:55'!
+classBinding 
+
+	^method classBinding! !
+
+!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:28'!
+printOn: aStream 
+
+ 	self backtrace
+		do: [ :frame | 
+			frame do: [ :elem | elem printOn: aStream ]
+				   separatedBy: [ aStream nextPutAll: '. ' ].
+			aStream newLine ]
+! !
+
+!MethodEvaluator methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:22:52'!
+initialize 
+
+	blockAstcodes := IdentityDictionary new.
+	closures := IdentityDictionary new.
+	returning := false.
+	isBlock := false! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:10:54'!
+built: closure 
+
+	^closures includesKey: closure! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:23:38'!
+isHomeOf: env 
+
+	^ environment == env andNot: [ isBlock ]! !
+
+!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:24:00'!
+isUndermessage: selector 
+
+	^ Undermessages includes: selector! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:13:04'!
+dispatchUndermessage: message 
+	| selector recv args result |
+	selector := message selector.
+	recv := message receiver.
+	args := message arguments.
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:27:51'!
+staticSend: selector to: recv with: args 
+	| result |
+	selector == #_isSmallInteger
+		ifTrue: [ ^ self booleanFor: recv isImmediate ].
+	selector == #_isLarge
+		ifTrue: [ ^ self booleanFor: recv isSmall not ].
+	selector == #_smallSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ recv size ]
+						ifFalse: [ self error ]) ].
+	selector == #_largeSize
+		ifTrue: [ ^ self
+				integerFor:
+					(recv isSmall
+						ifTrue: [ self error ]
+						ifFalse: [ recv size ]) ].
+	selector == #_basicFlags
+		ifTrue: [ ^ self integerFor: recv headerFlags ].
+	selector == #_basicAt:
+		ifTrue: [ ^ recv slots at: args first value ].
+	selector == #_byteAt:
+		ifTrue: [ result := recv bytes at: args first value.
+			^ self integerFor: result ].
+	selector == #_basicHash
+		ifTrue: [ ^ self integerFor: recv headerHash ].
+	selector == #_basicHash:
+		ifTrue: [ recv headerHash: args first value.
+			^ recv ].
+	selector == #_smallIntegerByteAt:
+		ifTrue: [ result := recv value byteAt: args first value.
+			^ self integerFor: result ].
+	selector == #_bitShiftLeft:
+		ifTrue: [ result := recv value bitShift: args first value.
+			(result isKindOf: LargeInteger)
+				ifTrue: [ self halt ].
+			^ self integerFor: result ].
+	selector == #_uShortAtOffset:
+		ifTrue: [ ^ result := self
+				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
+	selector == #_uShortAtOffset:put:
+		ifTrue: [ result := args second.
+			recv bytes unsignedShortAt: args first value + 1 put: result value.
+			^ result ].
+	self assert: false! !
+
+!MethodEvaluator class methodsFor: 'class initialization' stamp: 'KenD 3/3/2021 11:07:59'!
+initialize 
+"
+	self initialize
+"
+
+	Undermessages := #(_basicAt: #_basicAt:put: 
+		_bitShiftLeft: _byteAt: #_byteAt:put: 
+		_smallSize _largeSize _isSmallInteger 
+		_basicHash _basicHash: 
+		_smallIntegerByteAt: 
+		_uShortAtOffset: _uShortAtOffset:put:)
+! !
 
 !EvaluationContext methodsFor: 'visiting' stamp: 'KenD 9/29/2022 14:34:52'!
 argumentAt: anInteger
@@ -19707,6 +16546,772 @@ new
 
 	^ self basicNew initialize.
 
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+=> aSymbol
+	^ specs at: aSymbol
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+createMethodDictionary: species sized: anInteger
+	| behavior md size dictionary |
+	behavior := species instanceBehavior.
+	md := self classNamed: #MethodDictionary.
+	size := kernel newInteger: anInteger.
+	dictionary := runtime sendLocal: #new: to: md with: {size}.
+	behavior methods: dictionary.
+	^ dictionary
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+fillClasses
+	| class meta |
+	specs allClasses
+		do: [ :def | 
+			class := self classFor: def.
+			meta := self metaclassFor: def metaclass.
+			self
+				fillSpecies: meta with: def metaclass;
+				fillSpecies: class with: def ]
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+fillSpecies: species with: classDefinition
+	| dictionary smethod transferred |
+	dictionary := self
+		createMethodDictionary: species
+		sized: classDefinition methods size.
+	classDefinition methods
+		do: [ :methodDefinition | 
+			smethod := runtime compile: methodDefinition.
+			transferred := kernel transferMethod: smethod in: species.
+			runtime
+				sendLocal: #basicAt:put:
+				to: dictionary
+				with:
+					{transferred selector.
+					transferred} ]
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+fillSymbols
+	| table namespaces cvars |
+	namespaces := (self classNamed: #Symbol) namespaces.
+	cvars := namespaces at: 1.
+	table := cvars at: 'SymbolTable'.
+	symbols
+		do: [ :sym | kernel runtime sendLocal: #add: to: table with: {sym} ]
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+formatOfClass: definition
+	| variable pointers  |
+	variable := definition isVariable
+		ifTrue: [ 16r2000 ]
+		ifFalse: [ 0 ].
+	pointers := definition isBytes
+		ifTrue: [ 0 ]
+		ifFalse: [ 16r4000 ].
+	^ variable | pointers | definition allInstVarNames size
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+formatOfMetaclass: definition
+	| variable pointers size |
+	variable := definition isVariable
+		ifTrue: [ 16r2000 ]
+		ifFalse: [ 0 ].
+	pointers := definition isBytes
+		ifTrue: [ 0 ]
+		ifFalse: [ 16r4000 ].
+	size := (self => #Class) allInstVarNames size
+		+ definition allInstVarNames size.
+	^ variable | pointers | size
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+initialize
+	classes := OrderedDictionary new.
+	metaclasses := OrderedDictionary new.
+	identityMap := IdentityDictionary new.
+	symbols := OrderedCollection new
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+initializeBehavior: anObjectMap
+	| class |
+	class := classes at: anObjectMap spec.
+	anObjectMap behavior: class instanceBehavior.
+
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+kernel: aPowertalkRingKernelModule
+	kernel := aPowertalkRingKernelModule.
+	nilObj := kernel nil.
+	trueObj := kernel true.
+	falseObj := kernel false.
+	
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+log: aString
+	Transcript
+		show: aString;
+		cr
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+metaclasses
+	^metaclasses
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+newArray: anArray
+	| array |
+	array := self newArraySized: anArray size.
+	anArray withIndexDo: [ :obj :i | array at: i put: obj ].
+	^ array
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+newBytesFrom: aByteObject
+	^self newBytes: aByteObject class name contents: aByteObject
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+newBytesOf: anRGBehavior sized: anInteger
+	| contents |
+	contents := ByteArray new: anInteger.
+	^ self newBytesOf: anRGBehavior contents: contents
+! !
+
+!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
+newSlots: classname
+	^self newSlots: classname sized: 0
+! !
+
+!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
+classNamed: aString
+	^self classFor: self => aString
+! !
+
+!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
+generateLMR
+	^(RingBasedLMRBootstrapper new image: self) convert
+! !
+
+!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
+initializeClass: definition superclass: superclass superbehavior: superbehavior
+	| class name flag ivars namespaces subclasses format |
+	class := classes at: definition.
+	class instanceBehavior next: superbehavior.
+	subclasses := definition subclasses
+		collect: [ :def | classes at: def ].
+	subclasses := kernel newArray: subclasses.
+	name := kernel newString: definition name.
+	flag := self formatOfClass: definition.
+	format := kernel newInteger: flag.
+	ivars := kernel newStringArray: definition instVarNames.
+	namespaces := kernel createClassNamespaces: definition.
+	class
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		namespaces: namespaces;
+		organization: nilObj;
+		name: name;
+		subclasses: subclasses;
+		module: module.
+	definition metaclass allInstVarNames
+		do: [ :ivar | class slotNamed: ivar put: nilObj ]
+! !
+
+!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
+initializeMetaclass: definition superclass: superclass
+	| meta ivars flags format superbehavior |
+	meta := metaclasses at: definition.
+	superbehavior := superclass instanceBehavior.
+	meta instanceBehavior next: superbehavior.
+	ivars := kernel newStringArray: definition instVarNames.
+	flags := kernel formatOfMetaclass: definition.
+	format := kernel newInteger: flags.
+	meta
+		superclass: superclass;
+		format: format;
+		instanceVariables: ivars;
+		organization: nilObj
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewSlots: classname
+	^ self basicNewSlots: classname sized: 0
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewSlots: classname in: spec
+	^ self basicNewSlots: classname in: spec sized: 0
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewSlots: classname in: spec sized: size
+	| species |
+	species := spec at: classname.
+	^self basicNewSlotsOf: species sized: size
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewSlots: classname sized: size
+	^ self basicNewSlots: classname in: specs sized: size
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewSlotsOf: anRGBehavior sized: size
+	^ SlotObjectMap new: anRGBehavior size: size withAll: nilObj
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+classFor: anRGBehavior
+	^classes at: anRGBehavior
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+classes
+	^ classes
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+createSpecies: definition
+	| class meta ibehavior cbehavior |
+	class := ClassMap new: definition metaclass size: 0 withAll: nilObj.
+	class instanceSpec: definition.
+	meta := MetaclassMap
+		new: (self => #Metaclass) metaclass
+		size: 0
+		withAll: nilObj.
+	meta instanceSpec: definition metaclass.
+	ibehavior := self basicNewSlots: #Behavior.
+	cbehavior := self basicNewSlots: #Behavior.
+	ibehavior class: class.
+	cbehavior class: meta.
+	meta
+		class: class;
+		instanceBehavior: cbehavior.
+	class instanceBehavior: ibehavior.
+	classes at: definition put: class.
+	metaclasses at: definition metaclass put: meta
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+false
+	^ falseObj
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+genesis
+	specs allClasses do: [ :def | self createSpecies: def ].
+	specs allClasses do: [ :def | self buildSpecies: def ].
+
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+metaclassFor: anRGBehavior
+	^ metaclasses at: anRGBehavior
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+newBytes: classname contents: aByteObject
+	^self basicNewBytes: classname contents: aByteObject
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+newBytesOf: anRGBehavior contents: aByteObject
+^ self basicNewBytesOf: anRGBehavior contents: aByteObject
+
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+newOf: anRGBehavior sized: anInteger
+	^ anRGBehavior isBytes
+		ifTrue: [ self newBytesOf: anRGBehavior sized: anInteger ]
+		ifFalse: [ self newSlotsOf: anRGBehavior sized: anInteger ]
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+newSlots: classname sized: size
+	"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+	"
+^ self basicNewSlots: classname sized: size.
+
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+newSlotsOf: anRGBehavior sized: size
+	"
+	Allocate an object of pointer type (as SlotObjectMap).
+	It is niled-out, and 	`size` is the size of indexed part (i.e.,
+	shall not include named slots)
+	"
+
+^ self basicNewSlotsOf: anRGBehavior sized: size
+
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+nil
+	^ nilObj
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+runtime
+	^ runtime
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:17:30'!
+specRoot
+
+	^ RootDirName ! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+speciesFor: anRGBehavior
+	^ anRGBehavior isMeta ifTrue: [metaclasses at: anRGBehavior] ifFalse: [ classes at: anRGBehavior ]
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+specs
+	^specs
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+specs: anRGEnvironment
+	specs := anRGEnvironment.
+
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+transferLiteral: anObject
+	| class transferred slot |
+	class := anObject class.
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	(class inheritsFrom: Integer)
+		ifTrue: [ ^ self newInteger: anObject ].
+	(class inheritsFrom: Symbol)
+		ifTrue: [ ^ self newSymbol: anObject ].
+	(class inheritsFrom: String)
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	transferred := self newSlots: anObject class name sized: anObject size.
+	anObject
+		withIndexDo: [ :elem :i | 
+			slot := self transferLiteralDeep: elem.
+			transferred at: i put: slot ].
+	^ transferred
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+transferLiteralDeep: anObject
+	| class transferred slot size ivar |
+	class := anObject class.
+	anObject isInteger
+		ifTrue: [ ^ self newInteger: anObject ].
+	anObject == nil
+		ifTrue: [ ^ nilObj ].
+	anObject == false
+		ifTrue: [ ^ falseObj ].
+	anObject == true
+		ifTrue: [ ^ trueObj ].
+	identityMap at: anObject ifPresent: [ :existing | ^ existing ].
+	(class == Symbol or: [ class inheritsFrom: Symbol ])
+		ifTrue: [ ^ self newSymbol: anObject ].
+	anObject isString
+		ifTrue: [ ^ self newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ self newBytesFrom: anObject ].
+	(class == Float or: [ class inheritsFrom: Float ])
+		ifTrue: [ ^ self newFloatFrom: anObject ].
+	(class inheritsFrom: ObjectMap)
+		ifTrue: [ ^ anObject ].
+	class == SCompiledBlock
+		ifTrue: [ ^ self transferBlock: anObject ].
+	class == Character ifTrue: [ ^self transferCharacter: anObject ].
+	size := class isVariable
+		ifTrue: [ anObject size ]
+		ifFalse: [ 0 ].
+	transferred := self newSlots: class name sized: size.
+	1 to: class instSize do: [ :i | 
+		ivar := anObject instVarAt: i.
+		slot := self transferLiteralDeep: ivar.
+		transferred slotAt: i put: slot ].
+	size > 0
+		ifTrue: [ anObject
+				withIndexDo: [ :elem :i | 
+					slot := self transferLiteralDeep: elem.
+					transferred at: i put: slot ] ].
+	^ transferred
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+true
+	^ trueObj
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+vmPrimitivesSpec
+	^vmPrimitivesSpec
+! !
+
+!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+vmPrimitivesSpec: anRGEnvironment
+	vmPrimitivesSpec := anRGEnvironment
+! !
+
+!PowertalkRingModule methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewBytes: classname contents: aByteObject
+	^ self basicNewBytesOf: self => classname contents: aByteObject
+! !
+
+!PowertalkRingModule methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
+basicNewBytesOf: anRGBehavior contents: aByteObject
+	^ ByteObjectMap new: anRGBehavior valued: aByteObject
+! !
+
+!PowertalkRingModule methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:52'!
+buildSpecies: spec
+	| sspec sclass sbehavior metasuper  |
+	sspec := spec superclass.
+	sspec
+		ifNil: [ sclass := nilObj.
+			sbehavior := nilObj.
+			metasuper := classes at: self => #Class ]
+		ifNotNil: [ sclass := classes at: sspec.
+			sbehavior := sclass instanceBehavior.
+			metasuper := metaclasses at: sspec metaclass ].
+	self
+		initializeClass: spec superclass: sclass superbehavior: sbehavior;
+		initializeMetaclass: spec metaclass superclass: metasuper
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+fromSpec
+	^ self new specs: self kernelSpec; vmPrimitivesSpec: self vmPrimitivesSpec
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:09'!
+kernelSpec
+
+	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: RootDirName ]
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+lmrBootstrapper
+	^ self new
+		specs: self lmrBootstrapperSpec
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:25'!
+lmrBootstrapperSpec
+
+	^ LMRBootstrapperSpec
+		ifNil: [ LMRBootstrapperSpec := self readSpec: #Bootstrapper at: RootDirName ]
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:24:02'!
+readSpec: specName at: path
+	|  repo spec |
+	repo := TonelRepository new directory: path asDirectoryEntry.
+	spec := repo asRingEnvironmentWith: { specName }.
+	^ spec clean
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
+resetSpecs
+	KernelSpec := nil.
+	VMPrimitivesSpec := nil.
+	LMRBootstrapperSpec := nil
+! !
+
+!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:26:47'!
+vmPrimitivesSpec
+
+	^ VMPrimitivesSpec
+		ifNil: [ VMPrimitivesSpec := self readSpec: #VM at: RootDirName, '/Kernel' ]
+! !
+
+!PowertalkRingModule class methodsFor: 'instance creation' stamp: 'KenD 1/30/2023 10:10:52'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!PowertalkRingModule class methodsFor: 'class initialization' stamp: 'KenD 2/12/2023 11:21:10'!
+initialize
+"
+	PowertalkRingModule initialize.
+"
+	RootDirName := 
+		'/home/pi/BeePowerLang/PowerLang/bootstrap/bee-dmr'.! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+createBootstrapNamespace
+	| namespace |
+	namespace := self newBootstrapDictionaryOf: self => #Namespace.
+	module namespace: namespace.
+	namespace
+		at: #WordSize put: wordSize;
+		at: #LastHash put: 1.
+	classes do: [ :c | namespace at: c name asSymbol put: c ]
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+createClassNamespaces: spec
+	| names cvars array |
+	names := spec classVariables.
+	names isEmpty
+		ifTrue: [ ^ self newArraySized: 0 ].
+	cvars := self newBootstrapDictionaryOf: self => #Namespace.
+	names do: [ :rgVar | cvars at: rgVar name put: nilObj ].
+	array := self newArraySized: 1.
+	array at: 1 put: cvars.
+	^ array
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+initialize
+	super initialize.
+	bootstrapDicts := OrderedCollection new.
+	kernel := self
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+newBootstrapDictionaryOf: anRGBehavior
+	"
+	Allocate a bootstrap dictionary object. Its contents is managed by the
+	mother image, but in the baby smalltalk can do	at: and at:put:, via primitives.
+	It is used to replace PoolDictionaries and Namespaces until the baby has been
+	initialized and is ready to become a fully working image. At that point, the
+	BootstrapDictionaries are converted to the corresponding types and discarded.
+	"
+
+	| result |
+	result := BootstrapDictionaryMap new
+		initializeAs: self => #BootstrapDictionary.
+	bootstrapDicts add: result.
+	^ result
+		realSpec: anRGBehavior;
+		image: self
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+newClosure: anInteger
+	^ ClosureMap new: closureSpec size: anInteger withAll: nilObj
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+newFloatFrom: aFloat
+	^ self newBytes: 'Float' contents: aFloat pointerDouble
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+newSymbol: aSymbol
+	| new |
+	identityMap at: aSymbol ifPresent: [ :s | ^ s ].
+	new := SymbolMap new: symbolSpec symbol: aSymbol.
+	symbols add: new.
+	^ identityMap at: aSymbol put: new
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+specs: anRGEnvironment
+	super specs: anRGEnvironment.
+	closureSpec := self => #Closure.
+	arraySpec := self => #Array.
+	smiSpec := self => #SmallInteger.
+	symbolSpec := self => #Symbol
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+transferBlock: anSCompiledBlock
+	| transferred method format |
+	identityMap at: anSCompiledBlock
+		ifPresent: [ :b | ^ b ].
+	transferred := self newSlots: #CompiledBlock.
+	identityMap at: anSCompiledBlock put: transferred.
+	method := identityMap at: anSCompiledBlock method.
+	format := self newInteger: anSCompiledBlock format.
+	transferred
+		method: method;
+		format: format;
+		optimizedCode: nilObj.
+	^ transferred
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+transferCharacter: aCharacter
+	| class bytechars value transferred int |
+	identityMap at: aCharacter ifPresent: [ :c | ^ c ].
+	class := self classNamed: #Character.
+	bytechars := class namespaces slots first at: #ByteCharacters.
+	value := aCharacter asInteger.
+	transferred := bytechars slots
+		at: value + 1
+		ifAbsent: [ int := self newInteger: value.
+			(self newSlots: 'Character') value: int ].
+	identityMap at: aCharacter put: transferred.
+	^ transferred
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+wordSize
+	^ wordSize
+! !
+
+!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
+wordSize: anInteger
+	wordSize := anInteger.
+	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
+	minSMI := maxSMI negated - 1
+
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newArraySized: anInteger
+^self basicNewSlotsOf: arraySpec sized: anInteger.
+
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newAssociation: anAssociation
+	| assoc key value |
+	assoc := self newSlots: 'Association'.
+	key := self transferLiteralDeep: anAssociation key.
+	value := self transferLiteralDeep: anAssociation value.
+	^ assoc
+		key: key;
+		value: value; yourself
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newInteger: anInteger
+	anInteger > maxSMI
+		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
+	anInteger < minSMI
+		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
+	^ SmallintObjectMap new: smiSpec valued: anInteger
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newLargeNegativeInteger: anInteger
+	| size bytes byte |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := ByteArray new: size withAll: 16rFF.
+	1 to: anInteger bytesCount do: [ :i | 
+		byte := anInteger byteAt: i.
+		byte > 0
+			ifTrue: [ byte := 256 - byte ].
+		bytes at: i put: byte ].
+	^ self newBytes: #LargeNegativeInteger contents: bytes
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newLargePositiveInteger: anInteger
+	| size bytes |
+	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
+	bytes := anInteger asByteArrayOfSize: size.
+	^ self newBytes: #LargePositiveInteger contents: bytes reversed
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newString: aString
+	| bytes |
+	bytes := aString copyWith: Character null.
+	^self newBytes: 'String' contents: bytes
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+newStringArray: strings
+	| array bytes |
+	array := self newSlots: 'Array' sized: strings size.
+	strings
+		withIndexDo: [ :s :i |
+			bytes := self newString: s.
+			array at: i put: bytes ].
+	^ array
+! !
+
+!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
+transferMethod: anSCompiledMethod in: species
+	| size classname transferred astcodes selector format literal tliteral |
+	(identityMap includesKey: anSCompiledMethod)
+		ifTrue: [ self ASSERT: false ].
+	size := anSCompiledMethod size.
+	classname := anSCompiledMethod isCallback
+		ifTrue: [ 'CallbackMethod' ]
+		ifFalse: [ 'CompiledMethod' ].
+	transferred := self newSlots: classname sized: size.
+	identityMap at: anSCompiledMethod put: transferred.
+	astcodes := self transferLiteralDeep: anSCompiledMethod astcodes.
+	selector := self newSymbol: anSCompiledMethod selector.
+	format := self newInteger: anSCompiledMethod format.
+	transferred
+		astcodes: astcodes;
+		class: species;
+		selector: selector;
+		format: format;
+		source: nilObj.
+	1 to: size do: [ :i | 
+		literal := anSCompiledMethod at: i.
+		tliteral := self transferLiteralDeep: literal.
+		transferred at: i put: tliteral ].
+	^ transferred
+! !
+
+!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
+bootstrap
+	runtime
+		sendLocal: #bootstrap to: module;
+		removeBootstrapDictionaryOverrides
+! !
+
+!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
+bootstrapDictionaries
+	^bootstrapDicts
+! !
+
+!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
+builder
+	^	RingBasedLMRBootstrapper new image: self.
+! !
+
+!PowertalkRingImage methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:54'!
+genesis
+	"
+	Create the world (should take less than 6 days). This is named 'genesis' to remind us those who had
+	done this (and much more) before us. Namely SELF people. I (JV) would like to use this opportunity and point you to
+	
+	https://github.com/russellallen/self/blob/2bcf2c4cab23f52bf68ac4f617020e748699a548/vm/src/any/memory/universe.cpp#L79
+	"
+
+	nilObj := self basicNewSlots: #UndefinedObject.
+	trueObj := self basicNewSlots: #True.
+	falseObj := self basicNewSlots: #False.
+	module := self basicNewSlots: #KernelModule.
+	super genesis.
+	self createBootstrapNamespace.
+	runtime := PowertalkRingRuntime new.
+	runtime image: self
+! !
+
+!PowertalkRingImage methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:54'!
+kernel
+	^module
 ! !
 
 !Bridge methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
@@ -33520,1434 +31125,6 @@ acceptVisitor: visitor
 	^visitor visitMethod: self
 ! !
 
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:08:51'!
-argumentAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^arguments at: index ].
-	env := self environmentFor: anInteger.
-	^env at: index.! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:05'!
-arguments 
-
-	^arguments! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:16'!
-arguments: aCollection 
-
-	arguments := aCollection! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:24'!
-associationValueAt: anInteger 
-
-	^ (method at: anInteger) value! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:09:34'!
-associationValueAt: anInteger put: value 
-	| association |
-	association := (method at: anInteger).
-	^association value: value! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:01'!
-beBlock 
-	
-	isBlock := true! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:11'!
-blockAstcodesOf: anSCompiledBlock 
-
-	^blockAstcodes at: anSCompiledBlock! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:23'!
-blockOf: anObjectMap 
-
-	^closures at: anObjectMap! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:10:36'!
-booleanFor: aBoolean 
-
-	^ aBoolean
-		ifTrue: [ system true ]
-		ifFalse: [ system false ]! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:11:10'!
-captureClosure: anSBlock with: block 
-	| closure s i type env arg |
-	closure := system newClosure: block environmentCount.
-	closures at: closure put: block.
-	s := anSBlock capturedVariables readStream.
-	i := 1.
-	[ s atEnd ]
-		whileFalse: [ type := s next.
-			type = Self
-				ifTrue: [ closure at: i put: receiver ].
-			type = Environment
-				ifTrue: [ closure at: i put: environment ].
-			type = EnvironmentValue
-				ifTrue: [ env := environment at: s next.
-					closure at: i put: env ].
-			type = LocalArgument
-				ifTrue: [ arg := arguments at: s next.
-					closure at: i put: arg ].
-			i := i + 1 ].
-	^ closure! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:08'!
-closures 
-
-	^closures! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:12:20'!
-constPoolValueAt: anInteger 
-
-	^ method at: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:13:59'!
-environment: anObjectMap 
-
-	environment := anObjectMap! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:14:24'!
-environmentFor: anInteger 
-"
-	-1: inlined argument.
-	 0: current env.
- 	>0: index of env in current env. 
-"
-	anInteger = 0
-		ifTrue: [ ^ environment ].
-	anInteger = -1
-		ifTrue: [ ^ temporaries ].
-	^ environment at: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:22:34'!
-falseLiteral 
-
-	^ system false! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:06'!
-instanceVarAt: anInteger 
-
-	^ receiver slotAt: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:17'!
-instanceVarAt: index put: aValue 
-
-	^ receiver slotAt: index put: aValue! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:23:28'!
-integerFor: anInteger 
-
-	^ system newInteger: anInteger! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:11'!
-literal: anObject 
-
-	^anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:22'!
-method 
-
-	^method! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:36'!
-method: anSCompiledMethod 
-
-	method := anSCompiledMethod.
-	temporaries := Array new: anSCompiledMethod tempCount! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:48'!
-nilLiteral 
-
-	^ system nil! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:24:57'!
-parent 
-
-	^parent! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:05'!
-parent: anInterpreter 
-
-	parent := anInterpreter! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:25:29'!
-primitive: primitive 
-	| result |
-	result := self evaluatePrimitive: primitive.
-	returning ifTrue: [ ^self ].
-	system popFrame.
-	self returning: result! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:26:59'!
-receiver 
-
-	^receiver! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:10'!
-receiver: anObject 
-
-	receiver := anObject.
-	returnValue := anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:27:24'!
-returning: anObject 
-
-	returning := true.
-	returnValue := anObject! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:15'!
-system: anEmulator 
-
-	system := anEmulator! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:27'!
-temporaryAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^ temporaries at: index ].
-	env := self environmentFor: anInteger.
-	^ env at: index! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:40'!
-temporaryAt: index in: anInteger put: aValue 
-	| env |
-	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
-	env := self environmentFor: anInteger.
-	^ env at: index put: aValue
-! !
-
-!MethodEvaluator methodsFor: 'accessing' stamp: 'KenD 3/3/2021 11:28:55'!
-trueLiteral 
-
-	^system true! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:09:45'!
-backtrace 
-	| bt next |
-	bt := OrderedCollection new.
-	next := self.
-	[ next notNil ]
-		whileTrue: [ bt
-				add:
-					{next method signature.
-					next receiver} , next arguments.
-			next := next parent ].
-	^ bt! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:14:55'!
-evaluate 
-
-	system pushFrame: self.
-	^ self visitMethod: method sexpressions! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:18'!
-evaluateBlock: sblock args: anArray 
-	" as this block is inlined, we didn't capture parent environment.
-	Thus, we don't know if environment is a closure or a method home.
-	We unwind to that environment and clean up later if it was a closure. "
-
-	anArray
-		with: sblock inlinedArgs
-		do: [ :arg :i | temporaries at: i put: arg ].
-	^ self visitScript: sblock! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:36'!
-evaluateBlock: sblock args: anArray closure: closure 
-	" inlined blocks can only return to their real parent environment.
-	Here we complete the non-local return process for them, unwinding
-	to the real home environment "
-
-	temporaries := Array new: sblock tempCount.
-	environment := closure.
-	arguments := anArray.
-	^ self visitScript: sblock! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:15:51'!
-evaluateClosure: aPClosure 
-
-	^self evaluateClosure: aPClosure withArgs: {}! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:45'!
-evaluateClosure: aPClosure with: anObject 
-
-	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:16:58'!
-evaluateClosure: aPClosure with: anObject with: anotherObject 
-
-	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:17:12'!
-evaluateClosure: closure withArgs: anArray 
-	| frame block sblock evaluator result |
-	frame := system builderOf: closure.
-	block := frame blockOf: closure.
-	sblock := frame blockAstcodesOf: block.
-	evaluator := frame copy beBlock.
-	system pushFrame: evaluator.
-	result := sblock isInlined
-		ifTrue: [ evaluator evaluateBlock: sblock args: anArray ]
-		ifFalse: [ evaluator evaluateBlock: sblock args: anArray closure: closure ].
-	returning ifFalse: [ system popFrame ].
-	^result! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:19:55'!
-evaluatePrimitive: primitive 
-	| index size argument value |
-	primitive = #Behavior
-		ifTrue: [ ^ receiver isImmediate
-				ifTrue: [ system smallintBehavior ]
-				ifFalse: [ receiver behavior ] ].
-	primitive = #UnderSize
-		ifTrue: [ ^ self integerFor: receiver size ].
-	primitive = #Size
-		ifTrue: [ ^ self integerFor: receiver arrayedSize ].
-	primitive = #At
-		ifTrue: [ index := arguments first value.
-			value := receiver at: index.
-			^ receiver isBytes
-				ifTrue: [ self integerFor: value ]
-				ifFalse: [ value ] ].
-	primitive = #AtPut
-		ifTrue: [ index := arguments first value.
-			^ receiver at: index put: arguments second ].
-	primitive = #New
-		ifTrue: [ ^ system newSlotsOf: receiver spec instanceSide sized: 0].
-	primitive = #NewSized
-		ifTrue: [ size := arguments first value.
-			^ system newOf: receiver spec instanceSide sized: size ].
-	primitive = #NewBytes
-		ifTrue: [ size := arguments first value.
-			^ system newBytesOf: receiver spec instanceSide sized: size ].
-	primitive = #Equal
-		ifTrue: [ argument := arguments first.
-			^ self
-				booleanFor:
-					(receiver == argument
-						or: [ receiver isImmediate
-								and: [ argument isImmediate and: [ receiver value = argument value ] ] ]) ].
-	primitive = #SMIPlus
-		ifTrue: [ ^ self integerFor: receiver value + arguments first value ].
-	primitive = #SMIMinus
-		ifTrue: [ ^ self integerFor: receiver value - arguments first value ].
-	primitive = #SMITimes
-		ifTrue: [ ^ self integerFor: receiver value * arguments first value ].
-	primitive = #SMIIntDiv
-		ifTrue: [ ^ self integerFor: receiver value // arguments first value ].
-	primitive = #SMIIntQuot
-		ifTrue: [ ^ self integerFor: receiver value \\ arguments first value ].
-	primitive = #SMIBitAnd
-		ifTrue: [ ^ self integerFor: (receiver value bitAnd: arguments first value) ].
-	primitive = #SMIBitXor
-		ifTrue: [ ^ self integerFor: (receiver value bitXor: arguments first value) ].
-	primitive = #SMIBitShift
-		ifTrue:
-			[ ^ self integerFor: (receiver value bitShift: arguments first value) ].
-	primitive = #SMIHighBit
-		ifTrue: [ ^ self integerFor: receiver value highBit ].
-	primitive = #SMIGreaterThan
-		ifTrue: [ ^ self booleanFor: receiver value > arguments first value ].
-	primitive = #SMIGreaterEqualThan
-		ifTrue: [ ^ self booleanFor: receiver value >= arguments first value ].
-	primitive = #SMIEqual
-		ifTrue: [ ^ self booleanFor: receiver value = arguments first value ].
-	primitive = #SMINotEqual
-		ifTrue: [ ^ self booleanFor: receiver value !!= arguments first value ].
-	primitive = #SMISize
-		ifTrue: [ ^ self integerFor: receiver value bytesCount ].
-	primitive = #ClosureValue
-		ifTrue: [ ^ self evaluatePrimitiveClosureValue ].
-	primitive = #ClosureValueWithArgs
-		ifTrue: [ ^ self evaluatePrimitiveClosureValueWithArgs ].
-	primitive = #ClosureWhileTrue
-		ifTrue: [ ^ self evaluatePrimitiveClosureWhileTrue ].
-	primitive = #ClosureWhileFalse
-		ifTrue: [ ^ self evaluatePrimitiveClosureWhileFalse ].
-	primitive = #ClosureArgumentCount
-		ifTrue: [ ^ self evaluatePrimitiveClosureArgumentCount ].
-	primitive = #StringReplaceFromToWithStartingAt
-		ifTrue: [ receiver bytes
-				replaceFrom: arguments first value
-				to: arguments second value
-				with: arguments third bytes
-				startingAt: arguments fourth value.
-			^ receiver ].
-	primitive = #FloatNew
-		ifTrue: [ ^ system newBytesOf: receiver spec instanceSide sized: 8 ].
-	primitive = #PrimeFor
-		ifTrue: [ ^ self evaluatePrimitivePrimeFor ].
-	self assert: false
-! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:20:47'!
-evaluatePrimitiveClosureArgumentCount 
-	| frame block |
-	frame := system builderOf: receiver. 
-	block := frame blockOf: receiver.
-	^ self integerFor: block argumentCount! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:01'!
-evaluatePrimitiveClosureValue 
-
-	^ self evaluateClosure: receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:11'!
-evaluatePrimitiveClosureValueWithArgs 
-
-	^ self evaluateClosure: receiver withArgs: arguments! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:23'!
-evaluatePrimitiveClosureWhileFalse 
-	| result arg |
-	arg := arguments first.
-	[ result := self evaluateClosure: receiver.
-	returning
-		ifTrue: [ ^ returnValue ].
-	system booleanFrom: result ]
-		whileFalse: [ self evaluateClosure: arg.
-			returning
-				ifTrue: [ ^ returnValue ] ].
-	^ receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:21:45'!
-evaluatePrimitiveClosureWhileTrue 
-	| result arg |
-	arg := arguments first.
-	[ result := self evaluateClosure: receiver. returning ifTrue: [^returnValue].
-	system booleanFrom: result ] whileTrue: [ self evaluateClosure: arg. returning ifTrue: [^returnValue]].
-	^ receiver! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:00'!
-evaluatePrimitiveHash 
-	| hash |
-	hash := receiver headerHash.
-	hash = 0 ifTrue: [ hash := system nextHash. receiver headerHash: hash ].
-	^ self integerFor: hash! !
-
-!MethodEvaluator methodsFor: 'evaluating' stamp: 'KenD 3/3/2021 11:22:16'!
-evaluatePrimitivePrimeFor 
-	| num result |
-	num := arguments first value.
-	result := #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 269 359 479 641 857 1151 1549 2069 2237 2423 2617 2797 2999 3167 3359 3539 3727 3911 4441 4787 5119 5471 5801 6143 6521 6827 7177 7517 7853 8783 9601 10243 10867 11549 12239 12919 13679 14293 15013 15731 17569 19051 20443 21767 23159 24611 25847 27397 28571 30047 31397 35771 38201 40841 43973 46633 48989 51631 54371 57349 60139 62969)
-		detect: [ :i | i >= num ].
-	^ self integerFor: result! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:27'!
-visitArgument: anSIdentifier 
-
-	^arguments at: anSIdentifier binding index! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:37'!
-visitAssignment: anSAssignment 
-	| result |
-	result := anSAssignment expression acceptVisitor: self.
-	anSAssignment assignees
-		do: [ :identifier | identifier binding assign: result within: self ].
-	^result! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:29:53'!
-visitBlock: anSBlock 
-	| block closure |
-	block := anSBlock isInlined
-		ifTrue: [ SCompiledBlock new ]
-		ifFalse: [ anSBlock compiledCode ].
-	closure := self captureClosure: anSBlock with: block.
-	blockAstcodes at: block put: anSBlock.
-	^ closure! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:04'!
-visitCascade: anSCascade 
-	| recv args selector last |
-	recv := anSCascade receiver acceptVisitor: self.
-	anSCascade messages
-		do: [ :msg | 
-			args := msg arguments collect: [ :code | code acceptVisitor: self ].
-			selector := system symbolFrom: msg selector.
-			last := system
-				send: selector
-				to: recv
-				with: args
-				super: anSCascade receiver isSuper ].
-	^ last! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:25'!
-visitIdentifier: anSIdentifier 
-
-	^anSIdentifier binding valueWithin: self! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:36'!
-visitLiteral: anSLiteral 
-
-	^ system transferLiteral: anSLiteral value! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:30:49'!
-visitMessage: anSMessage 
-	| recv args selector message |
-	recv := anSMessage receiver acceptVisitor: self.
-	args := anSMessage arguments
-		collect: [ :code | code acceptVisitor: self ].
-	selector := system symbolFrom: anSMessage selector.
-	self assert: selector !!== #error:.
-	^ system send: selector to: recv with: args super: anSMessage receiver isSuper! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:39'!
-visitMethod: anSMethod 
-	| primitive |
-	primitive := anSMethod primitive.
-	primitive 
-		ifNil: [	self visitScript: anSMethod] 
-		ifNotNil: [ self primitive: primitive ].
-	^ returning
-		ifTrue: [ returnValue ]
-		ifFalse: [ system popFrame.  receiver ]! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:31:58'!
-visitReturn: anSReturn 
-	| value home |
-	value := anSReturn expression acceptVisitor: self.
-	"it could happen that while we were going to return, the
-	expression contained a non-local return that was reached.
-	In that case we just keep unwinding without altering the
-	unwindLimit"
-	returning
-		ifTrue: [ ^ returnValue ].
-	home := anSReturn local
-		ifTrue: [ environment ]
-		ifFalse: [ environment at: 1 ].
-	system unwindUpTo: home returning: value! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:12'!
-visitScript: anSScript 
-	| result |
-	anSScript statements
-		do: [ :node | 
-			result := node acceptVisitor: self.
-			returning
-				ifTrue: [ ^ returnValue ] ].
-	^ result! !
-
-!MethodEvaluator methodsFor: 'visiting' stamp: 'KenD 3/3/2021 11:32:26'!
-visitTemporary: anSIdentifier 
-
-	^temporaries at: anSIdentifier binding index! !
-
-!MethodEvaluator methodsFor: 'services' stamp: 'KenD 3/3/2021 11:11:55'!
-classBinding 
-
-	^method classBinding! !
-
-!MethodEvaluator methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:44:28'!
-printOn: aStream 
-
- 	self backtrace
-		do: [ :frame | 
-			frame do: [ :elem | elem printOn: aStream ]
-				   separatedBy: [ aStream nextPutAll: '. ' ].
-			aStream newLine ]
-! !
-
-!MethodEvaluator methodsFor: 'initialization' stamp: 'KenD 3/3/2021 11:22:52'!
-initialize 
-
-	blockAstcodes := IdentityDictionary new.
-	closures := IdentityDictionary new.
-	returning := false.
-	isBlock := false! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:10:54'!
-built: closure 
-
-	^closures includesKey: closure! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:23:38'!
-isHomeOf: env 
-
-	^ environment == env andNot: [ isBlock ]! !
-
-!MethodEvaluator methodsFor: 'testing' stamp: 'KenD 3/3/2021 11:24:00'!
-isUndermessage: selector 
-
-	^ Undermessages includes: selector! !
-
-!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:13:04'!
-dispatchUndermessage: message 
-	| selector recv args result |
-	selector := message selector.
-	recv := message receiver.
-	args := message arguments.
-	selector == #_isSmallInteger
-		ifTrue: [ ^ self booleanFor: recv isImmediate ].
-	selector == #_isLarge
-		ifTrue: [ ^ self booleanFor: recv isSmall not ].
-	selector == #_smallSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ recv size ]
-						ifFalse: [ self error ]) ].
-	selector == #_largeSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ self error ]
-						ifFalse: [ recv size ]) ].
-	selector == #_basicFlags
-		ifTrue: [ ^ self integerFor: recv headerFlags ].
-	selector == #_basicAt:
-		ifTrue: [ ^ recv slots at: args first value ].
-	selector == #_byteAt:
-		ifTrue: [ result := recv bytes at: args first value.
-			^ self integerFor: result ].
-	selector == #_basicHash
-		ifTrue: [ ^ self integerFor: recv headerHash ].
-	selector == #_basicHash:
-		ifTrue: [ recv headerHash: args first value.
-			^ recv ].
-	selector == #_smallIntegerByteAt:
-		ifTrue: [ result := recv value byteAt: args first value.
-			^ self integerFor: result ].
-	selector == #_bitShiftLeft:
-		ifTrue: [ result := recv value bitShift: args first value.
-			(result isKindOf: LargeInteger)
-				ifTrue: [ self halt ].
-			^ self integerFor: result ].
-	selector == #_uShortAtOffset:
-		ifTrue: [ ^ result := self
-				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
-	selector == #_uShortAtOffset:put:
-		ifTrue: [ result := args second.
-			recv bytes unsignedShortAt: args first value + 1 put: result value.
-			^ result ].
-	self assert: false! !
-
-!MethodEvaluator methodsFor: 'dispatch' stamp: 'KenD 3/3/2021 11:27:51'!
-staticSend: selector to: recv with: args 
-	| result |
-	selector == #_isSmallInteger
-		ifTrue: [ ^ self booleanFor: recv isImmediate ].
-	selector == #_isLarge
-		ifTrue: [ ^ self booleanFor: recv isSmall not ].
-	selector == #_smallSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ recv size ]
-						ifFalse: [ self error ]) ].
-	selector == #_largeSize
-		ifTrue: [ ^ self
-				integerFor:
-					(recv isSmall
-						ifTrue: [ self error ]
-						ifFalse: [ recv size ]) ].
-	selector == #_basicFlags
-		ifTrue: [ ^ self integerFor: recv headerFlags ].
-	selector == #_basicAt:
-		ifTrue: [ ^ recv slots at: args first value ].
-	selector == #_byteAt:
-		ifTrue: [ result := recv bytes at: args first value.
-			^ self integerFor: result ].
-	selector == #_basicHash
-		ifTrue: [ ^ self integerFor: recv headerHash ].
-	selector == #_basicHash:
-		ifTrue: [ recv headerHash: args first value.
-			^ recv ].
-	selector == #_smallIntegerByteAt:
-		ifTrue: [ result := recv value byteAt: args first value.
-			^ self integerFor: result ].
-	selector == #_bitShiftLeft:
-		ifTrue: [ result := recv value bitShift: args first value.
-			(result isKindOf: LargeInteger)
-				ifTrue: [ self halt ].
-			^ self integerFor: result ].
-	selector == #_uShortAtOffset:
-		ifTrue: [ ^ result := self
-				integerFor: (recv bytes unsignedShortAt: args first value + 1) ].
-	selector == #_uShortAtOffset:put:
-		ifTrue: [ result := args second.
-			recv bytes unsignedShortAt: args first value + 1 put: result value.
-			^ result ].
-	self assert: false! !
-
-!MethodEvaluator class methodsFor: 'class initialization' stamp: 'KenD 3/3/2021 11:07:59'!
-initialize 
-"
-	self initialize
-"
-
-	Undermessages := #(_basicAt: #_basicAt:put: 
-		_bitShiftLeft: _byteAt: #_byteAt:put: 
-		_smallSize _largeSize _isSmallInteger 
-		_basicHash _basicHash: 
-		_smallIntegerByteAt: 
-		_uShortAtOffset: _uShortAtOffset:put:)
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-=> aSymbol
-	^ specs at: aSymbol
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-createMethodDictionary: species sized: anInteger
-	| behavior md size dictionary |
-	behavior := species instanceBehavior.
-	md := self classNamed: #MethodDictionary.
-	size := kernel newInteger: anInteger.
-	dictionary := runtime sendLocal: #new: to: md with: {size}.
-	behavior methods: dictionary.
-	^ dictionary
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-fillClasses
-	| class meta |
-	specs allClasses
-		do: [ :def | 
-			class := self classFor: def.
-			meta := self metaclassFor: def metaclass.
-			self
-				fillSpecies: meta with: def metaclass;
-				fillSpecies: class with: def ]
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-fillSpecies: species with: classDefinition
-	| dictionary smethod transferred |
-	dictionary := self
-		createMethodDictionary: species
-		sized: classDefinition methods size.
-	classDefinition methods
-		do: [ :methodDefinition | 
-			smethod := runtime compile: methodDefinition.
-			transferred := kernel transferMethod: smethod in: species.
-			runtime
-				sendLocal: #basicAt:put:
-				to: dictionary
-				with:
-					{transferred selector.
-					transferred} ]
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-fillSymbols
-	| table namespaces cvars |
-	namespaces := (self classNamed: #Symbol) namespaces.
-	cvars := namespaces at: 1.
-	table := cvars at: 'SymbolTable'.
-	symbols
-		do: [ :sym | kernel runtime sendLocal: #add: to: table with: {sym} ]
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-formatOfClass: definition
-	| variable pointers  |
-	variable := definition isVariable
-		ifTrue: [ 16r2000 ]
-		ifFalse: [ 0 ].
-	pointers := definition isBytes
-		ifTrue: [ 0 ]
-		ifFalse: [ 16r4000 ].
-	^ variable | pointers | definition allInstVarNames size
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-formatOfMetaclass: definition
-	| variable pointers size |
-	variable := definition isVariable
-		ifTrue: [ 16r2000 ]
-		ifFalse: [ 0 ].
-	pointers := definition isBytes
-		ifTrue: [ 0 ]
-		ifFalse: [ 16r4000 ].
-	size := (self => #Class) allInstVarNames size
-		+ definition allInstVarNames size.
-	^ variable | pointers | size
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initialize
-	classes := OrderedDictionary new.
-	metaclasses := OrderedDictionary new.
-	identityMap := IdentityDictionary new.
-	symbols := OrderedCollection new
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initializeBehavior: anObjectMap
-	| class |
-	class := classes at: anObjectMap spec.
-	anObjectMap behavior: class instanceBehavior.
-
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-kernel: aPowertalkRingKernelModule
-	kernel := aPowertalkRingKernelModule.
-	nilObj := kernel nil.
-	trueObj := kernel true.
-	falseObj := kernel false.
-	
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-log: aString
-	Transcript
-		show: aString;
-		cr
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-metaclasses
-	^metaclasses
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-newArray: anArray
-	| array |
-	array := self newArraySized: anArray size.
-	anArray withIndexDo: [ :obj :i | array at: i put: obj ].
-	^ array
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-newBytesFrom: aByteObject
-	^self newBytes: aByteObject class name contents: aByteObject
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-newBytesOf: anRGBehavior sized: anInteger
-	| contents |
-	contents := ByteArray new: anInteger.
-	^ self newBytesOf: anRGBehavior contents: contents
-! !
-
-!PowertalkRingModule methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-newSlots: classname
-	^self newSlots: classname sized: 0
-! !
-
-!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
-classNamed: aString
-	^self classFor: self => aString
-! !
-
-!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
-generateLMR
-	^(RingBasedLMRBootstrapper new image: self) convert
-! !
-
-!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
-initializeClass: definition superclass: superclass superbehavior: superbehavior
-	| class name flag ivars namespaces subclasses format |
-	class := classes at: definition.
-	class instanceBehavior next: superbehavior.
-	subclasses := definition subclasses
-		collect: [ :def | classes at: def ].
-	subclasses := kernel newArray: subclasses.
-	name := kernel newString: definition name.
-	flag := self formatOfClass: definition.
-	format := kernel newInteger: flag.
-	ivars := kernel newStringArray: definition instVarNames.
-	namespaces := kernel createClassNamespaces: definition.
-	class
-		superclass: superclass;
-		format: format;
-		instanceVariables: ivars;
-		namespaces: namespaces;
-		organization: nilObj;
-		name: name;
-		subclasses: subclasses;
-		module: module.
-	definition metaclass allInstVarNames
-		do: [ :ivar | class slotNamed: ivar put: nilObj ]
-! !
-
-!PowertalkRingModule methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:52'!
-initializeMetaclass: definition superclass: superclass
-	| meta ivars flags format superbehavior |
-	meta := metaclasses at: definition.
-	superbehavior := superclass instanceBehavior.
-	meta instanceBehavior next: superbehavior.
-	ivars := kernel newStringArray: definition instVarNames.
-	flags := kernel formatOfMetaclass: definition.
-	format := kernel newInteger: flags.
-	meta
-		superclass: superclass;
-		format: format;
-		instanceVariables: ivars;
-		organization: nilObj
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewSlots: classname
-	^ self basicNewSlots: classname sized: 0
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewSlots: classname in: spec
-	^ self basicNewSlots: classname in: spec sized: 0
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewSlots: classname in: spec sized: size
-	| species |
-	species := spec at: classname.
-	^self basicNewSlotsOf: species sized: size
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewSlots: classname sized: size
-	^ self basicNewSlots: classname in: specs sized: size
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewSlotsOf: anRGBehavior sized: size
-	^ SlotObjectMap new: anRGBehavior size: size withAll: nilObj
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-classFor: anRGBehavior
-	^classes at: anRGBehavior
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-classes
-	^ classes
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-createSpecies: definition
-	| class meta ibehavior cbehavior |
-	class := ClassMap new: definition metaclass size: 0 withAll: nilObj.
-	class instanceSpec: definition.
-	meta := MetaclassMap
-		new: (self => #Metaclass) metaclass
-		size: 0
-		withAll: nilObj.
-	meta instanceSpec: definition metaclass.
-	ibehavior := self basicNewSlots: #Behavior.
-	cbehavior := self basicNewSlots: #Behavior.
-	ibehavior class: class.
-	cbehavior class: meta.
-	meta
-		class: class;
-		instanceBehavior: cbehavior.
-	class instanceBehavior: ibehavior.
-	classes at: definition put: class.
-	metaclasses at: definition metaclass put: meta
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-false
-	^ falseObj
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-genesis
-	specs allClasses do: [ :def | self createSpecies: def ].
-	specs allClasses do: [ :def | self buildSpecies: def ].
-
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-metaclassFor: anRGBehavior
-	^ metaclasses at: anRGBehavior
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-newBytes: classname contents: aByteObject
-	^self basicNewBytes: classname contents: aByteObject
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-newBytesOf: anRGBehavior contents: aByteObject
-^ self basicNewBytesOf: anRGBehavior contents: aByteObject
-
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-newOf: anRGBehavior sized: anInteger
-	^ anRGBehavior isBytes
-		ifTrue: [ self newBytesOf: anRGBehavior sized: anInteger ]
-		ifFalse: [ self newSlotsOf: anRGBehavior sized: anInteger ]
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-newSlots: classname sized: size
-	"
-	Allocate an object of pointer type (as SlotObjectMap).
-	It is niled-out, and 	`size` is the size of indexed part (i.e.,
-	shall not include named slots)
-	"
-^ self basicNewSlots: classname sized: size.
-
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-newSlotsOf: anRGBehavior sized: size
-	"
-	Allocate an object of pointer type (as SlotObjectMap).
-	It is niled-out, and 	`size` is the size of indexed part (i.e.,
-	shall not include named slots)
-	"
-
-^ self basicNewSlotsOf: anRGBehavior sized: size
-
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-nil
-	^ nilObj
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-runtime
-	^ runtime
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:17:30'!
-specRoot
-
-	^ RootDirName ! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-speciesFor: anRGBehavior
-	^ anRGBehavior isMeta ifTrue: [metaclasses at: anRGBehavior] ifFalse: [ classes at: anRGBehavior ]
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-specs
-	^specs
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-specs: anRGEnvironment
-	specs := anRGEnvironment.
-
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-transferLiteral: anObject
-	| class transferred slot |
-	class := anObject class.
-	(class inheritsFrom: ObjectMap)
-		ifTrue: [ ^ anObject ].
-	(class inheritsFrom: Integer)
-		ifTrue: [ ^ self newInteger: anObject ].
-	(class inheritsFrom: Symbol)
-		ifTrue: [ ^ self newSymbol: anObject ].
-	(class inheritsFrom: String)
-		ifTrue: [ ^ self newString: anObject ].
-	class = ByteArray
-		ifTrue: [ ^ self newBytesFrom: anObject ].
-	transferred := self newSlots: anObject class name sized: anObject size.
-	anObject
-		withIndexDo: [ :elem :i | 
-			slot := self transferLiteralDeep: elem.
-			transferred at: i put: slot ].
-	^ transferred
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-transferLiteralDeep: anObject
-	| class transferred slot size ivar |
-	class := anObject class.
-	anObject isInteger
-		ifTrue: [ ^ self newInteger: anObject ].
-	anObject == nil
-		ifTrue: [ ^ nilObj ].
-	anObject == false
-		ifTrue: [ ^ falseObj ].
-	anObject == true
-		ifTrue: [ ^ trueObj ].
-	identityMap at: anObject ifPresent: [ :existing | ^ existing ].
-	(class == Symbol or: [ class inheritsFrom: Symbol ])
-		ifTrue: [ ^ self newSymbol: anObject ].
-	anObject isString
-		ifTrue: [ ^ self newString: anObject ].
-	class = ByteArray
-		ifTrue: [ ^ self newBytesFrom: anObject ].
-	(class == Float or: [ class inheritsFrom: Float ])
-		ifTrue: [ ^ self newFloatFrom: anObject ].
-	(class inheritsFrom: ObjectMap)
-		ifTrue: [ ^ anObject ].
-	class == SCompiledBlock
-		ifTrue: [ ^ self transferBlock: anObject ].
-	class == Character ifTrue: [ ^self transferCharacter: anObject ].
-	size := class isVariable
-		ifTrue: [ anObject size ]
-		ifFalse: [ 0 ].
-	transferred := self newSlots: class name sized: size.
-	1 to: class instSize do: [ :i | 
-		ivar := anObject instVarAt: i.
-		slot := self transferLiteralDeep: ivar.
-		transferred slotAt: i put: slot ].
-	size > 0
-		ifTrue: [ anObject
-				withIndexDo: [ :elem :i | 
-					slot := self transferLiteralDeep: elem.
-					transferred at: i put: slot ] ].
-	^ transferred
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-true
-	^ trueObj
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-vmPrimitivesSpec
-	^vmPrimitivesSpec
-! !
-
-!PowertalkRingModule methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-vmPrimitivesSpec: anRGEnvironment
-	vmPrimitivesSpec := anRGEnvironment
-! !
-
-!PowertalkRingModule methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewBytes: classname contents: aByteObject
-	^ self basicNewBytesOf: self => classname contents: aByteObject
-! !
-
-!PowertalkRingModule methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-basicNewBytesOf: anRGBehavior contents: aByteObject
-	^ ByteObjectMap new: anRGBehavior valued: aByteObject
-! !
-
-!PowertalkRingModule methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:52'!
-buildSpecies: spec
-	| sspec sclass sbehavior metasuper  |
-	sspec := spec superclass.
-	sspec
-		ifNil: [ sclass := nilObj.
-			sbehavior := nilObj.
-			metasuper := classes at: self => #Class ]
-		ifNotNil: [ sclass := classes at: sspec.
-			sbehavior := sclass instanceBehavior.
-			metasuper := metaclasses at: sspec metaclass ].
-	self
-		initializeClass: spec superclass: sclass superbehavior: sbehavior;
-		initializeMetaclass: spec metaclass superclass: metasuper
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-fromSpec
-	^ self new specs: self kernelSpec; vmPrimitivesSpec: self vmPrimitivesSpec
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:09'!
-kernelSpec
-
-	^ KernelSpec ifNil: [ KernelSpec := self readSpec: #Kernel at: RootDirName ]
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-lmrBootstrapper
-	^ self new
-		specs: self lmrBootstrapperSpec
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:18:25'!
-lmrBootstrapperSpec
-
-	^ LMRBootstrapperSpec
-		ifNil: [ LMRBootstrapperSpec := self readSpec: #Bootstrapper at: RootDirName ]
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:24:02'!
-readSpec: specName at: path
-	|  repo spec |
-	repo := TonelRepository new directory: path asDirectoryEntry.
-	spec := repo asRingEnvironmentWith: { specName }.
-	^ spec clean
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:52'!
-resetSpecs
-	KernelSpec := nil.
-	VMPrimitivesSpec := nil.
-	LMRBootstrapperSpec := nil
-! !
-
-!PowertalkRingModule class methodsFor: 'accessing' stamp: 'KenD 2/12/2023 11:26:47'!
-vmPrimitivesSpec
-
-	^ VMPrimitivesSpec
-		ifNil: [ VMPrimitivesSpec := self readSpec: #VM at: RootDirName, '/Kernel' ]
-! !
-
-!PowertalkRingModule class methodsFor: 'instance creation' stamp: 'KenD 1/30/2023 10:10:52'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!PowertalkRingModule class methodsFor: 'class initialization' stamp: 'KenD 2/12/2023 11:21:10'!
-initialize
-"
-	PowertalkRingModule initialize.
-"
-	RootDirName := 
-		'/home/pi/BeePowerLang/PowerLang/bootstrap/bee-dmr'.! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-createBootstrapNamespace
-	| namespace |
-	namespace := self newBootstrapDictionaryOf: self => #Namespace.
-	module namespace: namespace.
-	namespace
-		at: #WordSize put: wordSize;
-		at: #LastHash put: 1.
-	classes do: [ :c | namespace at: c name asSymbol put: c ]
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-createClassNamespaces: spec
-	| names cvars array |
-	names := spec classVariables.
-	names isEmpty
-		ifTrue: [ ^ self newArraySized: 0 ].
-	cvars := self newBootstrapDictionaryOf: self => #Namespace.
-	names do: [ :rgVar | cvars at: rgVar name put: nilObj ].
-	array := self newArraySized: 1.
-	array at: 1 put: cvars.
-	^ array
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-initialize
-	super initialize.
-	bootstrapDicts := OrderedCollection new.
-	kernel := self
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-newBootstrapDictionaryOf: anRGBehavior
-	"
-	Allocate a bootstrap dictionary object. Its contents is managed by the
-	mother image, but in the baby smalltalk can do	at: and at:put:, via primitives.
-	It is used to replace PoolDictionaries and Namespaces until the baby has been
-	initialized and is ready to become a fully working image. At that point, the
-	BootstrapDictionaries are converted to the corresponding types and discarded.
-	"
-
-	| result |
-	result := BootstrapDictionaryMap new
-		initializeAs: self => #BootstrapDictionary.
-	bootstrapDicts add: result.
-	^ result
-		realSpec: anRGBehavior;
-		image: self
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-newClosure: anInteger
-	^ ClosureMap new: closureSpec size: anInteger withAll: nilObj
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-newFloatFrom: aFloat
-	^ self newBytes: 'Float' contents: aFloat pointerDouble
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-newSymbol: aSymbol
-	| new |
-	identityMap at: aSymbol ifPresent: [ :s | ^ s ].
-	new := SymbolMap new: symbolSpec symbol: aSymbol.
-	symbols add: new.
-	^ identityMap at: aSymbol put: new
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-specs: anRGEnvironment
-	super specs: anRGEnvironment.
-	closureSpec := self => #Closure.
-	arraySpec := self => #Array.
-	smiSpec := self => #SmallInteger.
-	symbolSpec := self => #Symbol
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-transferBlock: anSCompiledBlock
-	| transferred method format |
-	identityMap at: anSCompiledBlock
-		ifPresent: [ :b | ^ b ].
-	transferred := self newSlots: #CompiledBlock.
-	identityMap at: anSCompiledBlock put: transferred.
-	method := identityMap at: anSCompiledBlock method.
-	format := self newInteger: anSCompiledBlock format.
-	transferred
-		method: method;
-		format: format;
-		optimizedCode: nilObj.
-	^ transferred
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-transferCharacter: aCharacter
-	| class bytechars value transferred int |
-	identityMap at: aCharacter ifPresent: [ :c | ^ c ].
-	class := self classNamed: #Character.
-	bytechars := class namespaces slots first at: #ByteCharacters.
-	value := aCharacter asInteger.
-	transferred := bytechars slots
-		at: value + 1
-		ifAbsent: [ int := self newInteger: value.
-			(self newSlots: 'Character') value: int ].
-	identityMap at: aCharacter put: transferred.
-	^ transferred
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-wordSize
-	^ wordSize
-! !
-
-!PowertalkRingImage methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:54'!
-wordSize: anInteger
-	wordSize := anInteger.
-	maxSMI := (1 bitShift: wordSize * 8 - 2) - 1.
-	minSMI := maxSMI negated - 1
-
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newArraySized: anInteger
-^self basicNewSlotsOf: arraySpec sized: anInteger.
-
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newAssociation: anAssociation
-	| assoc key value |
-	assoc := self newSlots: 'Association'.
-	key := self transferLiteralDeep: anAssociation key.
-	value := self transferLiteralDeep: anAssociation value.
-	^ assoc
-		key: key;
-		value: value; yourself
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newInteger: anInteger
-	anInteger > maxSMI
-		ifTrue: [ ^ self newLargePositiveInteger: anInteger ].
-	anInteger < minSMI
-		ifTrue: [ ^ self newLargeNegativeInteger: anInteger ].
-	^ SmallintObjectMap new: smiSpec valued: anInteger
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newLargeNegativeInteger: anInteger
-	| size bytes byte |
-	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
-	bytes := ByteArray new: size withAll: 16rFF.
-	1 to: anInteger bytesCount do: [ :i | 
-		byte := anInteger byteAt: i.
-		byte > 0
-			ifTrue: [ byte := 256 - byte ].
-		bytes at: i put: byte ].
-	^ self newBytes: #LargeNegativeInteger contents: bytes
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newLargePositiveInteger: anInteger
-	| size bytes |
-	size := (anInteger bytesCount alignedTo: 2) max: wordSize.
-	bytes := anInteger asByteArrayOfSize: size.
-	^ self newBytes: #LargePositiveInteger contents: bytes reversed
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newString: aString
-	| bytes |
-	bytes := aString copyWith: Character null.
-	^self newBytes: 'String' contents: bytes
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-newStringArray: strings
-	| array bytes |
-	array := self newSlots: 'Array' sized: strings size.
-	strings
-		withIndexDo: [ :s :i |
-			bytes := self newString: s.
-			array at: i put: bytes ].
-	^ array
-! !
-
-!PowertalkRingImage methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-transferMethod: anSCompiledMethod in: species
-	| size classname transferred astcodes selector format literal tliteral |
-	(identityMap includesKey: anSCompiledMethod)
-		ifTrue: [ self ASSERT: false ].
-	size := anSCompiledMethod size.
-	classname := anSCompiledMethod isCallback
-		ifTrue: [ 'CallbackMethod' ]
-		ifFalse: [ 'CompiledMethod' ].
-	transferred := self newSlots: classname sized: size.
-	identityMap at: anSCompiledMethod put: transferred.
-	astcodes := self transferLiteralDeep: anSCompiledMethod astcodes.
-	selector := self newSymbol: anSCompiledMethod selector.
-	format := self newInteger: anSCompiledMethod format.
-	transferred
-		astcodes: astcodes;
-		class: species;
-		selector: selector;
-		format: format;
-		source: nilObj.
-	1 to: size do: [ :i | 
-		literal := anSCompiledMethod at: i.
-		tliteral := self transferLiteralDeep: literal.
-		transferred at: i put: tliteral ].
-	^ transferred
-! !
-
-!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
-bootstrap
-	runtime
-		sendLocal: #bootstrap to: module;
-		removeBootstrapDictionaryOverrides
-! !
-
-!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
-bootstrapDictionaries
-	^bootstrapDicts
-! !
-
-!PowertalkRingImage methodsFor: 'own services' stamp: 'KenD 1/30/2023 10:10:54'!
-builder
-	^	RingBasedLMRBootstrapper new image: self.
-! !
-
-!PowertalkRingImage methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:54'!
-genesis
-	"
-	Create the world (should take less than 6 days). This is named 'genesis' to remind us those who had
-	done this (and much more) before us. Namely SELF people. I (JV) would like to use this opportunity and point you to
-	
-	https://github.com/russellallen/self/blob/2bcf2c4cab23f52bf68ac4f617020e748699a548/vm/src/any/memory/universe.cpp#L79
-	"
-
-	nilObj := self basicNewSlots: #UndefinedObject.
-	trueObj := self basicNewSlots: #True.
-	falseObj := self basicNewSlots: #False.
-	module := self basicNewSlots: #KernelModule.
-	super genesis.
-	self createBootstrapNamespace.
-	runtime := PowertalkRingRuntime new.
-	runtime image: self
-! !
-
-!PowertalkRingImage methodsFor: 'building' stamp: 'KenD 1/30/2023 10:10:54'!
-kernel
-	^module
-! !
-
 !MessageCollector methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:48'!
 subject
 	^ subject
@@ -34994,47 +31171,3907 @@ messages
 
 ! !
 
-!ObjectHeaderMasks class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initialize
-		IsBytes := 16r1.
-		IsArrayed := 16r2.
-		IsNamed := 16r4.
-		IsSmall := 16r80
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01a
+	| map |
+	
+	map := ObjectMap new: (kernel at: #Object).
+	self assert: map class == SlotObjectMap.
+	self assert: map size == 0.
+	
+! !
+
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01b
+	| undefined fraction null frac |
+	undefined := kernel at: #UndefinedObject.
+	fraction := kernel at: #Fraction.
+	
+	null := ObjectMap new: undefined.
+	frac := ObjectMap new: fraction.
+	self assert: frac class == SlotObjectMap.
+	self assert: frac size == 2.
+	
+	frac slotAt: 1 put: null.
+	frac slotAt: 2 put: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	self assert: (frac slotNamed: 'numerator') == null.
+	self assert: (frac slotNamed: 'denominator') == frac.
+	
+	self assert: (frac numerator) == null.
+	self assert: (frac denominator) == frac.
+
+	frac slotNamed: 'numerator' put: frac.
+	frac slotNamed: 'denominator' put: null.
+	self assert: (frac slotAt: 1) == frac.
+	self assert: (frac slotAt: 2) == null.
+	self assert: (frac slotNamed: 'numerator') == frac.
+	self assert: (frac slotNamed: 'denominator') == null.
+	
+	frac numerator: null.
+	frac denominator: frac.
+	self assert: (frac slotAt: 1) == null.
+	self assert: (frac slotAt: 2) == frac.
+	
+	self should: [ frac slotAt: 0 ] raise: Error.
+	self should: [ frac slotAt: 3 ] raise: Error.
+	self should: [ frac slotAt: 0 put: null ] raise: Error.
+	self should: [ frac slotAt: 3 put: null ] raise: Error.
+	self should: [ frac slotAt: 1 put: 1 ] raise: Error.
+	
+	self should: [ frac slotNamed: 'bogus' ] raise: Error.
+	self should: [ frac slotNamed: 'bogus' put: null] raise: Error.
+
+	
+	
+	
+	
+	
+	
+! !
+
+!ObjectMapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:48'!
+test_01c
+	| undefined array null indexed |
+	
+	undefined := kernel at: #UndefinedObject.
+	array := kernel at: #Array.
+	null := ObjectMap new: undefined.
+	indexed := ObjectMap new: array size: 2.
+	self assert: indexed class == SlotObjectMap.
+	self assert: indexed size == 2.
+	
+	indexed at: 1 put: null.
+	indexed at: 2 put: indexed.
+	self assert: (indexed at: 1) == null.
+	self assert: (indexed at: 2) == indexed.
+	
+	indexed at: 1 put: indexed.
+	indexed at: 2 put: null.
+	self assert: (indexed at: 1) == indexed.
+	self assert: (indexed at: 2) == null.
+	
+	self should: [ indexed at: 0 ] raise: Error.
+	self should: [ indexed at: 3 ] raise: Error.
+	self should: [ indexed at: 0 put: null ] raise: Error.
+	self should: [ indexed at: 3 put: null ] raise: Error.
+	self should: [ indexed at: 1 put: 1] raise: Error.
+	
+	
+	
+	
+	
+	
+! !
+
+!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+setUp
+	super setUp.
+	kernel := PowertalkRingImage kernelSpec
+! !
+
+!ObjectMapTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+tearDown
+	super tearDown.
+	kernel := nil
+! !
+
+!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	bootstrapper := PowertalkLMRTestResource new
+		setUp;
+		bootstrapper.
+	runtime := bootstrapper result.
+! !
+
+!PowertalkLMRBootstrapTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test010GenenerateKernelSegment
+	| output module |
+	output := bootstrapper outputDirectory / 'bootstrap' / 'Kernel.is'.
+	output exists
+		ifTrue: [ output deleteFile ].
+	module := bootstrapper loadBootstrapModule.
+	"runtime sendLocal: #writeModules to: module.
+	self assert: output exists"
+! !
+
+!PowertalkLMRBootstrapTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
+defaultTimeLimit
+	^ 1000 seconds
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:30'!
+==> anObject
+	| class |
+	class := anObject class.
+	anObject isInteger
+		ifTrue: [ ^ runtime newInteger: anObject ].
+	anObject == nil
+		ifTrue: [ ^ runtime nil ].
+	anObject == false
+		ifTrue: [ ^ runtime false ].
+	anObject == true
+		ifTrue: [ ^ runtime true ].
+	(class == Symbol or: [ class inheritsFrom: Symbol ])
+		ifTrue: [ ^ runtime symbolFromLocal: anObject ].
+	anObject isString
+		ifTrue: [ ^ runtime newString: anObject ].
+	class = ByteArray
+		ifTrue: [ ^ runtime newBytesFrom: anObject ].
+	self assert: false
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+assertNoLeftoverFrames
+	self assert: runtime interpreter hasFinished
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+compile: aString in: classname during: aBlock
+	| class behavior md selector method |
+	class := self globalNamed: classname.
+	behavior := runtime speciesInstanceBehavior: class.
+	md := runtime behaviorMethodDictionary: behavior.
+	method := SCompiler new compile: aString.
+	self assert: method notNil.
+	method := self convertMethod: method.
+	selector := method slotAt: 5.
+	runtime
+		sendLocal: #at:put:
+		to: md
+		with:
+			{selector.
+			method}
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/31/2023 09:44:47'!
+convert: anObject with: map
+	map at: anObject ifPresent: [:mapped | ^mapped ].
+	anObject ifNil: [ ^runtime nil ].
+	anObject isInteger
+		ifTrue: [ ^ runtime newInteger: anObject ].
+	anObject isSymbol
+		ifTrue: [ ^ runtime addSymbol: anObject ].
+	anObject isString
+		ifTrue: [ ^ runtime newString: anObject ].
+	anObject class = ByteArray
+		ifTrue: [ ^ runtime newByteArray: anObject ].
+	anObject class = SCompiledBlock ifTrue: [ ^self convertBlock: anObject with: map ].
+	self assert: false
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+convertBlock: anSCompiledBlock with: map
+	| class result instsize slot |
+	class := self globalNamed: #CompiledBlock.
+	result := runtime newSlots: class size: 0.
+	map at: anSCompiledBlock put: result.
+	instsize := anSCompiledBlock class instSize.
+	1 to: instsize do: [ :i | 
+		slot := anSCompiledBlock instVarAt: i.
+		result slotAt: i put: (self convert: slot with: map) ].
+	^ result
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+convertMethod: anSCompiledMethod
+	| class result map instsize slot |
+	class := self globalNamed: #CompiledMethod.
+	result := runtime newSlots: class size: anSCompiledMethod size.
+	map := IdentityDictionary new.
+	map at: anSCompiledMethod put: result.
+	instsize := anSCompiledMethod class instSize.
+	1 to: instsize do: [ :i | 
+		slot := anSCompiledMethod instVarAt: i.
+		result slotAt: i put: (self convert: slot with: map) ].
+	1 to: anSCompiledMethod size
+		do: [ :i | 
+			slot := anSCompiledMethod at: i.
+			result slotAt: i + instsize put: (self convert: slot with: map) ].
+	^ result
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+globalNamed: aSymbol
+	| symbol namespace assoc |
+	symbol := runtime symbolFromLocal: aSymbol.
+	namespace := runtime moduleNamespace: runtime kernel.
+	assoc := runtime lookupAssociationFor: symbol in: namespace.
+	^runtime loadAssociationValue: assoc
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test100yourself
+	| result |
+	result := runtime sendLocal: #yourself to: runtime nil.
+	self assert: result equals: runtime nil
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test110compute1plus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #+ to: one with: {one}.
+	self assert: result equals: self ==> 2; assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test111compute1minus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #- to: one with: {one}.
+	self assert: result equals: self ==> 0
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test112compute3times4
+	| result |
+	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
+	self assert: result equals: self ==> 12
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test113compute20quotient5
+	|  result |
+
+	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
+	self assert: result equals: self ==>4
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test130sendIfTrueToFalse
+	| result |
+	self
+		compile: 'foo ^false ifTrue: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test131sendIfFalseToTrue
+	| result |
+	self
+		compile: 'foo ^true ifFalse: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test132sendIfTrueToTrue
+	| result |
+	self
+		compile: 'foo ^true ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test140evaluateClosure
+	| result |
+	self
+		compile: 'foo ^[5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test141evaluateClosureFrames
+	| result |
+	self
+		compile: 'foo [5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test150sendWhileTrue
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := true.
+			[a] whileTrue: [a := false].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: runtime false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test151sendToDo
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			3 to: 4 do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152compute20dividedBy5
+	| result |
+	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
+	self 
+		assert: result equals: self ==> 4;
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test161evaluateClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test162evaluateClosureWithArgsAndTemps
+	| result |
+	self
+		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test163evaluateClosureWithArgsAndMethodTemps
+	| result |
+	self
+		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test164evaluateClosureWithArgsAndMultipleTemps
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				s := 3.
+				^[:a | | t | 
+					t := a.
+					t := t + s.
+					t] value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test165evaluateClosureNonLocalReturn
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				[s := 3. ^s] value.
+				s := 4.
+				^s'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test166evaluateNestedClosure
+	| result |
+	self
+		compile: 'foo ^[ [ 7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test167evaluateNestedClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureWithTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a |
+			a := 2.
+			^[ | b |
+				b := 3.
+				[ | c |
+				c := 4.
+				a + b + c ] value] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 9 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test169evaluateInlinedClosureInClosureWithMethodTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a result |
+			a := 3.
+			[ true ifTrue: [ result := a + 4 ] ] value.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test180evaluateToDo
+	| result |
+	self
+		compile:
+			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test190evaluateStringConcatenation
+	| result |
+	self
+		compile: 'foo ^''ABC'', ''DE'''
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self assert: result asLocalString equals: 'ABCDE' ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test200createDictionary
+	| class d |
+	class := self globalNamed: #Dictionary.
+	d := runtime sendLocal: #new to: class with: {}.
+	self
+		assert: d localClassName equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test210addAssociationToDictionary
+	| class symbol assoc d |
+	class := self globalNamed: #Dictionary.
+	symbol := runtime addSymbol: #foo.
+	assoc := runtime sendLocal: #-> to: symbol with: { runtime nil }.
+	d := runtime sendLocal: #new to: class with: {}.
+	runtime sendLocal: #add: to: d with: {assoc}.
+	self
+		assert: d localClassName equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test300smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := 16r1000 printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: 16r1000 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test301smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := 4611686018427387903 printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: 4611686018427387903 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test302smallIntegerPrintString
+	| result |
+	self
+		compile: 'foo | result | result := -4. ^result printString'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString
+					equals: -4 printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test310smiFallbackToLNI
+	| result |
+	self
+		compile:
+			'foo | result | result := (16r100000000 * -16r100000000) printString. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			self
+				assert: result isBytes;
+				assert: result value asLocalString
+					equals: (16r100000000 * -16r100000000) printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test310smiFallbackToLPI
+	| result expected |
+	self
+		compile:
+			'foo | result | result := 1. 18 timesRepeat: [result := result * 10]. ^result printString'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: runtime true.
+			expected := 1.
+			18 timesRepeat: [ expected := expected * 10 ].
+			self
+				assert: result isBytes;
+				assert: result value asLocalString equals: expected printString ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkLMRTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	runtime := PowertalkLMRTestResource current runtime
+! !
+
+!PowertalkLMRTest class methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:47'!
+resources
+	^ Array with: PowertalkLMRTestResource
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test010nil
+	| nilObj class classname |
+	nilObj := image nil.
+	class := image classNamed: #UndefinedObject.
+	classname := class slotNamed: #name.
+	self
+		assert: nilObj size equals: 0;
+		assert: nilObj classname equals: 'UndefinedObject';
+		assert: classname asString 
+			equals: 'UndefinedObject'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test020true
+	| trueObj class classname |
+	trueObj := image true.
+	class := image classNamed: #True.
+	classname := class slotNamed: #name.
+	self
+		assert: trueObj size equals: 0;
+		assert: trueObj classname equals: 'True';
+		assert: classname asString equals: 'True'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test030false
+	| falseObj class classname |
+	falseObj := image false.
+	class := image classNamed: #False.
+	classname := class slotNamed: #name.
+	self
+		assert: falseObj size equals: 0;
+		assert: falseObj classname equals: 'False';
+		assert: classname asString equals: 'False'
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test040superclasses
+	|  proto object collection class metaproto |
+	proto := image classNamed: #ProtoObject.
+	object := image classNamed: #Object.
+	collection := image classNamed: #Collection.
+	class := image classNamed: #Class.
+	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	self
+		assert: proto superclass equals: image nil;
+		assert: object superclass equals: proto;
+		assert: collection superclass equals: object;
+		assert: metaproto superclass equals: class
+! !
+
+!PowertalkRingImageTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test050metaclasses
+	| proto metaproto |
+	proto := image classNamed: #ProtoObject.
+	metaproto := image metaclassFor: (image => #ProtoObject) metaclass.
+	self assert: metaproto instanceSide equals: proto
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+==> anObject
+	^image transferLiteralDeep: anObject
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+assertNoLeftoverFrames
+	self assert: runtime interpreter hasFinished
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+compile: aString in: classname during: aBlock
+	| class selector method |
+	class := image => classname.
+	selector := class compile: aString notifying: nil.
+	method := class methodNamed: selector.
+	self assert: method notNil.
+	aBlock 		ensure: [ class removeLocalMethod: method ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test100yourself
+	| result |
+	result := runtime sendLocal: #yourself to: image nil.
+	self assert: result equals: image nil
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test110compute1plus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #+ to: one with: {one}.
+	self assert: result equals: self ==> 2; assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test111compute1minus1
+	| one result |
+	one := self ==> 1.
+	result := runtime sendLocal: #- to: one with: {one}.
+	self assert: result equals: self ==> 0
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test112compute3times4
+	| result |
+	result := runtime sendLocal: #* to: self ==> 3 with: {self ==> 4}.
+	self assert: result equals: self ==> 12
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test113compute20quotient5
+	|  result |
+
+	result := runtime sendLocal: #// to: self ==>20 with: {self ==>5}.
+	self assert: result equals: self ==>4
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test120sendSizeMinusOne
+	| result |
+	self
+		compile: 'foo ^#abc _size - 1'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test121sendCascade
+	| result |
+	self
+		compile: 'foo ^#abc yourself; size'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test130sendIfTrueToFalse
+	| result |
+	self
+		compile: 'foo ^false ifTrue: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image nil ].
+		
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test131sendIfFalseToTrue
+	| result |
+	self
+		compile: 'foo ^true ifFalse: [#failed]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test132sendIfTrueToTrue
+	| result |
+	self
+		compile: 'foo ^true ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test133sendIfTrueToTrueAndTrue
+	| result |
+	self
+		compile: 'foo ^(true and: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test134sendIfTrueToTrueAndFalse
+	| result |
+	self
+		compile: 'foo ^(true and: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test135sendIfTrueToFalseAndTrue
+	| result |
+	self
+		compile: 'foo ^(false and: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test136sendIfTrueToFalseOrTrue
+	| result |
+	self
+		compile: 'foo ^(false or: [true]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test137sendIfTrueToFalseOrFalse
+	| result |
+	self
+		compile: 'foo ^(false or: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> nil ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test138sendIfTrueToTrueOrFalse
+	| result |
+	self
+		compile: 'foo ^(true or: [false]) ifTrue: [5]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [3] ifNotNil: [4]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilToNotNil
+	| result |
+	self
+		compile: 'foo ^#abc ifNil: [3] ifNotNil: [4]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilWithArg
+	| result |
+	self
+		compile: 'foo ^5 ifNil: [3] ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilIfNotNilWithArgToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [3] ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilToNil
+	| result |
+	self
+		compile: 'foo ^nil ifNil: [self]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNilToNotNil
+	| result |
+	self
+		compile: 'foo ^false ifNil: [self]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test139sendIfNotNilWithArg
+	| result |
+	self
+		compile: 'foo ^5 ifNotNil: [:a | a]'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test140evaluateClosure
+	| result |
+	self
+		compile: 'foo ^[5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test141evaluateClosureFrames
+	| result |
+	self
+		compile: 'foo [5] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test142evaluateClosureReceiver
+	| result |
+	self
+		compile: 'foo [self] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image true ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test150sendWhileTrue
+	| result |
+	self
+		compile: 'foo
+			 | a |
+			a := true.
+			[a] whileTrue: [a := false].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: image false ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test151sendToDo
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			3 to: 4 do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152compute20dividedBy5
+	| result |
+	result := runtime sendLocal: #/ to: self ==> 20 with: {(self ==> 5)}.
+	self 
+		assert: result equals: self ==> 4;
+		assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test152sendToDoWithInterval
+	| result |
+	self
+		compile:
+			'foo
+			 | a |
+			a := 0.
+			(3 to: 4) do: [:i | a := a + i].
+			^a'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test161evaluateClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a :b | a + b] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test162evaluateClosureWithArgsAndTemps
+	| result |
+	self
+		compile: 'foo ^[:a :b | | t | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test163evaluateClosureWithArgsAndMethodTemps
+	| result |
+	self
+		compile: 'foo | t | ^[:a :b | t := a + b. t] value: 3 value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test164evaluateClosureWithArgsAndMultipleTemps
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				s := 3.
+				^[:a | | t | 
+					t := a.
+					t := t + s.
+					t] value: 4'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test165evaluateClosureNonLocalReturn
+	| result |
+	self
+		compile:
+			'foo 
+				| s |
+				[s := 3. ^s] value.
+				s := 4.
+				^s'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 3 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test166evaluateNestedClosure
+	| result |
+	self
+		compile: 'foo ^[ [ 7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test167evaluateNestedClosureWithArgs
+	| result |
+	self
+		compile: 'foo ^[:a | [:b | a + b ] value: 4 ] value: 3'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureNonLocalReturn
+	| result |
+	self
+		compile: 'foo [ [ ^7 ] value ] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test168evaluateNestedClosureWithTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a |
+			a := 2.
+			^[ | b |
+				b := 3.
+				[ | c |
+				c := 4.
+				a + b + c ] value] value'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 9 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test169evaluateInlinedClosureInClosureWithMethodTemps
+	| result |
+	self
+		compile:
+			'foo 
+			| a result |
+			a := 3.
+			[ true ifTrue: [ result := a + 4 ] ] value.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7 ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test170evaluateNonInlinedClosureIfTrue
+	| result |
+	self
+		compile:
+			'foo 
+			| a result closure |
+			a := 3.
+			closure := [ a + 4 ].
+			result := true ifTrue: closure.
+			^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result equals: self ==> 7;  assertNoLeftoverFrames ]
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test180evaluateToDo
+	| result |
+	self
+		compile:
+			'foo | result | result := 0. 1 to: 5 do: [:i | result := result + i]. ^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test181evaluateIntervalSize
+	| result |
+	self
+		compile:
+			'foo ^(1 to: 2) size'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals:  2 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test185evaluateArrayDo
+	| result |
+	self
+		compile:
+			'foo | result a |
+				result := 0.
+				a := Array new: 5.
+				a at: 1 put: 1; at: 2 put: 2; at: 3 put: 3; at: 4 put: 4; at: 5 put: 5.
+				a do: [:i | result := result + i].
+				^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test186evaluateOrderedCollectionDo
+	| result |
+	self
+		compile:
+			'foo | result o |
+				result := 0.
+				o:= OrderedCollection new: 5.
+				o add: 1; add: 2; add: 3; add: 4; add: 5.
+				o do: [:i | result := result + i].
+				^result'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 + 3 + 4 + 5 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test187evaluateArrayToDo
+	| result |
+	self
+		compile:
+			'foo | a |
+				a := Array new: 2.
+				1 to: 2 do: [ :i | a at: i put: i ].
+				^a first + a second'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test188evaluateReplaceFromToWith
+	| result |
+	self
+		compile: 'foo ^#(1 2) replaceFrom: 1 to: 2 with: #(3 4) startingAt: 1'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result size = 2;
+				assert: (result at: 1) value equals: 3;
+				assert: (result at: 2) value equals: 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test189evaluateArrayConcatenation
+	| result |
+	self
+		compile: 'foo ^#(3), #(4)'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result size equals: 2; assert: (result at: 1 ) value equals: 3; assert: (result at: 2) value equals: 4 ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test190evaluateStringConcatenation
+	| result |
+	self
+		compile: 'foo ^''ABC'', ''DE'''
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self assert: result asString equals: 'ABCDE' ].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test191evaluateIntervalCollect
+	| result |
+	self
+		compile:
+			'foo | result |
+				result := (1 to: 2) collect: [:i | i].
+				^result first + result second'
+		in: #ProtoObject
+		during: [ result := runtime sendLocal: #foo to: image true.
+			self
+				assert: result isImmediate;
+				assert: result value equals: 1 + 2].
+	self assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test200createDictionary
+	| class d |
+	class := image classNamed: #Dictionary.
+	d := runtime sendLocal: #new to: class with: {}.
+	self assert: d spec name equals: 'Dictionary'; assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:47'!
+test210addAssociationToDictionary
+	| class d assoc |
+	class := image classNamed: #Dictionary.
+	assoc := image newAssociation: #foo -> nil.
+	d := runtime sendLocal: #new to: class with: {}.
+	self assertNoLeftoverFrames.
+	runtime sendLocal: #add: to: d with: {assoc}.
+	self
+		assert: d spec name equals: 'Dictionary';
+		assertNoLeftoverFrames
+! !
+
+!PowertalkRingRuntimeTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis.
+	runtime := image runtime
+! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:16:41'!
+test010resolveClass 
+	| binding |
+	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Point'.
+	self
+		assert: binding isGlobal;
+		assert: binding isClassBinding;
+		assert: binding name = #Point;
+		assert: binding association == (Smalltalk globals associationAt: #Point)! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:12'!
+test010resolveClassVariables 
+	| scope |
+	scope := self scopeFor: Symbol.
+	self checkClassVarsOf: Symbol in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:24'!
+test010resolveGlobal 
+	| binding |
+	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Smalltalk'.
+	self
+		assert: binding isGlobal;
+		deny: binding isClassBinding;
+		assert: binding name = #Smalltalk;
+		assert: binding association == (Smalltalk globals associationAt: #Smalltalk)! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:35'!
+test010resolveInstanceVariables 
+	| scope |
+	scope := self scopeFor: Point.
+	self checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:46'!
+test010resolveSelf 
+	| scope receiver sup |
+	scope := self scopeFor: Object.
+	receiver := scope resolve: 'self'.
+	sup := scope resolve: 'super'.
+	self
+		assert: receiver isSelf;
+		assert: receiver name = 'self';
+		assert: sup isSuper;
+		assert: sup name = 'super'! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:57'!
+test011resolveUnknownGlobal 
+	| binding point |
+	self precondition: (Smalltalk includesKey: 'Foo678' existingSymbol) not.
+	binding := MethodScope new resolve: 'Foo678'.
+	self assert: binding isUnresolved.
+	point := self scopeFor: Point.
+	binding := point resolve: 'Foo678'.
+	self assert: binding isUnresolved! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:11'!
+test020resolveMethodArguments 
+	| scope |
+	scope := self scopeFor: Point.
+	scope
+		defineArgument: 'arg1';
+		defineArgument: 'arg2';
+		positionDefinedLocals.
+	self
+		checkArgs: #('arg1' 'arg2') in: scope;
+		checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:21'!
+test021resolveMethodTemporaries 
+	| scope |
+	scope := self scopeFor: Point.
+	scope defineTemporary: 't1'; defineTemporary: 't2'; positionDefinedLocals.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:32'!
+test030resolveNestedTemporaryConflictingWithIvar 
+	| ast b3 x |
+	ast := self compile: 'foo  [ | x | [[x]] ]' in: Point.
+	b3 := ast children first children first children first.
+	x := b3 statements first binding.
+	self
+		assert: x
+		isEnvTemp: 'x'
+		at: 1
+		index: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:46'!
+test040declareMethodArguments 
+	| ast scope |
+	ast := self compile: 'foo: anArg bar: anotherArg' in: Point.
+	scope := ast scope.
+	self
+		checkArgs: #('anArg' 'anotherArg') in: scope;
+		checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:24'!
+test041declareMethodTemporaries 
+	| ast scope |
+	ast := self compile: 'foo | t1 t2 | ' in: Point.
+	scope := ast scope.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:39'!
+test042declareMethodTempsWithArgs 
+	| ast scope |
+	ast := self compile: 'foo: arg1 bar: arg2 | t1 t2 | ' in: Point.
+	scope := ast scope.
+	self
+		checkArgs: #('arg1' 'arg2') in: scope;
+		checkTemps: #('t1' 't2') in: scope;
+		checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:05'!
+test050useMethodTemps 
+	| ast scope t1 t2 |
+	ast := self compile: 'foo | t1 t2 | t1. t2' in: Point.
+	scope := ast scope.
+	t1 := ast statements first binding.
+	t2 := ast statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		checkInstVarsOf: Point in: scope;
+		assert: t1 isTemporary;
+		assert: t1 isInStack;
+		assert: t1 name = 't1';
+		assert: t1 index = 1;
+		assert: t2 isTemporary;
+		assert: t2 isInStack;
+		assert: t2 name = 't2';
+		assert: t2 index = 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:16'!
+test051useMethodArgs 
+	| ast scope a1 a2 |
+	ast := self compile: 'foo: a1 bar: a2 a1. a2' in: Point.
+	scope := ast scope.
+	a1 := ast statements first binding.
+	a2 := ast statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		checkInstVarsOf: Point in: scope;
+		assert: a1 isArgument;
+		assert: a1 isInStack;
+		assert: a1 name = 'a1';
+		assert: a1 index = 1;
+		assert: a2 isArgument;
+		assert: a2 isInStack;
+		assert: a2 name = 'a2';
+		assert: a2 index = 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:33'!
+test052useMethodTempsAndArgs 
+	| ast scope a1 a2 t1 t2 |
+	ast := self compile: 'foo: a1 bar: a2 | t1 t2 | t1. t2. a1. a2' in: Point.
+	scope := ast scope.
+	t1 := ast statements first binding.
+	t2 := ast statements second binding.
+	a1 := ast statements third binding.
+	a2 := ast statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		checkTemps: #('t1' 't2') in: scope;
+		checkInstVarsOf: Point in: scope;
+		assert: t1 isTemporary;
+		assert: t1 isInStack;
+		assert: t1 name = 't1';
+		assert: t1 index = 1;
+		assert: t2 isTemporary;
+		assert: t2 isInStack;
+		assert: t2 name = 't2';
+		assert: t2 index = 2;
+		assert: a1 isArgument;
+		assert: a1 isInStack;
+		assert: a1 name = 'a1';
+		assert: a1 index = 1;
+		assert: a2 isArgument;
+		assert: a2 isInStack;
+		assert: a2 name = 'a2';
+		assert: a2 index = 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:49'!
+test053useBlockArgs 
+	| ast block scope a1 a2 |
+	ast := self compile: 'foo [:a1 :a2 | a1. a2]' in: Point.
+	block := ast children first.
+	scope := block scope.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:59'!
+test053useSiblingBlockArgs 
+	| ast block1 block2 a1 a2 |
+	ast := self compile: 'foo [:a1 | a1]. [:a2 | a2]' in: Point.
+	block1 := ast children first.
+	block2 := ast children second.
+	a1 := block1 statements first binding.
+	a2 := block2 statements first binding.
+	self
+		checkArgs: #('a1') in: block1 scope;
+		checkArgs: #('a2') in: block2 scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:10'!
+test054useBlockTemps 
+	| ast block scope t1 t2 |
+	ast := self compile: 'foo [| t1 t2 | t1. t2]' in: Point.
+	block := ast children first.
+	scope := block scope.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:24'!
+test055methodUseGlobal 
+	| ast global |
+	ast := self compile: 'foo Collection' in: Point.
+	global := ast statements first binding.
+	self
+		assert: global isClassBinding;
+		assert: global name = #Collection;
+		assert: global association = (Smalltalk globals associationAt: #Collection)! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:36'!
+test060useNestedMethodArgs 
+	| ast block ma1 ma2 ba1 ba2 |
+	ast := self compile: 'foo: a1 bar: a2  a1. a2. [a1. a2]' in: Object.
+	block := ast children first.
+	ma1 := ast statements first binding.
+	ma2 := ast statements second binding.
+	ba1 := block statements first binding.
+	ba2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: ma1 isStackArg: 'a1' at: 1;
+		assert: ma2 isStackArg: 'a2' at: 2;
+		assert: ba1 isEnvArg: 'a1' at: 1;
+		assert: ba2 isEnvArg: 'a2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:48'!
+test061useNestedMethodSiblingBlockTemps 
+	| ast block1 block2 b1t1 b2t2 |
+	ast := self compile: 'foo | t1 t2 | [t1]. [t2]' in: Object.
+	block1 := ast children first.
+	block2 := ast children second.
+	b1t1 := block1 statements first binding.
+	b2t2 := block2 statements first binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:14'!
+test061useNestedMethodTemps 
+	| ast block bt1 bt2 |
+	ast := self compile: 'foo | t1 t2 | [t1. t2]' in: Object.
+	block := ast children first.
+	bt1 := block statements first binding.
+	bt2 := block statements second binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: bt1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: bt2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:26'!
+test062useNestedBlockArgs 
+	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
+	ast := self compile: 'foo [:a1 :a2 | [a1. a2] ]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: block1 scope;
+		assert: b1a1 isStackArg: 'a1' at: 1;
+		assert: b1a2 isStackArg: 'a2' at: 2;
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b2a2 isEnvArg: 'a2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:38'!
+test063useNestedBlockTemps 
+	| ast block1 block2 b2t1 b2t2 |
+	ast := self compile: 'foo [| t1 t2 | [t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:49'!
+test064useSiblingBlocksNestedTemps 
+	| ast block1 block2 block3 b2t1 b3t2 |
+	ast := self compile: 'foo [| t1 t2 | [t1]. [t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block1 children second.
+	b2t1 := block2 statements first binding.
+	b3t2 := block3 statements first binding.
+	self
+		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b3t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:24:01'!
+test065useNestedBlockAndMethodTemps 
+	| ast block1 block2 b2t1 b2t2 |
+	ast := self compile: 'foo | t1 | [| t2 | [t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkEnvTemps: #('t1') in: ast scope at: nil;
+		checkClosureEnvTemps: #('t2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 2
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:36'!
+test070useDoublyNestedMethodArgs 
+	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
+	ast := self compile: 'foo: a1 bar: a2  [[a1. a2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b1a2 isEnvArg: 'a2' at: 2;
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b2a2 isEnvArg: 'a2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:49'!
+test071useDoublyNestedMethodTemps 
+	| ast block1 block2 b1t1 b1t2 b2t1 b2t2 |
+	ast := self compile: 'foo | t1 t2 | [[t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1t1 := block1 scope resolve: 't1'.
+	b1t2 := block1 scope resolve: 't2'.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:03'!
+test075useDoublyNestedMethodArgsWithTemps 
+	| ast block1 block2 b1a1 b1a2 b1t1 b1t2 b2a1 b2a2 b2t1 b2t2 |
+	ast := self
+		compile: 'foo: a1 bar: a2 | t1 | [| t2 | [a1. a2. t1. t2]]'
+		in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b1t1 := block1 scope resolve: 't1'.
+	b1t2 := block1 scope resolve: 't2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	b2t1 := block2 statements third binding.
+	b2t2 := block2 statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: b1a1 isEnvArg: 'a1' at: 2;
+		assert: b1a2 isEnvArg: 'a2' at: 3;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: nil
+			index: 4;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 2
+			index: 4;
+		assert: b2a1 isEnvArg: 'a1' at: 3;
+		assert: b2a2 isEnvArg: 'a2' at: 4! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:16'!
+test080captureSelf 
+	| ast block receiver |
+	ast := self compile: 'foo [self]' in: Object.
+	block := ast children first.
+	receiver := block statements first binding.
+	self
+		assert: receiver isSelf;
+		assert: ast environmentSize = 0;
+		assert: block scope capturesSelf;
+		assert: block environmentSize equals: 1;
+		assert: block scope home == nil! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:28'!
+test090useNonLocalReturn 
+	| ast block |
+	ast := self compile: 'foo [^1]' in: Object.
+	block := ast children first.
+	self
+		assert: ast environmentSize = 0;
+		assert: ast needsEnvironment;
+		assert: block environmentSize = 1;
+		assert: block scope home == ast! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:39'!
+test091nonLocalReturnSelf 
+	| ast block |
+	ast := self compile: 'foo [^self]' in: Object.
+	block := ast children first.
+	self
+		assert: ast environmentSize = 0;
+		assert: ast needsEnvironment;
+		assert: block environmentSize = 2;
+		assert: block scope home == ast! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:52'!
+test100inlineUseMethodArgs 
+	| ast block a1 a2 |
+	ast := self compile: 'foo: a1 bar: a2  1 ifTrue: [a1. a2]' in: Point.
+	block := ast children first.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:05'!
+test101inlineUseMethodTemps 
+	| ast t1 t2 block |
+	ast := self compile: 'foo | t1 t2 | 1 ifTrue: [t1. t2]' in: Point.
+	block := ast children first.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: ast scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:19'!
+test102inlineUseMethodArgsAndTemps 
+	| ast block a1 a2 t1 t2 |
+	ast := self
+		compile: 'foo: a1 bar: a2  | t1 t2 | 1 ifTrue: [a1. a2. t1. t2]'
+		in: Point.
+	block := ast children first.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	t1 := block statements third binding.
+	t2 := block statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:29'!
+test110inlineUseMixedMethodTemps 
+	| ast t1 t2 block |
+	ast := self compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. t2]' in: Point.
+	block := ast children first.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1') in: ast scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:42'!
+test120inlineEnvironmentTemp 
+	| ast block1 block2 mt1 mt2 b1t1 b1t2 b2t2 |
+	ast := self
+		compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. [t2]]'
+		in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	mt1 := ast scope resolve: 't1'.
+	mt2 := ast scope resolve: 't2'.
+	b1t1 := block1 statements first binding.
+	b1t2 := block1 scope resolve: 't2'.
+	b2t2 := block2 scope resolve: 't2'.
+	self
+		checkTemps: #('t1') in: ast scope;
+		assert: mt2 isUnresolved;
+		assert: mt1 isStackTemp: 't1' at: 1;
+		assert: b1t1 isStackTemp: 't1' at: 1;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: nil
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 1;
+		assert: ast scope environmentSize = 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:54'!
+test130inlineBlockArg 
+	| ast block a1 |
+	ast := self compile: 'foo  1 ifNotNil: [:a1 | 1 ]' in: Point.
+	block := ast children first.
+	a1 := block scope resolve: 'a1'.
+	self assert: a1 isStackInlineArg: 'a1' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:04'!
+test131inlineBlockArgWithTemp 
+	| ast block t1 a1 |
+	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | 1 ]' in: Point.
+	block := ast children first.
+	t1 := ast scope resolve: 't1'.
+	a1 := block scope resolve: 'a1'.
+	self
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: a1 isStackInlineArg: 'a1' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:15'!
+test132inlineBlockArgWithTemps 
+	| ast block t1 a1 t2 |
+	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1 ]' in: Point.
+	block := ast children first.
+	t1 := ast scope resolve: 't1'.
+	a1 := block scope resolve: 'a1'.
+	t2 := block scope resolve: 't2'.
+	self
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2;
+		assert: a1 isStackInlineArg: 'a1' at: 3! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:25'!
+test133inlineBlockArgWithEnvTemps 
+	| ast block1 mt1 b1a1 b1t2 |
+	ast := self
+		compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1. [t2] ]'
+		in: Point.
+	block1 := ast children first.
+	mt1 := ast scope resolve: 't1'.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1t2 := block1 scope resolve: 't2'.
+	self
+		assert: mt1 isStackTemp: 't1' at: 1;
+		assert: b1t2 isEnvTemp: 't2' at: nil index: 1;
+		assert: b1a1 isStackInlineArg: 'a1' at: 2! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:36'!
+test134inlineBlockArgNestedAccess 
+	| ast block1 block2 b1a1 b2a1 |
+	ast := self compile: 'foo  1 ifNotNil: [:a1 | [a1] ]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b2a1 := block2 scope resolve: 'a1'.
+	self
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b2a1 isEnvArg: 'a1' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:46'!
+test135inlineBlockWithArgInRealBlockCaptured 
+	| ast block1 block2 block3 b2a1 b3a1 |
+	"Args of inlined blocks can go to the stack of the real block, unless captured. Because the
+	 capture bytecode doesn't have a slot type for 'copy from stack temps' (it has capture from
+	 stack in 	 args zone, capture the current env, and capture a value in the current env)"
+	ast := self compile: 'foo  [1 ifNotNil: [:a1 | [a1] ]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b2a1 := block2 scope resolve: 'a1'.
+	b3a1 := block3 scope resolve: 'a1'.
+	self
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b3a1 isEnvArg: 'a1' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:56'!
+test136inlineBlockWithArgCapturedByInlinedBlock 
+	| ast block1 block2 b1a1 b2a1 |
+	ast := self compile: 'foo 1 ifNotNil: [:a1 | a1. 2 ifTrue: [a1]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b2a1 := block2 scope resolve: 'a1'.
+	self
+		assert: b1a1 isStackInlineArg: 'a1' at: 1;
+		assert: b2a1 isStackInlineArg: 'a1' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:10'!
+test137inlineBlockWithArgCapturedByInlinedBlockInRealBlock 
+	| ast block1 block2 block3 b1a1 b3a1 |
+	ast := self
+		compile: 'foo 1 ifNotNil: [:a1 | [2 ifTrue: [a1]]]'
+		in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b3a1 := block3 scope resolve: 'a1'.
+	self
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b3a1 isEnvArg: 'a1' at: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:23'!
+test138blockWithInlinedBlockWithTempCaptured 
+	| ast block1 block2 block3 b2t1 b3t1 block |
+	ast := self compile: 'foo [true ifTrue: [| t1 | [t1]]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b2t1 := block2 scope resolve: 't1'.
+	b3t1 := block3 scope resolve: 't1'.
+	self
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: nil
+			index: 1;
+		assert: b3t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:54'!
+test140blockWithInlinedBlockHasEnv 
+	| ast |
+	ast := self compile: 'foo [true ifTrue: [^self]]'.
+	self assert: ast needsEnvironment! !
+
+!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:12'!
+assert: binding isEnvArg: name at: index 
+
+	self
+		assert: binding isArgument;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding isInArray;
+		assert: binding environmentIndex = nil! !
+
+!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:28'!
+assert: binding
+isEnvTemp: name
+at: environment
+index: index 
+
+	self
+		assert: binding isTemporary;
+		assert: binding isInArray;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding environment = environment! !
+
+!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:40'!
+assert: binding isStackArg: name at: index 
+
+	self
+		assert: binding isArgument;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index! !
+
+!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:55'!
+assert: binding isStackInlineArg: name at: index 
+
+	self
+		assert: binding isArgument;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding environmentObject class = InlinedArgEnvironment! !
+
+!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:14:08'!
+assert: binding isStackTemp: name at: index 
+
+	self
+		assert: binding isTemporary;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:19'!
+checkArgs: names in: scope 
+
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isArgument;
+			assert: binding name = name;
+			assert: binding index = index]! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:30'!
+checkClassVarsOf: aSpecies in: scope 
+
+	aSpecies withAllSuperclasses do: [:c | 
+		c classPool associationsDo: [:assoc | | name binding |
+			name := assoc key.
+			binding := scope resolve: name.
+			self
+				assert: binding isClassVariable;
+				assert: binding name = name;
+				assert: binding association == assoc]]! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:42'!
+checkClosureEnvTemps: names in: scope at: environment 
+	| offset |
+	offset := scope environmentSizeUpToCapturedArguments.
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isTemporary;
+			assert: binding isInArray;
+			assert: binding name = name;
+			assert: binding index = (index + offset);
+			assert: binding environment = environment]! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:54'!
+checkEnvTemps: names in: scope at: environment 
+
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isTemporary;
+			assert: binding isInArray;
+			assert: binding name = name;
+			assert: binding index = index;
+			assert: binding environment = environment]! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:07'!
+checkInstVarsOf: aSpecies in: scope 
+
+	aSpecies allInstVarNames withIndexDo: [:name :i | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isInstVar;
+			assert: binding name = name;
+			assert: binding index = i]! !
+
+!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:18'!
+checkTemps: names in: scope 
+
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self assert: binding isStackTemp: name at: index]! !
+
+!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:31'!
+compile: aString 
+
+	^self compile: aString in: UndefinedObject! !
+
+!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:44'!
+compile: aString in: aClass 
+
+	^SCompiler parse: aString in: aClass! !
+
+!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:15:57'!
+precondition: aBoolean 
+
+	self assert: aBoolean description: 'Precondition for this test is not met'! !
+
+!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:16:08'!
+scopeFor: aSpecies 
+
+	^MethodScope new species: aSpecies! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment1
+	| node |
+	node := parser parse: 'unary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment10
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	[2. "comment3" 3]'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second statements second comment value = 'comment3'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment11
+	| node |
+	node := parser parse: 'unary
+	1. "comment"'.
+	self assert: node comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment12
+	| node |
+	node := parser parse: 'unary
+	[1. "comment"]'.
+	self assert: node statements anyOne comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment2
+	| node |
+	node := parser parse: '+ binary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment3
+	| node |
+	node := parser parse: 'keyword: arg
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment4
+	| node |
+	node := parser parse: 'unary
+	^true "comment"'.
+	self
+		assert: node statements anyOne expression comment value = 'comment';
+		deny: node comment value = 'comment';
+		assert: node comment isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment5
+	| node |
+	node := parser parse: '+ binary
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment6
+	| node |
+	node := parser parse: 'keyword: arg
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment7
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment8
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	^2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second expression comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment9
+	| node |
+	node := parser parse: 'unary
+	1. "comment2" 2'.
+	self assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray
+	| node |
+	node := parser parseExpression: '#[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'.
+	node := parser parse: 'b #[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray2
+	| array |
+	parser on: '#[16rFE]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE];
+		assert: array source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testByteArray3
+	| array |
+	parser on: '#[16rFE 2]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE 2];
+		assert: array source = '#[16rFE 2]'.
+	parser on: '#[16rFE 256 2]'.
+	parser step.
+	self should: [array := parser primary] raise: Exception
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol1
+	| array |
+	parser on: '#(#++)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'++').
+	parser on: '#(#-- )'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'--')
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol2
+	| symbol |
+	parser on: '#++'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'++'.
+	parser on: '#--'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'--'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testExpression
+	| expression |
+	parser on: '(x)'; step.
+	expression := parser primary.
+	self
+		assert: expression isIdentifier;
+		assert: expression source = 'x'.
+	parser on: '(x + 1)'; step.
+	expression := parser primary.
+	self
+		assert: expression class == SMessageNode;
+		assert: expression selector isBinary;
+		assert: expression source = '(x + 1)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testFloat
+	| source node |
+	source := '3.14159265358979323846'.
+	node := parser parseExpression: source.
+	self assert: node statements anyOne source = source.
+	node := parser parse: 'm ' , source.
+	self assert: node statements anyOne source = source
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralArray
+	| array |
+	parser on: '#(16rFE)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE);
+		assert: array source = '#(16rFE)'.
+	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE $a 'hello' #s #(1 2));
+		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralArray2
+	| array |
+	parser on: '#(a:b:)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(#a:b:);
+		assert: array source = '#(a:b:)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testLiteralKeywordArray
+	| ast literal |
+	ast := parser parseExpression: '#(a:b: c: d:)'.
+	literal := ast statements anyOne value.
+	self
+		assert: literal isArray;
+		assert: literal size = 3;
+		assert: literal first == #a:b:;
+		assert: literal second == #c:;
+		assert: literal third == #d:
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNegativeElementInArray
+	| array |
+	parser on: '#(-21)'.
+	parser step.
+	array := parser primary.
+	self assert: array isLiteral.
+	parser on: '#(-21 1 -5 4)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array
+			with: -21
+			with: 1
+			with: -5
+			with: 4)
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNegativeNumber
+	| number |
+	parser on: '-3'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3;
+		assert: number source = '-3'.
+	parser on: '-3.14'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3.14;
+		assert: number source = '-3.14'.
+	parser on: '-3.14e-10'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -0.000000000314;
+		assert: number source = '-3.14e-10'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testNotAFloat
+	| method |
+	method := parser parseExpression: '0.a'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
+testScientificNotation
+	| method |
+	method := parser parseExpression: '
+	0.1e-2.
+	0.1E2'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0.001;
+		assert: method statements second value = 10
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock
+	| block |
+	parser on: '[]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[]'.
+	parser on: '[x]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[x]';
+		assert: block temporaries isEmpty;
+		assert: block arguments isEmpty;
+		assert: block statements size = 1;
+		assert: block statements anyOne isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock2
+	| block |
+	parser on: '[:i | i]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | i]';
+		assert: block arguments size = 1.
+	parser on: '[:i :j |]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i :j |]';
+		assert: block temporaries isEmpty;
+		assert: block arguments size = 2;
+		assert: block statements isEmpty;
+		assert: block arguments first isIdentifier;
+		assert: block arguments second isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testBlock3
+	| block |
+	parser on: '[:i | | a b | a + b]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | | a b | a + b]';
+		assert: block arguments size = 1;
+		assert: block temporaries size = 2.
+	parser on: '[:i ||a b|a|b]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i ||a b|a|b]';
+		assert: block temporaries size = 2;
+		assert: block arguments size = 1;
+		assert: block statements size = 1;
+		assert: block statements anyOne selector value = #'|'
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
+testParseFragment
+	| source ast |
+	source := 'm
+	self do: [:x | Object'.
+	ast := parser compiler parseFragment: source.
+	self
+		assert: ast selector == #m;
+		assert: ast statements isEmpty
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testParseTemporaries
+	| temporaries |
+	temporaries := SCompiler new smalltalkParser
+		parseTemporaries:
+			'm: arg
+	| t1 t2 t3 |
+	^:= will not even parse'.
+	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testTemporaries
+	| temporaries |
+	parser on: '||'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| |'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| a b c |'.
+	parser step.
+	temporaries := parser temporaries.
+	self
+		assert: temporaries size = 3;
+		assert: temporaries first isIdentifier;
+		assert: temporaries first name = 'a';
+		assert: temporaries second isIdentifier;
+		assert: temporaries second name = 'b';
+		assert: temporaries third isIdentifier;
+		assert: temporaries third name = 'c'
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
+testTemporaryDeclarations
+	| temporaries |
+	parser on: '| | | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: '|| | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: 'a || b'.
+	parser step.
+	self assert: parser token value = 'a'.
+	parser step.
+	self assert: parser token value = #'||'.
+	parser step.
+	self assert: parser token value = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryHeader
+	| method selector |
+	parser on: '+++ x'.
+	parser step.
+	method := parser binarySignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 1;
+		assert: method selector value == #'+++';
+		assert: method arguments size = 1.
+	parser on: 'a'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil.
+	parser on: 'a: x'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeywordHeader
+	| method selector |
+	parser on: 'x: x y: y z: z'.
+	parser step.
+	method := parser keywordSignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 3;
+		assert: method selector value == #x:y:z:;
+		assert: method arguments size = 3.
+	parser on: 'a'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil.
+	parser on: '+ x'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeywordHeader2
+	| method |
+	parser on: 'x: xx y: yy z: zz'.
+	parser step.
+	method := parser methodSignature.
+	self
+		assert: method class == SMethodNode;
+		assert: method header = 'x: xx y: yy z: zz'.
+	parser on: 'x'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = 'x'.
+	parser on: '+= arg value := value + arg'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = '+= arg'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnaryHeader
+	| selector |
+	parser on: 'a'.
+	parser step.
+	self assert: parser token isNameToken.
+	selector := parser unarySelector.
+	self
+		assert: selector notNil;
+		assert: selector class == SSelectorNode;
+		assert: selector keywords size = 1;
+		assert: selector value == #a.
+	parser on: 'a: x'.
+	parser step.
+	self deny: parser token isNameToken.
+	parser on: '+ x'.
+	parser step.
+	self deny: parser token isNameToken
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmbeddedDots
+	| node |
+	node := parser parse: 'm
+	A.B.C name.
+	self m: A.B.C.
+	^true'.
+	self
+		assert: node statements first receiver name = 'A.B.C';
+		assert: node statements second arguments anyOne name = 'A.B.C'
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmbeddedDots2
+	self
+		should: [parser parse: '
+	m
+		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		| funny.local |
+		funny.local := 1.
+		^funny.local']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
+		raise: SCompilationError
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
+testPeekForIdentifier
+	| strm |
+	strm := 'abc.de' readStream.
+	self
+		assert: (SCompiler new peekForIdentifier: strm);
+		assert: strm position = 1.
+	strm position: 3.
+	self assert: (SCompiler new peekForIdentifier: strm).
+	strm := 'a2.c' readStream.
+	strm position: 2.
+	self deny: (SCompiler new peekForIdentifier: strm)
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryColon
+	| statements binary |
+	parser on: '3:4'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '3';
+		assert: binary symbol = #':';
+		assert: binary arguments anyOne source = '4'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryColon2
+	| m |
+	m := parser parse: ': b ^self / b'.
+	self assert: m selector = #':'.
+	self assert: m arguments anyOne source = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryPower
+	| statements binary |
+	parser on: '2^3'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '2';
+		assert: binary symbol = #'^';
+		assert: binary arguments anyOne source = '3'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinaryPower2
+	| m |
+	m := parser parse: '^ n ^self raisedTo: n'.
+	self assert: m selector = #'^'.
+	self assert: m arguments anyOne source = 'n'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testCascade
+	| cascade statements |
+	parser on: 'r m1; m2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first source = 'r m1';
+		assert: cascade messages first selector source = 'm1';
+		assert: cascade messages second selector source = 'm2'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testCascade2
+	| cascade statements |
+	parser on: 'r m: 1; + 2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first selector keywords size = 1;
+		assert: cascade messages first arguments anyOne value = 1;
+		assert: cascade messages second selector isBinary;
+		assert: cascade messages second arguments anyOne value = 2
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testMissingPrimary
+	| source |
+	source := 'pendingReservesAtTime: time well: index
+	i0 := startings at: index.
+	ti := self timeAt: i0.
+	dt := time - ti.
+	c := single primaryCurve.
+	^c reserves - (cumAtTime: dt)'.
+	self should: [parser parse: source] raise: Error
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testSelector
+	| source ast |
+	source := 'k1: arg1 k2: arg2'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode positions first
+			= (source indexOfSubCollection: 'k1:');
+		assert: ast selectorNode positions second
+			= (source indexOfSubCollection: 'k2:');
+		assert: ast selector == #k1:k2:
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnarySelector
+	| source ast |
+	source := 'm a notNil'.
+	ast := parser parse: source.
+	self
+		assert: (ast nodeWithLiteral: #notNil) positions first
+			= (source indexOfSubCollection: 'notNil')
+! !
+
+!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 1/30/2023 10:10:47'!
+testBraceNode
+	| ast brace sum |
+	ast := parser parseExpression: '{1. 3 + 4}'.
+	brace := ast statements anyOne.
+	sum := parser parseExpression: '3 + 4'.
+	self
+		assert: brace elements size = 2;
+		assert: brace elements first value = 1;
+		assert: brace elements second class = sum statements anyOne class;
+		assert: brace elements second arguments anyOne value = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnicode
+	| source ast |
+	source := 8855 asCharacter asString , ' aFreeTensor'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode position
+			= (source indexOfSubCollection: 8855 asCharacter asString);
+		assert: ast selector == 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment
+	| assignment |
+	parser on: 'a := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 1;
+		assert: assignment assignees anyOne source = 'a';
+		assert: assignment expression source = 'nil + 4'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment2
+	| assignment |
+	parser on: 'a := b := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 2;
+		assert: assignment assignees first name = 'b';
+		assert: assignment assignees second name = 'a'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testAssignment3
+	| node |
+	node := parser parseExpression: 'a : = 1'.
+	self
+		assert: node statements anyOne isAssign.
+	node := parser parseExpression: 'a :	= 1'.
+	self
+		assert: node statements anyOne isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnderscoreAssignment
+	| assignment |
+	parser on: 'a _ 3 + 4'.
+	parser step.
+	assignment := parser expression.
+	self assert: assignment isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 1/30/2023 10:10:47'!
+testAllNodesDo
+	| source nodes |
+	source := 'rcvr msg1; msg2'.
+	parser on: source.
+	parser step.
+	nodes := OrderedCollection new.
+	parser expression allNodesDo: [:n | nodes add: n].
+	self assert: nodes size = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	super setUp.
+	parser := SCompiler new smalltalkParser
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinary
+	| node |
+	scanner on: '-
+		--
+		---
+		==>
+		~!!|\/%&*+=><'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'-';
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'--';
+		assert: node source = '--'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'---';
+		assert: node source = '---'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'==>';
+		assert: node source = '==>'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'~!!|\/%&*+=><';
+		assert: node source = '~!!|\/%&*+=><'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testCharacter
+	| node |
+	scanner on: '$a$b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $a;
+		assert: node source = '$a'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $b;
+		assert: node source = '$b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testEmpty
+	scanner on: ''.
+	self assert: scanner next isEnd
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
+testString
+	| node quote |
+	scanner on: '' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = '';
+		assert: node source = (String with: $' with: $').
+	scanner on: 'Hello World!!' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = 'Hello World!!';
+		assert: node source = 'Hello World!!' storeString.
+	quote := String with: $'.
+	scanner on: quote storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = quote;
+		assert: node source = quote storeString
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+test0xNotation
+	| node |
+	node := SCompiler new smalltalkParser parseExpression: '0x10'.
+	self assert: node statements first value = 16.
+	node := SCompiler new smalltalkParser parseExpression: '0X10'.
+	self assert: node statements first value = 16
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testFloat
+	| node |
+	scanner on: '0.1'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1;
+		assert: node source = '0.1'.
+	scanner on: '0.1e-35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1e-35;
+		assert: node source = '0.1e-35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testInteger
+	| node |
+	scanner on: '0 12 -35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0;
+		assert: node source = '0'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 12;
+		assert: node source = '12'.
+	node := scanner next.
+	self
+		deny: node isNumberNode;
+		assert: (node is: #'-');
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 35;
+		assert: node source = '35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
+testIntegerRadix
+	| node |
+	scanner on: '16rFA2'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 16rFA2;
+		assert: node source = '16rFA2'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testBinarySymbol
+	| node |
+	scanner on: '#='.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node hasSymbol;
+		assert: node value = #'='
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testDashStartingSymbol
+	| node |
+	scanner on: '#++'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'++';
+		assert: node source = '#++'.
+	scanner on: '#//'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'//';
+		assert: node source = '#//'.
+	scanner on: '#--'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'--';
+		assert: node source = '#--'.
+	scanner on: '#+-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'+-';
+		assert: node source = '#+-'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testNumericSymbol
+	scanner on: '#35'.
+	self assert: scanner next value = '35' asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
+testSymbol
+	| node |
+	scanner on: '#-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-';
+		assert: node source = '#-'.
+	scanner on: '#a:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	scanner on: '#-!!'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-!!';
+		assert: node source = '#-!!'.
+	scanner on: '#a:b:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:b:;
+		assert: node source = '#a:b:'.
+	scanner on: '#a:b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	node := scanner next.
+	self assert: node value = 'b'; assert: node source = 'b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 1/30/2023 10:10:47'!
+testArrayStart
+	| node |
+	scanner on: '#()'.
+	node := scanner next.
+	self
+		assert: (node is: #'#(');
+		assert: node source = '#('.
+	scanner on: '#['.
+	node := scanner next.
+	self
+		assert: (node is: #'#[');
+		assert: node source = '#['.
+	scanner on: '#''hello'''.
+	node := scanner next.
+	self
+		assert: node value = #hello;
+		assert: node source = '#''hello'''
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
+testIdentifier
+	| node |
+	scanner on: 'a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ' a1'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a1';
+		assert: node source = 'a1'.
+	scanner on: '_a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = '_a';
+		assert: node source = '_a'.
+	scanner on: 'a_1b'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a_1b';
+		assert: node source = 'a_1b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
+testKeyword
+	| node node2 |
+	scanner on: 'a:'.
+	node := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'a:';
+		assert: node source = 'a:'.
+	scanner on: 'ab:cd:'.
+	node := scanner next.
+	node2 := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'ab:';
+		assert: node source = 'ab:';
+		assert: node2 isKeyword;
+		assert: node2 value = 'cd:';
+		assert: node2 source = 'cd:'
+! !
+
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
+testUnicodeScanning
+	| next three tensor |
+	scanner on: '3 + 4' asWideString.
+	self assert: scanner next value = 3.
+	next := scanner next.
+	self
+		assert: next value == #'+';
+		assert: scanner next value = 4.
+	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
+	three := scanner next.
+	self assert: three value = 3.
+	tensor := scanner next.
+	self assert: tensor value = 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
+testComment
+	| node |
+	scanner on: '"comment"a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node value = 'comment';
+		assert: node source = '"comment"'.
+	scanner on: '"comment"'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node source = '"comment"';
+		assert: node position = 1.
+	scanner on: 'a"comment"'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node position = ('a' size + 1)
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
+testColon
+	| node |
+	scanner on: ':a'.
+	node := scanner next.
+	self
+		assert: (node is: $:);
+		assert: node source = ':'.
+	node := scanner next.
+	self
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ':='.
+	node := scanner next.
+	self
+		assert: node isAssignment;
+		assert: node source = ':='
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
+testColon2
+	| node |
+	scanner on: '::'.
+	node := scanner next.
+	self
+		assert: node class = SStringToken;
+		assert: node source = '::'
+! !
+
+!SmalltalkScannerTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
+setUp
+	super setUp.
+	scanner := SCompiler new smalltalkScanner
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+maneuvererForObjects
+	| mirror |
+	mirror := runtime objectNamed: 'Object'.
+	^ mirror handle maneuverer
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+mirageForObject
+	| mirror |
+	mirror := runtime objectNamed: 'Object'.
+	^ mirror handle mirage
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+mirrorForObject
+	| address |
+	address := runtime objectNamed: 'Object'.
+	^ address asClassMirror
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test010nilHandle
+	| handle |
+	handle := runtime nil.
+	self
+		assert: handle isSmall;
+		deny: handle isBytes;
+		deny: handle isArrayed;
+		assert: handle basicSize equals: 0
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test020nilBehaviorHandle
+	| handle |
+	handle := runtime nil getBehavior.
+	self
+		assert: handle isSmall;
+		deny: handle isBytes;
+		deny: handle isArrayed;
+		assert: handle size equals: 3
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test030nilClassHandle
+	| behavior class name |
+	behavior := runtime nil getBehavior.
+	class := behavior slotAt: 1.
+	self
+		assert: class isSmall;
+		deny: class isBytes;
+		deny: class isArrayed;
+		assert: class size equals: 9.
+	name := class slotAt: 6.
+	self assert: name asLocalString equals: 'UndefinedObject'
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test040nilClassMirror
+	| class hierarchy |
+	class := runtime nil mirror reflectedClass.
+	hierarchy := class allSuperclasses collect: #localName.
+	self assert: class localName equals: 'UndefinedObject';
+		assert: hierarchy asArray equals: #('Object' 'ProtoObject')
+! !
+
+!MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+testObjectMirrorBasics
+	| class definition |
+	class := self mirrorForObject.
+	self
+		deny: class reflectsInteger;
+		deny: class reflectsBytesObject;
+		deny: class reflectsLargeObject;
+		deny: class reflectsNil.
+	definition := builder => 'Class'.
+	self assert: class slotSize equals: definition allInstVarNames size
+! !
+
+!MirrorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	| vimage image |
+	super setUp.
+	vimage := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap.
+	builder := vimage builder.
+	builder addGenesisObjects.
+	image := builder writer write image.
+	runtime := Runtime
+		forSimulating: PowertalkRingImage kernelSpec
+		memory: image
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test010nilObjectHandle
+	| runtime handle |
+	runtime := self runtime.
+	handle := runtime nil.
+	self
+		assert: handle isFixed;
+		assert: handle isSmall;
+		assert: handle size = 0
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test015nilObjectMirror
+	| runtime handle mirror |
+	runtime := self runtime.
+	handle := runtime nil.
+	mirror := handle mirror.
+	self
+		assert: mirror = handle mirror;
+		assert: mirror reflectsNil;
+		deny: mirror reflectsInteger;
+		assert: mirror size = 0;
+		deny: mirror reflectsLargeObject;
+		deny: mirror reflectsBytesObject;
+		assert: mirror reflectedClass localName = 'UndefinedObject'
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test040UndefinedObjectMirror
+	| runtime nilMirror mirror |
+	runtime := self runtime.
+	nilMirror := runtime nil mirror.
+	mirror := nilMirror reflectedBehavior methodDictionary.
+	self
+		assert: mirror reflectsMethodDictionary
+! !
+
+!ObjectMirrorTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test100findKernel
+	| smalltalk |
+	smalltalk := self runtime objectNamed: 'kernel'.
+	self
+		assert: smalltalk reflectedClass localName
+		equals: 'Kernel'
+! !
+
+!ObjectMirrorTest methodsFor: 'accessing' stamp: 'KenD 1/30/2023 10:10:45'!
+runtime
+	| vimage builder |
+	vimage := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap.
+	builder := vimage builder.
+	builder addGenesisObjects.
+	^ Runtime
+		forSimulating: PowertalkRingImage kernelSpec
+		memory: builder writer write image
+! !
+
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+handleFor: anObjectMap
+	| oid |
+	oid := writer offsetOf: anObjectMap.
+	^runtime handleOn: oid
 
 ! !
 
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:28'!
-behaviorOffset
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectMethod: anAstcode selector: selector for: classname
+	^ builder
+		newMethod: anAstcode
+		selector: selector
+		in: classname
+		format: 0
+		literals: #()
+! !
 
-	^BehaviorOffset! !
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectObject
+	^ builder newSlots: 'Object'
+! !
 
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:18:43'!
-flagsOffset
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+invoke: method with: object
+	| m receiver |
+	m := self handleFor: method.
+	receiver := self handleFor: object.
+	^receiver mirror invoke: m mirror asMethodMirror with: #()
+! !
 
-	^FlagsOffset! !
+!SExpressionEmulatorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test100yourself
+	| object handle result |
+	object := self injectObject.
+	handle := builder emulator handleOn: object.
+	result := handle maneuverer yourself.
+	self
+		assert: object == result
+! !
 
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:02'!
-hashOffset
+!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	super setUp.
+	builder := VirtualImage kernelSpec build
+! !
 
-	^HashOffset! !
+!SExpressionEmulatorTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+write
+	writer := builder writer write.
+	runtime := Runtime
+		forSimulating: VirtualImage kernelSpec
+		memory: writer image
+! !
 
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:13'!
-largeSizeOffset
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+handleFor: anObjectMap
+	| oid |
+	oid := writer offsetOf: anObjectMap.
+	^runtime handleOn: oid
 
-	^LargeSizeOffset! !
+! !
 
-!ObjectHeaderOffsets methodsFor: 'accessing' stamp: 'KenD 2/27/2021 09:19:29'!
-sizeOffset
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectMethod: anAstcode selector: selector for: classname
+	^ builder
+		newMethod: anAstcode
+		selector: selector
+		in: classname
+		format: 0
+		literals: #()
+! !
 
-	^SizeOffset! !
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+injectObject
+	^ builder newSlots: 'Object'
+! !
 
-!ObjectHeaderOffsets class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:54'!
-initialize
-	BehaviorOffset := -4.
-	FlagsOffset := -5.
-	SizeOffset := -6.
-	HashOffset := -8.
-	LargeSizeOffset := -16
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+invoke: method with: object
+	| m receiver |
+	m := self handleFor: method.
+	receiver := self handleFor: object.
+	^receiver mirror invoke: m mirror asMethodMirror with: #()
+! !
+
+!SExpressionInterpreterTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
+test100empty
+	| object astcodes method result original |
+	object := self injectObject.
+	astcodes := {MethodId. {IdentifierId. SelfId}}.	"foo self"
+	method := self injectMethod: astcodes selector: #foo for: 'Object'.
+	self write.
+	result := self invoke: method with: object.
+	original := self handleFor: object.
+	self
+		assert: result localClassname equals: 'Object';
+		assert: (result equals: original mirror)
+! !
+
+!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+setUp
+	super setUp.
+	builder := VirtualImage kernelSpec build
+! !
+
+!SExpressionInterpreterTest methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:45'!
+write
+	writer := builder writer write.
+	runtime := Runtime
+		forSimulating: VirtualImage kernelSpec
+		memory: writer image
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+compile: source in: aSpecies
+	^SCompiler compile: source in: aSpecies
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+decode: anArray of: aCompiledMethod
+	| decoder |
+	decoder := AstcodeDecoder new
+		stream: anArray readStream;
+		method: aCompiledMethod.
+	^decoder decodeMethod
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+encode: source
+	^self encode: source in: UndefinedObject
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+encode: source in: aSpecies
+	| ring compiler |
+	ring := VirtualImage kernelSpec bindingOf: aSpecies name.
+	compiler := SCompiler forClass: ring value.
+	method := compiler compile: source.
+	^ method astcodes
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test010emptyMethod
+	| astcodes root |
+	astcodes := self encode: 'm'.
+	self assert: astcodes = {MethodId}.
+	root := self decode: astcodes of: method.
+	self assert: root isMethod; assert: root statements isEmpty
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeFalse
+	| astcodes root identifier |
+	astcodes := self encode: 'm false'.
+	self assert: astcodes = {MethodId. {IdentifierId. FalseId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = false
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeNil
+	| astcodes root identifier |
+	astcodes := self encode: 'm nil'.
+	self assert: astcodes = {MethodId. {IdentifierId. NilId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = nil
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeSelf
+	| astcodes root identifier |
+	astcodes := self encode: 'm self'.
+	self assert: astcodes = {MethodId. {IdentifierId. SelfId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self assert: identifier isVariable; assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test020encodeTrue
+	| astcodes root identifier |
+	astcodes := self encode: 'm true'.
+	self assert: astcodes = {MethodId. {IdentifierId. TrueId}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isLiteral;
+		assert: identifier binding value = true
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodeClassVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm Flags' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. ClassVarId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isClassVar;
+		assert: identifier binding association class = Association;
+		assert: identifier binding association key = 'Flags';
+		assert: identifier binding association value class = PoolDictionary
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodeInstVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm name' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. InstVarId. 6}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isInstVar;
+		assert: identifier binding index = 6
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test021encodePoolVar
+	| astcodes root identifier |
+	astcodes := self encode: 'm Pointers' in: Class.
+	self assert: astcodes = {MethodId. {IdentifierId. PoolVarId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	identifier := root statements first.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isPoolVar;
+		assert: identifier binding association class = Association;
+		assert: identifier binding association key = 'Pointers';
+		assert: identifier binding association value = 16r200
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test022encodeReturn
+	| astcodes root return identifier |
+	astcodes := self encode: 'm ^self'.
+	self assert: astcodes = {MethodId. {ReturnId. true. {IdentifierId. SelfId}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	identifier := return expression.
+	self assert: identifier isVariable; assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test023encodeClass
+	| astcodes root return identifier |
+	astcodes := self encode: 'm ^Array'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {IdentifierId. GlobalClassId. 1}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	identifier := return expression.
+	self
+		assert: identifier isVariable;
+		assert: identifier binding isClassBinding;
+		assert: identifier binding association key = #Array;
+		assert: identifier binding association value = Array
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test024encodeLiteral
+	| astcodes root literal |
+	astcodes := self encode: 'm #foo'.
+	self assert: astcodes = {MethodId. {LiteralId. 1}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	literal := root statements first.
+	self
+		assert: literal isLiteral;
+		assert: literal value = #foo
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test030encodeUnaryMessage
+	| astcodes root return message identifier |
+	astcodes := self encode: 'm ^self foo'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	identifier := message receiver.
+	self
+		assert: message arguments isEmpty;
+		assert: identifier isVariable;
+		assert: identifier binding isSelf
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test035encodeBinaryMessage
+	| astcodes root return message receiver argument |
+	astcodes := self encode: 'm ^self foo: true'.
+	self
+		assert: astcodes
+			= {MethodId. {ReturnId. true. {MessageId. 1. {IdentifierId. SelfId}. {IdentifierId. TrueId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	receiver := message receiver.
+	argument := message arguments first.
+	self
+		assert: receiver isVariable;
+		assert: receiver binding isSelf;
+		assert: argument isVariable;
+		assert: argument binding isLiteral;
+		assert: argument binding value = true
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test036encodeTernaryMessage
+	| astcodes root return message receiver arg1 arg2 |
+	astcodes := self encode: 'm ^self foo: true bar: false'.
+	self
+		assert: astcodes = {MethodId. {ReturnId. true. {MessageId. 1.
+					{IdentifierId. SelfId}.
+					{IdentifierId. TrueId}.
+					{IdentifierId. FalseId}}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	return := root statements first.
+	self assert: return isReturn.
+	message := return expression.
+	self assert: message isMessage.
+	receiver := message receiver.
+	arg1 := message arguments first.
+	arg2 := message arguments second.
+	self
+		assert: receiver isVariable;
+		assert: receiver binding isSelf;
+		assert: arg1 isVariable;
+		assert: arg1 binding isLiteral;
+		assert: arg1 binding value = true;
+		assert: arg2 isVariable;
+		assert: arg2 binding isLiteral;
+		assert: arg2 binding value = false
+! !
+
+!AstcodeTest methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:45'!
+test050instVarAssignment
+	| astcodes root assignment assignee expression |
+	astcodes := self encode: 'm name := true' in: Class.
+	self
+		assert: astcodes
+			= {MethodId. {AssignmentId. {IdentifierId. InstVarId. 6}. {IdentifierId. TrueId}}}.
+	root := self decode: astcodes of: method.
+	self
+		assert: root isMethod;
+		assert: root statements size = 1.
+	assignment := root statements first.
+	self
+		assert: assignment isAssignment;
+		assert: assignment assignees size = 1.
+	assignee := assignment assignees first.
+	expression := assignment expression.
+	self
+		assert: assignee isVariable;
+		assert: assignee binding isInstVar;
+		assert: assignee binding index = 6;
+		assert: expression isVariable;
+		assert: expression binding isLiteral;
+		assert: expression binding value = true
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+bootstrapper
+	^bootstrapper ifNil: [ bootstrapper := image generateLMR ]
+
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+runtime
+	^ self bootstrapper result
+! !
+
+!PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
+setUp
+	super setUp.
+	image := PowertalkRingImage fromSpec
+		wordSize: 8;
+		genesis;
+		bootstrap;
+		fillClasses;
+		fillSymbols
 ! !
 
 !Subject methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:54'!
@@ -35110,43 +35147,6 @@ printString2
 !Subject class methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
 initialize
 	Counts := IdentityDictionary new
-! !
-
-!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
-initialize
-	NilId := 1.
-	TrueId := 2.
-	FalseId := 3.
-	ArgumentId := 4.
-	TemporaryId := 5.
-	SelfId := 6.
-	SuperId := 7.
-	DynamicVarId := 14.
-	NestedDynamicVarId := 15.
-	PushRid := 50.
-	PopRid := 51
-! !
-
-!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:51'!
-initialize
-	MethodId := 101.
-	BlockId := 102.
-	IdentifierId := 103.
-	LiteralId := 104.
-	MessageId := 105.
-	CascadeId := 106.
-	BraceId := 107.
-	AssignmentId := 108.
-	ReturnId := 109.
-	PragmaId := 110
-! !
-
-!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
-initialize
-	Self := 0.
-	LocalArgument := 1.
-	Environment := 2.
-	EnvironmentValue := 3
 ! !
 
 !ProtoObject methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:44:40'!
@@ -35298,86 +35298,6 @@ primitivePrintString
 
 	^self printString! !
 
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:31:43'!
-bin 
-	"
-	255 bin
-	"
-	^self printStringBase: 2! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:31:24'!
-bin: bits 
-	"
-	(2 bin: 7) size = 7
-	"
-	| pad bin |
-	pad := String new: bits withAll: $0.
-	bin := pad , self bin.
-	^ bin copyFrom: bin size - bits + 1 to: bin size! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/29/2022 14:03:31'!
-thru: anInteger
-	^Stretch from: self thru: anInteger
-! !
-
-!SmallInteger methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:47'!
-isSmallInteger
-	^ true
-! !
-
-!Behavior methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:51:39'!
-configureCompiler: aCompiler! !
-
-!Behavior methodsFor: '*powerlang-core' stamp: 'KenD 6/5/2021 08:23:15'!
-isSpecies 
-	
-	^ true! !
-
-!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:46:44'!
-allSharedPoolsUsing: globals 
-
-	^self allSharedPools ! !
-
-!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/10/2021 12:53:29'!
-indexOfSlot: instVarName 
-	self flag: #KenD_Revisit.
-	"^self instVarIndexFor: instVarName"
-	
-	"Nota Bene: returns zero on failure; use nil?"
-	^self instVarNames findFirst: [ :name | name = instVarName ]! !
-
-!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:47:07'!
-localPools 
-
-	^#()! !
-
-!Class methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:55:50'!
-instanceSide
-
-	^ self! !
-
-!Metaclass methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:55:30'!
-instanceSide
-
-	^ thisClass! !
-
-!ClassOrganizer methodsFor: '*powerlang-core' stamp: 'KenD 11/1/2022 13:34:40'!
-selectorsFor: aString 
-
-	^ self listAtCategoryNamed: aString! !
-
-!BlockClosure methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:46'!
-evaluateWith: anArg
-	"Activate the receiver, creating a closure activation (MethodContext)
-	 whose closure is the receiver and whose caller is the sender of this message.
-	 Supply the argument and copied values to the activation as its arguments and copied temps.
-	 Primitive. Optional (but you're going to want this for performance)."	 
-	<primitive: 202>
-	numArgs ~= 1 ifTrue:
-		[self numArgsError: 1].
-	self primitiveFailed
-! !
-
 !Collection methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:48:46'!
 anyone 
 
@@ -35387,6 +35307,20 @@ anyone
 collect: collectBlock thenDo: doBlock
 	
 	^self do: [ :each | doBlock value: (collectBlock value: each)]! !
+
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
+conform: evaluable
+
+	^self allSatisfy: evaluable! !
+
+!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 14:06:30'!
+reject: rejectBlock thenDo: doBlock
+	"A utility which does not create intermediate collection"
+
+	self do: [ :each |
+		(rejectBlock value: each)
+		ifFalse: [ doBlock value: each ]
+	]! !
 
 !Collection class methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:20:37'!
 with: anObject withAll: aCollection 
@@ -35416,23 +35350,6 @@ indexOfSubCollection: aSubCollection
 		indexOfSubCollection: aSubCollection
 		startingAt: 1
 		ifAbsent: [0]! !
-
-!String methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:46'!
-withArticle
-	| article |
-	article := self first isVowel ifTrue: ['an'] ifFalse: ['a'].
-	^article , ' ' , self
-! !
-
-!Symbol methodsFor: '*powerlang-core' stamp: 'KenD 6/3/2021 13:53:01'!
-isBinary 
-
-	^self precedence = 2! !
-
-!UnicodeSymbol methodsFor: '*powerlang-core' stamp: 'KenD 11/12/2022 13:22:10'!
-isBinary 
-
-	^self precedence = 2! !
 
 !ArrayedCollection class methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:20:02'!
 with: anObject withAll: aCollection
@@ -35464,6 +35381,23 @@ asLittleEndianPositiveInteger
 	
 
 ! !
+
+!String methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:46'!
+withArticle
+	| article |
+	article := self first isVowel ifTrue: ['an'] ifFalse: ['a'].
+	^article , ' ' , self
+! !
+
+!Symbol methodsFor: '*powerlang-core' stamp: 'KenD 6/3/2021 13:53:01'!
+isBinary 
+
+	^self precedence = 2! !
+
+!UnicodeSymbol methodsFor: '*powerlang-core' stamp: 'KenD 11/12/2022 13:22:10'!
+isBinary 
+
+	^self precedence = 2! !
 
 !Dictionary methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:50:25'!
 removeAllSuchThat: aBlock 
@@ -35550,6 +35484,34 @@ uint64le: anInteger
 	self nextPut: (anInteger byteAt: 7).
 	self nextPut: (anInteger byteAt: 8)! !
 
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 11:20:29'!
+copyFrom: start to: end
+
+	| startPos result |
+	startPos := self position.
+	self position: start - 1.
+	result := self next: end - start + 1.
+	self position: startPos.
+	^result! !
+
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:36'!
+peek: n
+
+	| startPos safe data |
+	startPos := self position.
+	safe := n min: (self size - startPos).
+	data := self next: safe.
+	self position: startPos.
+	^data
+	! !
+
+!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:54'!
+prev 
+
+	^self position > 0
+		ifTrue: [self position: self position - 1; peek]
+		ifFalse: [self error: 'read beyond start of stream']! !
+
 !WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:58:02'!
 nextBytePut: aCollection 
 
@@ -35627,6 +35589,147 @@ nextULongPut: anInteger
 		| bi |
 		bi := anInteger byteAt: i.
 		self nextPut: bi ]! !
+
+!Behavior methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:51:39'!
+configureCompiler: aCompiler! !
+
+!Behavior methodsFor: '*powerlang-core' stamp: 'KenD 6/5/2021 08:23:15'!
+isSpecies 
+	
+	^ true! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:46:44'!
+allSharedPoolsUsing: globals 
+
+	^self allSharedPools ! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/10/2021 12:53:29'!
+indexOfSlot: instVarName 
+	self flag: #KenD_Revisit.
+	"^self instVarIndexFor: instVarName"
+	
+	"Nota Bene: returns zero on failure; use nil?"
+	^self instVarNames findFirst: [ :name | name = instVarName ]! !
+
+!ClassDescription methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:47:07'!
+localPools 
+
+	^#()! !
+
+!Class methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:55:50'!
+instanceSide
+
+	^ self! !
+
+!Metaclass methodsFor: '*powerlang-core' stamp: 'KenD 6/8/2021 06:55:30'!
+instanceSide
+
+	^ thisClass! !
+
+!ClassOrganizer methodsFor: '*powerlang-core' stamp: 'KenD 11/1/2022 13:34:40'!
+selectorsFor: aString 
+
+	^ self listAtCategoryNamed: aString! !
+
+!BlockClosure methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:46'!
+evaluateWith: anArg
+	"Activate the receiver, creating a closure activation (MethodContext)
+	 whose closure is the receiver and whose caller is the sender of this message.
+	 Supply the argument and copied values to the activation as its arguments and copied temps.
+	 Primitive. Optional (but you're going to want this for performance)."	 
+	<primitive: 202>
+	numArgs ~= 1 ifTrue:
+		[self numArgsError: 1].
+	self primitiveFailed
+! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:31:43'!
+bin 
+	"
+	255 bin
+	"
+	^self printStringBase: 2! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:31:24'!
+bin: bits 
+	"
+	(2 bin: 7) size = 7
+	"
+	| pad bin |
+	pad := String new: bits withAll: $0.
+	bin := pad , self bin.
+	^ bin copyFrom: bin size - bits + 1 to: bin size! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:06'!
+bitShiftRight: anInteger 
+
+	^self bitShift: 0 - anInteger! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:30:23'!
+bitsAt: aStretch 
+	"
+	(2r001101010 bitField: (3 thru: 6)) bin = '1010'
+	(-16r40000000 bitField: (29 thru: 31)) bin = '100'
+	"
+	| shifted mask |
+	shifted := self bitShiftRight: aStretch start - 1.
+	mask := 1 bitShift: aStretch length.
+	^shifted bitAnd: mask - 1! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:29:27'!
+bitsAt: aStretch put: anInteger 
+	"
+	((2r001101100 bitsAt: (3 thru: 6) put: 2r1101) bitField: (3 thru: 6)) bin = '1101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (29 thru: 31)) bin = '101'
+	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (1 thru: 3)) bin = '100'
+	"
+	| shifted max |
+	shifted := anInteger bitShift: aStretch start - 1.
+	max := 1 bitShift: aStretch length.
+	anInteger < max ifFalse: [self error: 'invalid argument'].
+	^(self bitsClear: aStretch) bitOr: shifted! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:29:57'!
+bitsClear: aStretch 
+	"
+	(2r111100110 bitsClear: (3 thru: 6)) = 2r111000010
+	"
+	| mask |
+	mask := (1 bitShift: aStretch end) - (1 bitShift: aStretch start - 1).
+	^self bitAnd: mask bitInvert! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:30:51'!
+isOnBit: n
+
+	^(self bitAnd: n) = n! !
+
+!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:54:20'!
+linearFeedbackShiftRandom: key 
+	"
+	LFSR implementation (avoids 0 by definition).
+	More keys at: https://users.ece.cmu.edu/~koopman/lfsr/index.html
+	"
+
+	| shifted |
+	shifted := self bitShift: -1.
+	^ (self bitAnd: 1) = 0
+		ifTrue: [ shifted ]
+		ifFalse: [ shifted bitXor: key ]! !
+
+!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/29/2022 14:03:31'!
+thru: anInteger
+	^Stretch from: self thru: anInteger
+! !
+
+!SmallInteger methodsFor: '*Powerlang-Compatibility-Pharo' stamp: 'KenD 1/30/2023 10:10:47'!
+isSmallInteger
+	^ true
+! !
+ObjectHeaderMasks initialize!
+ObjectHeaderOffsets initialize!
+AstBindingTypes initialize!
+AstNodeTypes initialize!
+ClosureElementTypes initialize!
 CharacterConstants initialize!
 OperandTypeFlags initialize!
 RegistersRISCV initialize!
@@ -35637,15 +35740,10 @@ SCompiledMethodFlags initialize!
 SExpressionTypes initialize!
 SFFIDescriptor initialize!
 Assembler initialize!
-SmalltalkInterpreter initialize!
-AstcodeDecoder initialize!
 MethodEvaluator initialize!
 PowertalkRingModule initialize!
+SmalltalkInterpreter initialize!
+AstcodeDecoder initialize!
 MessageCollector initialize!
-ObjectHeaderMasks initialize!
-ObjectHeaderOffsets initialize!
 Subject initialize!
-AstBindingTypes initialize!
-AstNodeTypes initialize!
-ClosureElementTypes initialize!
 PowerLangPackage postPackageInstall!
