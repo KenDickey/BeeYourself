@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6253] on 7 March 2024 at 2:19:29 pm'!
+'From Cuis6.3 [latest update: #6253] on 12 March 2024 at 2:50:51 pm'!
 'Description Bootstrap test: Bee Compiler -> ast codes'!
-!provides: 'FromBee' 1 5!
+!provides: 'FromBee' 1 6!
 !requires: 'Cuis-Base' 63 6247 nil!
 !requires: 'BeeCompatibility' 1 60 nil!
 !requires: 'ExchangeFormat-Tonel-Lite' 1 67 nil!
@@ -11,9 +11,11 @@ SystemOrganization addCategory: #'FromBee-SCompiler-Parser'!
 SystemOrganization addCategory: #'FromBee-SCompiler'!
 SystemOrganization addCategory: #'FromBee-SCompiler-Bindings'!
 SystemOrganization addCategory: #'FromBee-Compatibility-Pharo'!
-SystemOrganization addCategory: 'FromBee-ProtoBoot'!
+SystemOrganization addCategory: #'FromBee-ProtoBoot'!
 SystemOrganization addCategory: #FromBee!
 SystemOrganization addCategory: #'FromBee-Core-SExpressions'!
+SystemOrganization addCategory: #'FromBee-Core-Metaphysics'!
+SystemOrganization addCategory: #'FromBee-Core-Execution'!
 
 
 !classDefinition: #AstBindingTypes category: #'FromBee-SCompiler-Backend'!
@@ -94,6 +96,16 @@ SCompiledMethod variableSubclass: #SCalloutMethod
 	category: 'FromBee-SCompiler-Backend'!
 !classDefinition: 'SCalloutMethod class' category: #'FromBee-SCompiler-Backend'!
 SCalloutMethod class
+	instanceVariableNames: ''!
+
+!classDefinition: #SClosure category: #'FromBee-Core-Metaphysics'!
+Array variableSubclass: #SClosure
+	instanceVariableNames: 'block home'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'FromBee-Core-Metaphysics'!
+!classDefinition: 'SClosure class' category: #'FromBee-Core-Metaphysics'!
+SClosure class
 	instanceVariableNames: ''!
 
 !classDefinition: #SFFIDescriptor category: #'FromBee-SCompiler-Parser'!
@@ -726,13 +738,13 @@ Object subclass: #NumberParser2
 NumberParser2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #BeeProtoImage category: 'FromBee-ProtoBoot'!
+!classDefinition: #BeeProtoImage category: #'FromBee-ProtoBoot'!
 Object subclass: #BeeProtoImage
 	instanceVariableNames: 'isBigEndian classes methods baseAddressOfImage nextFreeAddressOfImage lastHash firstForeignObject lastForeignObject foreignObjectsMap specialObjectsArrayForeignObject globalVariables symbols processorBindingForeignObject smalltalkForeignObject displayForeignObject startUpMethod'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FromBee-ProtoBoot'!
-!classDefinition: 'BeeProtoImage class' category: 'FromBee-ProtoBoot'!
+!classDefinition: 'BeeProtoImage class' category: #'FromBee-ProtoBoot'!
 BeeProtoImage class
 	instanceVariableNames: ''!
 
@@ -745,6 +757,26 @@ Object subclass: #AstcodeDecoder
 !classDefinition: 'AstcodeDecoder class' category: #'FromBee-Core-SExpressions'!
 AstcodeDecoder class
 	instanceVariableNames: 'BindingTypes NodeTypes'!
+
+!classDefinition: #SExpressionInterpreter category: #'FromBee-Core-Metaphysics'!
+Object subclass: #SExpressionInterpreter
+	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
+	classVariableNames: ''
+	poolDictionaries: 'ClosureElementTypes'
+	category: 'FromBee-Core-Metaphysics'!
+!classDefinition: 'SExpressionInterpreter class' category: #'FromBee-Core-Metaphysics'!
+SExpressionInterpreter class
+	instanceVariableNames: ''!
+
+!classDefinition: #SExpressionLinearizer category: #'FromBee-Core-Execution'!
+Object subclass: #SExpressionLinearizer
+	instanceVariableNames: 'operations primitives inBlock runtime greaterThan one plus stackTop dropsArguments not equalsEquals ifTrue ifFalse ifTrueIfFalse ifFalseIfTrue ifNil ifNotNil ifNilIfNotNil ifNotNilIfNil whileTrue whileFalse whileTrue_ whileFalse_ toDo toByDo repeat timesRepeat andNot orNot'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'FromBee-Core-Execution'!
+!classDefinition: 'SExpressionLinearizer class' category: #'FromBee-Core-Execution'!
+SExpressionLinearizer class
+	instanceVariableNames: ''!
 
 
 !BeeProtoImage commentStamp: '<historical>' prior: 0!
@@ -1170,6 +1202,70 @@ behaviorNativeCodeSlot
 pragma: anSPragmaNode
 	descriptor := anSPragmaNode info.
 	symbol := anSPragmaNode name
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+block
+	^block
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+block: aPCompiledMethod
+	block := aPCompiledMethod
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateWith: anObject with: anotherObject
+	block argumentCount = 2
+		ifFalse: [^super evaluateWith: anObject with: anotherObject].
+	^self value: anObject value: anotherObject
+	
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+home: anObject
+	home := anObject
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+isSelfEvaluating
+	^false
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+value
+	^ home evaluateClosure: self
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+value: anObject
+	^home evaluateClosure: self with: anObject
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+value: anObject1 value: anObject2
+	^ home evaluateClosure: self with: anObject1 with: anObject2
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+value: anObject1 value: anObject2 with: anObject3
+	^ home evaluateBlock: self with: anObject1 with: anObject2 with: anObject3
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+whileFalse: aBlockSubject
+	| result |
+	[ result := home evaluateClosure: self.
+	result _gate handle asLocalBoolean ] 
+		whileFalse: [ home evaluateClosure: aBlockSubject _gate handle oid ]
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+whileTrue: aBlockSubject
+	| result |
+	[ result := home evaluateClosure: self.
+	result _gate handle asLocalBoolean ]
+		whileTrue: [ home evaluateClosure: aBlockSubject _gate handle oid ]
 ! !
 
 !SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 3/4/2024 06:55:48'!
@@ -4531,6 +4627,52 @@ new
 
 	^ self basicNew initialize.
 
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeBindingIds
+	| named |
+	named := self addNamespaceAs: #BindingIds.
+	named
+		at: #NilId put: 1;
+		at: #TrueId put: 2;
+		at: #FalseId put: 3;
+		at: #ArgumentId put: 4;
+		at: #TemporaryId put: 5;
+		at: #SelfId put: 6;
+		at: #SuperId put: 7;
+		at: #DynamicVarId put: 14;
+		at: #NestedDynamicVarId put: 15;
+		at: #PushRid put: 50;
+		at: #PopRid put: 51
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeClosureElementIds
+	| named |
+	named := self addNamespaceAs: #ClosureElementIds.
+	named
+		at: #Self put: 0;
+		at: #LocalArgument put: 1;
+		at: #Environment put: 2;
+		at: #EnvironmentValue put: 3
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeTreecodeIds
+	| named |
+	named := self addNamespaceAs: #TreecodeIds.
+	named
+		at: #MethodId put: 101;
+		at: #BlockId put: 102;
+		at: #IdentifierId put: 103;
+		at: #LiteralId put: 104;
+		at: #MessageId put: 105;
+		at: #CascadeId put: 106;
+		at: #BraceId put: 107;
+		at: #AssignmentId put: 108;
+		at: #ReturnId put: 109;
+		at: #PragmaId put: 110
 ! !
 
 !SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
@@ -8838,6 +8980,951 @@ new
 
 	^ self basicNew initialize.
 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+argumentAt: index in: anInteger
+	| env |
+	anInteger ifNil: [ ^arguments at: index ].
+	env := self environmentFor: anInteger.
+	^env at: index.
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+arguments: aCollection
+	arguments := aCollection
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+captureClosure: anSBlock
+	| closure s i type env arg |
+	closure := anSBlock compiledCode newClosure home: self.
+	s := anSBlock capturedVariables readStream.
+	i := 1.
+	[ s atEnd ]
+		whileFalse: [ type := s next.
+			type = Self
+				ifTrue: [ closure at: i put: receiver ].
+			type = Environment
+				ifTrue: [ closure at: i put: environment].
+			type = EnvironmentValue
+				ifTrue: [ env := environment at: s next.
+					closure at: i put: env ].
+			type = LocalArgument
+				ifTrue: [ arg := arguments at: s next.
+					closure at: i put: arg ].
+			i := i + 1 ].
+	^ closure
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+dispatch: message to: msgReceiver
+	^ self subclassResponsibility
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+dispatchSpecial: message
+		^self subclassResponsibility 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+environmentFor: anInteger
+	"
+	-1: inlined argument.
+	 0: current env.
+ 	>0: index of env in current env. "
+
+	anInteger = 0
+		ifTrue: [ ^ environment ].
+	anInteger = -1
+		ifTrue: [ ^ temporaries ].
+	^ environment at: anInteger
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluate: anSCompiledMethod
+	method := anSCompiledMethod.
+	^ self visitMethod: anSCompiledMethod sexpressions
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure
+	^self evaluateClosure: aPClosure withArgs: {}
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure with: anObject
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure with: anObject with: anotherObject
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+initialize
+	returned := false.
+	blockAstcodes := IdentityDictionary new
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+instVarAt: anInteger
+	^receiver _gate slotAt: anInteger
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+instVarAt: index put: aValue
+	^ receiver _gate handle slotAt: index put: aValue _gate handle oid
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+isSpecial: aSelectorMirror
+	^ self subclassResponsibility 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+method
+	^method
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnBoolean: aBoolean
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnInteger: anInteger
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := runtime integerHandle: anInteger.
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnObject: anObject
+	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
+	self ASSERT: false
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+parent
+	^parent
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+parent: anInterpreter
+	parent := anInterpreter
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+receiver
+	^receiver
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+receiver: anObject
+	receiver := anObject.
+	returnValue := anObject
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOn: anObjectHandle
+	^ anObjectHandle maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnBoolean: aBoolean in: aRuntime
+	| t f |
+	^ aBoolean
+		ifTrue: [ t := aRuntime true. t oid = true ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] ]
+		ifFalse: [ f := aRuntime false. f oid = false ifTrue: [ f mirage ] ifFalse: [ f maneuverer]] 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnInteger: anInteger in: aRuntime
+	^ (aRuntime integerHandle: anInteger) maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnObject: anObjectHandle
+	^ anObjectHandle maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnObjectOk: anObjectHandle
+	^ self maneuvererOn: anObjectHandle
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+temporaryAt: index in: anInteger
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+temporaryAt: index in: anInteger put: aValue
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitArgument: anSIdentifier
+	^arguments at: anSIdentifier binding index
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitAssignment: anSAssignment
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitBlock: anSBlock
+	| closure handle |
+	closure := anSBlock isInlined
+				   ifTrue: [ SCompiledBlock new newClosure home: self ]
+				   ifFalse: [ self captureClosure: anSBlock ].
+	blockAstcodes at: closure block put: anSBlock.
+	self halt.
+	"	handle := LocalHandle on: closure within: localRuntime."
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitIdentifier: anSIdentifier
+	^anSIdentifier binding valueWithin: self.
+
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitMessage: anSMessage
+	| msgReceiver msgArguments selector message |
+	msgReceiver := anSMessage receiver acceptVisitor: self.
+	msgArguments := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := anSMessage selector.
+	message := MessageSend
+		receiver: msgReceiver
+		selector: selector
+		arguments: msgArguments.
+	 (self isSpecial: selector)
+		ifTrue: [ ^self dispatchSpecial: message ].
+	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
+	^self dispatch: message to: msgReceiver
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitMethod: anSMethod
+	| primitive value |
+	primitive := anSMethod primitive.
+	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
+	environment := Array new: method environmentCount.
+	value := self visitScript: anSMethod.
+	^returned ifTrue: [ value ] ifFalse: [ receiver ]
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitReturn: anSReturn
+	returnValue := anSReturn expression acceptVisitor: self.
+	returned := true.
+	^returnValue
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitScript: anSScript
+	| result |
+	anSScript statements do: [:node | 
+		result := node acceptVisitor: self.
+		returned ifTrue: [^returnValue]
+	].
+	^result
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitTemporary: anSIdentifier
+	^temporaries at: anSIdentifier binding index
+! !
+
+!SExpressionInterpreter methodsFor: 'private' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure withArgs: anArray
+	| oldArgs oldTemps oldEnv block sblock result |
+	block := aPClosure block.
+	sblock := blockAstcodes at: block.
+	sblock isInlined ifTrue: [
+			 anArray with: sblock inlinedArgs do: [:arg :i | temporaries at: i put: arg].
+			^ self visitScript: sblock ].
+	oldArgs := arguments.
+	oldTemps := temporaries.
+	oldEnv := environment.
+	arguments := anArray.
+	temporaries := Array new: block tempCount.
+	environment := aPClosure.
+	result := self visitScript: sblock.
+	environment := oldEnv.
+	temporaries := oldTemps.
+	arguments := oldArgs.
+	^ result
+! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+method: aCompiledMethod
+	method := aCompiledMethod.
+	temporaries := Array new: aCompiledMethod tempCount.
+! !
+
+!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 3/8/2024 10:09:40'!
+printOn: aStream
+	aStream
+		nextPutAll: self class name withArticle;
+		cr;
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		cr.
+	aStream
+		nextPutAll: 'rcvr -> ';
+		print: receiver _gate handle;
+		cr.
+	arguments
+		withIndexDo: [ :a :i | 
+			aStream
+				nextPutAll: 'arg ';
+				print: i;
+				nextPutAll: ' -> ';
+				print: a _gate;
+				cr ].
+	aStream nextPutAll: method source
+! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 3/8/2024 10:09:40'!
+new
+	^self basicNew initialize
+! !
+
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 3/8/2024 10:09:40'!
+on: receiverMirror with: arguments for: method
+	^self new
+		receiver: receiverMirror;
+		arguments: arguments;
+		method: method
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+assign: aCollection
+	| op |
+	op := SOpAssign new assignees: aCollection.
+	operations add: op
+
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+branchIf: aBoolean
+	| class op |
+	class := aBoolean
+		ifTrue: [ SOpJumpTrue ]
+		ifFalse: [ SOpJumpFalse ].
+		op := class new.
+	operations add: op.
+	^op
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+branchTargetOf: branch
+	branch target: self currentPC
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+currentPC
+	^ operations size
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dispatch: message
+	| op count |
+	op := SOpDispatchMessage new message: message.
+	operations add: op.
+	dropsArguments ifTrue: [ ^self ].
+	
+	count := message arguments size.
+	count > 0 ifTrue: [ count := count + 1 ].
+	stackTop := stackTop - count 
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dropCascadeMessageArgs: argsize
+	(argsize = 0 orNot: [ dropsArguments ])
+		ifTrue: [ ^ self ].
+	self dropToS: argsize
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dropMessageArgs: argsize
+	(argsize = 0 orNot: [ dropsArguments ])
+		ifTrue: [ ^ self ].
+	self dropToS: argsize + 1
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dropToS
+	^self dropToS: 1
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dropToS: anInteger
+	| op |
+	op := SOpDropToS new count: anInteger.
+	operations add: op.
+	stackTop := stackTop - anInteger
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+dropsArguments
+	dropsArguments := true
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+initialize
+	dropsArguments := false
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage binaryWhile: aBoolean
+	"TODO: cleanup block locals to nil after each cycle"
+
+	| start end |
+	start := self currentPC.
+	self visitStatements: anSMessage receiver statements.
+	end := self branchIf: aBoolean not.
+	self
+		visitStatements: anSMessage arguments first statements;
+		jumpTo: start;
+		branchTargetOf: end
+		
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage if: aBoolean
+	| branch end |
+	anSMessage receiver acceptVisitor: self.
+	branch := self branchIf: aBoolean not.
+	end := self
+		visitStatements: anSMessage arguments first statements;
+		jump.
+	self
+		branchTargetOf: branch;
+		loadRwithNil;
+		branchTargetOf: end 
+		
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage ifNil: aBoolean
+	| nilObj message branch end arg index |
+	anSMessage receiver acceptVisitor: self.
+	arg := anSMessage arguments first.
+	(arg isBlock and: [ arg inlinedArgs size = 1]) ifTrue: [ 
+		index := arg inlinedArgs first.
+		self storeRintoFrameAt: index
+		 ].
+	self pushR.
+	nilObj := SLiteral new value: runtime nil.
+	message := SMessage new
+		receiver: (SOpLoadRfromStack new index: 0);
+		arguments: {nilObj};
+		selector: equalsEquals.
+	self visitMessage: message.
+	branch := self branchIf: aBoolean not.
+
+	arg isBlock
+		ifTrue: [ self visitStatements: arg statements ]
+		ifFalse: [ arg acceptVisitor: self ].
+	end := self
+		dropToS;
+		jump.
+	self
+		branchTargetOf: branch;
+		popR;
+		branchTargetOf: end
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage ifNilIfNotNil: aBoolean
+	| arguments nilObj message branch end arg index |
+	anSMessage receiver acceptVisitor: self.
+	arguments := anSMessage arguments.
+	arg := aBoolean ifTrue: [arguments second] ifFalse: [arguments first].
+	(arg isBlock and: [ arg inlinedArgs size = 1 ])
+		ifTrue: [ index := arg inlinedArgs first.
+			self storeRintoFrameAt: index ].
+	self pushR.
+	nilObj := SLiteral new value: runtime nil.
+	message := SMessage new
+		receiver: (SOpLoadRfromStack new index: 0);
+		arguments: {nilObj};
+		selector: equalsEquals.
+	self visitMessage: message.
+	branch := self branchIf: aBoolean not.
+	end := self
+		visitStatements: arguments first statements;
+		jump.
+	self
+		branchTargetOf: branch;
+		visitStatements: arguments second statements;
+		branchTargetOf: end;
+		dropToS
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage ifTrueIfFalse: aBoolean
+	| branch end |
+	anSMessage receiver acceptVisitor: self.
+	branch := self branchIf: aBoolean not.
+	end := self
+		visitStatements: anSMessage arguments first statements;
+		jump.
+	self
+		branchTargetOf: branch;
+		visitStatements: anSMessage arguments second statements;
+		branchTargetOf: end
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inline: anSMessage unitaryWhile: aBoolean
+	"TODO: cleanup block locals to nil after each cycle"
+
+	| start branch |
+	start := self currentPC.
+	self visitStatements: anSMessage receiver statements.
+	branch :=  self branchIf: aBoolean.
+	branch target: start.
+
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineAnd: anSMessage
+	| branches |
+	anSMessage receiver acceptVisitor: self.
+	branches := OrderedCollection new.
+	anSMessage arguments
+		do: [ :block | 
+			branches add: (self branchIf: false).
+	
+	self
+		visitStatements: block statements].
+	branches do: [ :branch | self branchTargetOf: branch ]
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineAndNot: anSMessage
+	| branch message |
+	anSMessage receiver acceptVisitor: self.
+	branch := self branchIf: false.
+	message := SMessage new
+		selector: not;
+		arguments: #().
+	self
+		visitStatements: anSMessage arguments first statements;
+		dispatch: message;
+		branchTargetOf: branch
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineOr: anSMessage
+	|  branches |
+	anSMessage receiver acceptVisitor: self.
+	branches := OrderedCollection new.
+	 anSMessage arguments do: [ :block | 
+		branches add: (self branchIf: true).
+		self visitStatements: block statements].
+	branches do: [:branch | self branchTargetOf: branch]
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineOrNot: anSMessage
+	| branch message |
+	anSMessage receiver acceptVisitor: self.
+		branch := self branchIf: true.
+	message := SMessage new
+		selector: not;
+		arguments: #().
+	self
+		visitStatements: anSMessage arguments first statements;
+		dispatch: message;
+		branchTargetOf: branch
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineRepeat: anSMessage
+	"TODO: cleanup block locals to nil after each cycle"
+
+	| start |
+	start := self currentPC.
+	self
+		visitStatements: anSMessage receiver statements;
+		jumpTo: start
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineTimesRepeat: anSMessage
+	"TODO: cleanup block locals to nil after each cycle"
+
+	| current limit start end compare increment |
+	operations add: one.
+	self pushR.
+	current := SOpLoadRfromFrame new index: stackTop.
+	anSMessage receiver acceptVisitor: self.
+	self pushR.
+	limit := SOpLoadRfromFrame new index: stackTop.
+	start := self currentPC.
+	compare := SMessage new
+		receiver: current;
+		selector: greaterThan;
+		arguments: {limit}.
+	self visitMessage: compare.
+	end := self branchIf: true.
+	self visitStatements: anSMessage arguments first statements.
+	increment := SMessage new
+		receiver: current;
+		selector: plus;
+		arguments: {one}.
+	self
+		visitMessage: increment;
+		storeRintoFrameAt: current index;
+		jumpTo: start;
+		branchTargetOf: end;
+		dropToS: 2
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+inlineToDo: anSMessage
+	"TODO: cleanup block locals to nil after each cycle"
+
+	| index current limit start end compare increment |
+	anSMessage receiver acceptVisitor: self.
+	index := anSMessage arguments second inlinedArgs first.
+	current := SOpLoadRfromFrame new index: index.
+	self storeRintoFrameAt: index.
+	anSMessage arguments first acceptVisitor: self.
+	self pushR.
+	limit := SOpLoadRfromFrame new index: stackTop.
+	start := self currentPC.
+	compare := SMessage new
+		receiver: current;
+		selector: greaterThan;
+		arguments: {limit}.
+	self visitMessage: compare.
+	end := self branchIf: true.
+	self visitStatements: anSMessage arguments second statements.
+	increment := SMessage new
+		receiver: current;
+		selector: plus;
+		arguments: {one}.
+	self
+		visitMessage: increment;
+		storeRintoFrameAt: index;
+		jumpTo: start;
+		branchTargetOf: end;
+		dropToS: 1
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+jump
+	| op |
+	op := SOpJump new.
+	operations add: op.
+	^op
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+jumpTo: anInteger
+| op |
+op := SOpJump new target: anInteger.
+	operations add: op
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+loadRfromStack: anInteger
+	| op |
+	op := SOpLoadRfromStack new index: anInteger.
+	operations add: op
+
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+loadRwithNil
+	operations add: SOpLoadRwithNil new
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+loadRwithSelf
+	operations add: SOpLoadRwithSelf new
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+operations
+^operations
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+popR
+	operations add: SOpPopR new.
+	stackTop := stackTop - 1
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+primitive: aClosure
+	operations add: (SOpPrimitive new block: aClosure)
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+pushR
+	operations add: SOpPushR new.
+	stackTop := stackTop + 1
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+reset
+	operations := OrderedCollection new.
+	inBlock := false.
+
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+return
+	operations add: SOpReturn new
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+return: isLocal
+	|  class |
+	class := (isLocal andNot: [ inBlock ])
+		ifTrue: [ SOpReturn ]
+		ifFalse: [ SOpNonLocalReturn ].
+	operations add: class new
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+runtime: aPowertalkRuntime
+	| literal |
+	runtime := aPowertalkRuntime.
+	literal := runtime newInteger: 1.
+	one := SLiteral new value: literal.
+	plus := runtime symbolFromLocal: #+.
+	greaterThan := runtime symbolFromLocal: #>.
+	equalsEquals := runtime symbolFromLocal: #==.
+	not := runtime symbolFromLocal: #not.
+	ifTrue := runtime symbolFromLocal: #ifTrue:.
+	ifFalse := runtime symbolFromLocal: #ifFalse:.
+	ifTrueIfFalse := runtime symbolFromLocal: #ifTrue:ifFalse:.
+	ifFalseIfTrue := runtime symbolFromLocal: #ifFalse:ifTrue:.
+	ifNil := runtime symbolFromLocal: #ifNil:.
+	ifNotNil := runtime symbolFromLocal: #ifNotNil:.
+	ifNilIfNotNil := runtime symbolFromLocal: #ifNil:ifNotNil:.
+	ifNotNilIfNil := runtime symbolFromLocal: #ifNotNil:ifNil:.
+	repeat := runtime symbolFromLocal: #repeat.
+	whileTrue := runtime symbolFromLocal: #whileTrue.
+	whileFalse := runtime symbolFromLocal: #whileFalse.
+	whileTrue_ := runtime symbolFromLocal: #whileTrue:.
+	whileFalse_ := runtime symbolFromLocal: #whileFalse:.
+	timesRepeat := runtime symbolFromLocal: #timesRepeat:.
+	toDo := runtime symbolFromLocal: #to:do:.
+	toByDo := runtime symbolFromLocal: #to:by:do:.
+	andNot := runtime symbolFromLocal: #andNot:.
+	orNot := runtime symbolFromLocal: #orNot:
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+storeRintoFrameAt: anInteger
+	| op |
+	op := SOpStoreRintoFrame new index: anInteger.
+	operations add: op
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitAssignment: anSAssignment
+	anSAssignment expression acceptVisitor: self.
+	self
+		assign: anSAssignment assignees
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitBlock: anSBlock
+	| prevInBlock prevOperations statements |
+	operations add: anSBlock.
+	prevInBlock := inBlock.
+	prevOperations := operations.
+	inBlock := true.
+	operations := OrderedCollection new.
+	statements := anSBlock statements.
+	statements do: [ :node | node acceptVisitor: self ].
+	statements isEmpty
+		ifTrue: [ self loadRwithNil ]
+		ifFalse: [ statements last isReturn
+				ifFalse: [ self return ] ].
+	anSBlock isInlined ifFalse: [ 
+	runtime
+		blockOptimizedCode: anSBlock compiledCode
+		put: operations asArray].
+	operations := prevOperations.
+	inBlock := prevInBlock
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitCascade: anSCascade
+	| args argsize |
+	anSCascade receiver acceptVisitor: self.
+	self pushR.
+	anSCascade messages
+		do: [ :msg | 
+			args := msg arguments.
+			argsize := args size.
+			args
+				do: [ :arg | 
+					arg acceptVisitor: self.
+					self pushR ].
+			self
+				loadRfromStack: argsize;
+				dispatch: msg;
+				dropCascadeMessageArgs: argsize ].
+	self dropToS
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitIdentifier: anSIdentifier
+	operations add: anSIdentifier
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitInlinedMessage: anSMessage
+	| selector |
+	selector := anSMessage selector.
+	selector == ifTrue
+		ifTrue: [ ^ self inline: anSMessage if: true ].
+	selector == ifFalse
+		ifTrue: [ ^ self inline: anSMessage if: false ].
+	selector == ifNil
+		ifTrue: [ ^ self inline: anSMessage ifNil: true ].
+	selector == ifNotNil
+		ifTrue: [ ^ self inline: anSMessage ifNil: false ].
+	selector == ifNilIfNotNil
+		ifTrue: [ ^ self inline: anSMessage ifNilIfNotNil: true ].
+	selector == ifNotNilIfNil
+		ifTrue: [ ^ self inline: anSMessage ifNilIfNotNil: false ].
+	selector == ifTrueIfFalse
+		ifTrue: [ ^ self inline: anSMessage ifTrueIfFalse: true ].
+	selector == ifFalseIfTrue
+		ifTrue: [ ^ self inline: anSMessage ifTrueIfFalse: false ].
+	selector == whileTrue
+		ifTrue: [ ^ self inline: anSMessage unitaryWhile: true ].
+	selector == whileFalse
+		ifTrue: [ ^ self inline: anSMessage unitaryWhile: false ].
+	selector == whileTrue_
+		ifTrue: [ ^ self inline: anSMessage binaryWhile: true ].
+	selector == whileFalse_
+		ifTrue: [ ^ self inline: anSMessage binaryWhile: false ].
+	selector == repeat
+		ifTrue: [ ^ self inlineRepeat: anSMessage ].
+	selector == toDo
+		ifTrue: [ ^ self inlineToDo: anSMessage ].
+	selector == toByDo
+		ifTrue: [ ^ self inlineToByDo: anSMessage ].
+	selector == timesRepeat
+		ifTrue: [ ^ self inlineTimesRepeat: anSMessage ].
+	selector == andNot
+		ifTrue: [ ^ self inlineAndNot: anSMessage ].
+	selector == orNot
+		ifTrue: [ ^ self inlineOrNot: anSMessage ].
+	selector := runtime localSymbolFrom: selector.
+	(selector beginsWith: #or:)
+		ifTrue: [ ^ self inlineOr: anSMessage ].
+	(selector beginsWith: #and:)
+		ifTrue: [ ^ self inlineAnd: anSMessage ].
+
+	self ASSERT: false
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitLiteral: anSLiteral
+	operations add: anSLiteral
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitMessage: anSMessage
+	| args argsize |
+	anSMessage isInlined
+		ifTrue: [ ^ self visitInlinedMessage: anSMessage ].
+	anSMessage receiver acceptVisitor: self.
+	args := anSMessage arguments.
+	argsize := args size.
+	argsize > 0
+		ifTrue: [ self pushR ].
+	args
+		do: [ :arg | 
+			arg acceptVisitor: self.
+			self pushR ].
+	argsize > 0
+		ifTrue: [ self loadRfromStack: argsize ].
+	self dispatch: anSMessage; dropMessageArgs: argsize.
+	
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitMethod: anSMethod
+	| primitive statements symbol |
+	self reset.
+	primitive := anSMethod pragma.
+	primitive
+		ifNotNil: [ symbol := runtime localSymbolFrom: anSMethod primitive.
+			primitive := primitives at: symbol.
+			^ self
+				primitive: primitive;
+				return ].
+	stackTop := runtime methodTempCount: anSMethod compiledCode.
+	statements := anSMethod statements.
+	statements do: [ :node | node acceptVisitor: self ].
+	(statements isEmpty orNot: [ statements last isReturn ])
+		ifTrue: [ self
+				loadRwithSelf;
+				return ]
+! !
+
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
+visitReturn: anSReturn
+	anSReturn expression acceptVisitor: self.
+	self
+		return: anSReturn local
+! !
+
+!SExpressionLinearizer methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:45'!
+primitives: aCollection
+	primitives := aCollection
+! !
+
+!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:45'!
+visitOpLoadRfromFrame: anSOpLoadRfromFrame
+	operations add: anSOpLoadRfromFrame
+! !
+
+!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:45'!
+visitOpLoadRfromStack: anSOpLoadRfromStack
+self loadRfromStack: anSOpLoadRfromStack index
+! !
+
+!SExpressionLinearizer methodsFor: 'private' stamp: 'KenD 3/8/2024 10:09:45'!
+visitStatements: aCollection
+	aCollection do: [:sexpression | sexpression acceptVisitor: self]
+	
 ! !
 AstBindingTypes initialize!
 AstNodeTypes initialize!

@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5760] on 12 March 2024 at 4:11:58 pm'!
+'From Cuis6.3 [latest update: #6265] on 12 March 2024 at 4:39:22 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 75!
+!provides: 'RISC5-Instructions' 1 76!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
@@ -21,6 +21,16 @@ SharedPool subclass: #RISC5Regs
 	category: 'RISC5-Instructions'!
 !classDefinition: 'RISC5Regs class' category: #'RISC5-Instructions'!
 RISC5Regs class
+	instanceVariableNames: ''!
+
+!classDefinition: #RISC5InstructionsTests category: #'RISC5-Instructions'!
+TestCase subclass: #RISC5InstructionsTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'RISC5Regs'
+	category: 'RISC5-Instructions'!
+!classDefinition: 'RISC5InstructionsTests class' category: #'RISC5-Instructions'!
+RISC5InstructionsTests class
 	instanceVariableNames: ''!
 
 !classDefinition: #RISC5Instructions category: #'RISC5-Instructions'!
@@ -1013,16 +1023,6 @@ RV64UpperAddr subclass: #RV64LUI
 RV64LUI class
 	instanceVariableNames: ''!
 
-!classDefinition: #RISC5InstructionsTests category: #'RISC5-Instructions'!
-TestCase subclass: #RISC5InstructionsTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'RISC5Regs'
-	category: 'RISC5-Instructions'!
-!classDefinition: 'RISC5InstructionsTests class' category: #'RISC5-Instructions'!
-RISC5InstructionsTests class
-	instanceVariableNames: ''!
-
 
 !RISC5Instructions commentStamp: '<historical>' prior: 0!
 Dirt simple assembler for RiscV64 32 bit wide Instruction opcodes for RV64G
@@ -1470,10 +1470,10 @@ Load Upper Immediate
 Instruction Pattern:
   [immed20][regDest][opcode]!
 
-!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 3/26/2023 15:01:01'!
+!RISC5Regs class methodsFor: 'class initialization' stamp: 'KenD 3/12/2024 16:29:41'!
 initialize
 "
-	self initialize
+	RISC5Regs initialize
 "
 	"Register Encoding
 	 Note the non-uniform name ordering.
@@ -1560,6 +1560,187 @@ initialize
 	SizeQuad    := 2r11. "Quad Precision   128-bits"
 
 ! !
+
+!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
+testRV64I
+
+	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
+		= 2r0000000001000001000000110110011.
+	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) instruction
+		= 2r1000000001000001000000110110011.
+	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) printString 
+		= 'sub  GlobalPtr, ReturnAddr,StackPtr' .
+	"... ... ..."
+	self assert: 
+	  (RV64LD regDest: 1 regBase: 3 offset: 16rFFF) 
+		instruction 
+		= 2r11111111111100011011000010000011.
+		    "10987654321098765432109876543210"
+	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
+	self assert: ((RV64LB regDest: 10 regBase: 12 offset: 16rFFF) 
+				offset printStringBase: 16)
+				= 'FFF'.
+	self assert: 
+		((RV64LB regDest: 10 regBase: 12 offset: 16rA5A) 
+			printString )
+			=  'lb  Arg0, Arg2, 16rA5A' .
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001) instruction
+		= 2r11000000001110000001000011101111.
+		
+	self assert:
+		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
+		= 2r110000001110000000110.
+	
+	self assert: 
+		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
+		= 'jal  ReturnAddr, 16r181C02' .
+	self assert:
+		(RV64LUI regDest: 1 immediate: 16rC0E03)  printString 
+		 = 'lui  ReturnAddr, 16rC0E03' 
+		! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 11:44:25'!
+testB
+	"Test encode+decode B-type instructions"
+	
+	 #(#RV64BEQ #RV64BGE #RV64BGEU 
+	     #RV64BLT #RV64BLTU #RV64BNE)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	"Check immediate 12 swizzle/unswizzle. NB: treat immediate as unsigned"
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0100000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0100000000000.
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0010000000000) instruction rv64gBtypeImmediate ) 
+							 = 2r0010000000000.		
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0001111110000) instruction rv64gBtypeImmediate ) 
+							 = 2r0001111110000.				
+	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
+				immediateOffset: 2r0000000001111) instruction rv64gBtypeImmediate ) 
+							 = 2r0000000001111.	
+
+
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
+testI
+	"Test encode+decode I-type instructions"
+	
+	 #(   RV64ADDI RV64ANDI 
+		RV64ORI RV64SLLI RV64SLTI 
+		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
+		RV64FLW RV64FLD RV64FLH RV64FLQ
+		RV64LB RV64LBU RV64LD
+		RV64LH RV64LHU RV64LW RV64LWU)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 15:41:32'!
+testJ
+	"Test encode+decode J-type instructions"
+	
+	 #(#RV64JAL)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 offset: 16rFADED) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	"Check immediate20 swizzle"
+	self assert: (RV64JAL regDest: 10 offset:  16rFFFFF) 
+		  instruction rv64gJtypeImmediate = 16rFFFFF.    
+		
+	self assert: (RV64JAL regDest: 10 offset: 2r010000000000000000000) 
+		  instruction rv64gJtypeImmediate = 2r010000000000000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000001111111111) 
+		  instruction rv64gJtypeImmediate = 2r000000000001111111111.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r000000000010000000000) 
+		  instruction rv64gJtypeImmediate = 2r000000000010000000000.
+		
+	self assert: (RV64JAL regDest: 10 offset:  2r001111111100000000000) 
+		  instruction rv64gJtypeImmediate = 2r001111111100000000000.
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
+testR
+	"Test encode+decode R-type instructions"
+	
+	#(#RV64ADD #RV64AND  
+	#RV64DIV #RV64DIVU #RV64MUL 
+	#RV64OR #RV64REM #RV64REMU 
+	#RV64SLL #RV64SLT #RV64SLTU 
+	#RV64SRA #RV64SRL #RV64SUB 
+	#RV64XOR #RV64LR #RV64SC 
+	#RV64AMOSWAP #RV64AMOADD #RV64AMOAND 
+	#RV64AMOOR #RV64AMOXOR 
+	#RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 12:05:13'!
+testS
+	"Test encode+decode S-type instructions"
+	
+	 #( RV64SB RV64SH RV64SW RV64SD
+	     RV64FSQ RV64FSH RV64FSW RV64FSD )  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regSource: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:42'!
+testSysCall
+	"Test encode+decode SysCall instructions"
+	
+	#( RV64EBREAK 
+	     RV64ECALL ) do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class new) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
+
+!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:06:40'!
+testU
+	"Test encode+decode U-type instructions"
+	
+	 #(RV64LUI RV64AUIPC)  
+	do: [ :clsName |
+		| class encoding |
+		class := Smalltalk at: clsName.
+		encoding := (class regDest: Arg0 immediate: 16rFADED) instruction.
+		self assert: (encoding = 
+			(RISC5Instructions fromInteger: encoding) instruction).
+	].
+	! !
 
 !RISC5Instructions methodsFor: 'initialization' stamp: 'KenD 10/5/2022 11:37:08'!
 destReg: regDest
@@ -3858,187 +4039,6 @@ opName
 opcode
 	"Opcode for LUI"
 	^2r0110111! !
-
-!RISC5InstructionsTests methodsFor: 'tests - RV64I' stamp: 'KenD 3/25/2023 09:10:42'!
-testRV64I
-
-	self assert: (RV64ADD regDest: X3 regA: X1 regB: X2) instruction 
-		= 2r0000000001000001000000110110011.
-	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) instruction
-		= 2r1000000001000001000000110110011.
-	self assert: (RV64SUB regDest: 3 regA: 1 regB: 2) printString 
-		= 'sub  GlobalPtr, ReturnAddr,StackPtr' .
-	"... ... ..."
-	self assert: 
-	  (RV64LD regDest: 1 regBase: 3 offset: 16rFFF) 
-		instruction 
-		= 2r11111111111100011011000010000011.
-		    "10987654321098765432109876543210"
-	"iimmOffset 20:31][baseReg 15:19][func3 12:14][destReg 7:11][opcode 6:0]"
-	self assert: ((RV64LB regDest: 10 regBase: 12 offset: 16rFFF) 
-				offset printStringBase: 16)
-				= 'FFF'.
-	self assert: 
-		((RV64LB regDest: 10 regBase: 12 offset: 16rA5A) 
-			printString )
-			=  'lb  Arg0, Arg2, 16rA5A' .
-	self assert:
-		(RV64JAL regDest: 1 offset: 2r11000000111000000001) instruction
-		= 2r11000000001110000001000011101111.
-		
-	self assert:
-		(RV64JAL regDest: 1 offset: 2r11000000111000000011)  offset
-		= 2r110000001110000000110.
-	
-	self assert: 
-		(RV64JAL regDest: 1 offset: 2r11000000111000000001)  printString
-		= 'jal  ReturnAddr, 16r181C02' .
-	self assert:
-		(RV64LUI regDest: 1 immediate: 16rC0E03)  printString 
-		 = 'lui  ReturnAddr, 16rC0E03' 
-		! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 11:44:25'!
-testB
-	"Test encode+decode B-type instructions"
-	
-	 #(#RV64BEQ #RV64BGE #RV64BGEU 
-	     #RV64BLT #RV64BLTU #RV64BNE)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regA: Arg0 regB: Arg1 immediateOffset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	"Check immediate 12 swizzle/unswizzle. NB: treat immediate as unsigned"
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0100000000000) instruction rv64gBtypeImmediate ) 
-							 = 2r0100000000000.
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0010000000000) instruction rv64gBtypeImmediate ) 
-							 = 2r0010000000000.		
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0001111110000) instruction rv64gBtypeImmediate ) 
-							 = 2r0001111110000.				
-	self assert: ((RV64BEQ regA: Arg0 regB: Arg1 
-				immediateOffset: 2r0000000001111) instruction rv64gBtypeImmediate ) 
-							 = 2r0000000001111.	
-
-
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 14:36:34'!
-testI
-	"Test encode+decode I-type instructions"
-	
-	 #(   RV64ADDI RV64ANDI 
-		RV64ORI RV64SLLI RV64SLTI 
-		RV64SLTIU RV64SRAI RV64SRLI RV64XORI
-		RV64FLW RV64FLD RV64FLH RV64FLQ
-		RV64LB RV64LBU RV64LD
-		RV64LH RV64LHU RV64LW RV64LWU)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 15:41:32'!
-testJ
-	"Test encode+decode J-type instructions"
-	
-	 #(#RV64JAL)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 offset: 16rFADED) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	"Check immediate20 swizzle"
-	self assert: (RV64JAL regDest: 10 offset:  16rFFFFF) 
-		  instruction rv64gJtypeImmediate = 16rFFFFF.    
-		
-	self assert: (RV64JAL regDest: 10 offset: 2r010000000000000000000) 
-		  instruction rv64gJtypeImmediate = 2r010000000000000000000.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r000000000001111111111) 
-		  instruction rv64gJtypeImmediate = 2r000000000001111111111.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r000000000010000000000) 
-		  instruction rv64gJtypeImmediate = 2r000000000010000000000.
-		
-	self assert: (RV64JAL regDest: 10 offset:  2r001111111100000000000) 
-		  instruction rv64gJtypeImmediate = 2r001111111100000000000.
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/23/2023 11:50:51'!
-testR
-	"Test encode+decode R-type instructions"
-	
-	#(#RV64ADD #RV64AND  
-	#RV64DIV #RV64DIVU #RV64MUL 
-	#RV64OR #RV64REM #RV64REMU 
-	#RV64SLL #RV64SLT #RV64SLTU 
-	#RV64SRA #RV64SRL #RV64SUB 
-	#RV64XOR #RV64LR #RV64SC 
-	#RV64AMOSWAP #RV64AMOADD #RV64AMOAND 
-	#RV64AMOOR #RV64AMOXOR 
-	#RV64AMOMAX #RV64AMOMIN) do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Tmp0 regA: Arg0 regB: Arg1) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/28/2023 12:05:13'!
-testS
-	"Test encode+decode S-type instructions"
-	
-	 #( RV64SB RV64SH RV64SW RV64SD
-	     RV64FSQ RV64FSH RV64FSW RV64FSD )  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regSource: Arg0 regBase: Arg1 offset: 16rBAD) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/26/2023 08:15:42'!
-testSysCall
-	"Test encode+decode SysCall instructions"
-	
-	#( RV64EBREAK 
-	     RV64ECALL ) do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class new) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
-
-!RISC5InstructionsTests methodsFor: 'tests encode-decode' stamp: 'KenD 3/25/2023 12:06:40'!
-testU
-	"Test encode+decode U-type instructions"
-	
-	 #(RV64LUI RV64AUIPC)  
-	do: [ :clsName |
-		| class encoding |
-		class := Smalltalk at: clsName.
-		encoding := (class regDest: Arg0 immediate: 16rFADED) instruction.
-		self assert: (encoding = 
-			(RISC5Instructions fromInteger: encoding) instruction).
-	].
-	! !
 
 !SmallInteger methodsFor: '*RISC5-Instructions' stamp: 'KenD 3/28/2023 14:08:15'!
 rv64gBtypeImmediate
