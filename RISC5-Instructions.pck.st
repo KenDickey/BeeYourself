@@ -1,4 +1,4 @@
-'From Cuis6.3 [latest update: #6265] on 12 March 2024 at 4:39:22 pm'!
+'From Cuis6.3 [latest update: #6272] on 13 March 2024 at 2:14:34 pm'!
 'Description RISC-V 32 bit Instruction opcodes for RV64G
 
 NB: Not all instructions supported
@@ -8,7 +8,7 @@ NB: Not all instructions supported
  - Some mnemonics changed for clarification
      E.g. Move value from DoubleFloat register into Integer register
 	is ''FmvD2I'' not ''FMV.X.D'''!
-!provides: 'RISC5-Instructions' 1 76!
+!provides: 'RISC5-Instructions' 1 77!
 !requires: 'Cuis-Base' 60 5658 nil!
 SystemOrganization addCategory: #'RISC5-Instructions'!
 
@@ -1038,7 +1038,8 @@ Nota Bene: Not all instructions supported
 See  #RISC5InstructionsTests>>testRV64I method for sample usage
 
 Nota Bene: `NAN-Boxing` or `NAN-Boxed floats`
-When multiple floating-point precisions are supported, with valid values of narrower n-bit types represented in the lower n bits, 
+When multiple floating-point precisions are supported, with 
+valid values of narrower n-bit types represented in the lower n bits, 
 the upper bits of a valid NaN-boxed value must be all 1s.
 This is to be maintained for all float operations.
 Load and Store of NANs is legal and unchecked

@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6265] on 12 March 2024 at 4:51:01 pm'!
+'From Cuis6.3 [latest update: #6272] on 13 March 2024 at 2:52:09 pm'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 70!
+!provides: 'Powerlang' 1 73!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -23,9 +23,17 @@ SystemOrganization addCategory: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
 SystemOrganization addCategory: #'Powerlang-Core-SExpressions'!
 SystemOrganization addCategory: #'Powerlang-Tests'!
 SystemOrganization addCategory: #'Powerlang-Tests-Bootstrap'!
-SystemOrganization addCategory: #'Powerlang-Tests-SCompiler'!
 SystemOrganization addCategory: #'Powerlang-TestsFailing-Metaphysics'!
 SystemOrganization addCategory: #'Powerlang-TestsFailing-SExpressions'!
+SystemOrganization addCategory: #'Powerlang-SCompiler-Frontend'!
+SystemOrganization addCategory: #'Powerlang-SCompiler-Backend'!
+SystemOrganization addCategory: #'Powerlang-SCompiler-Parser'!
+SystemOrganization addCategory: #'Powerlang-SCompiler'!
+SystemOrganization addCategory: #'Powerlang-SCompiler-Bindings'!
+SystemOrganization addCategory: #'Powerlang-Compatibility-Pharo'!
+SystemOrganization addCategory: #'Powerlang-ProtoBoot'!
+SystemOrganization addCategory: #Powerlang!
+SystemOrganization addCategory: #'Powerlang-Tests-SCompiler'!
 
 
 !classDefinition: #PowerLangPackage category: #'Powerlang-Core'!
@@ -172,46 +180,6 @@ SharedPool subclass: #SendSiteFlags
 SendSiteFlags class
 	instanceVariableNames: 'HasBeenReset IsPolymorphic IsStaticSend IsSuperSend'!
 
-!classDefinition: #SCompiledBlockFlags category: #'Powerlang-Core-SCompiler'!
-SharedPool subclass: #SCompiledBlockFlags
-	instanceVariableNames: ''
-	classVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlockFlags class' category: #'Powerlang-Core-SCompiler'!
-SCompiledBlockFlags class
-	instanceVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'!
-
-!classDefinition: #SCompiledMethodFlags category: #'Powerlang-Core-SCompiler'!
-SharedPool subclass: #SCompiledMethodFlags
-	instanceVariableNames: ''
-	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethodFlags class' category: #'Powerlang-Core-SCompiler'!
-SCompiledMethodFlags class
-	instanceVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'!
-
-!classDefinition: #AstBindingTypes category: #'Powerlang-Core-SExpressions'!
-SharedPool subclass: #AstBindingTypes
-	instanceVariableNames: ''
-	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstBindingTypes class' category: #'Powerlang-Core-SExpressions'!
-AstBindingTypes class
-	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
-
-!classDefinition: #AstNodeTypes category: #'Powerlang-Core-SExpressions'!
-SharedPool subclass: #AstNodeTypes
-	instanceVariableNames: ''
-	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstNodeTypes class' category: #'Powerlang-Core-SExpressions'!
-AstNodeTypes class
-	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
-
 !classDefinition: #SExpressionTypes category: #'Powerlang-Core-SExpressions'!
 SharedPool subclass: #SExpressionTypes
 	instanceVariableNames: ''
@@ -221,6 +189,56 @@ SharedPool subclass: #SExpressionTypes
 !classDefinition: 'SExpressionTypes class' category: #'Powerlang-Core-SExpressions'!
 SExpressionTypes class
 	instanceVariableNames: ''!
+
+!classDefinition: #AstBindingTypes category: #'Powerlang-SCompiler-Backend'!
+SharedPool subclass: #AstBindingTypes
+	instanceVariableNames: ''
+	classVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'AstBindingTypes class' category: #'Powerlang-SCompiler-Backend'!
+AstBindingTypes class
+	instanceVariableNames: 'ArgumentId DynamicVarId FalseId NestedDynamicVarId NilId PopRid PushRid SelfId SuperId TemporaryId TrueId'!
+
+!classDefinition: #AstNodeTypes category: #'Powerlang-SCompiler-Backend'!
+SharedPool subclass: #AstNodeTypes
+	instanceVariableNames: ''
+	classVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'AstNodeTypes class' category: #'Powerlang-SCompiler-Backend'!
+AstNodeTypes class
+	instanceVariableNames: 'AssignmentId BlockId BraceId CascadeId IdentifierId LiteralId MessageId MethodId PragmaId ReturnId'!
+
+!classDefinition: #ClosureElementTypes category: #'Powerlang-SCompiler-Backend'!
+SharedPool subclass: #ClosureElementTypes
+	instanceVariableNames: ''
+	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-SCompiler-Backend'!
+ClosureElementTypes class
+	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
+
+!classDefinition: #SCompiledBlockFlags category: #'Powerlang-SCompiler-Backend'!
+SharedPool subclass: #SCompiledBlockFlags
+	instanceVariableNames: ''
+	classVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCompiledBlockFlags class' category: #'Powerlang-SCompiler-Backend'!
+SCompiledBlockFlags class
+	instanceVariableNames: 'BlockArgCount BlockCapturesHome BlockCapturesSelf BlockEnvCount BlockId BlockTempCount'!
+
+!classDefinition: #SCompiledMethodFlags category: #'Powerlang-SCompiler-Backend'!
+SharedPool subclass: #SCompiledMethodFlags
+	instanceVariableNames: ''
+	classVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCompiledMethodFlags class' category: #'Powerlang-SCompiler-Backend'!
+SCompiledMethodFlags class
+	instanceVariableNames: 'ArgCount BlockCount CapturesSelf Debuggable EnvCount HasEnvironment HasFrame TempCount'!
 
 !classDefinition: #SClosure category: #'Powerlang-Core-Metaphysics'!
 Array variableSubclass: #SClosure
@@ -242,73 +260,73 @@ Array variableSubclass: #NativeCode
 NativeCode class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCompiledMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompiledMethod category: #'Powerlang-SCompiler-Backend'!
 Array variableSubclass: #SCompiledMethod
 	instanceVariableNames: 'format optimizedCode astcodes class selector source'
 	classVariableNames: ''
 	poolDictionaries: 'SCompiledMethodFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledMethod class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCompiledMethod class' category: #'Powerlang-SCompiler-Backend'!
 SCompiledMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCallbackMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCallbackMethod category: #'Powerlang-SCompiler-Backend'!
 SCompiledMethod variableSubclass: #SCallbackMethod
 	instanceVariableNames: 'receiver descriptor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCallbackMethod class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCallbackMethod class' category: #'Powerlang-SCompiler-Backend'!
 SCallbackMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SCalloutMethod category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCalloutMethod category: #'Powerlang-SCompiler-Backend'!
 SCompiledMethod variableSubclass: #SCalloutMethod
 	instanceVariableNames: 'descriptor symbol address'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCalloutMethod class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCalloutMethod class' category: #'Powerlang-SCompiler-Backend'!
 SCalloutMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #SFFIDescriptor category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SFFIDescriptor category: #'Powerlang-SCompiler-Parser'!
 ByteArray variableByteSubclass: #SFFIDescriptor
 	instanceVariableNames: ''
 	classVariableNames: 'FFICallingConventions FFITypes'
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SFFIDescriptor class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SFFIDescriptor class' category: #'Powerlang-SCompiler-Parser'!
 SFFIDescriptor class
 	instanceVariableNames: 'FFICallingConventions FFITypes'!
 
-!classDefinition: #SCompilationError category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SCompilationError category: #'Powerlang-SCompiler-Frontend'!
 Error subclass: #SCompilationError
 	instanceVariableNames: 'compiler resumable retryable stretch'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationError class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SCompilationError class' category: #'Powerlang-SCompiler-Frontend'!
 SCompilationError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SInvalidPragmaError category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SInvalidPragmaError category: #'Powerlang-SCompiler-Frontend'!
 SCompilationError subclass: #SInvalidPragmaError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SInvalidPragmaError class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SInvalidPragmaError class' category: #'Powerlang-SCompiler-Frontend'!
 SInvalidPragmaError class
 	instanceVariableNames: ''!
 
-!classDefinition: #SUndeclaredIdentifierError category: #'Powerlang-Core-SCompiler'!
+!classDefinition: #SUndeclaredIdentifierError category: #'Powerlang-SCompiler-Frontend'!
 SCompilationError subclass: #SUndeclaredIdentifierError
 	instanceVariableNames: 'identifier assigned'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-Core-SCompiler'!
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SUndeclaredIdentifierError class' category: #'Powerlang-SCompiler-Frontend'!
 SUndeclaredIdentifierError class
 	instanceVariableNames: ''!
 
@@ -362,36 +380,6 @@ TestCase subclass: #PowertalkRingRuntimeTest
 PowertalkRingRuntimeTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ScriptScopeTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #ScriptScopeTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'ScriptScopeTest class' category: #'Powerlang-Tests-SCompiler'!
-ScriptScopeTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkParserTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #SmalltalkParserTest
-	instanceVariableNames: 'parser'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'SmalltalkParserTest class' category: #'Powerlang-Tests-SCompiler'!
-SmalltalkParserTest class
-	instanceVariableNames: ''!
-
-!classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
-TestCase subclass: #SmalltalkScannerTest
-	instanceVariableNames: 'scanner'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Tests-SCompiler'!
-!classDefinition: 'SmalltalkScannerTest class' category: #'Powerlang-Tests-SCompiler'!
-SmalltalkScannerTest class
-	instanceVariableNames: ''!
-
 !classDefinition: #MirrorTest category: #'Powerlang-TestsFailing-Metaphysics'!
 TestCase subclass: #MirrorTest
 	instanceVariableNames: 'runtime builder'
@@ -442,6 +430,36 @@ TestCase subclass: #AstcodeTest
 AstcodeTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #ScriptScopeTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #ScriptScopeTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'ScriptScopeTest class' category: #'Powerlang-Tests-SCompiler'!
+ScriptScopeTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkParserTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkParserTest
+	instanceVariableNames: 'parser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkParserTest class' category: #'Powerlang-Tests-SCompiler'!
+SmalltalkParserTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #SmalltalkScannerTest category: #'Powerlang-Tests-SCompiler'!
+TestCase subclass: #SmalltalkScannerTest
+	instanceVariableNames: 'scanner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Tests-SCompiler'!
+!classDefinition: 'SmalltalkScannerTest class' category: #'Powerlang-Tests-SCompiler'!
+SmalltalkScannerTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #PowertalkLMRTestResource category: #'Powerlang-Tests-Bootstrap'!
 TestResource subclass: #PowertalkLMRTestResource
 	instanceVariableNames: 'image bootstrapper'
@@ -450,16 +468,6 @@ TestResource subclass: #PowertalkLMRTestResource
 	category: 'Powerlang-Tests-Bootstrap'!
 !classDefinition: 'PowertalkLMRTestResource class' category: #'Powerlang-Tests-Bootstrap'!
 PowertalkLMRTestResource class
-	instanceVariableNames: ''!
-
-!classDefinition: #NumberParser2 category: #'Powerlang-Core'!
-Object subclass: #NumberParser2
-	instanceVariableNames: 'stream error return'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core'!
-!classDefinition: 'NumberParser2 class' category: #'Powerlang-Core'!
-NumberParser2 class
 	instanceVariableNames: ''!
 
 !classDefinition: #OperandEncoding category: #'Powerlang-Core-Assembler-Intel'!
@@ -1226,7 +1234,7 @@ Runtime class
 Object subclass: #SExpressionInterpreter
 	instanceVariableNames: 'receiver arguments temporaries returned returnValue method parent gateBuilder blockAstcodes environment'
 	classVariableNames: ''
-	poolDictionaries: 'private'
+	poolDictionaries: 'ClosureElementTypes'
 	category: 'Powerlang-Core-Metaphysics'!
 !classDefinition: 'SExpressionInterpreter class' category: #'Powerlang-Core-Metaphysics'!
 SExpressionInterpreter class
@@ -1590,586 +1598,6 @@ Object subclass: #StackFrameCursor
 	category: 'Powerlang-Core-Nativization'!
 !classDefinition: 'StackFrameCursor class' category: #'Powerlang-Core-Nativization'!
 StackFrameCursor class
-	instanceVariableNames: ''!
-
-!classDefinition: #IdentifierBinder category: #'Powerlang-Core-SCompiler'!
-Object subclass: #IdentifierBinder
-	instanceVariableNames: 'contents'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'IdentifierBinder class' category: #'Powerlang-Core-SCompiler'!
-IdentifierBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #DynamicBinder category: #'Powerlang-Core-SCompiler'!
-IdentifierBinder subclass: #DynamicBinder
-	instanceVariableNames: 'type'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'DynamicBinder class' category: #'Powerlang-Core-SCompiler'!
-DynamicBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #StaticBinder category: #'Powerlang-Core-SCompiler'!
-IdentifierBinder subclass: #StaticBinder
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'StaticBinder class' category: #'Powerlang-Core-SCompiler'!
-StaticBinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #LocalEnvironment category: #'Powerlang-Core-SCompiler'!
-Object subclass: #LocalEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: 'ClosureElementTypes'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'LocalEnvironment class' category: #'Powerlang-Core-SCompiler'!
-LocalEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArrayEnvironment category: #'Powerlang-Core-SCompiler'!
-LocalEnvironment subclass: #ArrayEnvironment
-	instanceVariableNames: 'index'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArrayEnvironment class' category: #'Powerlang-Core-SCompiler'!
-ArrayEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #StackEnvironment category: #'Powerlang-Core-SCompiler'!
-LocalEnvironment subclass: #StackEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'StackEnvironment class' category: #'Powerlang-Core-SCompiler'!
-StackEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArgumentEnvironment category: #'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #ArgumentEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ArgumentEnvironment class' category: #'Powerlang-Core-SCompiler'!
-ArgumentEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #InlinedArgEnvironment category: #'Powerlang-Core-SCompiler'!
-StackEnvironment subclass: #InlinedArgEnvironment
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'InlinedArgEnvironment class' category: #'Powerlang-Core-SCompiler'!
-InlinedArgEnvironment class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageInliner category: #'Powerlang-Core-SCompiler'!
-Object subclass: #MessageInliner
-	instanceVariableNames: 'message'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MessageInliner class' category: #'Powerlang-Core-SCompiler'!
-MessageInliner class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompilationResult category: #'Powerlang-Core-SCompiler'!
-Object subclass: #SCompilationResult
-	instanceVariableNames: 'compiler error ast method'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompilationResult class' category: #'Powerlang-Core-SCompiler'!
-SCompilationResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompiledBlock category: #'Powerlang-Core-SCompiler'!
-Object subclass: #SCompiledBlock
-	instanceVariableNames: 'format optimizedCode method'
-	classVariableNames: ''
-	poolDictionaries: 'SCompiledBlockFlags'
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiledBlock class' category: #'Powerlang-Core-SCompiler'!
-SCompiledBlock class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCompiler category: #'Powerlang-Core-SCompiler'!
-Object subclass: #SCompiler
-	instanceVariableNames: 'errorHandler result class'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SCompiler class' category: #'Powerlang-Core-SCompiler'!
-SCompiler class
-	instanceVariableNames: ''!
-
-!classDefinition: #SParseTreeVisitor category: #'Powerlang-Core-SCompiler'!
-Object subclass: #SParseTreeVisitor
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SParseTreeVisitor class' category: #'Powerlang-Core-SCompiler'!
-SParseTreeVisitor class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSemanticVisitor category: #'Powerlang-Core-SCompiler'!
-SParseTreeVisitor subclass: #SSemanticVisitor
-	instanceVariableNames: 'inliner'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'SSemanticVisitor class' category: #'Powerlang-Core-SCompiler'!
-SSemanticVisitor class
-	instanceVariableNames: ''!
-
-!classDefinition: #AstcodeEncoder category: #'Powerlang-Core-SExpressions'!
-SParseTreeVisitor subclass: #AstcodeEncoder
-	instanceVariableNames: 'method stream script'
-	classVariableNames: ''
-	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'AstcodeEncoder class' category: #'Powerlang-Core-SExpressions'!
-AstcodeEncoder class
-	instanceVariableNames: ''!
-
-!classDefinition: #ScriptScope category: #'Powerlang-Core-SCompiler'!
-Object subclass: #ScriptScope
-	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'ScriptScope class' category: #'Powerlang-Core-SCompiler'!
-ScriptScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #BlockScope category: #'Powerlang-Core-SCompiler'!
-ScriptScope subclass: #BlockScope
-	instanceVariableNames: 'environments captured'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'BlockScope class' category: #'Powerlang-Core-SCompiler'!
-BlockScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #MethodScope category: #'Powerlang-Core-SCompiler'!
-ScriptScope subclass: #MethodScope
-	instanceVariableNames: 'pseudo'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler'!
-!classDefinition: 'MethodScope class' category: #'Powerlang-Core-SCompiler'!
-MethodScope class
-	instanceVariableNames: ''!
-
-!classDefinition: #Binding category: #'Powerlang-Core-SCompiler-Bindings'!
-Object subclass: #Binding
-	instanceVariableNames: 'name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'Binding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #AssociationBinding
-	instanceVariableNames: 'association'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'AssociationBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #GlobalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding subclass: #GlobalBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'GlobalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-GlobalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #PoolVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-AssociationBinding subclass: #PoolVarBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'PoolVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-PoolVarBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #DynamicBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #DynamicBinding
-	instanceVariableNames: ''
-	classVariableNames: 'Default'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'DynamicBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-DynamicBinding class
-	instanceVariableNames: 'Default'!
-
-!classDefinition: #NestedDynamicBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-DynamicBinding subclass: #NestedDynamicBinding
-	instanceVariableNames: 'parent'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'NestedDynamicBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-NestedDynamicBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #LiteralBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #LiteralBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LiteralBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #FalseBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding subclass: #FalseBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'FalseBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-FalseBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #NilBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding subclass: #NilBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'NilBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-NilBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #TrueBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-LiteralBinding subclass: #TrueBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TrueBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-TrueBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #LocalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #LocalBinding
-	instanceVariableNames: 'index environment declaration'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'LocalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-LocalBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #ArgumentBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-LocalBinding subclass: #ArgumentBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'ArgumentBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-ArgumentBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #TemporaryBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-LocalBinding subclass: #TemporaryBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'TemporaryBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-TemporaryBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SelfBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-Binding subclass: #SelfBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'SelfBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-SelfBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SuperBinding category: #'Powerlang-Core-SCompiler-Bindings'!
-SelfBinding subclass: #SuperBinding
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Bindings'!
-!classDefinition: 'SuperBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
-SuperBinding class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkCompiler category: #'Powerlang-Core-SCompiler-Smalltalk'!
-Object subclass: #SSmalltalkCompiler
-	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk'!
-!classDefinition: 'SSmalltalkCompiler class' category: #'Powerlang-Core-SCompiler-Smalltalk'!
-SSmalltalkCompiler class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkParser category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-Object subclass: #SSmalltalkParser
-	instanceVariableNames: 'compiler scanner token next'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SSmalltalkParser class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSmalltalkParser class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSmalltalkScanner category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-Object subclass: #SSmalltalkScanner
-	instanceVariableNames: 'compiler stream'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SSmalltalkScanner class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSmalltalkScanner class
-	instanceVariableNames: ''!
-
-!classDefinition: #SToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-Object subclass: #SToken
-	instanceVariableNames: 'compiler stretch comments'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SEndToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SEndToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SEndToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SEndToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SParseNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SParseNode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SParseNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SAssignmentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SAssignmentNode
-	instanceVariableNames: 'assignees expression operators'
-	classVariableNames: 'Token'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SAssignmentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SAssignmentNode class
-	instanceVariableNames: 'Token'!
-
-!classDefinition: #SBraceNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SBraceNode
-	instanceVariableNames: 'elements message'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBraceNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SBraceNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascadeNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SCascadeNode
-	instanceVariableNames: 'receiver messages optimized'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCascadeNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCommentNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SCommentNode
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCommentNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCommentNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SIdentifierNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SIdentifierNode
-	instanceVariableNames: 'name binding'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SIdentifierNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SIdentifierNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SLiteralNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SLiteralNode
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SLiteralNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SLiteralNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SNumberNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SLiteralNode subclass: #SNumberNode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SNumberNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SNumberNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SStringNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SLiteralNode subclass: #SStringNode
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SStringNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SStringNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SMessageNode
-	instanceVariableNames: 'selector receiver arguments inlined'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SMessageNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SCascadeMessageNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SMessageNode subclass: #SCascadeMessageNode
-	instanceVariableNames: 'cascade'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SCascadeMessageNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SCascadeMessageNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SReturnNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SReturnNode
-	instanceVariableNames: 'expression return'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SReturnNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SReturnNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SScriptNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SScriptNode
-	instanceVariableNames: 'statements arguments temporaries children scope'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SScriptNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SScriptNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SBlockNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SScriptNode subclass: #SBlockNode
-	instanceVariableNames: 'inlined index parent'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SBlockNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SBlockNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SMethodNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SScriptNode subclass: #SMethodNode
-	instanceVariableNames: 'selector pragma'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SMethodNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SMethodNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSelectorNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SParseNode subclass: #SSelectorNode
-	instanceVariableNames: 'symbol keywords'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SSelectorNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSelectorNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SPragmaNode category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SPragmaNode
-	instanceVariableNames: 'type name info'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SPragmaNode class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SPragmaNode class
-	instanceVariableNames: ''!
-
-!classDefinition: #SSymbolicToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SToken subclass: #SSymbolicToken
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SSymbolicToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSymbolicToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SDelimiterToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSymbolicToken subclass: #SDelimiterToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SDelimiterToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SDelimiterToken class
-	instanceVariableNames: ''!
-
-!classDefinition: #SStringToken category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SSymbolicToken subclass: #SStringToken
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-!classDefinition: 'SStringToken class' category: #'Powerlang-Core-SCompiler-Smalltalk-Parser'!
-SStringToken class
 	instanceVariableNames: ''!
 
 !classDefinition: #AstcodeDecoder category: #'Powerlang-Core-SExpressions'!
@@ -2652,6 +2080,616 @@ Object subclass: #MessageCollector
 MessageCollector class
 	instanceVariableNames: 'Messages'!
 
+!classDefinition: #SCompilationResult category: #'Powerlang-SCompiler-Frontend'!
+Object subclass: #SCompilationResult
+	instanceVariableNames: 'compiler error ast method'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SCompilationResult class' category: #'Powerlang-SCompiler-Frontend'!
+SCompilationResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiler category: #'Powerlang-SCompiler-Frontend'!
+Object subclass: #SCompiler
+	instanceVariableNames: 'errorHandler result class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SCompiler class' category: #'Powerlang-SCompiler-Frontend'!
+SCompiler class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSmalltalkCompiler category: #'Powerlang-SCompiler-Frontend'!
+Object subclass: #SSmalltalkCompiler
+	instanceVariableNames: 'frontend source ast result headless blocks leaf activeScript'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SSmalltalkCompiler class' category: #'Powerlang-SCompiler-Frontend'!
+SSmalltalkCompiler class
+	instanceVariableNames: ''!
+
+!classDefinition: #NameOfSubclass category: #'Powerlang-SCompiler-Backend'!
+Object subclass: #NameOfSubclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'NameOfSubclass class' category: #'Powerlang-SCompiler-Backend'!
+NameOfSubclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCompiledBlock category: #'Powerlang-SCompiler-Backend'!
+Object subclass: #SCompiledBlock
+	instanceVariableNames: 'format optimizedCode method'
+	classVariableNames: ''
+	poolDictionaries: 'SCompiledBlockFlags'
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'SCompiledBlock class' category: #'Powerlang-SCompiler-Backend'!
+SCompiledBlock class
+	instanceVariableNames: ''!
+
+!classDefinition: #IdentifierBinder category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #IdentifierBinder
+	instanceVariableNames: 'contents'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'IdentifierBinder class' category: #'Powerlang-SCompiler-Parser'!
+IdentifierBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #DynamicBinder category: #'Powerlang-Core-SCompiler'!
+IdentifierBinder subclass: #DynamicBinder
+	instanceVariableNames: 'type'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler'!
+!classDefinition: 'DynamicBinder class' category: #'Powerlang-Core-SCompiler'!
+DynamicBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #StaticBinder category: #'Powerlang-SCompiler-Parser'!
+IdentifierBinder subclass: #StaticBinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'StaticBinder class' category: #'Powerlang-SCompiler-Parser'!
+StaticBinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #SParseTreeVisitor category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #SParseTreeVisitor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SParseTreeVisitor class' category: #'Powerlang-SCompiler-Parser'!
+SParseTreeVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSemanticVisitor category: #'Powerlang-SCompiler-Frontend'!
+SParseTreeVisitor subclass: #SSemanticVisitor
+	instanceVariableNames: 'inliner'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Frontend'!
+!classDefinition: 'SSemanticVisitor class' category: #'Powerlang-SCompiler-Frontend'!
+SSemanticVisitor class
+	instanceVariableNames: ''!
+
+!classDefinition: #AstcodeEncoder category: #'Powerlang-SCompiler-Backend'!
+SParseTreeVisitor subclass: #AstcodeEncoder
+	instanceVariableNames: 'method stream script'
+	classVariableNames: ''
+	poolDictionaries: 'AstBindingTypes AstNodeTypes ClosureElementTypes'
+	category: 'Powerlang-SCompiler-Backend'!
+!classDefinition: 'AstcodeEncoder class' category: #'Powerlang-SCompiler-Backend'!
+AstcodeEncoder class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSmalltalkParser category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #SSmalltalkParser
+	instanceVariableNames: 'compiler scanner token next'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SSmalltalkParser class' category: #'Powerlang-SCompiler-Parser'!
+SSmalltalkParser class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSmalltalkScanner category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #SSmalltalkScanner
+	instanceVariableNames: 'compiler stream'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SSmalltalkScanner class' category: #'Powerlang-SCompiler-Parser'!
+SSmalltalkScanner class
+	instanceVariableNames: ''!
+
+!classDefinition: #SToken category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #SToken
+	instanceVariableNames: 'compiler stretch comments'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SToken class' category: #'Powerlang-SCompiler-Parser'!
+SToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SEndToken category: #'Powerlang-SCompiler-Parser'!
+SToken subclass: #SEndToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SEndToken class' category: #'Powerlang-SCompiler-Parser'!
+SEndToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SParseNode category: #'Powerlang-SCompiler-Parser'!
+SToken subclass: #SParseNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SParseNode class' category: #'Powerlang-SCompiler-Parser'!
+SParseNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SAssignmentNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SAssignmentNode
+	instanceVariableNames: 'assignees expression operators'
+	classVariableNames: 'Token'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SAssignmentNode class' category: #'Powerlang-SCompiler-Parser'!
+SAssignmentNode class
+	instanceVariableNames: 'Token'!
+
+!classDefinition: #SBraceNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SBraceNode
+	instanceVariableNames: 'elements message'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SBraceNode class' category: #'Powerlang-SCompiler-Parser'!
+SBraceNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SCascadeNode
+	instanceVariableNames: 'receiver messages optimized'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SCascadeNode class' category: #'Powerlang-SCompiler-Parser'!
+SCascadeNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCommentNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SCommentNode
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SCommentNode class' category: #'Powerlang-SCompiler-Parser'!
+SCommentNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SIdentifierNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SIdentifierNode
+	instanceVariableNames: 'name binding'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SIdentifierNode class' category: #'Powerlang-SCompiler-Parser'!
+SIdentifierNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SLiteralNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SLiteralNode
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SLiteralNode class' category: #'Powerlang-SCompiler-Parser'!
+SLiteralNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SNumberNode category: #'Powerlang-SCompiler-Parser'!
+SLiteralNode subclass: #SNumberNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SNumberNode class' category: #'Powerlang-SCompiler-Parser'!
+SNumberNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SStringNode category: #'Powerlang-SCompiler-Parser'!
+SLiteralNode subclass: #SStringNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SStringNode class' category: #'Powerlang-SCompiler-Parser'!
+SStringNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMessageNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SMessageNode
+	instanceVariableNames: 'selector receiver arguments inlined'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SMessageNode class' category: #'Powerlang-SCompiler-Parser'!
+SMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SCascadeMessageNode category: #'Powerlang-SCompiler-Parser'!
+SMessageNode subclass: #SCascadeMessageNode
+	instanceVariableNames: 'cascade'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SCascadeMessageNode class' category: #'Powerlang-SCompiler-Parser'!
+SCascadeMessageNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SReturnNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SReturnNode
+	instanceVariableNames: 'expression return'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SReturnNode class' category: #'Powerlang-SCompiler-Parser'!
+SReturnNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SScriptNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SScriptNode
+	instanceVariableNames: 'statements arguments temporaries children scope'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SScriptNode class' category: #'Powerlang-SCompiler-Parser'!
+SScriptNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SBlockNode category: #'Powerlang-SCompiler-Parser'!
+SScriptNode subclass: #SBlockNode
+	instanceVariableNames: 'inlined index parent'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SBlockNode class' category: #'Powerlang-SCompiler-Parser'!
+SBlockNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SMethodNode category: #'Powerlang-SCompiler-Parser'!
+SScriptNode subclass: #SMethodNode
+	instanceVariableNames: 'selector pragma'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SMethodNode class' category: #'Powerlang-SCompiler-Parser'!
+SMethodNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSelectorNode category: #'Powerlang-SCompiler-Parser'!
+SParseNode subclass: #SSelectorNode
+	instanceVariableNames: 'symbol keywords'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SSelectorNode class' category: #'Powerlang-SCompiler-Parser'!
+SSelectorNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SPragmaNode category: #'Powerlang-SCompiler-Parser'!
+SToken subclass: #SPragmaNode
+	instanceVariableNames: 'type name info'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SPragmaNode class' category: #'Powerlang-SCompiler-Parser'!
+SPragmaNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #SSymbolicToken category: #'Powerlang-SCompiler-Parser'!
+SToken subclass: #SSymbolicToken
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SSymbolicToken class' category: #'Powerlang-SCompiler-Parser'!
+SSymbolicToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SDelimiterToken category: #'Powerlang-SCompiler-Parser'!
+SSymbolicToken subclass: #SDelimiterToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SDelimiterToken class' category: #'Powerlang-SCompiler-Parser'!
+SDelimiterToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #SStringToken category: #'Powerlang-SCompiler-Parser'!
+SSymbolicToken subclass: #SStringToken
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'SStringToken class' category: #'Powerlang-SCompiler-Parser'!
+SStringToken class
+	instanceVariableNames: ''!
+
+!classDefinition: #ScriptScope category: #'Powerlang-SCompiler-Parser'!
+Object subclass: #ScriptScope
+	instanceVariableNames: 'script arguments temporaries stackSize envSize captureSelf'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'ScriptScope class' category: #'Powerlang-SCompiler-Parser'!
+ScriptScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #BlockScope category: #'Powerlang-SCompiler-Parser'!
+ScriptScope subclass: #BlockScope
+	instanceVariableNames: 'environments captured'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'BlockScope class' category: #'Powerlang-SCompiler-Parser'!
+BlockScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodScope category: #'Powerlang-SCompiler-Parser'!
+ScriptScope subclass: #MethodScope
+	instanceVariableNames: 'pseudo'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Parser'!
+!classDefinition: 'MethodScope class' category: #'Powerlang-SCompiler-Parser'!
+MethodScope class
+	instanceVariableNames: ''!
+
+!classDefinition: #MessageInliner category: #'Powerlang-SCompiler'!
+Object subclass: #MessageInliner
+	instanceVariableNames: 'message'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler'!
+!classDefinition: 'MessageInliner class' category: #'Powerlang-SCompiler'!
+MessageInliner class
+	instanceVariableNames: ''!
+
+!classDefinition: #Binding category: #'Powerlang-SCompiler-Bindings'!
+Object subclass: #Binding
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'Binding class' category: #'Powerlang-SCompiler-Bindings'!
+Binding class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssociationBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+Binding subclass: #AssociationBinding
+	instanceVariableNames: 'association'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'AssociationBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #GlobalBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding subclass: #GlobalBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'GlobalBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+GlobalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #PoolVarBinding category: #'Powerlang-Core-SCompiler-Bindings'!
+AssociationBinding subclass: #PoolVarBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Core-SCompiler-Bindings'!
+!classDefinition: 'PoolVarBinding class' category: #'Powerlang-Core-SCompiler-Bindings'!
+PoolVarBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #DynamicBinding category: #'Powerlang-SCompiler-Bindings'!
+Binding subclass: #DynamicBinding
+	instanceVariableNames: ''
+	classVariableNames: 'Default'
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'DynamicBinding class' category: #'Powerlang-SCompiler-Bindings'!
+DynamicBinding class
+	instanceVariableNames: 'Default'!
+
+!classDefinition: #NestedDynamicBinding category: #'Powerlang-SCompiler-Bindings'!
+DynamicBinding subclass: #NestedDynamicBinding
+	instanceVariableNames: 'parent'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'NestedDynamicBinding class' category: #'Powerlang-SCompiler-Bindings'!
+NestedDynamicBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LiteralBinding category: #'Powerlang-SCompiler-Bindings'!
+Binding subclass: #LiteralBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'LiteralBinding class' category: #'Powerlang-SCompiler-Bindings'!
+LiteralBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #FalseBinding category: #'Powerlang-SCompiler-Bindings'!
+LiteralBinding subclass: #FalseBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'FalseBinding class' category: #'Powerlang-SCompiler-Bindings'!
+FalseBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #NilBinding category: #'Powerlang-SCompiler-Bindings'!
+LiteralBinding subclass: #NilBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'NilBinding class' category: #'Powerlang-SCompiler-Bindings'!
+NilBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TrueBinding category: #'Powerlang-SCompiler-Bindings'!
+LiteralBinding subclass: #TrueBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'TrueBinding class' category: #'Powerlang-SCompiler-Bindings'!
+TrueBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalBinding category: #'Powerlang-SCompiler-Bindings'!
+Binding subclass: #LocalBinding
+	instanceVariableNames: 'index environment declaration'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'LocalBinding class' category: #'Powerlang-SCompiler-Bindings'!
+LocalBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentBinding category: #'Powerlang-SCompiler-Bindings'!
+LocalBinding subclass: #ArgumentBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'ArgumentBinding class' category: #'Powerlang-SCompiler-Bindings'!
+ArgumentBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #TemporaryBinding category: #'Powerlang-SCompiler-Bindings'!
+LocalBinding subclass: #TemporaryBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'TemporaryBinding class' category: #'Powerlang-SCompiler-Bindings'!
+TemporaryBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SelfBinding category: #'Powerlang-SCompiler-Bindings'!
+Binding subclass: #SelfBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'SelfBinding class' category: #'Powerlang-SCompiler-Bindings'!
+SelfBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #SuperBinding category: #'Powerlang-SCompiler-Bindings'!
+SelfBinding subclass: #SuperBinding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'SuperBinding class' category: #'Powerlang-SCompiler-Bindings'!
+SuperBinding class
+	instanceVariableNames: ''!
+
+!classDefinition: #LocalEnvironment category: #'Powerlang-SCompiler-Bindings'!
+Object subclass: #LocalEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: 'private'
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'LocalEnvironment class' category: #'Powerlang-SCompiler-Bindings'!
+LocalEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArrayEnvironment category: #'Powerlang-SCompiler-Bindings'!
+LocalEnvironment subclass: #ArrayEnvironment
+	instanceVariableNames: 'index'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'ArrayEnvironment class' category: #'Powerlang-SCompiler-Bindings'!
+ArrayEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #StackEnvironment category: #'Powerlang-SCompiler-Bindings'!
+LocalEnvironment subclass: #StackEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'StackEnvironment class' category: #'Powerlang-SCompiler-Bindings'!
+StackEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentEnvironment category: #'Powerlang-SCompiler-Bindings'!
+StackEnvironment subclass: #ArgumentEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'ArgumentEnvironment class' category: #'Powerlang-SCompiler-Bindings'!
+ArgumentEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #InlinedArgEnvironment category: #'Powerlang-SCompiler-Bindings'!
+StackEnvironment subclass: #InlinedArgEnvironment
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-SCompiler-Bindings'!
+!classDefinition: 'InlinedArgEnvironment class' category: #'Powerlang-SCompiler-Bindings'!
+InlinedArgEnvironment class
+	instanceVariableNames: ''!
+
+!classDefinition: #NumberParser2 category: #'Powerlang-Compatibility-Pharo'!
+Object subclass: #NumberParser2
+	instanceVariableNames: 'stream error return'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-Compatibility-Pharo'!
+!classDefinition: 'NumberParser2 class' category: #'Powerlang-Compatibility-Pharo'!
+NumberParser2 class
+	instanceVariableNames: ''!
+
+!classDefinition: #BeeProtoImage category: #'Powerlang-ProtoBoot'!
+Object subclass: #BeeProtoImage
+	instanceVariableNames: 'isBigEndian classes methods baseAddressOfImage nextFreeAddressOfImage lastHash firstForeignObject lastForeignObject foreignObjectsMap specialObjectsArrayForeignObject globalVariables symbols processorBindingForeignObject smalltalkForeignObject displayForeignObject startUpMethod'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Powerlang-ProtoBoot'!
+!classDefinition: 'BeeProtoImage class' category: #'Powerlang-ProtoBoot'!
+BeeProtoImage class
+	instanceVariableNames: ''!
+
 !classDefinition: #Subject category: #'Powerlang-Core-Metaphysics'!
 ProtoObject subclass: #Subject
 	instanceVariableNames: 'gate'
@@ -2661,16 +2699,6 @@ ProtoObject subclass: #Subject
 !classDefinition: 'Subject class' category: #'Powerlang-Core-Metaphysics'!
 Subject class
 	instanceVariableNames: 'Counts'!
-
-!classDefinition: #ClosureElementTypes category: #'Powerlang-Core-SExpressions'!
-ProtoObject subclass: #ClosureElementTypes
-	instanceVariableNames: ''
-	classVariableNames: 'Environment EnvironmentValue LocalArgument Self'
-	poolDictionaries: ''
-	category: 'Powerlang-Core-SExpressions'!
-!classDefinition: 'ClosureElementTypes class' category: #'Powerlang-Core-SExpressions'!
-ClosureElementTypes class
-	instanceVariableNames: 'Environment EnvironmentValue LocalArgument Self'!
 
 
 !OperandTypeFlags commentStamp: '<historical>' prior: 0!
@@ -2822,6 +2850,13 @@ the offsets of the instVars.
 I am a Smalltalk expression, the minimal unit of Smalltalk semantics, expressed as a tree.
 !
 
+!BeeProtoImage commentStamp: '<historical>' prior: 0!
+Does not make sense to subclass ImageBuilder as that class entails too much Cuis/OpenSmalltalk specifics.
+But look `at class ImageBuilder` for details.
+Assume 64-bit CPU as default.
+
+!
+
 !CharacterConstants class methodsFor: 'class initialization' stamp: 'KenD 5/31/2021 15:35:17'!
 initialize 
 "
@@ -2848,7 +2883,7 @@ initialize
 	RegisterSegment _ 512.
 	RegisterSpecific _ 768.! !
 
-!RegistersRISCV class methodsFor: 'class initialization' stamp: 'KenD 10/14/2022 13:18:08'!
+!RegistersRISCV class methodsFor: 'class initialization' stamp: 'KenD 3/13/2024 13:29:19'!
 initialize
 
 	RegR        := Tmp0. "X5 Receiver/Result"
@@ -2859,7 +2894,7 @@ initialize
 	RegFlags := Tmp5.  "X30 Condition Flags"
 	RegTmp1 := Tmp6. "X31"
 
-	RegM       := Sav1.   "X9"
+	RegM       := Sav1.   "X9  Method"
 	RegS        := Sav2.  "X18 Selector"
 	RegE        := Sav3.  "X19 Environment"
 	RegNil      := Sav4. "X20"
@@ -2960,52 +2995,20 @@ initialize
 	self at: #HasBeenReset put: HasBeenReset.
 ! !
 
-!SCompiledBlockFlags class methodsFor: 'class initialization' stamp: 'KenD 10/2/2022 15:49:33'!
-initialize
-"
-	self initialize.
-"
-	BlockArgCount := 1 thru: 6.
-	BlockTempCount := 7 thru: 14.
-	BlockId := 15 thru: 22.
-	BlockCapturesSelf := 1 bitShift: 23 - 1.
-	BlockCapturesHome := 1 bitShift: 24 - 1.
-	BlockEnvCount := 25 thru: 31.
-	
-	self classPool at: #BlockArgCount put: (1 thru: 6).
-	self classPool at: #BlockTempCount put: (7 thru: 14).
-	self classPool at: #BlockId put: (15 thru: 22).
-	self classPool at: #BlockCapturesSelf put: (1 bitShift: 23 - 1).
-	self classPool at: #BlockCapturesHome put: (1 bitShift: 24 - 1).
-	self classPool at: #BlockEnvCount put: (25 thru: 31).	
-! !
+!SExpressionTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:04:29'!
+initialize 
 
-!SCompiledMethodFlags class methodsFor: 'class initialization' stamp: 'KenD 10/2/2022 08:53:26'!
-initialize
-"
-	SCompiledMethodFlags initialize.
-"
-	ArgCount := 1 thru: 6.
-	BlockCount := 7 thru: 13.
-	TempCount := 14 thru: 21.
-	CapturesSelf := 1 bitShift: 22 - 1.
-	HasEnvironment := 1 bitShift: 23 - 1.
-	HasFrame := 1 bitShift: 24 - 1.
-	Debuggable := 1 bitShift: 25 - 1.
-	EnvCount := 26 thru: 31.
-	
-	self flag: #FixME.
-	self classPool at: #ArgCount put: (1 thru: 6).
-	self classPool at: #BlockCount put: (7 thru: 13).
-	self classPool at: #TempCount put: (14 thru: 21).
-	self classPool at: #CapturesSelf put: (1 bitShift: 22 - 1).
-	self classPool at: #HasEnvironment put: (1 bitShift: 23 - 1).
-	self classPool at: #HasFrame put: (1 bitShift: 24 - 1).
-	self classPool at: #Debuggable put: (1 bitShift: 25 - 1).
-	self classPool at: #EnvCount put: (26 thru: 31)
-! !
+	MethodId := 1.
+	BlockId := 2.
+	IdentifierId := 3.
+	LiteralId := 4.
+	MessageId :=5.
+	CascadeId := 6.
+	BraceId := 7.
+	AssignmentId := 8.
+	ReturnId := 9! !
 
-!AstBindingTypes class methodsFor: 'class initialization' stamp: 'KenD 3/12/2024 16:44:37'!
+!AstBindingTypes class methodsFor: 'pool initialization' stamp: 'KenD 3/5/2024 15:07:07'!
 initialize
 "
 	AstBindingTypes initialize.
@@ -3035,7 +3038,7 @@ initialize
 	self at: #PushRid put: PushRid.
 	self at: #PopRid put: PopRid.! !
 
-!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 3/12/2024 16:45:54'!
+!AstNodeTypes class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:07:15'!
 initialize
 "
 	AstNodeTypes initialize.
@@ -3062,27 +3065,77 @@ initialize
 	self at: #AssignmentId put: AssignmentId.
 	self at: #ReturnId put: ReturnId.
 	self at: #PragmaId put: PragmaId.
-	! !
+	
+! !
 
-!SExpressionTypes class methodsFor: 'class initialization' stamp: 'KenD 2/23/2021 15:04:29'!
-initialize 
+!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:08:30'!
+initialize
+"
+	ClosureElementTypes initialize.
+"
+	Self := 0.
+	LocalArgument := 1.
+	Environment := 2.
+	EnvironmentValue := 3.
+	
+	self flag: #poolInitBugP.
+	self at: #Self put: Self.
+	self at: #LocalArgument put: LocalArgument.
+	self at: #Environment put: Environment.
+	self at: #EnvironmentValue put: EnvironmentValue
+! !
 
-	MethodId := 1.
-	BlockId := 2.
-	IdentifierId := 3.
-	LiteralId := 4.
-	MessageId :=5.
-	CascadeId := 6.
-	BraceId := 7.
-	AssignmentId := 8.
-	ReturnId := 9! !
+!SCompiledBlockFlags class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:08:18'!
+initialize
+"
+	SCompiledBlockFlags initialize.
+"
+	BlockArgCount := 1 thru: 6.
+	BlockTempCount := 7 thru: 14.
+	BlockId := 15 thru: 22.
+	BlockCapturesSelf := 1 bitShift: 23 - 1.
+	BlockCapturesHome := 1 bitShift: 24 - 1.
+	BlockEnvCount := 25 thru: 31.
+	
+	self flag: #poolInitBugP.
+	self at: #BlockArgCount put: BlockArgCount.
+	self at: #BlockTempCount put: BlockTempCount.
+	self at: #BlockId put: BlockId.
+	self at: #BlockCapturesSelf put: BlockCapturesSelf.
+	self at: #BlockCapturesHome put: BlockCapturesHome.
+	self at: #BlockEnvCount put: BlockEnvCount.! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SCompiledMethodFlags class methodsFor: 'class initialization' stamp: 'KenD 3/5/2024 15:09:40'!
+initialize
+"
+	SCompiledMethodFlags initialize.
+"
+	ArgCount := 1 thru: 6.
+	BlockCount := 7 thru: 13.
+	TempCount := 14 thru: 21.
+	CapturesSelf := 1 bitShift: 22 - 1.
+	HasEnvironment := 1 bitShift: 23 - 1.
+	HasFrame := 1 bitShift: 24 - 1.
+	Debuggable := 1 bitShift: 25 - 1.
+	EnvCount := 26 thru: 31.
+	
+	self flag: #poolInitBugP.
+	self at: #ArgCount put: ArgCount.
+	self at: #BlockCount put: BlockCount.
+	self at: #TempCount put: TempCount.
+	self at: #CapturesSelf put: CapturesSelf.
+	self at: #HasEnvironment put: HasEnvironment.
+	self at: #HasFrame put: HasFrame.
+	self at: #Debuggable put: Debuggable.
+	self at: #EnvCount put: EnvCount.	
+! !
+
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 block
 	^block
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 block: aPCompiledMethod
 	block := aPCompiledMethod
 ! !
@@ -3093,7 +3146,7 @@ evaluateWith: anObject
 	
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 evaluateWith: anObject with: anotherObject
 	block argumentCount = 2
 		ifFalse: [^super evaluateWith: anObject with: anotherObject].
@@ -3101,37 +3154,37 @@ evaluateWith: anObject with: anotherObject
 	
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 home: anObject
 	home := anObject
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 isSelfEvaluating
 	^false
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 value
 	^ home evaluateClosure: self
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 value: anObject
 	^home evaluateClosure: self with: anObject
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 value: anObject1 value: anObject2
 	^ home evaluateClosure: self with: anObject1 with: anObject2
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 value: anObject1 value: anObject2 with: anObject3
 	^ home evaluateBlock: self with: anObject1 with: anObject2 with: anObject3
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 whileFalse: aBlockSubject
 	| result |
 	[ result := home evaluateClosure: self.
@@ -3139,7 +3192,7 @@ whileFalse: aBlockSubject
 		whileFalse: [ home evaluateClosure: aBlockSubject _gate handle oid ]
 ! !
 
-!SClosure methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:06:22'!
+!SClosure methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
 whileTrue: aBlockSubject
 	| result |
 	[ result := home evaluateClosure: self.
@@ -3169,70 +3222,70 @@ disassembledAmd64
 	^machineCode disassembledAmd64
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 argumentCount
 	^format bitsAt: ArgCount
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 argumentCount: anInteger
 	format := format bitsAt: ArgCount put: anInteger
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 astcodes
 	^astcodes
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 astcodes: aCollection
 	astcodes := aCollection
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 beDebugabble
 	format := format bitOr: Debuggable
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 blockCount
 	^format bitsAt: BlockCount
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 blockCount: anInteger
 	format := format bitsAt: BlockCount put: anInteger
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 blocks
 	self hasBlocks ifFalse: [^#()].
 	^self select: [:literal | literal isBlock]
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 capturesSelf
 	^ format anyMask: CapturesSelf
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 capturesSelf: aBoolean
 	format := aBoolean
 				  ifTrue: [ format bitOr: CapturesSelf ]
 				  ifFalse: [ format bitClear: CapturesSelf ]
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 classBinding
 	^class
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 classBinding: aClass
 	class := aClass
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 copyWithLiterals: aCollection
 	| result |
 	result := self species withAll: aCollection.
@@ -3246,97 +3299,97 @@ copyWithLiterals: aCollection
 		yourself
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 dynamicVariableNamed: aSymbol
 	^class dynamicVariableNamed: aSymbol
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 environmentCount
 	^format bitsAt: EnvCount
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 environmentCount: anInteger
 	format := format bitsAt: EnvCount put: anInteger
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 hasBlocks
 	^self blockCount > 0
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 hasEnvironment
 	^ format anyMask: HasEnvironment
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 hasEnvironment: aBoolean
 	format := aBoolean
 				  ifTrue: [ format bitOr: HasEnvironment ]
 				  ifFalse: [ format bitClear: HasEnvironment ]
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 hasFrame
 	^ format anyMask: HasFrame
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 hasFrame: aBoolean
 	format := aBoolean
 				  ifTrue: [ format bitOr: HasFrame ]
 				  ifFalse: [ format bitClear: HasFrame ]
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 initialize
 	super initialize.
 	format := 0
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 isCallback
 	^false
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 isCalloutMethod
 	^ false
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 isDebuggable
 	^ format anyMask: Debuggable
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 isFrameless
 	^ self hasFrame not
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 literals
 	^Array withAll: self
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 pragma: aPragmaNode
 
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 selector
 	^selector
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 selector: aSymbol
 	selector := aSymbol
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 sexpressions
 	| decoder |
 	decoder := AstcodeDecoder new
@@ -3345,35 +3398,34 @@ sexpressions
 	^decoder decodeMethod
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 signature
 	^class-> selector
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 source
 	^source
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 source: aString
 	source := aString
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 tempCount
 	^format bitsAt: TempCount
 ! !
 
-!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:48'!
 tempCount: anInteger
 	format := format bitsAt: TempCount put: anInteger
 ! !
 
-!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 11/1/2022 11:31:17'!
+!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:48'!
 gtDisplayOn: stream
-
-	stream
+stream
 		nextPutAll: self classBinding name;
 		nextPutAll: '>>';
 		print: selector
@@ -3387,12 +3439,17 @@ printNameOn: aStream
 		print: selector;
 		newLine.! !
 
-!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 11/10/2022 08:28:13'!
+!SCompiledMethod methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:48'!
 printOn: aStream
-
-	self printNameOn: aStream.
-	self printSourceOn: aStream
-	
+	aStream
+		print: self classBinding;
+		nextPutAll: '>>';
+		print: selector;
+		cr.
+	source
+		ifNotNil: [ aStream
+				cr;
+				nextPutAll: source ]
 ! !
 
 !SCompiledMethod methodsFor: 'printing' stamp: 'KenD 11/10/2022 08:27:22'!
@@ -3410,33 +3467,33 @@ shortPrintString
 	
 ! !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
 format
 	^format
 ! !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
 format: anInteger
 	format := anInteger
 ! !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
 optimizedCode
 	^optimizedCode
 ! !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
 optimizedCode: anObject
 	optimizedCode := anObject
 ! !
 
-!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
 prepareForExecution
 	optimizedCode ifNil: [ optimizedCode := self sexpressions ].
 	^ optimizedCode
 ! !
 
-!SCompiledMethod class methodsFor: 'instance creation' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:48'!
 new
 	"return an initialized instance"
 
@@ -3444,32 +3501,32 @@ new
 
 ! !
 
-!SCompiledMethod class methodsFor: 'instance creation' stamp: 'KenD 10/1/2022 15:04:32'!
+!SCompiledMethod class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:48'!
 new: anInteger
 	^ (self basicNew: anInteger) initialize
 ! !
 
-!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:03:43'!
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
 descriptor
 	^descriptor
 ! !
 
-!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:03:43'!
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
 descriptor: anFFIDescriptor
 	descriptor := anFFIDescriptor 
 ! !
 
-!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:03:43'!
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
 isCallback
 	^true
 ! !
 
-!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:03:43'!
+!SCallbackMethod methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
 pragma: anSPragmaNode
 	descriptor := anSPragmaNode info
 ! !
 
-!SCallbackMethod class methodsFor: 'as yet unclassified' stamp: 'KenD 10/1/2022 15:03:43'!
+!SCallbackMethod class methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:49'!
 behaviorNativeCodeSlot
 	"callback methods have a special machine code. Its bytes are of
 	class ByteArray, but the behavior of this ByteArray is special:
@@ -3478,33 +3535,33 @@ behaviorNativeCodeSlot
 	^4
 ! !
 
-!SCalloutMethod methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:03:28'!
+!SCalloutMethod methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:59'!
 pragma: anSPragmaNode
 	descriptor := anSPragmaNode info.
 	symbol := anSPragmaNode name
 ! !
 
-!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 3/4/2024 06:55:48'!
 arguments: aCollection
 	self replaceFrom: 3 to: 3 + aCollection size -1 with: aCollection
 ! !
 
-!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 3/4/2024 06:55:48'!
 callingConvention: anInteger
 	self at: 1 put: anInteger
 ! !
 
-!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor methodsFor: 'calls' stamp: 'KenD 3/4/2024 06:55:48'!
 return: anInteger
 	self at: 2 put: anInteger
 ! !
 
-!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:48'!
 initialize
 	self initializeFFITypes; initializeCallingConventions
 ! !
 
-!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:48'!
 initializeCallingConventions
 	FFICallingConventions := Dictionary new.
 	FFICallingConventions
@@ -3513,7 +3570,7 @@ initializeCallingConventions
 		at: 'callback' put: 22
 ! !
 
-!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor class methodsFor: 'class initialization' stamp: 'KenD 3/4/2024 06:55:48'!
 initializeFFITypes
 	FFITypes := Dictionary new.
 	FFITypes
@@ -3533,7 +3590,7 @@ initializeFFITypes
 		at: 'double' put: 14
 ! !
 
-!SFFIDescriptor class methodsFor: 'as yet unclassified' stamp: 'KenD 9/29/2022 13:52:43'!
+!SFFIDescriptor class methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:48'!
 ret: aString args: aCollection cc: ccName
 	| args return cc result |
 	args := aCollection
@@ -3554,97 +3611,97 @@ ret: aString args: aCollection cc: ccName
 		arguments: args
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 beFatal
 	resumable := retryable := false
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 beResumable
 	resumable := true
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 beWarning
 	resumable := true
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 compiler
 	^compiler
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 compiler: aCompiler
 	compiler := aCompiler.
 	compiler result error: self
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 description: aString
 	messageText := aString
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 isResumable
 	^resumable
 
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 proceed
 	retryable := false.
 	compiler result beSuccessful.
 	self isResumable ifTrue: [ self resume ] ifFalse: [ self return ]
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 source
 	^compiler sourceCode copyFrom: stretch start to: stretch end
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 stretch
 	^stretch
 ! !
 
-!SCompilationError methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
 stretch: aStretch
 	stretch := aStretch
 ! !
 
-!SCompilationError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
 isUndeclaredAccess
 	^false
 ! !
 
-!SCompilationError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:09:46'!
+!SCompilationError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
 isUndeclaredAssignment
 	^ false
 ! !
 
-!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:58'!
+!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
 identifier
 	^ identifier
 ! !
 
-!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:58'!
+!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
 isUndeclaredAccess
 	^assigned not
 ! !
 
-!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:58'!
+!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
 isUndeclaredAssignment
 	^assigned
 ! !
 
-!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:58'!
+!SUndeclaredIdentifierError methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
 stretch: aStretch
 	super stretch: aStretch.
 	identifier := self source
 ! !
 
-!SUndeclaredIdentifierError methodsFor: 'accessing-token' stamp: 'KenD 9/29/2022 14:21:58'!
+!SUndeclaredIdentifierError methodsFor: 'accessing-token' stamp: 'KenD 3/4/2024 06:55:51'!
 assignment: aBoolean
 	assigned := aBoolean
 ! !
@@ -4973,1989 +5030,6 @@ setUp
 	runtime := image runtime
 ! !
 
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:16:41'!
-test010resolveClass 
-	| binding |
-	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Point'.
-	self
-		assert: binding isGlobal;
-		assert: binding isClassBinding;
-		assert: binding name = #Point;
-		assert: binding association == (Smalltalk globals associationAt: #Point)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:12'!
-test010resolveClassVariables 
-	| scope |
-	scope := self scopeFor: Symbol.
-	self checkClassVarsOf: Symbol in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:24'!
-test010resolveGlobal 
-	| binding |
-	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Smalltalk'.
-	self
-		assert: binding isGlobal;
-		deny: binding isClassBinding;
-		assert: binding name = #Smalltalk;
-		assert: binding association == (Smalltalk globals associationAt: #Smalltalk)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:35'!
-test010resolveInstanceVariables 
-	| scope |
-	scope := self scopeFor: Point.
-	self checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:46'!
-test010resolveSelf 
-	| scope receiver sup |
-	scope := self scopeFor: Object.
-	receiver := scope resolve: 'self'.
-	sup := scope resolve: 'super'.
-	self
-		assert: receiver isSelf;
-		assert: receiver name = 'self';
-		assert: sup isSuper;
-		assert: sup name = 'super'! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:57'!
-test011resolveUnknownGlobal 
-	| binding point |
-	self precondition: (Smalltalk includesKey: 'Foo678' existingSymbol) not.
-	binding := MethodScope new resolve: 'Foo678'.
-	self assert: binding isUnresolved.
-	point := self scopeFor: Point.
-	binding := point resolve: 'Foo678'.
-	self assert: binding isUnresolved! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:11'!
-test020resolveMethodArguments 
-	| scope |
-	scope := self scopeFor: Point.
-	scope
-		defineArgument: 'arg1';
-		defineArgument: 'arg2';
-		positionDefinedLocals.
-	self
-		checkArgs: #('arg1' 'arg2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:21'!
-test021resolveMethodTemporaries 
-	| scope |
-	scope := self scopeFor: Point.
-	scope defineTemporary: 't1'; defineTemporary: 't2'; positionDefinedLocals.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:32'!
-test030resolveNestedTemporaryConflictingWithIvar 
-	| ast b3 x |
-	ast := self compile: 'foo  [ | x | [[x]] ]' in: Point.
-	b3 := ast children first children first children first.
-	x := b3 statements first binding.
-	self
-		assert: x
-		isEnvTemp: 'x'
-		at: 1
-		index: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:19:46'!
-test040declareMethodArguments 
-	| ast scope |
-	ast := self compile: 'foo: anArg bar: anotherArg' in: Point.
-	scope := ast scope.
-	self
-		checkArgs: #('anArg' 'anotherArg') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:24'!
-test041declareMethodTemporaries 
-	| ast scope |
-	ast := self compile: 'foo | t1 t2 | ' in: Point.
-	scope := ast scope.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:20:39'!
-test042declareMethodTempsWithArgs 
-	| ast scope |
-	ast := self compile: 'foo: arg1 bar: arg2 | t1 t2 | ' in: Point.
-	scope := ast scope.
-	self
-		checkArgs: #('arg1' 'arg2') in: scope;
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:05'!
-test050useMethodTemps 
-	| ast scope t1 t2 |
-	ast := self compile: 'foo | t1 t2 | t1. t2' in: Point.
-	scope := ast scope.
-	t1 := ast statements first binding.
-	t2 := ast statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: t1 isTemporary;
-		assert: t1 isInStack;
-		assert: t1 name = 't1';
-		assert: t1 index = 1;
-		assert: t2 isTemporary;
-		assert: t2 isInStack;
-		assert: t2 name = 't2';
-		assert: t2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:16'!
-test051useMethodArgs 
-	| ast scope a1 a2 |
-	ast := self compile: 'foo: a1 bar: a2 a1. a2' in: Point.
-	scope := ast scope.
-	a1 := ast statements first binding.
-	a2 := ast statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: a1 isArgument;
-		assert: a1 isInStack;
-		assert: a1 name = 'a1';
-		assert: a1 index = 1;
-		assert: a2 isArgument;
-		assert: a2 isInStack;
-		assert: a2 name = 'a2';
-		assert: a2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:33'!
-test052useMethodTempsAndArgs 
-	| ast scope a1 a2 t1 t2 |
-	ast := self compile: 'foo: a1 bar: a2 | t1 t2 | t1. t2. a1. a2' in: Point.
-	scope := ast scope.
-	t1 := ast statements first binding.
-	t2 := ast statements second binding.
-	a1 := ast statements third binding.
-	a2 := ast statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		checkTemps: #('t1' 't2') in: scope;
-		checkInstVarsOf: Point in: scope;
-		assert: t1 isTemporary;
-		assert: t1 isInStack;
-		assert: t1 name = 't1';
-		assert: t1 index = 1;
-		assert: t2 isTemporary;
-		assert: t2 isInStack;
-		assert: t2 name = 't2';
-		assert: t2 index = 2;
-		assert: a1 isArgument;
-		assert: a1 isInStack;
-		assert: a1 name = 'a1';
-		assert: a1 index = 1;
-		assert: a2 isArgument;
-		assert: a2 isInStack;
-		assert: a2 name = 'a2';
-		assert: a2 index = 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:49'!
-test053useBlockArgs 
-	| ast block scope a1 a2 |
-	ast := self compile: 'foo [:a1 :a2 | a1. a2]' in: Point.
-	block := ast children first.
-	scope := block scope.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:21:59'!
-test053useSiblingBlockArgs 
-	| ast block1 block2 a1 a2 |
-	ast := self compile: 'foo [:a1 | a1]. [:a2 | a2]' in: Point.
-	block1 := ast children first.
-	block2 := ast children second.
-	a1 := block1 statements first binding.
-	a2 := block2 statements first binding.
-	self
-		checkArgs: #('a1') in: block1 scope;
-		checkArgs: #('a2') in: block2 scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:10'!
-test054useBlockTemps 
-	| ast block scope t1 t2 |
-	ast := self compile: 'foo [| t1 t2 | t1. t2]' in: Point.
-	block := ast children first.
-	scope := block scope.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:24'!
-test055methodUseGlobal 
-	| ast global |
-	ast := self compile: 'foo Collection' in: Point.
-	global := ast statements first binding.
-	self
-		assert: global isClassBinding;
-		assert: global name = #Collection;
-		assert: global association = (Smalltalk globals associationAt: #Collection)! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:36'!
-test060useNestedMethodArgs 
-	| ast block ma1 ma2 ba1 ba2 |
-	ast := self compile: 'foo: a1 bar: a2  a1. a2. [a1. a2]' in: Object.
-	block := ast children first.
-	ma1 := ast statements first binding.
-	ma2 := ast statements second binding.
-	ba1 := block statements first binding.
-	ba2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: ma1 isStackArg: 'a1' at: 1;
-		assert: ma2 isStackArg: 'a2' at: 2;
-		assert: ba1 isEnvArg: 'a1' at: 1;
-		assert: ba2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:22:48'!
-test061useNestedMethodSiblingBlockTemps 
-	| ast block1 block2 b1t1 b2t2 |
-	ast := self compile: 'foo | t1 t2 | [t1]. [t2]' in: Object.
-	block1 := ast children first.
-	block2 := ast children second.
-	b1t1 := block1 statements first binding.
-	b2t2 := block2 statements first binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:14'!
-test061useNestedMethodTemps 
-	| ast block bt1 bt2 |
-	ast := self compile: 'foo | t1 t2 | [t1. t2]' in: Object.
-	block := ast children first.
-	bt1 := block statements first binding.
-	bt2 := block statements second binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: bt1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: bt2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:26'!
-test062useNestedBlockArgs 
-	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
-	ast := self compile: 'foo [:a1 :a2 | [a1. a2] ]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: block1 scope;
-		assert: b1a1 isStackArg: 'a1' at: 1;
-		assert: b1a2 isStackArg: 'a2' at: 2;
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b2a2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:38'!
-test063useNestedBlockTemps 
-	| ast block1 block2 b2t1 b2t2 |
-	ast := self compile: 'foo [| t1 t2 | [t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:23:49'!
-test064useSiblingBlocksNestedTemps 
-	| ast block1 block2 block3 b2t1 b3t2 |
-	ast := self compile: 'foo [| t1 t2 | [t1]. [t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block1 children second.
-	b2t1 := block2 statements first binding.
-	b3t2 := block3 statements first binding.
-	self
-		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b3t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:24:01'!
-test065useNestedBlockAndMethodTemps 
-	| ast block1 block2 b2t1 b2t2 |
-	ast := self compile: 'foo | t1 | [| t2 | [t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkEnvTemps: #('t1') in: ast scope at: nil;
-		checkClosureEnvTemps: #('t2') in: block1 scope at: nil;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 2
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:36'!
-test070useDoublyNestedMethodArgs 
-	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
-	ast := self compile: 'foo: a1 bar: a2  [[a1. a2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b1a2 isEnvArg: 'a2' at: 2;
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b2a2 isEnvArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:35:49'!
-test071useDoublyNestedMethodTemps 
-	| ast block1 block2 b1t1 b1t2 b2t1 b2t2 |
-	ast := self compile: 'foo | t1 t2 | [[t1. t2]]' in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1t1 := block1 scope resolve: 't1'.
-	b1t2 := block1 scope resolve: 't2'.
-	b2t1 := block2 statements first binding.
-	b2t2 := block2 statements second binding.
-	self
-		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:03'!
-test075useDoublyNestedMethodArgsWithTemps 
-	| ast block1 block2 b1a1 b1a2 b1t1 b1t2 b2a1 b2a2 b2t1 b2t2 |
-	ast := self
-		compile: 'foo: a1 bar: a2 | t1 | [| t2 | [a1. a2. t1. t2]]'
-		in: Object.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1a2 := block1 scope resolve: 'a2'.
-	b1t1 := block1 scope resolve: 't1'.
-	b1t2 := block1 scope resolve: 't2'.
-	b2a1 := block2 statements first binding.
-	b2a2 := block2 statements second binding.
-	b2t1 := block2 statements third binding.
-	b2t2 := block2 statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: b1a1 isEnvArg: 'a1' at: 2;
-		assert: b1a2 isEnvArg: 'a2' at: 3;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: nil
-			index: 4;
-		assert: b1t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 2
-			index: 4;
-		assert: b2a1 isEnvArg: 'a1' at: 3;
-		assert: b2a2 isEnvArg: 'a2' at: 4! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:16'!
-test080captureSelf 
-	| ast block receiver |
-	ast := self compile: 'foo [self]' in: Object.
-	block := ast children first.
-	receiver := block statements first binding.
-	self
-		assert: receiver isSelf;
-		assert: ast environmentSize = 0;
-		assert: block scope capturesSelf;
-		assert: block environmentSize equals: 1;
-		assert: block scope home == nil! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:28'!
-test090useNonLocalReturn 
-	| ast block |
-	ast := self compile: 'foo [^1]' in: Object.
-	block := ast children first.
-	self
-		assert: ast environmentSize = 0;
-		assert: ast needsEnvironment;
-		assert: block environmentSize = 1;
-		assert: block scope home == ast! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:39'!
-test091nonLocalReturnSelf 
-	| ast block |
-	ast := self compile: 'foo [^self]' in: Object.
-	block := ast children first.
-	self
-		assert: ast environmentSize = 0;
-		assert: ast needsEnvironment;
-		assert: block environmentSize = 2;
-		assert: block scope home == ast! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:36:52'!
-test100inlineUseMethodArgs 
-	| ast block a1 a2 |
-	ast := self compile: 'foo: a1 bar: a2  1 ifTrue: [a1. a2]' in: Point.
-	block := ast children first.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:05'!
-test101inlineUseMethodTemps 
-	| ast t1 t2 block |
-	ast := self compile: 'foo | t1 t2 | 1 ifTrue: [t1. t2]' in: Point.
-	block := ast children first.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1' 't2') in: ast scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:19'!
-test102inlineUseMethodArgsAndTemps 
-	| ast block a1 a2 t1 t2 |
-	ast := self
-		compile: 'foo: a1 bar: a2  | t1 t2 | 1 ifTrue: [a1. a2. t1. t2]'
-		in: Point.
-	block := ast children first.
-	a1 := block statements first binding.
-	a2 := block statements second binding.
-	t1 := block statements third binding.
-	t2 := block statements fourth binding.
-	self
-		checkArgs: #('a1' 'a2') in: ast scope;
-		assert: a1 isStackArg: 'a1' at: 1;
-		assert: a2 isStackArg: 'a2' at: 2;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:29'!
-test110inlineUseMixedMethodTemps 
-	| ast t1 t2 block |
-	ast := self compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. t2]' in: Point.
-	block := ast children first.
-	t1 := block statements first binding.
-	t2 := block statements second binding.
-	self
-		checkTemps: #('t1') in: ast scope;
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:42'!
-test120inlineEnvironmentTemp 
-	| ast block1 block2 mt1 mt2 b1t1 b1t2 b2t2 |
-	ast := self
-		compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. [t2]]'
-		in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	mt1 := ast scope resolve: 't1'.
-	mt2 := ast scope resolve: 't2'.
-	b1t1 := block1 statements first binding.
-	b1t2 := block1 scope resolve: 't2'.
-	b2t2 := block2 scope resolve: 't2'.
-	self
-		checkTemps: #('t1') in: ast scope;
-		assert: mt2 isUnresolved;
-		assert: mt1 isStackTemp: 't1' at: 1;
-		assert: b1t1 isStackTemp: 't1' at: 1;
-		assert: b1t2
-			isEnvTemp: 't2'
-			at: nil
-			index: 1;
-		assert: b2t2
-			isEnvTemp: 't2'
-			at: 1
-			index: 1;
-		assert: ast scope environmentSize = 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:37:54'!
-test130inlineBlockArg 
-	| ast block a1 |
-	ast := self compile: 'foo  1 ifNotNil: [:a1 | 1 ]' in: Point.
-	block := ast children first.
-	a1 := block scope resolve: 'a1'.
-	self assert: a1 isStackInlineArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:04'!
-test131inlineBlockArgWithTemp 
-	| ast block t1 a1 |
-	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | 1 ]' in: Point.
-	block := ast children first.
-	t1 := ast scope resolve: 't1'.
-	a1 := block scope resolve: 'a1'.
-	self
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: a1 isStackInlineArg: 'a1' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:15'!
-test132inlineBlockArgWithTemps 
-	| ast block t1 a1 t2 |
-	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1 ]' in: Point.
-	block := ast children first.
-	t1 := ast scope resolve: 't1'.
-	a1 := block scope resolve: 'a1'.
-	t2 := block scope resolve: 't2'.
-	self
-		assert: t1 isStackTemp: 't1' at: 1;
-		assert: t2 isStackTemp: 't2' at: 2;
-		assert: a1 isStackInlineArg: 'a1' at: 3! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:25'!
-test133inlineBlockArgWithEnvTemps 
-	| ast block1 mt1 b1a1 b1t2 |
-	ast := self
-		compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1. [t2] ]'
-		in: Point.
-	block1 := ast children first.
-	mt1 := ast scope resolve: 't1'.
-	b1a1 := block1 scope resolve: 'a1'.
-	b1t2 := block1 scope resolve: 't2'.
-	self
-		assert: mt1 isStackTemp: 't1' at: 1;
-		assert: b1t2 isEnvTemp: 't2' at: nil index: 1;
-		assert: b1a1 isStackInlineArg: 'a1' at: 2! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:36'!
-test134inlineBlockArgNestedAccess 
-	| ast block1 block2 b1a1 b2a1 |
-	ast := self compile: 'foo  1 ifNotNil: [:a1 | [a1] ]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b2a1 := block2 scope resolve: 'a1'.
-	self
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b2a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:46'!
-test135inlineBlockWithArgInRealBlockCaptured 
-	| ast block1 block2 block3 b2a1 b3a1 |
-	"Args of inlined blocks can go to the stack of the real block, unless captured. Because the
-	 capture bytecode doesn't have a slot type for 'copy from stack temps' (it has capture from
-	 stack in 	 args zone, capture the current env, and capture a value in the current env)"
-	ast := self compile: 'foo  [1 ifNotNil: [:a1 | [a1] ]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b2a1 := block2 scope resolve: 'a1'.
-	b3a1 := block3 scope resolve: 'a1'.
-	self
-		assert: b2a1 isEnvArg: 'a1' at: 1;
-		assert: b3a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:38:56'!
-test136inlineBlockWithArgCapturedByInlinedBlock 
-	| ast block1 block2 b1a1 b2a1 |
-	ast := self compile: 'foo 1 ifNotNil: [:a1 | a1. 2 ifTrue: [a1]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b2a1 := block2 scope resolve: 'a1'.
-	self
-		assert: b1a1 isStackInlineArg: 'a1' at: 1;
-		assert: b2a1 isStackInlineArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:10'!
-test137inlineBlockWithArgCapturedByInlinedBlockInRealBlock 
-	| ast block1 block2 block3 b1a1 b3a1 |
-	ast := self
-		compile: 'foo 1 ifNotNil: [:a1 | [2 ifTrue: [a1]]]'
-		in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b1a1 := block1 scope resolve: 'a1'.
-	b3a1 := block3 scope resolve: 'a1'.
-	self
-		assert: b1a1 isEnvArg: 'a1' at: 1;
-		assert: b3a1 isEnvArg: 'a1' at: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:23'!
-test138blockWithInlinedBlockWithTempCaptured 
-	| ast block1 block2 block3 b2t1 b3t1 block |
-	ast := self compile: 'foo [true ifTrue: [| t1 | [t1]]]' in: Point.
-	block1 := ast children first.
-	block2 := block1 children first.
-	block3 := block2 children first.
-	b2t1 := block2 scope resolve: 't1'.
-	b3t1 := block3 scope resolve: 't1'.
-	self
-		assert: b2t1
-			isEnvTemp: 't1'
-			at: nil
-			index: 1;
-		assert: b3t1
-			isEnvTemp: 't1'
-			at: 1
-			index: 1! !
-
-!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:39:54'!
-test140blockWithInlinedBlockHasEnv 
-	| ast |
-	ast := self compile: 'foo [true ifTrue: [^self]]'.
-	self assert: ast needsEnvironment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:12'!
-assert: binding isEnvArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding isInArray;
-		assert: binding environmentIndex = nil! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:28'!
-assert: binding
-isEnvTemp: name
-at: environment
-index: index 
-
-	self
-		assert: binding isTemporary;
-		assert: binding isInArray;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding environment = environment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:40'!
-assert: binding isStackArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:13:55'!
-assert: binding isStackInlineArg: name at: index 
-
-	self
-		assert: binding isArgument;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index;
-		assert: binding environmentObject class = InlinedArgEnvironment! !
-
-!ScriptScopeTest methodsFor: 'assertions' stamp: 'KenD 6/5/2021 07:14:08'!
-assert: binding isStackTemp: name at: index 
-
-	self
-		assert: binding isTemporary;
-		assert: binding isInStack;
-		assert: binding name = name;
-		assert: binding index = index! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:19'!
-checkArgs: names in: scope 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isArgument;
-			assert: binding name = name;
-			assert: binding index = index]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:30'!
-checkClassVarsOf: aSpecies in: scope 
-
-	aSpecies withAllSuperclasses do: [:c | 
-		c classPool associationsDo: [:assoc | | name binding |
-			name := assoc key.
-			binding := scope resolve: name.
-			self
-				assert: binding isClassVariable;
-				assert: binding name = name;
-				assert: binding association == assoc]]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:42'!
-checkClosureEnvTemps: names in: scope at: environment 
-	| offset |
-	offset := scope environmentSizeUpToCapturedArguments.
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isTemporary;
-			assert: binding isInArray;
-			assert: binding name = name;
-			assert: binding index = (index + offset);
-			assert: binding environment = environment]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:14:54'!
-checkEnvTemps: names in: scope at: environment 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isTemporary;
-			assert: binding isInArray;
-			assert: binding name = name;
-			assert: binding index = index;
-			assert: binding environment = environment]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:07'!
-checkInstVarsOf: aSpecies in: scope 
-
-	aSpecies allInstVarNames withIndexDo: [:name :i | | binding |
-		binding := scope resolve: name.
-		self
-			assert: binding isInstVar;
-			assert: binding name = name;
-			assert: binding index = i]! !
-
-!ScriptScopeTest methodsFor: 'checking' stamp: 'KenD 6/5/2021 07:15:18'!
-checkTemps: names in: scope 
-
-	names withIndexDo: [:name :index | | binding |
-		binding := scope resolve: name.
-		self assert: binding isStackTemp: name at: index]! !
-
-!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:31'!
-compile: aString 
-
-	^self compile: aString in: UndefinedObject! !
-
-!ScriptScopeTest methodsFor: 'compiling' stamp: 'KenD 6/5/2021 07:15:44'!
-compile: aString in: aClass 
-
-	^SCompiler parse: aString in: aClass! !
-
-!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:15:57'!
-precondition: aBoolean 
-
-	self assert: aBoolean description: 'Precondition for this test is not met'! !
-
-!ScriptScopeTest methodsFor: 'as yet unclassified' stamp: 'KenD 6/5/2021 07:16:08'!
-scopeFor: aSpecies 
-
-	^MethodScope new species: aSpecies! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment1
-	| node |
-	node := parser parse: 'unary
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment10
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	[2. "comment3" 3]'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second statements second comment value = 'comment3'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment11
-	| node |
-	node := parser parse: 'unary
-	1. "comment"'.
-	self assert: node comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment12
-	| node |
-	node := parser parse: 'unary
-	[1. "comment"]'.
-	self assert: node statements anyOne comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment2
-	| node |
-	node := parser parse: '+ binary
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment3
-	| node |
-	node := parser parse: 'keyword: arg
-	"comment"
-	^true'.
-	self assert: node selectorNode comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment4
-	| node |
-	node := parser parse: 'unary
-	^true "comment"'.
-	self
-		assert: node statements anyOne expression comment value = 'comment';
-		deny: node comment value = 'comment';
-		assert: node comment isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment5
-	| node |
-	node := parser parse: '+ binary
-	^true "comment"'.
-	self assert: node statements anyOne expression comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment6
-	| node |
-	node := parser parse: 'keyword: arg
-	^true "comment"'.
-	self assert: node statements anyOne expression comment value = 'comment'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment7
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	2 "comment2"'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment8
-	| node |
-	node := parser parse: 'unary
-	1 "comment1".
-	^2 "comment2"'.
-	self
-		assert: node statements first comment value = 'comment1';
-		assert: node statements second expression comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment9
-	| node |
-	node := parser parse: 'unary
-	1. "comment2" 2'.
-	self assert: node statements second comment value = 'comment2'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray
-	| node |
-	node := parser parseExpression: '#[16rFE]'.
-	self assert: node statements anyOne source = '#[16rFE]'.
-	node := parser parse: 'b #[16rFE]'.
-	self assert: node statements anyOne source = '#[16rFE]'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray2
-	| array |
-	parser on: '#[16rFE]'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #[16rFE];
-		assert: array source = '#[16rFE]'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testByteArray3
-	| array |
-	parser on: '#[16rFE 2]'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #[16rFE 2];
-		assert: array source = '#[16rFE 2]'.
-	parser on: '#[16rFE 256 2]'.
-	parser step.
-	self should: [array := parser primary] raise: Exception
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol1
-	| array |
-	parser on: '#(#++)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array with: #'++').
-	parser on: '#(#-- )'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array with: #'--')
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol2
-	| symbol |
-	parser on: '#++'.
-	parser step.
-	symbol := parser primary.
-	self
-		assert: symbol isLiteral;
-		assert: symbol value = #'++'.
-	parser on: '#--'.
-	parser step.
-	symbol := parser primary.
-	self
-		assert: symbol isLiteral;
-		assert: symbol value = #'--'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testExpression
-	| expression |
-	parser on: '(x)'; step.
-	expression := parser primary.
-	self
-		assert: expression isIdentifier;
-		assert: expression source = 'x'.
-	parser on: '(x + 1)'; step.
-	expression := parser primary.
-	self
-		assert: expression class == SMessageNode;
-		assert: expression selector isBinary;
-		assert: expression source = '(x + 1)'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testFloat
-	| source node |
-	source := '3.14159265358979323846'.
-	node := parser parseExpression: source.
-	self assert: node statements anyOne source = source.
-	node := parser parse: 'm ' , source.
-	self assert: node statements anyOne source = source
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralArray
-	| array |
-	parser on: '#(16rFE)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(16rFE);
-		assert: array source = '#(16rFE)'.
-	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(16rFE $a 'hello' #s #(1 2));
-		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralArray2
-	| array |
-	parser on: '#(a:b:)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = #(#a:b:);
-		assert: array source = '#(a:b:)'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testLiteralKeywordArray
-	| ast literal |
-	ast := parser parseExpression: '#(a:b: c: d:)'.
-	literal := ast statements anyOne value.
-	self
-		assert: literal isArray;
-		assert: literal size = 3;
-		assert: literal first == #a:b:;
-		assert: literal second == #c:;
-		assert: literal third == #d:
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNegativeElementInArray
-	| array |
-	parser on: '#(-21)'.
-	parser step.
-	array := parser primary.
-	self assert: array isLiteral.
-	parser on: '#(-21 1 -5 4)'.
-	parser step.
-	array := parser primary.
-	self
-		assert: array isLiteral;
-		assert: array value = (Array
-			with: -21
-			with: 1
-			with: -5
-			with: 4)
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNegativeNumber
-	| number |
-	parser on: '-3'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -3;
-		assert: number source = '-3'.
-	parser on: '-3.14'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -3.14;
-		assert: number source = '-3.14'.
-	parser on: '-3.14e-10'.
-	parser step.
-	number := parser primary.
-	self
-		assert: number isLiteral;
-		assert: number value = -0.000000000314;
-		assert: number source = '-3.14e-10'
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testNotAFloat
-	| method |
-	method := parser parseExpression: '0.a'.
-	self
-		assert: method statements size = 2;
-		assert: method statements first value = 0
-! !
-
-!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 1/30/2023 10:10:47'!
-testScientificNotation
-	| method |
-	method := parser parseExpression: '
-	0.1e-2.
-	0.1E2'.
-	self
-		assert: method statements size = 2;
-		assert: method statements first value = 0.001;
-		assert: method statements second value = 10
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock
-	| block |
-	parser on: '[]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[]'.
-	parser on: '[x]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[x]';
-		assert: block temporaries isEmpty;
-		assert: block arguments isEmpty;
-		assert: block statements size = 1;
-		assert: block statements anyOne isIdentifier
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock2
-	| block |
-	parser on: '[:i | i]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i | i]';
-		assert: block arguments size = 1.
-	parser on: '[:i :j |]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i :j |]';
-		assert: block temporaries isEmpty;
-		assert: block arguments size = 2;
-		assert: block statements isEmpty;
-		assert: block arguments first isIdentifier;
-		assert: block arguments second isIdentifier
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testBlock3
-	| block |
-	parser on: '[:i | | a b | a + b]'.
-	parser compiler activeScript: parser compiler methodNode.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i | | a b | a + b]';
-		assert: block arguments size = 1;
-		assert: block temporaries size = 2.
-	parser on: '[:i ||a b|a|b]'.
-	parser step.
-	block := parser primary.
-	self
-		assert: block isBlockNode;
-		assert: block source = '[:i ||a b|a|b]';
-		assert: block temporaries size = 2;
-		assert: block arguments size = 1;
-		assert: block statements size = 1;
-		assert: block statements anyOne selector value = #'|'
-! !
-
-!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 1/30/2023 10:10:47'!
-testParseFragment
-	| source ast |
-	source := 'm
-	self do: [:x | Object'.
-	ast := parser compiler parseFragment: source.
-	self
-		assert: ast selector == #m;
-		assert: ast statements isEmpty
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testParseTemporaries
-	| temporaries |
-	temporaries := SCompiler new smalltalkParser
-		parseTemporaries:
-			'm: arg
-	| t1 t2 t3 |
-	^:= will not even parse'.
-	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testTemporaries
-	| temporaries |
-	parser on: '||'.
-	parser step.
-	self assert: parser temporaries isEmpty.
-	parser on: '| |'.
-	parser step.
-	self assert: parser temporaries isEmpty.
-	parser on: '| a b c |'.
-	parser step.
-	temporaries := parser temporaries.
-	self
-		assert: temporaries size = 3;
-		assert: temporaries first isIdentifier;
-		assert: temporaries first name = 'a';
-		assert: temporaries second isIdentifier;
-		assert: temporaries second name = 'b';
-		assert: temporaries third isIdentifier;
-		assert: temporaries third name = 'c'
-! !
-
-!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 1/30/2023 10:10:47'!
-testTemporaryDeclarations
-	| temporaries |
-	parser on: '| | | a b |'.
-	parser step.
-	temporaries := parser temporaries.
-	self assert: temporaries size = 0.
-	parser on: '|| | a b |'.
-	parser step.
-	temporaries := parser temporaries.
-	self assert: temporaries size = 0.
-	parser on: 'a || b'.
-	parser step.
-	self assert: parser token value = 'a'.
-	parser step.
-	self assert: parser token value = #'||'.
-	parser step.
-	self assert: parser token value = 'b'
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryHeader
-	| method selector |
-	parser on: '+++ x'.
-	parser step.
-	method := parser binarySignature.
-	self
-		assert: method notNil;
-		assert: method class == SMethodNode;
-		assert: method selector keywords size = 1;
-		assert: method selector value == #'+++';
-		assert: method arguments size = 1.
-	parser on: 'a'.
-	parser step.
-	selector := parser binarySignature.
-	self assert: selector isNil.
-	parser on: 'a: x'.
-	parser step.
-	selector := parser binarySignature.
-	self assert: selector isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeywordHeader
-	| method selector |
-	parser on: 'x: x y: y z: z'.
-	parser step.
-	method := parser keywordSignature.
-	self
-		assert: method notNil;
-		assert: method class == SMethodNode;
-		assert: method selector keywords size = 3;
-		assert: method selector value == #x:y:z:;
-		assert: method arguments size = 3.
-	parser on: 'a'.
-	parser step.
-	selector := parser keywordSignature.
-	self assert: selector isNil.
-	parser on: '+ x'.
-	parser step.
-	selector := parser keywordSignature.
-	self assert: selector isNil
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeywordHeader2
-	| method |
-	parser on: 'x: xx y: yy z: zz'.
-	parser step.
-	method := parser methodSignature.
-	self
-		assert: method class == SMethodNode;
-		assert: method header = 'x: xx y: yy z: zz'.
-	parser on: 'x'.
-	parser step.
-	method := parser methodSignature.
-	self assert: method header = 'x'.
-	parser on: '+= arg value := value + arg'.
-	parser step.
-	method := parser methodSignature.
-	self assert: method header = '+= arg'
-! !
-
-!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnaryHeader
-	| selector |
-	parser on: 'a'.
-	parser step.
-	self assert: parser token isNameToken.
-	selector := parser unarySelector.
-	self
-		assert: selector notNil;
-		assert: selector class == SSelectorNode;
-		assert: selector keywords size = 1;
-		assert: selector value == #a.
-	parser on: 'a: x'.
-	parser step.
-	self deny: parser token isNameToken.
-	parser on: '+ x'.
-	parser step.
-	self deny: parser token isNameToken
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmbeddedDots
-	| node |
-	node := parser parse: 'm
-	A.B.C name.
-	self m: A.B.C.
-	^true'.
-	self
-		assert: node statements first receiver name = 'A.B.C';
-		assert: node statements second arguments anyOne name = 'A.B.C'
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmbeddedDots2
-	self
-		should: [parser parse: '
-	m
-		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
-		raise: SCompilationError.
-	self
-		should: [parser
-			parse: '
-	m
-		| funny.local |
-		funny.local := 1.
-		^funny.local']
-		raise: SCompilationError.
-	self
-		should: [parser
-			parse: '
-	m
-		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
-		raise: SCompilationError
-! !
-
-!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 1/30/2023 10:10:47'!
-testPeekForIdentifier
-	| strm |
-	strm := 'abc.de' readStream.
-	self
-		assert: (SCompiler new peekForIdentifier: strm);
-		assert: strm position = 1.
-	strm position: 3.
-	self assert: (SCompiler new peekForIdentifier: strm).
-	strm := 'a2.c' readStream.
-	strm position: 2.
-	self deny: (SCompiler new peekForIdentifier: strm)
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryColon
-	| statements binary |
-	parser on: '3:4'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	binary := statements anyOne.
-	self
-		assert: binary receiver source = '3';
-		assert: binary symbol = #':';
-		assert: binary arguments anyOne source = '4'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryColon2
-	| m |
-	m := parser parse: ': b ^self / b'.
-	self assert: m selector = #':'.
-	self assert: m arguments anyOne source = 'b'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryPower
-	| statements binary |
-	parser on: '2^3'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	binary := statements anyOne.
-	self
-		assert: binary receiver source = '2';
-		assert: binary symbol = #'^';
-		assert: binary arguments anyOne source = '3'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinaryPower2
-	| m |
-	m := parser parse: '^ n ^self raisedTo: n'.
-	self assert: m selector = #'^'.
-	self assert: m arguments anyOne source = 'n'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testCascade
-	| cascade statements |
-	parser on: 'r m1; m2'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	cascade := statements anyOne.
-	self
-		assert: cascade receiver source = 'r';
-		assert: cascade messages size = 2;
-		assert: cascade messages first source = 'r m1';
-		assert: cascade messages first selector source = 'm1';
-		assert: cascade messages second selector source = 'm2'
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testCascade2
-	| cascade statements |
-	parser on: 'r m: 1; + 2'.
-	parser step.
-	statements := parser statements.
-	self assert: statements size = 1.
-	cascade := statements anyOne.
-	self
-		assert: cascade receiver source = 'r';
-		assert: cascade messages size = 2;
-		assert: cascade messages first selector keywords size = 1;
-		assert: cascade messages first arguments anyOne value = 1;
-		assert: cascade messages second selector isBinary;
-		assert: cascade messages second arguments anyOne value = 2
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testMissingPrimary
-	| source |
-	source := 'pendingReservesAtTime: time well: index
-	i0 := startings at: index.
-	ti := self timeAt: i0.
-	dt := time - ti.
-	c := single primaryCurve.
-	^c reserves - (cumAtTime: dt)'.
-	self should: [parser parse: source] raise: Error
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testSelector
-	| source ast |
-	source := 'k1: arg1 k2: arg2'.
-	ast := parser parse: source.
-	self
-		assert: ast selectorNode positions first
-			= (source indexOfSubCollection: 'k1:');
-		assert: ast selectorNode positions second
-			= (source indexOfSubCollection: 'k2:');
-		assert: ast selector == #k1:k2:
-! !
-
-!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnarySelector
-	| source ast |
-	source := 'm a notNil'.
-	ast := parser parse: source.
-	self
-		assert: (ast nodeWithLiteral: #notNil) positions first
-			= (source indexOfSubCollection: 'notNil')
-! !
-
-!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 1/30/2023 10:10:47'!
-testBraceNode
-	| ast brace sum |
-	ast := parser parseExpression: '{1. 3 + 4}'.
-	brace := ast statements anyOne.
-	sum := parser parseExpression: '3 + 4'.
-	self
-		assert: brace elements size = 2;
-		assert: brace elements first value = 1;
-		assert: brace elements second class = sum statements anyOne class;
-		assert: brace elements second arguments anyOne value = 4
-! !
-
-!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnicode
-	| source ast |
-	source := 8855 asCharacter asString , ' aFreeTensor'.
-	ast := parser parse: source.
-	self
-		assert: ast selectorNode position
-			= (source indexOfSubCollection: 8855 asCharacter asString);
-		assert: ast selector == 8855 asCharacter asString asSymbol
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment
-	| assignment |
-	parser on: 'a := nil + 4'.
-	parser step.
-	assignment := parser expression.
-	self
-		assert: assignment isAssign;
-		assert: assignment assignees size = 1;
-		assert: assignment assignees anyOne source = 'a';
-		assert: assignment expression source = 'nil + 4'
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment2
-	| assignment |
-	parser on: 'a := b := nil + 4'.
-	parser step.
-	assignment := parser expression.
-	self
-		assert: assignment isAssign;
-		assert: assignment assignees size = 2;
-		assert: assignment assignees first name = 'b';
-		assert: assignment assignees second name = 'a'
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testAssignment3
-	| node |
-	node := parser parseExpression: 'a : = 1'.
-	self
-		assert: node statements anyOne isAssign.
-	node := parser parseExpression: 'a :	= 1'.
-	self
-		assert: node statements anyOne isAssign
-! !
-
-!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnderscoreAssignment
-	| assignment |
-	parser on: 'a _ 3 + 4'.
-	parser step.
-	assignment := parser expression.
-	self assert: assignment isAssign
-! !
-
-!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 1/30/2023 10:10:47'!
-testAllNodesDo
-	| source nodes |
-	source := 'rcvr msg1; msg2'.
-	parser on: source.
-	parser step.
-	nodes := OrderedCollection new.
-	parser expression allNodesDo: [:n | nodes add: n].
-	self assert: nodes size = 4
-! !
-
-!SmalltalkParserTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	super setUp.
-	parser := SCompiler new smalltalkParser
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinary
-	| node |
-	scanner on: '-
-		--
-		---
-		==>
-		~!!|\/%&*+=><'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'-';
-		assert: node source = '-'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'--';
-		assert: node source = '--'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'---';
-		assert: node source = '---'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'==>';
-		assert: node source = '==>'.
-	node := scanner next.
-	self
-		assert: node isBinary;
-		assert: node value = #'~!!|\/%&*+=><';
-		assert: node source = '~!!|\/%&*+=><'
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testCharacter
-	| node |
-	scanner on: '$a$b'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = $a;
-		assert: node source = '$a'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = $b;
-		assert: node source = '$b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testEmpty
-	scanner on: ''.
-	self assert: scanner next isEnd
-! !
-
-!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 1/30/2023 10:10:47'!
-testString
-	| node quote |
-	scanner on: '' storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = '';
-		assert: node source = (String with: $' with: $').
-	scanner on: 'Hello World!!' storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = 'Hello World!!';
-		assert: node source = 'Hello World!!' storeString.
-	quote := String with: $'.
-	scanner on: quote storeString.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = quote;
-		assert: node source = quote storeString
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-test0xNotation
-	| node |
-	node := SCompiler new smalltalkParser parseExpression: '0x10'.
-	self assert: node statements first value = 16.
-	node := SCompiler new smalltalkParser parseExpression: '0X10'.
-	self assert: node statements first value = 16
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testFloat
-	| node |
-	scanner on: '0.1'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0.1;
-		assert: node source = '0.1'.
-	scanner on: '0.1e-35'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0.1e-35;
-		assert: node source = '0.1e-35'
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testInteger
-	| node |
-	scanner on: '0 12 -35'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 0;
-		assert: node source = '0'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 12;
-		assert: node source = '12'.
-	node := scanner next.
-	self
-		deny: node isNumberNode;
-		assert: (node is: #'-');
-		assert: node source = '-'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 35;
-		assert: node source = '35'
-! !
-
-!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 1/30/2023 10:10:47'!
-testIntegerRadix
-	| node |
-	scanner on: '16rFA2'.
-	node := scanner next.
-	self
-		assert: node isNumberNode;
-		assert: node value = 16rFA2;
-		assert: node source = '16rFA2'
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testBinarySymbol
-	| node |
-	scanner on: '#='.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node hasSymbol;
-		assert: node value = #'='
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testDashStartingSymbol
-	| node |
-	scanner on: '#++'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'++';
-		assert: node source = '#++'.
-	scanner on: '#//'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'//';
-		assert: node source = '#//'.
-	scanner on: '#--'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'--';
-		assert: node source = '#--'.
-	scanner on: '#+-'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'+-';
-		assert: node source = '#+-'
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testNumericSymbol
-	scanner on: '#35'.
-	self assert: scanner next value = '35' asSymbol
-! !
-
-!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 1/30/2023 10:10:47'!
-testSymbol
-	| node |
-	scanner on: '#-'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'-';
-		assert: node source = '#-'.
-	scanner on: '#a:'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:;
-		assert: node source = '#a:'.
-	scanner on: '#-!!'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #'-!!';
-		assert: node source = '#-!!'.
-	scanner on: '#a:b:'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:b:;
-		assert: node source = '#a:b:'.
-	scanner on: '#a:b'.
-	node := scanner next.
-	self
-		assert: node isLiteral;
-		assert: node value = #a:;
-		assert: node source = '#a:'.
-	node := scanner next.
-	self assert: node value = 'b'; assert: node source = 'b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 1/30/2023 10:10:47'!
-testArrayStart
-	| node |
-	scanner on: '#()'.
-	node := scanner next.
-	self
-		assert: (node is: #'#(');
-		assert: node source = '#('.
-	scanner on: '#['.
-	node := scanner next.
-	self
-		assert: (node is: #'#[');
-		assert: node source = '#['.
-	scanner on: '#''hello'''.
-	node := scanner next.
-	self
-		assert: node value = #hello;
-		assert: node source = '#''hello'''
-! !
-
-!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
-testIdentifier
-	| node |
-	scanner on: 'a'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	scanner on: ' a1'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a1';
-		assert: node source = 'a1'.
-	scanner on: '_a'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = '_a';
-		assert: node source = '_a'.
-	scanner on: 'a_1b'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a_1b';
-		assert: node source = 'a_1b'
-! !
-
-!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 1/30/2023 10:10:47'!
-testKeyword
-	| node node2 |
-	scanner on: 'a:'.
-	node := scanner next.
-	self
-		assert: node isKeyword;
-		assert: node value = 'a:';
-		assert: node source = 'a:'.
-	scanner on: 'ab:cd:'.
-	node := scanner next.
-	node2 := scanner next.
-	self
-		assert: node isKeyword;
-		assert: node value = 'ab:';
-		assert: node source = 'ab:';
-		assert: node2 isKeyword;
-		assert: node2 value = 'cd:';
-		assert: node2 source = 'cd:'
-! !
-
-!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 1/30/2023 10:10:47'!
-testUnicodeScanning
-	| next three tensor |
-	scanner on: '3 + 4' asWideString.
-	self assert: scanner next value = 3.
-	next := scanner next.
-	self
-		assert: next value == #'+';
-		assert: scanner next value = 4.
-	scanner on: '3' asWideString , 8855 asCharacter asString , '4' asWideString.
-	three := scanner next.
-	self assert: three value = 3.
-	tensor := scanner next.
-	self assert: tensor value = 8855 asCharacter asString asSymbol
-! !
-
-!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 1/30/2023 10:10:47'!
-testComment
-	| node |
-	scanner on: '"comment"a'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node value = 'comment';
-		assert: node source = '"comment"'.
-	scanner on: '"comment"'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node source = '"comment"';
-		assert: node position = 1.
-	scanner on: 'a"comment"'.
-	node := scanner next.
-	self
-		assert: node isNameToken;
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	node := scanner next.
-	self
-		assert: node isComment;
-		assert: node position = ('a' size + 1)
-! !
-
-!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
-testColon
-	| node |
-	scanner on: ':a'.
-	node := scanner next.
-	self
-		assert: (node is: $:);
-		assert: node source = ':'.
-	node := scanner next.
-	self
-		assert: node value = 'a';
-		assert: node source = 'a'.
-	scanner on: ':='.
-	node := scanner next.
-	self
-		assert: node isAssignment;
-		assert: node source = ':='
-! !
-
-!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 1/30/2023 10:10:47'!
-testColon2
-	| node |
-	scanner on: '::'.
-	node := scanner next.
-	self
-		assert: node class = SStringToken;
-		assert: node source = '::'
-! !
-
-!SmalltalkScannerTest methodsFor: 'setup' stamp: 'KenD 1/30/2023 10:10:47'!
-setUp
-	super setUp.
-	scanner := SCompiler new smalltalkScanner
-! !
-
 !MirrorTest methodsFor: 'tests' stamp: 'KenD 1/30/2023 10:10:45'!
 maneuvererForObjects
 	| mirror |
@@ -7530,6 +5604,2016 @@ test050instVarAssignment
 		assert: expression binding value = true
 ! !
 
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:12'!
+test010resolveClassVariables 
+	| scope |
+	scope := self scopeFor: Symbol.
+	self checkClassVarsOf: Symbol in: scope! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:24'!
+test010resolveGlobal 
+	| binding |
+	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Smalltalk'.
+	self
+		assert: binding isGlobal;
+		deny: binding isClassBinding;
+		assert: binding name = #Smalltalk;
+		assert: binding association == (Smalltalk globals associationAt: #Smalltalk)! !
+
+!ScriptScopeTest methodsFor: 'testing' stamp: 'KenD 6/5/2021 07:18:35'!
+test010resolveInstanceVariables 
+	| scope |
+	scope := self scopeFor: Point.
+	self checkInstVarsOf: Point in: scope! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+assert: binding isEnvArg: name at: index
+	self
+		assert: binding isArgument;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding isInArray;
+		assert: binding environmentIndex = nil
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+assert: binding isEnvTemp: name at: environment index: index
+	self
+		assert: binding isTemporary;
+		assert: binding isInArray;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding environment = environment
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+assert: binding isStackArg: name at: index
+	self
+		assert: binding isArgument;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+assert: binding isStackInlineArg: name at: index
+	self
+		assert: binding isArgument;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index;
+		assert: binding environmentObject class = InlinedArgEnvironment
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+assert: binding isStackTemp: name at: index
+	self
+		assert: binding isTemporary;
+		assert: binding isInStack;
+		assert: binding name = name;
+		assert: binding index = index
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkArgs: names in: scope
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isArgument;
+			assert: binding name = name;
+			assert: binding index = index]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkClassVarsOf: aSpecies in: scope
+	aSpecies withAllSuperclasses do: [:c | 
+		c classPool associationsDo: [:assoc | | name binding |
+			name := assoc key.
+			binding := scope resolve: name.
+			self
+				assert: binding isClassVariable;
+				assert: binding name = name;
+				assert: binding association == assoc]]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkClosureEnvTemps: names in: scope at: environment
+	| offset |
+	offset := scope environmentSizeUpToCapturedArguments.
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isTemporary;
+			assert: binding isInArray;
+			assert: binding name = name;
+			assert: binding index = (index + offset);
+			assert: binding environment = environment]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkEnvTemps: names in: scope at: environment
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isTemporary;
+			assert: binding isInArray;
+			assert: binding name = name;
+			assert: binding index = index;
+			assert: binding environment = environment]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkInstVarsOf: aSpecies in: scope
+	aSpecies allInstVarNames withIndexDo: [:name :i | | binding |
+		binding := scope resolve: name.
+		self
+			assert: binding isInstVar;
+			assert: binding name = name;
+			assert: binding index = i]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+checkTemps: names in: scope
+	names withIndexDo: [:name :index | | binding |
+		binding := scope resolve: name.
+		self assert: binding isStackTemp: name at: index]
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+compile: aString
+	^self compile: aString in: UndefinedObject
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+compile: aString in: aClass
+	^SCompiler parse: aString in: aClass
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+precondition: aBoolean
+	self assert: aBoolean description: 'Precondition for this test is not met'
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+scopeFor: aSpecies
+	^MethodScope new
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test010resolveClass
+	| binding |
+	binding := SCompiler new smalltalkCompiler methodNode scope resolve: 'Point'.
+	self
+		assert: binding isDynamic;
+		assert: binding name = #Point
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test010resolveSelf
+	| scope receiver sup |
+	scope := self scopeFor: Object.
+	receiver := scope resolve: 'self'.
+	sup := scope resolve: 'super'.
+	self
+		assert: receiver isSelf;
+		assert: receiver name = 'self';
+		assert: sup isSuper;
+		assert: sup name = 'super'
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test011resolveUnknownGlobal
+	| binding point |
+	self precondition: (Smalltalk includesKey: 'Foo678' existingSymbol) not.
+	binding := MethodScope new resolve: 'Foo678'.
+	self assert: binding isDynamic.
+	point := self scopeFor: Point.
+	binding := point resolve: 'Foo678'.
+	self assert: binding isDynamic
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test020resolveMethodArguments
+	| scope |
+	scope := self scopeFor: Point.
+	scope
+		defineArgument: 'arg1';
+		defineArgument: 'arg2';
+		positionDefinedLocals.
+	self checkArgs: #('arg1' 'arg2') in: scope
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test021resolveMethodTemporaries
+	| scope |
+	scope := self scopeFor: Point.
+	scope defineTemporary: 't1'; defineTemporary: 't2'; positionDefinedLocals.
+	self checkTemps: #('t1' 't2') in: scope
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test030resolveNestedTemporaryConflictingWithIvar
+	| ast b3 x |
+	ast := self compile: 'foo  [ | x | [[x]] ]' in: Point.
+	b3 := ast children first children first children first.
+	x := b3 statements first binding.
+	self
+		assert: x
+		isEnvTemp: 'x'
+		at: 1
+		index: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test040declareMethodArguments
+	| ast scope |
+	ast := self compile: 'foo: anArg bar: anotherArg' in: Point.
+	scope := ast scope.
+	self checkArgs: #('anArg' 'anotherArg') in: scope
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test041declareMethodTemporaries
+	| ast scope |
+	ast := self compile: 'foo | t1 t2 | ' in: Point.
+	scope := ast scope.
+	self checkTemps: #('t1' 't2') in: scope
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test042declareMethodTempsWithArgs
+	| ast scope |
+	ast := self compile: 'foo: arg1 bar: arg2 | t1 t2 | ' in: Point.
+	scope := ast scope.
+	self
+		checkArgs: #('arg1' 'arg2') in: scope;
+		checkTemps: #('t1' 't2') in: scope
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test050useMethodTemps
+	| ast scope t1 t2 |
+	ast := self compile: 'foo | t1 t2 | t1. t2' in: Point.
+	scope := ast scope.
+	t1 := ast statements first binding.
+	t2 := ast statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		assert: t1 isTemporary;
+		assert: t1 isInStack;
+		assert: t1 name = 't1';
+		assert: t1 index = 1;
+		assert: t2 isTemporary;
+		assert: t2 isInStack;
+		assert: t2 name = 't2';
+		assert: t2 index = 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test051useMethodArgs
+	| ast scope a1 a2 |
+	ast := self compile: 'foo: a1 bar: a2 a1. a2' in: Point.
+	scope := ast scope.
+	a1 := ast statements first binding.
+	a2 := ast statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		assert: a1 isArgument;
+		assert: a1 isInStack;
+		assert: a1 name = 'a1';
+		assert: a1 index = 1;
+		assert: a2 isArgument;
+		assert: a2 isInStack;
+		assert: a2 name = 'a2';
+		assert: a2 index = 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test052useMethodTempsAndArgs
+	| ast scope a1 a2 t1 t2 |
+	ast := self compile: 'foo: a1 bar: a2 | t1 t2 | t1. t2. a1. a2' in: Point.
+	scope := ast scope.
+	t1 := ast statements first binding.
+	t2 := ast statements second binding.
+	a1 := ast statements third binding.
+	a2 := ast statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		checkTemps: #('t1' 't2') in: scope;
+		assert: t1 isTemporary;
+		assert: t1 isInStack;
+		assert: t1 name = 't1';
+		assert: t1 index = 1;
+		assert: t2 isTemporary;
+		assert: t2 isInStack;
+		assert: t2 name = 't2';
+		assert: t2 index = 2;
+		assert: a1 isArgument;
+		assert: a1 isInStack;
+		assert: a1 name = 'a1';
+		assert: a1 index = 1;
+		assert: a2 isArgument;
+		assert: a2 isInStack;
+		assert: a2 name = 'a2';
+		assert: a2 index = 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test053useBlockArgs
+	| ast block scope a1 a2 |
+	ast := self compile: 'foo [:a1 :a2 | a1. a2]' in: Point.
+	block := ast children first.
+	scope := block scope.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test053useSiblingBlockArgs
+	| ast block1 block2 a1 a2 |
+	ast := self compile: 'foo [:a1 | a1]. [:a2 | a2]' in: Point.
+	block1 := ast children first.
+	block2 := ast children second.
+	a1 := block1 statements first binding.
+	a2 := block2 statements first binding.
+	self
+		checkArgs: #('a1') in: block1 scope;
+		checkArgs: #('a2') in: block2 scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test054useBlockTemps
+	| ast block scope t1 t2 |
+	ast := self compile: 'foo [| t1 t2 | t1. t2]' in: Point.
+	block := ast children first.
+	scope := block scope.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test055methodUseGlobal
+	| ast global |
+	ast := self compile: 'foo Collection' in: Point.
+	global := ast statements first binding.
+	self
+		assert: global isDynamic;
+		assert: global name = #Collection
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test060useNestedMethodArgs
+	| ast block ma1 ma2 ba1 ba2 |
+	ast := self compile: 'foo: a1 bar: a2  a1. a2. [a1. a2]' in: Object.
+	block := ast children first.
+	ma1 := ast statements first binding.
+	ma2 := ast statements second binding.
+	ba1 := block statements first binding.
+	ba2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: ma1 isStackArg: 'a1' at: 1;
+		assert: ma2 isStackArg: 'a2' at: 2;
+		assert: ba1 isEnvArg: 'a1' at: 1;
+		assert: ba2 isEnvArg: 'a2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test061useNestedMethodSiblingBlockTemps
+	| ast block1 block2 b1t1 b2t2 |
+	ast := self compile: 'foo | t1 t2 | [t1]. [t2]' in: Object.
+	block1 := ast children first.
+	block2 := ast children second.
+	b1t1 := block1 statements first binding.
+	b2t2 := block2 statements first binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test061useNestedMethodTemps
+	| ast block bt1 bt2 |
+	ast := self compile: 'foo | t1 t2 | [t1. t2]' in: Object.
+	block := ast children first.
+	bt1 := block statements first binding.
+	bt2 := block statements second binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: bt1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: bt2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test062useNestedBlockArgs
+	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
+	ast := self compile: 'foo [:a1 :a2 | [a1. a2] ]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: block1 scope;
+		assert: b1a1 isStackArg: 'a1' at: 1;
+		assert: b1a2 isStackArg: 'a2' at: 2;
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b2a2 isEnvArg: 'a2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test063useNestedBlockTemps
+	| ast block1 block2 b2t1 b2t2 |
+	ast := self compile: 'foo [| t1 t2 | [t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test064useSiblingBlocksNestedTemps
+	| ast block1 block2 block3 b2t1 b3t2 |
+	ast := self compile: 'foo [| t1 t2 | [t1]. [t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block1 children second.
+	b2t1 := block2 statements first binding.
+	b3t2 := block3 statements first binding.
+	self
+		checkClosureEnvTemps: #('t1' 't2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b3t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test065useNestedBlockAndMethodTemps
+	| ast block1 block2 b2t1 b2t2 |
+	ast := self compile: 'foo | t1 | [| t2 | [t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkEnvTemps: #('t1') in: ast scope at: nil;
+		checkClosureEnvTemps: #('t2') in: block1 scope at: nil;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 2
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test070useDoublyNestedMethodArgs
+	| ast block1 block2 b1a1 b1a2 b2a1 b2a2 |
+	ast := self compile: 'foo: a1 bar: a2  [[a1. a2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b1a2 isEnvArg: 'a2' at: 2;
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b2a2 isEnvArg: 'a2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test071useDoublyNestedMethodTemps
+	| ast block1 block2 b1t1 b1t2 b2t1 b2t2 |
+	ast := self compile: 'foo | t1 t2 | [[t1. t2]]' in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1t1 := block1 scope resolve: 't1'.
+	b1t2 := block1 scope resolve: 't2'.
+	b2t1 := block2 statements first binding.
+	b2t2 := block2 statements second binding.
+	self
+		checkEnvTemps: #('t1' 't2') in: ast scope at: nil;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test075useDoublyNestedMethodArgsWithTemps
+	| ast block1 block2 b1a1 b1a2 b1t1 b1t2 b2a1 b2a2 b2t1 b2t2 |
+	ast := self
+		compile: 'foo: a1 bar: a2 | t1 | [| t2 | [a1. a2. t1. t2]]'
+		in: Object.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1a2 := block1 scope resolve: 'a2'.
+	b1t1 := block1 scope resolve: 't1'.
+	b1t2 := block1 scope resolve: 't2'.
+	b2a1 := block2 statements first binding.
+	b2a2 := block2 statements second binding.
+	b2t1 := block2 statements third binding.
+	b2t2 := block2 statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: b1a1 isEnvArg: 'a1' at: 2;
+		assert: b1a2 isEnvArg: 'a2' at: 3;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: nil
+			index: 4;
+		assert: b1t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 2
+			index: 4;
+		assert: b2a1 isEnvArg: 'a1' at: 3;
+		assert: b2a2 isEnvArg: 'a2' at: 4
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test080captureSelf
+	| ast block receiver |
+	ast := self compile: 'foo [self]' in: Object.
+	block := ast children first.
+	receiver := block statements first binding.
+	self
+		assert: receiver isSelf;
+		assert: ast environmentSize = 0;
+		assert: block scope capturesSelf;
+		assert: block environmentSize equals: 1;
+		assert: block scope home == nil
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test090useNonLocalReturn
+	| ast block |
+	ast := self compile: 'foo [^1]' in: Object.
+	block := ast children first.
+	self
+		assert: ast environmentSize = 0;
+		assert: ast needsEnvironment;
+		assert: block environmentSize = 1;
+		assert: block scope home == ast
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test091nonLocalReturnSelf
+	| ast block |
+	ast := self compile: 'foo [^self]' in: Object.
+	block := ast children first.
+	self
+		assert: ast environmentSize = 0;
+		assert: ast needsEnvironment;
+		assert: block environmentSize = 2;
+		assert: block scope home == ast
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test100inlineUseMethodArgs
+	| ast block a1 a2 |
+	ast := self compile: 'foo: a1 bar: a2  1 ifTrue: [a1. a2]' in: Point.
+	block := ast children first.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test101inlineUseMethodTemps
+	| ast t1 t2 block |
+	ast := self compile: 'foo | t1 t2 | 1 ifTrue: [t1. t2]' in: Point.
+	block := ast children first.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1' 't2') in: ast scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test102inlineUseMethodArgsAndTemps
+	| ast block a1 a2 t1 t2 |
+	ast := self
+		compile: 'foo: a1 bar: a2  | t1 t2 | 1 ifTrue: [a1. a2. t1. t2]'
+		in: Point.
+	block := ast children first.
+	a1 := block statements first binding.
+	a2 := block statements second binding.
+	t1 := block statements third binding.
+	t2 := block statements fourth binding.
+	self
+		checkArgs: #('a1' 'a2') in: ast scope;
+		assert: a1 isStackArg: 'a1' at: 1;
+		assert: a2 isStackArg: 'a2' at: 2;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test110inlineUseMixedMethodTemps
+	| ast t1 t2 block |
+	ast := self compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. t2]' in: Point.
+	block := ast children first.
+	t1 := block statements first binding.
+	t2 := block statements second binding.
+	self
+		checkTemps: #('t1') in: ast scope;
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test120inlineEnvironmentTemp
+	| ast block1 block2 mt1 mt2 b1t1 b1t2 b2t2 |
+	ast := self
+		compile: 'foo | t1 | 1 ifTrue: [ | t2 | t1. [t2]]'
+		in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	mt1 := ast scope resolve: 't1'.
+	mt2 := ast scope resolve: 't2'.
+	b1t1 := block1 statements first binding.
+	b1t2 := block1 scope resolve: 't2'.
+	b2t2 := block2 scope resolve: 't2'.
+	self
+		checkTemps: #('t1') in: ast scope;
+		assert: mt2 isDynamic;
+		assert: mt1 isStackTemp: 't1' at: 1;
+		assert: b1t1 isStackTemp: 't1' at: 1;
+		assert: b1t2
+			isEnvTemp: 't2'
+			at: nil
+			index: 1;
+		assert: b2t2
+			isEnvTemp: 't2'
+			at: 1
+			index: 1;
+		assert: ast scope environmentSize = 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test130inlineBlockArg
+	| ast block a1 |
+	ast := self compile: 'foo  1 ifNotNil: [:a1 | 1 ]' in: Point.
+	block := ast children first.
+	a1 := block scope resolve: 'a1'.
+	self assert: a1 isStackInlineArg: 'a1' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test131inlineBlockArgWithTemp
+	| ast block t1 a1 |
+	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | 1 ]' in: Point.
+	block := ast children first.
+	t1 := ast scope resolve: 't1'.
+	a1 := block scope resolve: 'a1'.
+	self
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: a1 isStackInlineArg: 'a1' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test132inlineBlockArgWithTemps
+	| ast block t1 a1 t2 |
+	ast := self compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1 ]' in: Point.
+	block := ast children first.
+	t1 := ast scope resolve: 't1'.
+	a1 := block scope resolve: 'a1'.
+	t2 := block scope resolve: 't2'.
+	self
+		assert: t1 isStackTemp: 't1' at: 1;
+		assert: t2 isStackTemp: 't2' at: 2;
+		assert: a1 isStackInlineArg: 'a1' at: 3
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test133inlineBlockArgWithEnvTemps
+	| ast block1 mt1 b1a1 b1t2 |
+	ast := self
+		compile: 'foo | t1 | 1 ifNotNil: [:a1 | | t2 | 1. [t2] ]'
+		in: Point.
+	block1 := ast children first.
+	mt1 := ast scope resolve: 't1'.
+	b1a1 := block1 scope resolve: 'a1'.
+	b1t2 := block1 scope resolve: 't2'.
+	self
+		assert: mt1 isStackTemp: 't1' at: 1;
+		assert: b1t2 isEnvTemp: 't2' at: nil index: 1;
+		assert: b1a1 isStackInlineArg: 'a1' at: 2
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test134inlineBlockArgNestedAccess
+	| ast block1 block2 b1a1 b2a1 |
+	ast := self compile: 'foo  1 ifNotNil: [:a1 | [a1] ]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b2a1 := block2 scope resolve: 'a1'.
+	self
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b2a1 isEnvArg: 'a1' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test135inlineBlockWithArgInRealBlockCaptured
+	| ast block1 block2 block3 b2a1 b3a1 |
+	"Args of inlined blocks can go to the stack of the real block, unless captured. Because the
+	 capture bytecode doesn't have a slot type for 'copy from stack temps' (it has capture from
+	 stack in 	 args zone, capture the current env, and capture a value in the current env)"
+	ast := self compile: 'foo  [1 ifNotNil: [:a1 | [a1] ]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b2a1 := block2 scope resolve: 'a1'.
+	b3a1 := block3 scope resolve: 'a1'.
+	self
+		assert: b2a1 isEnvArg: 'a1' at: 1;
+		assert: b3a1 isEnvArg: 'a1' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test136inlineBlockWithArgCapturedByInlinedBlock
+	| ast block1 block2 b1a1 b2a1 |
+	ast := self compile: 'foo 1 ifNotNil: [:a1 | a1. 2 ifTrue: [a1]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b2a1 := block2 scope resolve: 'a1'.
+	self
+		assert: b1a1 isStackInlineArg: 'a1' at: 1;
+		assert: b2a1 isStackInlineArg: 'a1' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test137inlineBlockWithArgCapturedByInlinedBlockInRealBlock
+	| ast block1 block2 block3 b1a1 b3a1 |
+	ast := self
+		compile: 'foo 1 ifNotNil: [:a1 | [2 ifTrue: [a1]]]'
+		in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b1a1 := block1 scope resolve: 'a1'.
+	b3a1 := block3 scope resolve: 'a1'.
+	self
+		assert: b1a1 isEnvArg: 'a1' at: 1;
+		assert: b3a1 isEnvArg: 'a1' at: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test138blockWithInlinedBlockWithTempCaptured
+	| ast block1 block2 block3 b2t1 b3t1 block |
+	ast := self compile: 'foo [true ifTrue: [| t1 | [t1]]]' in: Point.
+	block1 := ast children first.
+	block2 := block1 children first.
+	block3 := block2 children first.
+	b2t1 := block2 scope resolve: 't1'.
+	b3t1 := block3 scope resolve: 't1'.
+	self
+		assert: b2t1
+			isEnvTemp: 't1'
+			at: nil
+			index: 1;
+		assert: b3t1
+			isEnvTemp: 't1'
+			at: 1
+			index: 1
+! !
+
+!ScriptScopeTest methodsFor: 'private' stamp: 'KenD 3/1/2024 09:51:00'!
+test140blockWithInlinedBlockHasEnv
+	| ast |
+	ast := self compile: 'foo [true ifTrue: [^self]]'.
+	self assert: ast needsEnvironment
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment1
+	| node |
+	node := parser parse: 'unary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment10
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	[2. "comment3" 3]'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second statements second comment value = 'comment3'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment11
+	| node |
+	node := parser parse: 'unary
+	1. "comment"'.
+	self assert: node comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment12
+	| node |
+	node := parser parse: 'unary
+	[1. "comment"]'.
+	self assert: node statements anyOne comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment2
+	| node |
+	node := parser parse: '+ binary
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment3
+	| node |
+	node := parser parse: 'keyword: arg
+	"comment"
+	^true'.
+	self assert: node selectorNode comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment4
+	| node |
+	node := parser parse: 'unary
+	^true "comment"'.
+	self
+		assert: node statements anyOne expression comment value = 'comment';
+		deny: node comment value = 'comment';
+		assert: node comment isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment5
+	| node |
+	node := parser parse: '+ binary
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment6
+	| node |
+	node := parser parse: 'keyword: arg
+	^true "comment"'.
+	self assert: node statements anyOne expression comment value = 'comment'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment7
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment8
+	| node |
+	node := parser parse: 'unary
+	1 "comment1".
+	^2 "comment2"'.
+	self
+		assert: node statements first comment value = 'comment1';
+		assert: node statements second expression comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:42'!
+testComment9
+	| node |
+	node := parser parse: 'unary
+	1. "comment2" 2'.
+	self assert: node statements second comment value = 'comment2'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testByteArray
+	| node |
+	node := parser parseExpression: '#[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'.
+	node := parser parse: 'b #[16rFE]'.
+	self assert: node statements anyOne source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testByteArray2
+	| array |
+	parser on: '#[16rFE]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE];
+		assert: array source = '#[16rFE]'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testByteArray3
+	| array |
+	parser on: '#[16rFE 2]'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #[16rFE 2];
+		assert: array source = '#[16rFE 2]'.
+	parser on: '#[16rFE 256 2]'.
+	parser step.
+	self should: [array := parser primary] raise: Exception
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testDashStartingSymbol1
+	| array |
+	parser on: '#(#++)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'++').
+	parser on: '#(#-- )'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array with: #'--')
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testDashStartingSymbol2
+	| symbol |
+	parser on: '#++'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'++'.
+	parser on: '#--'.
+	parser step.
+	symbol := parser primary.
+	self
+		assert: symbol isLiteral;
+		assert: symbol value = #'--'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testExpression
+	| expression |
+	parser on: '(x)'; step.
+	expression := parser primary.
+	self
+		assert: expression isIdentifier;
+		assert: expression source = 'x'.
+	parser on: '(x + 1)'; step.
+	expression := parser primary.
+	self
+		assert: expression class == SMessageNode;
+		assert: expression selector isBinary;
+		assert: expression source = '(x + 1)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testFloat
+	| source node |
+	source := '3.14159265358979323846'.
+	node := parser parseExpression: source.
+	self assert: node statements anyOne source = source.
+	node := parser parse: 'm ' , source.
+	self assert: node statements anyOne source = source
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testLiteralArray
+	| array |
+	parser on: '#(16rFE)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE);
+		assert: array source = '#(16rFE)'.
+	parser on: '#(16rFE $a ''hello'' #s #(1 2))'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(16rFE $a 'hello' #s #(1 2));
+		assert: array source = '#(16rFE $a ''hello'' #s #(1 2))'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testLiteralArray2
+	| array |
+	parser on: '#(a:b:)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = #(#a:b:);
+		assert: array source = '#(a:b:)'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testLiteralKeywordArray
+	| ast literal |
+	ast := parser parseExpression: '#(a:b: c: d:)'.
+	literal := ast statements anyOne value.
+	self
+		assert: literal isArray;
+		assert: literal size = 3;
+		assert: literal first == #a:b:;
+		assert: literal second == #c:;
+		assert: literal third == #d:
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testNegativeElementInArray
+	| array |
+	parser on: '#(-21)'.
+	parser step.
+	array := parser primary.
+	self assert: array isLiteral.
+	parser on: '#(-21 1 -5 4)'.
+	parser step.
+	array := parser primary.
+	self
+		assert: array isLiteral;
+		assert: array value = (Array
+			with: -21
+			with: 1
+			with: -5
+			with: 4)
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testNegativeNumber
+	| number |
+	parser on: '-3'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3;
+		assert: number source = '-3'.
+	parser on: '-3.14'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -3.14;
+		assert: number source = '-3.14'.
+	parser on: '-3.14e-10'.
+	parser step.
+	number := parser primary.
+	self
+		assert: number isLiteral;
+		assert: number value = -0.000000000314;
+		assert: number source = '-3.14e-10'
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testNotAFloat
+	| method |
+	method := parser parseExpression: '0.a'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0
+! !
+
+!SmalltalkParserTest methodsFor: 'literals' stamp: 'KenD 3/1/2024 09:50:42'!
+testScientificNotation
+	| method |
+	method := parser parseExpression: '
+	0.1e-2.
+	0.1E2'.
+	self
+		assert: method statements size = 2;
+		assert: method statements first value = 0.001;
+		assert: method statements second value = 10
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 3/1/2024 09:50:42'!
+testBlock
+	| block |
+	parser on: '[]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[]'.
+	parser on: '[x]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[x]';
+		assert: block temporaries isEmpty;
+		assert: block arguments isEmpty;
+		assert: block statements size = 1;
+		assert: block statements anyOne isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 3/1/2024 09:50:42'!
+testBlock2
+	| block |
+	parser on: '[:i | i]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | i]';
+		assert: block arguments size = 1.
+	parser on: '[:i :j |]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i :j |]';
+		assert: block temporaries isEmpty;
+		assert: block arguments size = 2;
+		assert: block statements isEmpty;
+		assert: block arguments first isIdentifier;
+		assert: block arguments second isIdentifier
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 3/1/2024 09:50:42'!
+testBlock3
+	| block |
+	parser on: '[:i | | a b | a + b]'.
+	parser compiler activeScript: parser compiler methodNode.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i | | a b | a + b]';
+		assert: block arguments size = 1;
+		assert: block temporaries size = 2.
+	parser on: '[:i ||a b|a|b]'.
+	parser step.
+	block := parser primary.
+	self
+		assert: block isBlockNode;
+		assert: block source = '[:i ||a b|a|b]';
+		assert: block temporaries size = 2;
+		assert: block arguments size = 1;
+		assert: block statements size = 1;
+		assert: block statements anyOne selector value = #'|'
+! !
+
+!SmalltalkParserTest methodsFor: 'blocks' stamp: 'KenD 3/1/2024 09:50:42'!
+testParseFragment
+	| source ast |
+	source := 'm
+	self do: [:x | Object'.
+	ast := parser compiler parseFragment: source.
+	self
+		assert: ast selector == #m;
+		assert: ast statements isEmpty
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 3/1/2024 09:50:42'!
+testParseTemporaries
+	| temporaries |
+	temporaries := SCompiler new smalltalkParser
+		parseTemporaries:
+			'm: arg
+	| t1 t2 t3 |
+	^:= will not even parse'.
+	self assert: (temporaries collect: #name) asArray = #('t1' 't2' 't3')
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 3/1/2024 09:50:42'!
+testTemporaries
+	| temporaries |
+	parser on: '||'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| |'.
+	parser step.
+	self assert: parser temporaries isEmpty.
+	parser on: '| a b c |'.
+	parser step.
+	temporaries := parser temporaries.
+	self
+		assert: temporaries size = 3;
+		assert: temporaries first isIdentifier;
+		assert: temporaries first name = 'a';
+		assert: temporaries second isIdentifier;
+		assert: temporaries second name = 'b';
+		assert: temporaries third isIdentifier;
+		assert: temporaries third name = 'c'
+! !
+
+!SmalltalkParserTest methodsFor: 'temporaries' stamp: 'KenD 3/1/2024 09:50:42'!
+testTemporaryDeclarations
+	| temporaries |
+	parser on: '| | | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: '|| | a b |'.
+	parser step.
+	temporaries := parser temporaries.
+	self assert: temporaries size = 0.
+	parser on: 'a || b'.
+	parser step.
+	self assert: parser token value = 'a'.
+	parser step.
+	self assert: parser token value = #'||'.
+	parser step.
+	self assert: parser token value = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 3/1/2024 09:50:42'!
+testBinaryHeader
+	| method selector |
+	parser on: '+++ x'.
+	parser step.
+	method := parser binarySignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 1;
+		assert: method selector value == #'+++';
+		assert: method arguments size = 1.
+	parser on: 'a'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil.
+	parser on: 'a: x'.
+	parser step.
+	selector := parser binarySignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 3/1/2024 09:50:42'!
+testKeywordHeader
+	| method selector |
+	parser on: 'x: x y: y z: z'.
+	parser step.
+	method := parser keywordSignature.
+	self
+		assert: method notNil;
+		assert: method class == SMethodNode;
+		assert: method selector keywords size = 3;
+		assert: method selector value == #x:y:z:;
+		assert: method arguments size = 3.
+	parser on: 'a'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil.
+	parser on: '+ x'.
+	parser step.
+	selector := parser keywordSignature.
+	self assert: selector isNil
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 3/1/2024 09:50:42'!
+testKeywordHeader2
+	| method |
+	parser on: 'x: xx y: yy z: zz'.
+	parser step.
+	method := parser methodSignature.
+	self
+		assert: method class == SMethodNode;
+		assert: method header = 'x: xx y: yy z: zz'.
+	parser on: 'x'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = 'x'.
+	parser on: '+= arg value := value + arg'.
+	parser step.
+	method := parser methodSignature.
+	self assert: method header = '+= arg'
+! !
+
+!SmalltalkParserTest methodsFor: 'method headers' stamp: 'KenD 3/1/2024 09:50:42'!
+testUnaryHeader
+	| selector |
+	parser on: 'a'.
+	parser step.
+	self assert: parser token isNameToken.
+	selector := parser unarySelector.
+	self
+		assert: selector notNil;
+		assert: selector class == SSelectorNode;
+		assert: selector keywords size = 1;
+		assert: selector value == #a.
+	parser on: 'a: x'.
+	parser step.
+	self deny: parser token isNameToken.
+	parser on: '+ x'.
+	parser step.
+	self deny: parser token isNameToken
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 3/1/2024 09:50:42'!
+testEmbeddedDots
+	| node |
+	node := parser parse: 'm
+	A.B.C name.
+	self m: A.B.C.
+	^true'.
+	self
+		assert: node statements first receiver name = 'A.B.C';
+		assert: node statements second arguments anyOne name = 'A.B.C'
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 3/1/2024 09:50:42'!
+testEmbeddedDots2
+	self
+		should: [parser parse: '
+	m
+		#(1 2 3) do: [:funny.arg | funny.arg + 1]']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		| funny.local |
+		funny.local := 1.
+		^funny.local']
+		raise: SCompilationError.
+	self
+		should: [parser
+			parse: '
+	m
+		#(1 2 3) do: [:e |  | funny.local | funny.local := e]']
+		raise: SCompilationError
+! !
+
+!SmalltalkParserTest methodsFor: 'embedded dot' stamp: 'KenD 3/1/2024 09:50:42'!
+testPeekForIdentifier
+	| strm |
+	strm := 'abc.de' readStream.
+	self
+		assert: (SCompiler new peekForIdentifier: strm);
+		assert: strm position = 1.
+	strm position: 3.
+	self assert: (SCompiler new peekForIdentifier: strm).
+	strm := 'a2.c' readStream.
+	strm position: 2.
+	self deny: (SCompiler new peekForIdentifier: strm)
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testBinaryColon
+	| statements binary |
+	parser on: '3:4'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '3';
+		assert: binary symbol = #':';
+		assert: binary arguments anyOne source = '4'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testBinaryColon2
+	| m |
+	m := parser parse: ': b ^self / b'.
+	self assert: m selector = #':'.
+	self assert: m arguments anyOne source = 'b'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testBinaryPower
+	| statements binary |
+	parser on: '2^3'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	binary := statements anyOne.
+	self
+		assert: binary receiver source = '2';
+		assert: binary symbol = #'^';
+		assert: binary arguments anyOne source = '3'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testBinaryPower2
+	| m |
+	m := parser parse: '^ n ^self raisedTo: n'.
+	self assert: m selector = #'^'.
+	self assert: m arguments anyOne source = 'n'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testCascade
+	| cascade statements |
+	parser on: 'r m1; m2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first source = 'r m1';
+		assert: cascade messages first selector source = 'm1';
+		assert: cascade messages second selector source = 'm2'
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testCascade2
+	| cascade statements |
+	parser on: 'r m: 1; + 2'.
+	parser step.
+	statements := parser statements.
+	self assert: statements size = 1.
+	cascade := statements anyOne.
+	self
+		assert: cascade receiver source = 'r';
+		assert: cascade messages size = 2;
+		assert: cascade messages first selector keywords size = 1;
+		assert: cascade messages first arguments anyOne value = 1;
+		assert: cascade messages second selector isBinary;
+		assert: cascade messages second arguments anyOne value = 2
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/1/2024 09:50:42'!
+testMissingPrimary
+	| source |
+	source := 'pendingReservesAtTime: time well: index
+	i0 := startings at: index.
+	ti := self timeAt: i0.
+	dt := time - ti.
+	c := single primaryCurve.
+	^c reserves - (cumAtTime: dt)'.
+	self should: [parser parse: source] raise: Error
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/4/2024 12:03:42'!
+testSelector
+	| source ast |
+	source := 'k1: arg1 k2: arg2'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode positions first
+			= (source findString: 'k1:');
+		assert: ast selectorNode positions second
+			= (source findString: 'k2:');
+		assert: ast selector == #k1:k2:
+! !
+
+!SmalltalkParserTest methodsFor: 'messages' stamp: 'KenD 3/4/2024 12:03:59'!
+testUnarySelector
+	| source ast |
+	source := 'm a notNil'.
+	ast := parser parse: source.
+	self
+		assert: (ast nodeWithLiteral: #notNil) positions first
+			= (source findString: 'notNil')
+! !
+
+!SmalltalkParserTest methodsFor: 'braces' stamp: 'KenD 3/1/2024 09:50:42'!
+testBraceNode
+	| ast brace sum |
+	ast := parser parseExpression: '{1. 3 + 4}'.
+	brace := ast statements anyOne.
+	sum := parser parseExpression: '3 + 4'.
+	self
+		assert: brace elements size = 2;
+		assert: brace elements first value = 1;
+		assert: brace elements second class = sum statements anyOne class;
+		assert: brace elements second arguments anyOne value = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'unicode' stamp: 'KenD 3/4/2024 12:04:20'!
+testUnicode
+	| source ast |
+	source := 8855 asCharacter asString , ' aFreeTensor'.
+	ast := parser parse: source.
+	self
+		assert: ast selectorNode position
+			= (source findString: 8855 asCharacter asString);
+		assert: ast selector == 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 3/1/2024 09:50:42'!
+testAssignment
+	| assignment |
+	parser on: 'a := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 1;
+		assert: assignment assignees anyOne source = 'a';
+		assert: assignment expression source = 'nil + 4'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 3/1/2024 09:50:42'!
+testAssignment2
+	| assignment |
+	parser on: 'a := b := nil + 4'.
+	parser step.
+	assignment := parser expression.
+	self
+		assert: assignment isAssign;
+		assert: assignment assignees size = 2;
+		assert: assignment assignees first name = 'b';
+		assert: assignment assignees second name = 'a'
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 3/1/2024 09:50:42'!
+testAssignment3
+	| node |
+	node := parser parseExpression: 'a : = 1'.
+	self
+		assert: node statements anyOne isAssign.
+	node := parser parseExpression: 'a :	= 1'.
+	self
+		assert: node statements anyOne isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'assignments' stamp: 'KenD 3/1/2024 09:50:42'!
+testUnderscoreAssignment
+	| assignment |
+	parser on: 'a _ 3 + 4'.
+	parser step.
+	assignment := parser expression.
+	self assert: assignment isAssign
+! !
+
+!SmalltalkParserTest methodsFor: 'other' stamp: 'KenD 3/1/2024 09:50:42'!
+testAllNodesDo
+	| source nodes |
+	source := 'rcvr msg1; msg2'.
+	parser on: source.
+	parser step.
+	nodes := OrderedCollection new.
+	parser expression allNodesDo: [:n | nodes add: n].
+	self assert: nodes size = 4
+! !
+
+!SmalltalkParserTest methodsFor: 'setup' stamp: 'KenD 3/1/2024 09:50:42'!
+setUp
+	super setUp.
+	parser := SCompiler new smalltalkParser
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 3/1/2024 09:50:26'!
+testBinary
+	| node |
+	scanner on: '-
+		--
+		---
+		==>
+		~!!|\/%&*+=><'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'-';
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'--';
+		assert: node source = '--'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'---';
+		assert: node source = '---'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'==>';
+		assert: node source = '==>'.
+	node := scanner next.
+	self
+		assert: node isBinary;
+		assert: node value = #'~!!|\/%&*+=><';
+		assert: node source = '~!!|\/%&*+=><'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 3/1/2024 09:50:26'!
+testCharacter
+	| node |
+	scanner on: '$a$b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $a;
+		assert: node source = '$a'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = $b;
+		assert: node source = '$b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 3/1/2024 09:50:26'!
+testEmpty
+	scanner on: ''.
+	self assert: scanner next isEnd
+! !
+
+!SmalltalkScannerTest methodsFor: 'strings' stamp: 'KenD 3/1/2024 09:50:26'!
+testString
+	| node quote |
+	scanner on: '' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = '';
+		assert: node source = (String with: $' with: $').
+	scanner on: 'Hello World!!' storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = 'Hello World!!';
+		assert: node source = 'Hello World!!' storeString.
+	quote := String with: $'.
+	scanner on: quote storeString.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = quote;
+		assert: node source = quote storeString
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 3/1/2024 09:50:26'!
+test0xNotation
+	| node |
+	node := SCompiler new smalltalkParser parseExpression: '0x10'.
+	self assert: node statements first value = 16.
+	node := SCompiler new smalltalkParser parseExpression: '0X10'.
+	self assert: node statements first value = 16
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 3/1/2024 09:50:26'!
+testFloat
+	| node |
+	scanner on: '0.1'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1;
+		assert: node source = '0.1'.
+	scanner on: '0.1e-35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0.1e-35;
+		assert: node source = '0.1e-35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 3/1/2024 09:50:26'!
+testInteger
+	| node |
+	scanner on: '0 12 -35'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 0;
+		assert: node source = '0'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 12;
+		assert: node source = '12'.
+	node := scanner next.
+	self
+		deny: node isNumberNode;
+		assert: (node is: #'-');
+		assert: node source = '-'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 35;
+		assert: node source = '35'
+! !
+
+!SmalltalkScannerTest methodsFor: 'numbers' stamp: 'KenD 3/1/2024 09:50:26'!
+testIntegerRadix
+	| node |
+	scanner on: '16rFA2'.
+	node := scanner next.
+	self
+		assert: node isNumberNode;
+		assert: node value = 16rFA2;
+		assert: node source = '16rFA2'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 3/1/2024 09:50:26'!
+testBinarySymbol
+	| node |
+	scanner on: '#='.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node hasSymbol;
+		assert: node value = #'='
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 3/1/2024 09:50:26'!
+testDashStartingSymbol
+	| node |
+	scanner on: '#++'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'++';
+		assert: node source = '#++'.
+	scanner on: '#//'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'//';
+		assert: node source = '#//'.
+	scanner on: '#--'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'--';
+		assert: node source = '#--'.
+	scanner on: '#+-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'+-';
+		assert: node source = '#+-'
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 3/1/2024 09:50:26'!
+testNumericSymbol
+	scanner on: '#35'.
+	self assert: scanner next value = '35' asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'symbols' stamp: 'KenD 3/1/2024 09:50:26'!
+testSymbol
+	| node |
+	scanner on: '#-'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-';
+		assert: node source = '#-'.
+	scanner on: '#a:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	scanner on: '#-!!'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #'-!!';
+		assert: node source = '#-!!'.
+	scanner on: '#a:b:'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:b:;
+		assert: node source = '#a:b:'.
+	scanner on: '#a:b'.
+	node := scanner next.
+	self
+		assert: node isLiteral;
+		assert: node value = #a:;
+		assert: node source = '#a:'.
+	node := scanner next.
+	self assert: node value = 'b'; assert: node source = 'b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'arrays' stamp: 'KenD 3/1/2024 09:50:26'!
+testArrayStart
+	| node |
+	scanner on: '#()'.
+	node := scanner next.
+	self
+		assert: (node is: #'#(');
+		assert: node source = '#('.
+	scanner on: '#['.
+	node := scanner next.
+	self
+		assert: (node is: #'#[');
+		assert: node source = '#['.
+	scanner on: '#''hello'''.
+	node := scanner next.
+	self
+		assert: node value = #hello;
+		assert: node source = '#''hello'''
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 3/1/2024 09:50:26'!
+testIdentifier
+	| node |
+	scanner on: 'a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ' a1'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a1';
+		assert: node source = 'a1'.
+	scanner on: '_a'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = '_a';
+		assert: node source = '_a'.
+	scanner on: 'a_1b'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a_1b';
+		assert: node source = 'a_1b'
+! !
+
+!SmalltalkScannerTest methodsFor: 'identifiers' stamp: 'KenD 3/1/2024 09:50:26'!
+testKeyword
+	| node node2 |
+	scanner on: 'a:'.
+	node := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'a:';
+		assert: node source = 'a:'.
+	scanner on: 'ab:cd:'.
+	node := scanner next.
+	node2 := scanner next.
+	self
+		assert: node isKeyword;
+		assert: node value = 'ab:';
+		assert: node source = 'ab:';
+		assert: node2 isKeyword;
+		assert: node2 value = 'cd:';
+		assert: node2 source = 'cd:'
+! !
+
+!SmalltalkScannerTest methodsFor: 'unicode' stamp: 'KenD 3/4/2024 11:58:35'!
+testUnicodeScanning
+	| next three tensor |
+	scanner on: '3 + 4' asUnicodeString.
+	self assert: scanner next value = 3.
+	next := scanner next.
+	self
+		assert: next value == #'+';
+		assert: scanner next value = 4.
+	scanner on: '3' asUnicodeString , 8855 asCharacter asString , '4' asUnicodeString.
+	three := scanner next.
+	self assert: three value = 3.
+	tensor := scanner next.
+	self assert: tensor value = 8855 asCharacter asString asSymbol
+! !
+
+!SmalltalkScannerTest methodsFor: 'comments' stamp: 'KenD 3/1/2024 09:50:26'!
+testComment
+	| node |
+	scanner on: '"comment"a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node value = 'comment';
+		assert: node source = '"comment"'.
+	scanner on: '"comment"'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node source = '"comment"';
+		assert: node position = 1.
+	scanner on: 'a"comment"'.
+	node := scanner next.
+	self
+		assert: node isNameToken;
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	node := scanner next.
+	self
+		assert: node isComment;
+		assert: node position = ('a' size + 1)
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 3/1/2024 09:50:26'!
+testColon
+	| node |
+	scanner on: ':a'.
+	node := scanner next.
+	self
+		assert: (node is: $:);
+		assert: node source = ':'.
+	node := scanner next.
+	self
+		assert: node value = 'a';
+		assert: node source = 'a'.
+	scanner on: ':='.
+	node := scanner next.
+	self
+		assert: node isAssignment;
+		assert: node source = ':='
+! !
+
+!SmalltalkScannerTest methodsFor: 'colons' stamp: 'KenD 3/1/2024 09:50:26'!
+testColon2
+	| node |
+	scanner on: '::'.
+	node := scanner next.
+	self
+		assert: node class = SStringToken;
+		assert: node source = '::'
+! !
+
+!SmalltalkScannerTest methodsFor: 'setup' stamp: 'KenD 3/1/2024 09:50:26'!
+setUp
+	super setUp.
+	scanner := SCompiler new smalltalkScanner
+! !
+
 !PowertalkLMRTestResource methodsFor: 'running' stamp: 'KenD 1/30/2023 10:10:48'!
 bootstrapper
 	^bootstrapper ifNil: [ bootstrapper := image generateLMR ]
@@ -7551,209 +7635,6 @@ setUp
 		fillClasses;
 		fillSymbols
 ! !
-
-!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:14:24'!
-error
-
-	^error! !
-
-!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:07:38'!
-error: aString at: position 
-
-	error := aString -> position.
-	return value: nil! !
-
-!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:11:02'!
-on: aString 
-	stream := aString readStream.
-	return := nil! !
-
-!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:15:06'!
-return
-
-	^return! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:28'!
-next 
-	| char |
-	return isNil ifTrue: [return := [:value | ^value]].
-	char := self nextChar.
-	char isNil ifTrue: [^self endToken].
-	char = $- ifTrue: [^self negativeNumber].
-	char = $+ ifTrue: [^self positiveNumber].
-	char isDigit ifTrue: [^self nextNumber: char].
-	^nil! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:42'!
-nextChar 
-
-	^stream skipSeparators atEnd ifFalse: [stream next]! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:08:54'!
-nextDigit: radix 
-	| char digit |
-	stream atEnd ifTrue: [^nil].
-	char := stream next.
-	digit := self digitFromChar: char base: radix.
-	digit isNil ifTrue: [
-		stream skip: -1.
-		^nil].
-	radix <= digit
-		ifTrue: [self error: 'digit greater than radix' at: stream position].
-	^digit! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:08'!
-nextExponent 
-	| negated exp |
-	negated := false.
-	(stream peekFor: $+) ifFalse: [negated := stream peekFor: $-].
-	exp := self nextIntegerRadix: 10.
-	negated ifTrue: [exp := exp negated].
-	^exp! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:44'!
-nextFloat: aNumber 
-	| base digit e exp |
-	digit := self nextDigit: 10.
-	digit isNil ifTrue: [
-		stream skip: -1.
-		^aNumber].
-	e := 1.
-	base := aNumber * 10 + digit.
-	[
-		digit := self nextDigit: 10.
-		digit isNil]
-		whileFalse: [
-			base := base * 10 + digit.
-			e := e + 1].
-	((stream peekFor: $E) or: [stream peekFor: $e]) ifTrue: [
-		exp := self nextExponent.
-		^(base * (10 raisedToInteger: exp - e)) asFloat].
-	(stream peekFor: $s) ifTrue: [^self nextScaledFrom: base fractionDigits: e].
-	^(base * (10 raisedToInteger: e negated)) asFloat! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:09:59'!
-nextIntegerRadix: radix 
-	| value valid digit |
-	value := 0.
-	valid := false.
-	[
-		digit := self nextDigit: radix.
-		digit isNil]
-		whileFalse: [
-			valid := true.
-			value := value * radix + digit].
-	valid ifFalse: [self error: 'digit missing' at: stream position + 1].
-	^value! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:12'!
-nextNumber: aCharacter 
-	| start number digit |
-	start := stream position.
-	number := aCharacter digitValue.
-	[
-		digit := self nextDigit: 10.
-		digit isNil]
-		whileFalse: [number := number * 10 + digit].
-	number := self completeNumber: number at: start.
-	^number -> (start thru: stream position)! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:27'!
-nextScaledFrom: aNumber fractionDigits: digits 
-	| scale denominator sd |
-	scale := (stream atEnd not and: [stream peek isDigit])
-		ifTrue: [self nextIntegerRadix: 10].
-	denominator := 10 raisedToInteger: digits.
-	sd := ScaledDecimal
-		numerator: aNumber
-		denominator: denominator
-		scale: scale.
-	^sd reduced! !
-
-!NumberParser2 methodsFor: 'parsing' stamp: 'KenD 6/3/2021 07:10:48'!
-nextValue 
-
-	^self next ifNil: [0] ifNotNil: [:assoc | assoc key]! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:05:37'!
-checkNumberEnd: position 
-	| char |
-	stream atEnd ifTrue: [^self].
-	char := stream peek.
-	char = $. ifFalse: [^self].
-	stream skip: 1.
-	stream atEnd
-		ifFalse: [stream peek isDigit
-			ifTrue: [self error: 'invalid number' at: position]].
-	stream skip: -1! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:05:54'!
-completeFloat: anInteger 
-	| tenth |
-	tenth := 10 raisedToInteger: self nextExponent.
-	^(anInteger * tenth) asFloat! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:11'!
-completeNumber: anInteger after: aCharacter 
-	aCharacter = $. ifTrue: [
-		^(stream peekFor: $s)
-			ifTrue: [self nextScaledFrom: anInteger fractionDigits: 0]
-			ifFalse: [self nextFloat: anInteger]].
-	(aCharacter = $e or: [aCharacter = $E])
-		ifTrue: [^self completeFloat: anInteger].
-	aCharacter = $r ifTrue: [^self nextIntegerRadix: anInteger].
-	aCharacter = $s ifTrue: [^self nextScaledFrom: anInteger fractionDigits: 0].
-	(anInteger = 0 and: [aCharacter = $x or: [aCharacter = $X]])
-		ifTrue: [^self nextIntegerRadix: 16].
-	stream skip: -1.
-	^anInteger! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:28'!
-completeNumber: anInteger at: start 
-	| number |
-	stream atEnd ifTrue: [^anInteger].
-	number := anInteger.
-	number := self completeNumber: anInteger after: stream next.
-	self checkNumberEnd: start.
-	^number! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:41'!
-digitFromChar: char base: radix 
-	| c |
-	char isDigit ifTrue: [^char digitValue].
-	char = $r ifTrue: [^nil].
-	char = $x ifTrue: [^nil].
-	char = $X ifTrue: [^nil].
-	c := char asUppercase.
-	(c asInteger between: $A asInteger and: $Z asInteger) ifFalse: [^nil].
-	(c !!= $E and: [radix <= c digitValue]) ifTrue: [^nil].
-	(c = $E and: [radix = 10]) ifTrue: [^nil].
-	^c digitValue! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:06:55'!
-endToken 
-
-	self error: 'end of stream' at: stream position! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:07:59'!
-negativeNumber 
-	| position |
-	stream atEnd ifTrue: [^nil].
-	stream peek isDigit ifFalse: [^nil].
-	position := stream position.
-	^self next key negated -> position! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:11:51'!
-positiveNumber 
-	| position |
-	stream peek isDigit ifFalse: [^nil].
-	position := stream position.
-	^self next key -> position! !
-
-!NumberParser2 methodsFor: 'processing' stamp: 'KenD 6/3/2021 07:12:05'!
-reset 
-	stream reset.
-	return := nil! !
 
 !OperandEncoding methodsFor: 'testing' stamp: 'KenD 4/25/2021 11:33:46'!
 isImmediate1Operand: index 
@@ -11653,12 +11534,12 @@ bitLengthOf: anInteger
 	^nil
 ! !
 
-!CodeGenerator methodsFor: 'alignment' stamp: 'KenD 9/26/2022 12:38:32'!
+!CodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/13/2024 13:22:01'!
 alignTo: aNumber
 	| current count |
 	current := memory position.
 	count := (current alignedTo: aNumber) - current.
-	self nop: count
+	self noOp: count
 ! !
 
 !CodeGenerator methodsFor: 'relocation' stamp: 'KenD 9/26/2022 12:38:32'!
@@ -11685,9 +11566,9 @@ dec: srcAndDstReg
 
 ! !
 
-!RISCCodeGenerator methodsFor: 'jumps' stamp: 'KenD 9/26/2022 12:39:12'!
+!RISCCodeGenerator methodsFor: 'jumps' stamp: 'KenD 3/13/2024 13:18:52'!
 decMem: aMemRef
-	self addImm: -1 toMem: aMemRef
+	self subclassResponsibility 
 
 ! !
 
@@ -11738,16 +11619,21 @@ noOp
 	memory nextInstructionPut: 
 		(RV64ADDI destReg: RegZero regSource: RegZero imm12: 0).! !
 
-!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/12/2024 15:51:34'!
+!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/13/2024 13:22:48'!
 noOp: count
 
 	"assemble `count` noOps
 	 With some CPUs, need NoOps at end of code sequence 
 	 to avoid prefetch signalling an illegal instruction (which would never be executed)"
-	1 to count do: [
+	1 to: count do: [
 		memory nextInstructionPut: 
 			(RV64ADDI destReg: RegZero regSource: RegZero imm12: 0)
 	]! !
+
+!RV64GCodeGenerator methodsFor: 'alignment' stamp: 'KenD 3/13/2024 13:22:37'!
+nop: count
+
+	self noOp: count! !
 
 !RV64GCodeGenerator methodsFor: 'floating point' stamp: 'KenD 10/9/2022 10:53:32'!
 addDouble: floatSource1 to: source2andDest
@@ -11769,6 +11655,12 @@ divDouble: src1andDstReg by: src2reg
 	memory nextInstructionPut: 
 		(RV64FDIV regDest: src1andDstReg regA: src1andDstReg regB: src2reg 
 					roundingMode: self class defaultRoundingMode).! !
+
+!RV64GCodeGenerator methodsFor: 'floating point' stamp: 'KenD 3/13/2024 13:35:52'!
+divide: srcAndDstReg extendingTo: extReg by: divisorReg
+
+	"Semantics? See Assembler>>extendRtoAandDividebyT "
+	self notYetImplemented ! !
 
 !RV64GCodeGenerator methodsFor: 'floating point' stamp: 'KenD 10/9/2022 10:56:21'!
 moveDouble: floatRegSrc to: intRegDest
@@ -11815,11 +11707,19 @@ call: srcReg withOffset: imm
 		(RV64JALR destReg: linkReg baseReg: srcReg imm12: imm).
 ! !
 
-!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 11/8/2022 15:08:50'!
+!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 3/13/2024 13:30:31'!
+callIndirect: aMemRef
+	self flag: #revisit. "?Overwrite RegLink rather than Temp1?"
+	self  lea: tmp1Reg withMem: aMemRef;
+		call: tmp1Reg! !
+
+!RV64GCodeGenerator methodsFor: 'jumps' stamp: 'KenD 3/13/2024 13:40:51'!
 jumpTo: label
 	| offset |
 	offset := 0. "assembler labels at: label."
 	self halt. "@@FIXME@@"
+	self flag: #FIXME.
+	
 	self moveImm: offset to: tmp1Reg.
 	self add: RegM to: tmp1Reg. "label is offset from Method code"
 	self call: RegTmp1.! !
@@ -11856,6 +11756,14 @@ memRef
 		widthInBits: self wordSize * 8;
 		yourself
 ! !
+
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/13/2024 13:44:18'!
+exchange: srcAndDstReg withMem: aMemRef
+
+	self  load: RegFlags fromMem: aMemRef; "Burns both temp1 and temp0"
+		store: srcAndDstReg intoMem: aMemRef;
+		move: RegFlags to: srcAndDstReg
+		! !
 
 !RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 15:51:08'!
 lea: addressReg withMem: memRef
@@ -11952,6 +11860,22 @@ load: dstReg fromMem: srcMemRef
 		]
 	]
 		! !
+
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/13/2024 14:09:58'!
+load: dstReg withTIBat: indexReg
+	"?Semamntics? TIB == Thread ?? ??"
+	self notYetImplemented ! !
+
+!RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/13/2024 14:05:33'!
+load: dstReg withThreadVariableAt: indexReg
+	"See Assembler>>loadRwithThreadVariableAtR "
+	"X4 is Thread Register"
+	self flag: #revisit.
+	self  move: X4 to: RegV ;
+		add: indexReg to: RegV;
+		loadReg: dstReg withBase: RegV offset: 0
+		
+! !
 
 !RV64GCodeGenerator methodsFor: 'memory - load/store' stamp: 'KenD 3/12/2024 16:04:31'!
 loadDouble: dstReg fromMem: srcMemRef
@@ -12064,12 +11988,28 @@ dec: srcAndDstReg
 		(RV64ADDI destReg: srcAndDstReg regSource: srcAndDstReg imm12: -1).
 	! !
 
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/13/2024 13:16:11'!
+decMem: aMemRef
+	self  lea: tmp1Reg withMem: aMemRef;
+		dec: tmp1Reg;
+		store: tmp1Reg intoMem: aMemRef! !
+
 !RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/12/2024 15:50:56'!
 inc: srcAndDstReg
 	"Incriment register value"
 	memory nextInstructionPut: 
 		(RV64ADDI destReg: srcAndDstReg regSource: srcAndDstReg imm12: 1).
 	! !
+
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/13/2024 14:13:35'!
+mulDouble: src1andDstReg by: src2reg
+
+	self notYetImplemented ! !
+
+!RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 3/13/2024 14:13:52'!
+multiply: src1AndDstLoReg by: src2reg wideningTo: dstHiReg
+
+	self notYetImplemented ! !
 
 !RV64GCodeGenerator methodsFor: 'operations - arithmetic' stamp: 'KenD 10/15/2022 17:01:11'!
 sub: src1 from: src2AndDest
@@ -12312,6 +12252,49 @@ moveImm: imm to: dstReg
 regFlags
 	^ flagsReg
 ! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:25:57'!
+pop: dstReg
+	
+	self  loadReg: dstReg withBase: RegSP offset: 0;
+		"stack grows down, so shrinks up"
+		addImm: RV64GABI  wordSize to: RegSP 
+	! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:26:37'!
+popIntoMem: dstMemRef
+
+	self notYetImplemented ! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:25:26'!
+push: srcReg
+
+	memory nextInstructionPut:  "store 64 bit DoubleWord"
+			(RV64SD srcReg: srcReg baseReg: RegSP immLo: 0 immHi: 0).
+	"stack grows down"
+	self  addImm: RV64GABI wordSize negated to: RegSP
+	! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:26:59'!
+pushAOnFPUStack
+
+	self notYetImplemented ! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:51:57'!
+pushImm: imm
+
+	self  moveImm: imm to: tmp1Reg; "NB: uses `tmp0Reg` internally, so `tmp1Reg` OK"
+		push: tmp1Reg! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:27:29'!
+pushMem: aMemRef
+
+	self notYetImplemented ! !
+
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:27:46'!
+pushROnFPUStack
+
+	self notYetImplemented ! !
 
 !RV64GCodeGenerator methodsFor: 'services' stamp: 'KenD 10/16/2022 15:24:13'!
 alignTo: aNumber
@@ -19048,7 +19031,7 @@ new
 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 assign: aCollection
 	| op |
 	op := SOpAssign new assignees: aCollection.
@@ -19056,7 +19039,7 @@ assign: aCollection
 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 branchIf: aBoolean
 	| class op |
 	class := aBoolean
@@ -19067,17 +19050,17 @@ branchIf: aBoolean
 	^op
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 branchTargetOf: branch
 	branch target: self currentPC
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 currentPC
 	^ operations size
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dispatch: message
 	| op count |
 	op := SOpDispatchMessage new message: message.
@@ -19089,26 +19072,26 @@ dispatch: message
 	stackTop := stackTop - count 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dropCascadeMessageArgs: argsize
 	(argsize = 0 orNot: [ dropsArguments ])
 		ifTrue: [ ^ self ].
 	self dropToS: argsize
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dropMessageArgs: argsize
 	(argsize = 0 orNot: [ dropsArguments ])
 		ifTrue: [ ^ self ].
 	self dropToS: argsize + 1
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dropToS
 	^self dropToS: 1
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dropToS: anInteger
 	| op |
 	op := SOpDropToS new count: anInteger.
@@ -19116,17 +19099,17 @@ dropToS: anInteger
 	stackTop := stackTop - anInteger
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 dropsArguments
 	dropsArguments := true
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 initialize
 	dropsArguments := false
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage binaryWhile: aBoolean
 	"TODO: cleanup block locals to nil after each cycle"
 
@@ -19141,7 +19124,7 @@ inline: anSMessage binaryWhile: aBoolean
 		
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage if: aBoolean
 	| branch end |
 	anSMessage receiver acceptVisitor: self.
@@ -19156,7 +19139,7 @@ inline: anSMessage if: aBoolean
 		
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage ifNil: aBoolean
 	| nilObj message branch end arg index |
 	anSMessage receiver acceptVisitor: self.
@@ -19186,7 +19169,7 @@ inline: anSMessage ifNil: aBoolean
 		branchTargetOf: end
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage ifNilIfNotNil: aBoolean
 	| arguments nilObj message branch end arg index |
 	anSMessage receiver acceptVisitor: self.
@@ -19213,7 +19196,7 @@ inline: anSMessage ifNilIfNotNil: aBoolean
 		dropToS
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage ifTrueIfFalse: aBoolean
 	| branch end |
 	anSMessage receiver acceptVisitor: self.
@@ -19227,7 +19210,7 @@ inline: anSMessage ifTrueIfFalse: aBoolean
 		branchTargetOf: end
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inline: anSMessage unitaryWhile: aBoolean
 	"TODO: cleanup block locals to nil after each cycle"
 
@@ -19239,7 +19222,7 @@ inline: anSMessage unitaryWhile: aBoolean
 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineAnd: anSMessage
 	| branches |
 	anSMessage receiver acceptVisitor: self.
@@ -19253,7 +19236,7 @@ inlineAnd: anSMessage
 	branches do: [ :branch | self branchTargetOf: branch ]
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineAndNot: anSMessage
 	| branch message |
 	anSMessage receiver acceptVisitor: self.
@@ -19267,7 +19250,7 @@ inlineAndNot: anSMessage
 		branchTargetOf: branch
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineOr: anSMessage
 	|  branches |
 	anSMessage receiver acceptVisitor: self.
@@ -19278,7 +19261,7 @@ inlineOr: anSMessage
 	branches do: [:branch | self branchTargetOf: branch]
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineOrNot: anSMessage
 	| branch message |
 	anSMessage receiver acceptVisitor: self.
@@ -19292,7 +19275,7 @@ inlineOrNot: anSMessage
 		branchTargetOf: branch
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineRepeat: anSMessage
 	"TODO: cleanup block locals to nil after each cycle"
 
@@ -19303,7 +19286,7 @@ inlineRepeat: anSMessage
 		jumpTo: start
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineTimesRepeat: anSMessage
 	"TODO: cleanup block locals to nil after each cycle"
 
@@ -19334,7 +19317,7 @@ inlineTimesRepeat: anSMessage
 		dropToS: 2
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 inlineToDo: anSMessage
 	"TODO: cleanup block locals to nil after each cycle"
 
@@ -19366,7 +19349,7 @@ inlineToDo: anSMessage
 		dropToS: 1
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 jump
 	| op |
 	op := SOpJump new.
@@ -19374,14 +19357,14 @@ jump
 	^op
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 jumpTo: anInteger
 | op |
 op := SOpJump new target: anInteger.
 	operations add: op
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 loadRfromStack: anInteger
 	| op |
 	op := SOpLoadRfromStack new index: anInteger.
@@ -19389,51 +19372,51 @@ loadRfromStack: anInteger
 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 loadRwithNil
 	operations add: SOpLoadRwithNil new
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 loadRwithSelf
 	operations add: SOpLoadRwithSelf new
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 operations
 ^operations
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 popR
 	operations add: SOpPopR new.
 	stackTop := stackTop - 1
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 primitive: aClosure
 	operations add: (SOpPrimitive new block: aClosure)
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 pushR
 	operations add: SOpPushR new.
 	stackTop := stackTop + 1
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 reset
 	operations := OrderedCollection new.
 	inBlock := false.
 
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 return
 	operations add: SOpReturn new
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 return: isLocal
 	|  class |
 	class := (isLocal andNot: [ inBlock ])
@@ -19442,7 +19425,7 @@ return: isLocal
 	operations add: class new
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 runtime: aPowertalkRuntime
 	| literal |
 	runtime := aPowertalkRuntime.
@@ -19472,21 +19455,21 @@ runtime: aPowertalkRuntime
 	orNot := runtime symbolFromLocal: #orNot:
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 storeRintoFrameAt: anInteger
 	| op |
 	op := SOpStoreRintoFrame new index: anInteger.
 	operations add: op
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitAssignment: anSAssignment
 	anSAssignment expression acceptVisitor: self.
 	self
 		assign: anSAssignment assignees
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitBlock: anSBlock
 	| prevInBlock prevOperations statements |
 	operations add: anSBlock.
@@ -19508,7 +19491,7 @@ visitBlock: anSBlock
 	inBlock := prevInBlock
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitCascade: anSCascade
 	| args argsize |
 	anSCascade receiver acceptVisitor: self.
@@ -19528,12 +19511,12 @@ visitCascade: anSCascade
 	self dropToS
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitIdentifier: anSIdentifier
 	operations add: anSIdentifier
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 11/8/2022 14:50:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitInlinedMessage: anSMessage
 	| selector |
 	selector := anSMessage selector.
@@ -19579,15 +19562,15 @@ visitInlinedMessage: anSMessage
 	(selector beginsWith: #and:)
 		ifTrue: [ ^ self inlineAnd: anSMessage ].
 
-	self assert: false
+	self ASSERT: false
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitLiteral: anSLiteral
 	operations add: anSLiteral
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitMessage: anSMessage
 	| args argsize |
 	anSMessage isInlined
@@ -19607,7 +19590,7 @@ visitMessage: anSMessage
 	
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitMethod: anSMethod
 	| primitive statements symbol |
 	self reset.
@@ -19627,30 +19610,30 @@ visitMethod: anSMethod
 				return ]
 ! !
 
-!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'initialization' stamp: 'KenD 3/8/2024 10:09:45'!
 visitReturn: anSReturn
 	anSReturn expression acceptVisitor: self.
 	self
 		return: anSReturn local
 ! !
 
-!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:45'!
 visitOpLoadRfromFrame: anSOpLoadRfromFrame
 	operations add: anSOpLoadRfromFrame
 ! !
 
-!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:45'!
 visitOpLoadRfromStack: anSOpLoadRfromStack
 self loadRfromStack: anSOpLoadRfromStack index
 ! !
 
-!SExpressionLinearizer methodsFor: 'private' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'private' stamp: 'KenD 3/8/2024 10:09:45'!
 visitStatements: aCollection
 	aCollection do: [:sexpression | sexpression acceptVisitor: self]
 	
 ! !
 
-!SExpressionLinearizer methodsFor: 'accessing' stamp: 'KenD 9/29/2022 12:33:20'!
+!SExpressionLinearizer methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:45'!
 primitives: aCollection
 	primitives := aCollection
 ! !
@@ -22766,184 +22749,21 @@ new
 	^self basicNew initialize
 ! !
 
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
-isitReturn: anSReturn 
-
-	returnValue := anSReturn expression acceptVisitor: self.
-	returned := true.
-	^returnValue! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 9/29/2022 14:07:19'!
-subjectOnInteger: anInteger in: aRuntime
-	^ (aRuntime integerHandle: anInteger) maneuverer
-! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:17'!
-visitArgument: anSIdentifier 
-
-	^arguments at: anSIdentifier binding index! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:32'!
-visitAssignment: anSAssignment 
-	| result |
-	result := anSAssignment expression acceptVisitor: self.
-	anSAssignment assignees
-		do: [ :identifier | identifier binding assign: result within: self ].
-	^result! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:08:48'!
-visitBlock: anSBlock 
-	| closure handle |
-	closure := anSBlock isInlined
-		           ifTrue: [ SCompiledBlock new newClosure home: self ]
-		           ifFalse: [ self captureClosure: anSBlock ].
-	blockAstcodes at: closure block put: anSBlock.
-	self halt.
-	"	handle := LocalHandle on: closure within: localRuntime."
-	^ handle mirage! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:24'!
-visitIdentifier: anSIdentifier 
-
-	^anSIdentifier binding valueWithin: self! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:09:37'!
-visitMessage: anSMessage 
-	| msgReceiver msgArguments selector message |
-	msgReceiver := anSMessage receiver acceptVisitor: self.
-	msgArguments := anSMessage arguments
-		collect: [ :code | code acceptVisitor: self ].
-	selector := anSMessage selector.
-	message := MessageSend
-		receiver: msgReceiver
-		selector: selector
-		arguments: msgArguments.
-	 (self isSpecial: selector)
-		ifTrue: [ ^self dispatchSpecial: message ].
-	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
-	^self dispatch: message to: msgReceiver! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:10'!
-visitMethod: anSMethod 
-	| primitive value |
-	primitive := anSMethod primitive.
-	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
-	environment := Array new: method environmentCount.
-	value := self visitScript: anSMethod.
-	^returned ifTrue: [ value ] ifFalse: [ receiver ]! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 9/29/2022 14:07:19'!
-visitReturn: anSReturn
-	returnValue := anSReturn expression acceptVisitor: self.
-	returned := true.
-	^returnValue
-! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:57'!
-visitScript: anSScript 
-	| result |
-	anSScript statements do: [:node | 
-		result := node acceptVisitor: self.
-		returned ifTrue: [^returnValue]
-	].
-	^result! !
-
-!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:11:12'!
-visitTemporary: anSIdentifier 
-
-	^temporaries at: anSIdentifier binding index! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:00:53'!
-instVarAt: anInteger 
-
-	^receiver _gate slotAt: anInteger! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:18'!
-instVarAt: index put: aValue 
-
-	^ receiver _gate handle slotAt: index put: aValue _gate handle oid! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:01:43'!
-method 
-
-	^method! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:03'!
-method: aCompiledMethod 
-
-	method := aCompiledMethod.
-	temporaries := Array new: aCompiledMethod tempCount! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:25'!
-mirageOnBoolean: aBoolean 
-	| runtime handle |
-	runtime := receiver _gate handle runtime.
-	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
-	^ handle mirage
-! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:37'!
-mirageOnInteger: anInteger 
-	| runtime handle |
-	runtime := receiver _gate handle runtime.
-	handle := runtime integerHandle: anInteger.
-	^ handle mirage! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:02:52'!
-mirageOnObject: anObject 
-
-	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
-	self assert: false! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:16'!
-parent 
-
-	^parent! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:03:26'!
-parent: anInterpreter 
-
-	parent := anInterpreter! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:16'!
-receiver 
-
-	^receiver! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:04:26'!
-receiver: anObject 
-
-	receiver := anObject.
-	returnValue := anObject! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:11'!
-temporaryAt: index in: anInteger 
-	| env |
-	anInteger ifNil: [ ^ temporaries at: index ].
-	env := self environmentFor: anInteger.
-	^ env at: index! !
-
-!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 2/27/2021 16:07:46'!
-temporaryAt: index in: anInteger put: aValue 
-	| env |
-	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
-	env := self environmentFor: anInteger.
-	^ env at: index put: aValue! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:56:58'!
-argumentAt: index in: anInteger 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+argumentAt: index in: anInteger
 	| env |
 	anInteger ifNil: [ ^arguments at: index ].
 	env := self environmentFor: anInteger.
-	^env at: index.! !
+	^env at: index.
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:13'!
-arguments: aCollection 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+arguments: aCollection
+	arguments := aCollection
+! !
 
-	arguments := aCollection! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:57:30'!
-captureClosure: anSBlock 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+captureClosure: anSBlock
 	| closure s i type env arg |
 	closure := anSBlock compiledCode newClosure home: self.
 	s := anSBlock capturedVariables readStream.
@@ -22961,20 +22781,21 @@ captureClosure: anSBlock
 				ifTrue: [ arg := arguments at: s next.
 					closure at: i put: arg ].
 			i := i + 1 ].
-	^ closure! !
+	^ closure
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:12'!
-dispatch: message to: msgReceiver 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+dispatch: message to: msgReceiver
+	^ self subclassResponsibility
+! !
 
-	^ self subclassResponsibility! !
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+dispatchSpecial: message
+		^self subclassResponsibility 
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:23'!
-dispatchSpecial: message 
-
-		^self subclassResponsibility ! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:36'!
-environmentFor: anInteger 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+environmentFor: anInteger
 	"
 	-1: inlined argument.
 	 0: current env.
@@ -22984,31 +22805,268 @@ environmentFor: anInteger
 		ifTrue: [ ^ environment ].
 	anInteger = -1
 		ifTrue: [ ^ temporaries ].
-	^ environment at: anInteger! !
+	^ environment at: anInteger
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:58:57'!
-evaluate: anSCompiledMethod 
-
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluate: anSCompiledMethod
 	method := anSCompiledMethod.
-	^ self visitMethod: anSCompiledMethod sexpressions! !
+	^ self visitMethod: anSCompiledMethod sexpressions
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:13'!
-evaluateClosure: aPClosure 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure
+	^self evaluateClosure: aPClosure withArgs: {}
+! !
 
-	^self evaluateClosure: aPClosure withArgs: {}! !
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure with: anObject
+	 ^self evaluateClosure: aPClosure withArgs: { anObject }
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:25'!
-evaluateClosure: aPClosure with: anObject 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure with: anObject with: anotherObject
+	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}
+! !
 
-	 ^self evaluateClosure: aPClosure withArgs: { anObject }! !
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+initialize
+	returned := false.
+	blockAstcodes := IdentityDictionary new
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:37'!
-evaluateClosure: aPClosure with: anObject with: anotherObject 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+instVarAt: anInteger
+	^receiver _gate slotAt: anInteger
+! !
 
-	^ self evaluateClosure: aPClosure withArgs: {anObject. anotherObject}! !
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+instVarAt: index put: aValue
+	^ receiver _gate handle slotAt: index put: aValue _gate handle oid
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 15:59:58'!
-evaluateClosure: aPClosure withArgs: anArray 
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+isSpecial: aSelectorMirror
+	^ self subclassResponsibility 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 2/27/2021 16:10:44'!
+isitReturn: anSReturn 
+
+	returnValue := anSReturn expression acceptVisitor: self.
+	returned := true.
+	^returnValue! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+method
+	^method
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnBoolean: aBoolean
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := aBoolean ifTrue: [runtime true] ifFalse: [runtime false].
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnInteger: anInteger
+	| runtime handle |
+	runtime := receiver _gate handle runtime.
+	handle := runtime integerHandle: anInteger.
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+mirageOnObject: anObject
+	anObject isSmallInteger ifTrue: [ ^ self mirageOnInteger: anObject ].
+	self ASSERT: false
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+parent
+	^parent
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+parent: anInterpreter
+	parent := anInterpreter
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+receiver
+	^receiver
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+receiver: anObject
+	receiver := anObject.
+	returnValue := anObject
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOn: anObjectHandle
+	^ anObjectHandle maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnBoolean: aBoolean in: aRuntime
+	| t f |
+	^ aBoolean
+		ifTrue: [ t := aRuntime true. t oid = true ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] ]
+		ifFalse: [ f := aRuntime false. f oid = false ifTrue: [ f mirage ] ifFalse: [ f maneuverer]] 
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnInteger: anInteger in: aRuntime
+	^ (aRuntime integerHandle: anInteger) maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnObject: anObjectHandle
+	^ anObjectHandle maneuverer
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+subjectOnObjectOk: anObjectHandle
+	^ self maneuvererOn: anObjectHandle
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+temporaryAt: index in: anInteger
+	| env |
+	anInteger ifNil: [ ^ temporaries at: index ].
+	env := self environmentFor: anInteger.
+	^ env at: index
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+temporaryAt: index in: anInteger put: aValue
+	| env |
+	anInteger ifNil: [ ^ temporaries	at:index put: aValue ].
+	env := self environmentFor: anInteger.
+	^ env at: index put: aValue
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitArgument: anSIdentifier
+	^arguments at: anSIdentifier binding index
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitAssignment: anSAssignment
+	| result |
+	result := anSAssignment expression acceptVisitor: self.
+	anSAssignment assignees
+		do: [ :identifier | identifier binding assign: result within: self ].
+	^result
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitBlock: anSBlock
+	| closure handle |
+	closure := anSBlock isInlined
+				   ifTrue: [ SCompiledBlock new newClosure home: self ]
+				   ifFalse: [ self captureClosure: anSBlock ].
+	blockAstcodes at: closure block put: anSBlock.
+	self halt.
+	"	handle := LocalHandle on: closure within: localRuntime."
+	^ handle mirage
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitIdentifier: anSIdentifier
+	^anSIdentifier binding valueWithin: self.
+
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitMessage: anSMessage
+	| msgReceiver msgArguments selector message |
+	msgReceiver := anSMessage receiver acceptVisitor: self.
+	msgArguments := anSMessage arguments
+		collect: [ :code | code acceptVisitor: self ].
+	selector := anSMessage selector.
+	message := MessageSend
+		receiver: msgReceiver
+		selector: selector
+		arguments: msgArguments.
+	 (self isSpecial: selector)
+		ifTrue: [ ^self dispatchSpecial: message ].
+	anSMessage receiver isSuper ifTrue: [^self dispatchSuper: message to: msgReceiver].
+	^self dispatch: message to: msgReceiver
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitMethod: anSMethod
+	| primitive value |
+	primitive := anSMethod primitive.
+	primitive ifNotNil: [ ^ self visitPrimitive: primitive ].
+	environment := Array new: method environmentCount.
+	value := self visitScript: anSMethod.
+	^returned ifTrue: [ value ] ifFalse: [ receiver ]
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitReturn: anSReturn
+	returnValue := anSReturn expression acceptVisitor: self.
+	returned := true.
+	^returnValue
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitScript: anSScript
+	| result |
+	anSScript statements do: [:node | 
+		result := node acceptVisitor: self.
+		returned ifTrue: [^returnValue]
+	].
+	^result
+! !
+
+!SExpressionInterpreter methodsFor: 'visiting' stamp: 'KenD 3/8/2024 10:09:40'!
+visitTemporary: anSIdentifier
+	^temporaries at: anSIdentifier binding index
+! !
+
+!SExpressionInterpreter methodsFor: 'accessing' stamp: 'KenD 3/8/2024 10:09:40'!
+method: aCompiledMethod
+	method := aCompiledMethod.
+	temporaries := Array new: aCompiledMethod tempCount.
+! !
+
+!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:32'!
+ubjectOnInteger: anInteger in: aRuntime 
+
+	^ (aRuntime integerHandle: anInteger) maneuverer! !
+
+!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 3/8/2024 10:09:40'!
+printOn: aStream
+	aStream
+		nextPutAll: self class name withArticle;
+		cr;
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		cr.
+	aStream
+		nextPutAll: 'rcvr -> ';
+		print: receiver _gate handle;
+		cr.
+	arguments
+		withIndexDo: [ :a :i | 
+			aStream
+				nextPutAll: 'arg ';
+				print: i;
+				nextPutAll: ' -> ';
+				print: a _gate;
+				cr ].
+	aStream nextPutAll: method source
+! !
+
+!SExpressionInterpreter methodsFor: 'private' stamp: 'KenD 3/8/2024 10:09:40'!
+evaluateClosure: aPClosure withArgs: anArray
 	| oldArgs oldTemps oldEnv block sblock result |
 	block := aPClosure block.
 	sblock := blockAstcodes at: block.
@@ -23025,85 +23083,21 @@ evaluateClosure: aPClosure withArgs: anArray
 	environment := oldEnv.
 	temporaries := oldTemps.
 	arguments := oldArgs.
-	^ result! !
+	^ result
+! !
 
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:04:48'!
-subjectOn: anObjectHandle 
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 3/8/2024 10:09:40'!
+new
+	^self basicNew initialize
+! !
 
-	^ anObjectHandle maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:19'!
-subjectOnBoolean: aBoolean in: aRuntime 
-	| t f |
-	^ aBoolean
-		ifTrue: [ t := aRuntime true. 
-			(t oid = true) ifTrue: [ t mirage] ifFalse: [ t maneuverer  ] 
-		]
-		ifFalse: [ f := aRuntime false. 
-			(f oid = false) ifTrue: [ f mirage ] ifFalse: [ f maneuverer]
-		] ! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:42'!
-subjectOnObject: anObjectHandle 
-
-	^ anObjectHandle maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:54'!
-subjectOnObjectOk: anObjectHandle 
-
-	^ self maneuvererOn: anObjectHandle! !
-
-!SExpressionInterpreter methodsFor: 'evaluation' stamp: 'KenD 2/27/2021 16:06:32'!
-ubjectOnInteger: anInteger in: aRuntime 
-
-	^ (aRuntime integerHandle: anInteger) maneuverer! !
-
-!SExpressionInterpreter methodsFor: 'printing' stamp: 'KenD 7/7/2021 15:45:57'!
-printOn: aStream 
-	aStream
-		nextPutAll: self class name withArticle;
-		newLine;
-		print: method classBinding;
-		nextPutAll: '>>';
-		print: method selector;
-		newLine.
-	aStream
-		nextPutAll: 'rcvr -> ';
-		print: receiver _gate handle;
-		newLine.
-	arguments
-		withIndexDo: [ :a :i | 
-			aStream
-				nextPutAll: 'arg ';
-				print: i;
-				nextPutAll: ' -> ';
-				print: a _gate;
-				newLine ].
-	aStream nextPutAll: method source! !
-
-!SExpressionInterpreter methodsFor: 'initialization' stamp: 'KenD 2/27/2021 16:00:30'!
-initialize 
-
-	returned := false.
-	blockAstcodes := IdentityDictionary new! !
-
-!SExpressionInterpreter methodsFor: 'testing' stamp: 'KenD 2/27/2021 16:01:33'!
-isSpecial: aSelectorMirror 
-
-	^ self subclassResponsibility ! !
-
-!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:13'!
-new 
-
-	^self basicNew initialize! !
-
-!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 2/27/2021 15:56:31'!
-on: receiverMirror with: arguments for: method 
-
+!SExpressionInterpreter class methodsFor: 'instance creation' stamp: 'KenD 3/8/2024 10:09:40'!
+on: receiverMirror with: arguments for: method
 	^self new
 		receiver: receiverMirror;
 		arguments: arguments;
-		method: method! !
+		method: method
+! !
 
 !SmalltalkInterpreter methodsFor: 'visiting' stamp: 'KenD 9/29/2022 14:23:20'!
 dispatch: message to: msgReceiver
@@ -28060,5324 +28054,6 @@ lookup: aSymbol using: lookupInstructions
 	selector := aSymbol
 ! !
 
-!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:02:58'!
-contents
-	^contents
-! !
-
-!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:02:58'!
-printOn: aStream
-	self printOn: aStream indent: 0
-! !
-
-!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:02:58'!
-printOn: aStream indent: anInteger
-	self subclassResponsibility
-! !
-
-!IdentifierBinder methodsFor: 'private' stamp: 'KenD 9/29/2022 14:02:58'!
-keyFor: aString
-	^self subclassResponsibility
-! !
-
-!IdentifierBinder class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:02:58'!
-new
-	^super new initialize
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-at: aString
-	| key assoc |
-	key := self keyFor: aString.
-	key ifNil: [ ^nil ].
-	assoc := contents associationAt: key ifAbsent: [^nil].
-	^(type on: assoc) name: key
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-at: aString ifPresent: aBlock
-	| binding |
-	binding := self at: aString.
-	^binding notNil ifTrue: [aBlock value: binding]
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-at: aString put: anObject
-	| key |
-	key := self keyFor: aString.
-	self ASSERT: contents !!== Smalltalk.
-	contents at: key put: anObject
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-contents: aDictionary
-	contents := aDictionary
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-poolNamed: aSymbol ifPresent: aBlock
-	| pool |
-	pool := contents at: aSymbol ifAbsent: nil.
-	^pool notNil ifTrue: [aBlock evaluateWith: pool]
-! !
-
-!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
-type: aClass
-	type := aClass
-! !
-
-!DynamicBinder methodsFor: 'private' stamp: 'KenD 11/13/2022 13:02:41'!
-keyFor: aString
-	^type usesSymbols ifTrue: [aString existingSymbol] ifFalse: [aString]
-! !
-
-!DynamicBinder methodsFor: 'private' stamp: 'KenD 11/13/2022 13:02:41'!
-on: aDictionary type: aClass
-	contents := aDictionary.
-	type := aClass
-! !
-
-!DynamicBinder methodsFor: 'printing' stamp: 'KenD 11/13/2022 13:02:41'!
-printOn: aStream indent: anInteger
-	aStream
-		tab: anInteger;
-		nextPutAll: 'binder for ';
-		nextPutAll: type name;
-		nextPutAll: ': '.
-	type == GlobalBinding
-		ifTrue: [aStream nextPut: $…]
-		ifFalse: [contents keys asArray printOn: aStream]
-! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
-of: type
-	^self new type: type
-! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
-on: aPoolDictionary
-	| type |
-	type := aPoolDictionary isConstant
-		ifTrue: [ConstantPoolBinding]
-		ifFalse: [PoolVarBinding].
-	^self new on: aPoolDictionary type: type
-! !
-
-!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
-on: aDictionary of: type
-	^self new on: aDictionary type: type
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-at: aString
-	^contents at: aString ifAbsent: nil
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-at: aString ifAbsentPut: aBlock
-	^contents at: aString ifAbsentPut: aBlock
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-at: aString put: aBinding
-	contents at: aString put: aBinding
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-define: aString as: aBinding
-	contents at: aString put: aBinding
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-defines: identifier
-	^contents includesKey: identifier
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-do: aBlock
-	contents do: aBlock
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-select: aBlock
-	^contents select: aBlock
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-values
-	^contents values
-! !
-
-!StaticBinder methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:30:20'!
-withIndexDo: aBlock
-	contents withIndexDo: aBlock
-! !
-
-!StaticBinder methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:30:20'!
-initialize
-	super initialize.
-	contents := OrderedDictionary new
-! !
-
-!StaticBinder methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:30:20'!
-printOn: aStream indent: anInteger
-	aStream tab: anInteger; nextPut: $<.
-	contents keys
-		do: [:name | name printOn: aStream]
-		separatedBy: [aStream space].
-	aStream nextPut: $>
-! !
-
-!StaticBinder class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:30:20'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!LocalEnvironment methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:04:15'!
-isInlinedArgument
-	^false
-! !
-
-!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 9/30/2022 12:08:26'!
-environmentType
-	^EnvironmentValue
-! !
-
-!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 9/30/2022 12:08:26'!
-index
-	^index
-! !
-
-!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 9/30/2022 12:08:26'!
-index: anInteger
-	index := anInteger
-! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:08:26'!
-isCurrent
-	^index isNil
-! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:08:26'!
-isIndirect
-	^self isCurrent not
-! !
-
-!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:08:26'!
-isStack
-	^false
-! !
-
-!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:34:15'!
-index
-	^nil
-! !
-
-!StackEnvironment methodsFor: 'private' stamp: 'KenD 9/29/2022 14:34:15'!
-isStack
-	^true
-! !
-
-!ArgumentEnvironment methodsFor: 'private' stamp: 'KenD 9/30/2022 12:08:10'!
-environmentType
-	^LocalArgument
-! !
-
-!InlinedArgEnvironment methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:13:50'!
-isInlinedArgument
-	^true
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineConditional
-	| arguments |
-	arguments := message arguments.
-	arguments size >= 1 ifFalse: [^self].
-	arguments do: [:arg | arg isEvaluable ifFalse: [^self]].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineIfNilIfNotNil
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	arguments first isEvaluable ifFalse: [^self].
-	arg := arguments second.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined
-	
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineIfNotNil
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 1 ifFalse: [^self].
-	arg := arguments first.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arg isBlockNode ifTrue: [arg beInlined]
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineIfNotNilIfNil
-	| arguments arg |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	arguments second isEvaluable ifFalse: [^self].
-	arg := arguments first.
-	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
-		ifFalse: [^self].
-	message beInlined.
-	arguments select: #isBlockNode thenDo: #beInlined
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineToByDo
-	| arguments arg step |
-	arguments := message arguments.
-	arguments size = 3 ifFalse: [^self].
-	arg := arguments at: 3.
-	arg isBlockNode ifFalse: [^self].
-	arg arguments size = 1 ifFalse: [^self].
-	step := arguments at: 2.
-	(step isNumberNode and: [step value isSmallInteger]) ifFalse: [^self].
-	message beInlined.
-	arg beInlined
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineToDo
-	| arguments last |
-	arguments := message arguments.
-	arguments size = 2 ifFalse: [^self].
-	last := arguments at: 2.
-	last isBlockNode ifFalse: [^self].
-	last arguments size = 1 ifFalse: [^self].
-	message beInlined.
-	last beInlined
-! !
-
-!MessageInliner methodsFor: 'inlining' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineWhile
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable
-		ifFalse: [ ^ self ].
-	arguments := message arguments.
-	arguments size = 1
-		ifFalse: [ ^ self ].
-	arguments last isNullary
-		ifFalse: [ ^ self ].
-	self inlineConditional.
-	receiver isBlockNode
-		ifTrue: [ receiver beInlined ]
-! !
-
-!MessageInliner methodsFor: 'transforming' stamp: 'KenD 9/29/2022 14:04:51'!
-inline: aMessageNode
-	| s keywords |
-	message := aMessageNode.
-	message receiver isSuper
-		ifTrue: [ ^ self ].
-	(message isCascadeMessage and: [ message receiver isBlockNode ])
-		ifTrue: [ ^ self ].
-	s := message selector value.
-	s == #ifTrue:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifFalse:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #or:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #and:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #timesRepeat:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifTrue:ifFalse:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifFalse:ifTrue:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #andNot:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #orNot:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifNil:
-		ifTrue: [ ^ self inlineConditional ].
-	s == #ifNotNil:
-		ifTrue: [ ^ self inlineIfNotNil ].
-	s == #ifNil:ifNotNil:
-		ifTrue: [ ^ self inlineIfNilIfNotNil ].
-	s == #ifNotNil:ifNil:
-		ifTrue: [ ^ self inlineIfNotNilIfNil ].
-	s == #whileTrue:
-		ifTrue: [ ^ self inlineWhile ].
-	s == #whileFalse:
-		ifTrue: [ ^ self inlineWhile ].
-	s == #whileTrue
-		ifTrue: [ ^ self inlineUnitaryWhile ].
-	s == #whileFalse
-		ifTrue: [ ^ self inlineUnitaryWhile ].
-	s == #repeat
-		ifTrue: [ ^ self inlineRepeat ].
-	s == #to:do:
-		ifTrue: [ ^ self inlineToDo ].
-	"s == #to:by:do:
-		ifTrue: [ ^ self inlineToByDo ]."
-	keywords := $: split: s.
-	keywords last = ''
-		ifTrue: [ keywords := keywords allButLast ].
-	(keywords conform: [ :k | k = 'and' ])
-		ifTrue: [ ^ self inlineConditional ].
-	(keywords conform: [ :k | k = 'or' ])
-		ifTrue: [ ^ self inlineConditional ].
-	((keywords allButLast conform: [ :k | k = 'and' ])
-		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
-		ifTrue: [ ^ self inlineConditional ].
-	((keywords allButLast conform: [ :k | k = 'or' ])
-		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
-		ifTrue: [ self inlineConditional ]
-! !
-
-!MessageInliner methodsFor: 'transforming' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineRepeat
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable
-		ifFalse: [ ^ self ].
-	arguments := message arguments.
-	arguments isEmpty
-		ifFalse: [ ^ self ].
-	receiver isBlockNode
-		ifFalse: [ ^ self ].
-	message beInlined.
-	receiver beInlined
-! !
-
-!MessageInliner methodsFor: 'transforming' stamp: 'KenD 9/29/2022 14:04:51'!
-inlineUnitaryWhile
-	| receiver arguments |
-	receiver := message receiver.
-	receiver isEvaluable ifFalse: [^self].
-	arguments := message arguments.
-	arguments size = 0 ifFalse: [^self].
-	self inlineConditional.
-	receiver isBlockNode ifTrue: [
-		message beInlined.
-		receiver beInlined]
-! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 9/29/2022 14:10:07'!
-beSuccessful
-	error := nil
-! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 9/29/2022 14:10:07'!
-error
-	^error
-! !
-
-!SCompilationResult methodsFor: 'errors' stamp: 'KenD 9/29/2022 14:10:07'!
-error: aCompilationError
-	error := aCompilationError
-! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:10:07'!
-ast
-	^ast
-! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:10:07'!
-ast: aParseNode
-	ast := aParseNode
-! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:10:07'!
-compiler: aSmalltalkCompiler
-	compiler := aSmalltalkCompiler
-! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:10:07'!
-method
-	^method
-! !
-
-!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:10:07'!
-method: aCompiledMethod
-	method := aCompiledMethod
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-argumentCount
-	^format bitsAt: BlockArgCount
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-argumentCount: anInteger
-	format := format bitsAt: BlockArgCount put: anInteger
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-capturesHome
-	^ format anyMask: BlockCapturesHome
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-capturesHome: aBoolean
-	format := aBoolean
-				  ifTrue: [ format bitOr: BlockCapturesHome ]
-				  ifFalse: [ format bitClear: BlockCapturesHome ]
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-capturesSelf
-	^format anyMask: BlockCapturesSelf
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-capturesSelf: aBoolean
-	format := aBoolean
-		ifTrue: [ format bitOr: BlockCapturesSelf ]
-		ifFalse: [ format bitClear: BlockCapturesSelf ]
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-environmentCount
-	^ format bitsAt: BlockEnvCount
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-environmentCount: anInteger
-	format := format bitsAt: BlockEnvCount put: anInteger
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-format
-	^ format
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-id
-	^format bitsAt: BlockId
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-id: anInteger
-	format := format bitsAt: BlockId put: anInteger
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-initialize
-	super initialize.
-	format := 0
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-isBlock
-	^true
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-method
-	^method
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-newClosure
-	| closure |
-	closure := SClosure new: self environmentCount.
-	^ closure block: self
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-optimizedCode
-	^optimizedCode
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-optimizedCode: anObject
-	optimizedCode := anObject
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-printOn: aStream
-	aStream
-		print: method classBinding;
-		nextPutAll: '>>';
-		print: method selector;
-		nextPutAll: ' [block ';
-		print: self id;
-		nextPutAll: ']'
-
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-tempCount
-	^format bitsAt: BlockTempCount
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-tempCount: anInteger
-	format := format bitsAt: BlockTempCount put: anInteger
-! !
-
-!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 10/1/2022 15:01:13'!
-value
-self halt
-"	<primitive: BlockValue>
-	^ self primitiveFailed" 
-! !
-
-!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:01:13'!
-method: aCompiledMethod
-	method := aCompiledMethod
-! !
-
-!SCompiledBlock class methodsFor: 'instance creation' stamp: 'KenD 10/1/2022 15:01:13'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!SCompiler methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:25:00'!
-classBinding
-	 ^class
-! !
-
-!SCompiler methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:25:00'!
-classBinding: aSpecies
-	| instance |
-	class := aSpecies.
-	instance := aSpecies instanceSide.
-	(instance respondsTo: #configureCompiler)
-		ifTrue: [instance configureCompiler: self]
-! !
-
-!SCompiler methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:25:00'!
-initialize: aDictionary
-	class := aDictionary at: #UndefinedObject ifAbsent: nil
-! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-compile: aString
-	result := self smalltalkCompiler compileMethod: aString.
-	^result method
-! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-parse: aString
-	result := self smalltalkCompiler parseMethod: aString.
-	^result ast
-! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-smalltalkCompiler
-	^ SSmalltalkCompiler new frontend: self
-! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-smalltalkParser
-	^ self smalltalkCompiler parser
-! !
-
-!SCompiler methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-smalltalkScanner
-	^ self smalltalkCompiler scanner
-! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:00'!
-canBeInIdentifier: aCharacter
-	^aCharacter isLetter or: [aCharacter isDigit] or: [aCharacter = $_]
-! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:00'!
-canStartIdentifier: aCharacter
-	^aCharacter isLetter or: [aCharacter = $_]
-! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:00'!
-peekForIdentifier: aStream
-	| char next |
-	char := aStream peek.
-	(self canBeInIdentifier: char) ifTrue: [
-		aStream skip: 1.
-		^true].
-	char = $. ifFalse: [^false].
-	aStream prev isLetter ifFalse: [
-		aStream skip: 1.
-		^false].
-	next := aStream skip: 2; peek.
-	next isNil ifTrue: [
-		aStream skip: -1.
-		^false].
-	^next isLetter ifFalse: [aStream skip: -1]; yourself
-! !
-
-!SCompiler methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:00'!
-protect: aBlock
-	^aBlock value
-! !
-
-!SCompiler methodsFor: 'private' stamp: 'KenD 9/30/2022 12:25:00'!
-forClass: aClass
-	| c |
-	c := aClass ifNil: [UndefinedObject].
-	self classBinding: c
-! !
-
-!SCompiler class methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-compile: aString in: aClass
-	| compiler |
-	compiler := self forClass: aClass.
-	^compiler compile: aString
-! !
-
-!SCompiler class methodsFor: 'services' stamp: 'KenD 9/30/2022 12:25:00'!
-parse: aString in: aClass
-	| compiler |
-	compiler := self forClass: aClass.
-	^compiler parse: aString
-! !
-
-!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 9/30/2022 12:25:00'!
-forClass: aClass
-	^self new forClass: aClass
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visit: aParseNode
-	^aParseNode notNil ifTrue: [aParseNode acceptVisitor: self] 
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitAssignment: anAssignmentNode
-	^self visitParseNode: anAssignmentNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitBlock: aBlockNode
-	^self visitParseNode: aBlockNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitBraceNode: aBraceNode
-	^self visitParseNode: aBraceNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitCascade: aCascadeNode
-	^self visitParseNode: aCascadeNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitCascadeMessage: aCascadeMessageNode
-	^self visitMessage: aCascadeMessageNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitForeignNode: anForeignNode
-	self visitLiteral: anForeignNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitIdentifier: anIdentifierNode
-	^self visitParseNode: anIdentifierNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitLiteral: aLiteralNode
-	^self visitParseNode: aLiteralNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitMessage: aMessageNode
-	^self visitParseNode: aMessageNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitMethod: aMethodNode
-	^self visitParseNode: aMethodNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitNumberNode: aNumberNode
-	^self visitLiteral: aNumberNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitParseNode: aParseNode
-	^self subclassResponsibility
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitPragma: aPragmaNode
-	^self visitParseNode: aPragmaNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitReturn: aReturnNode
-	^self visitParseNode: aReturnNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitSelector: aSelectorNode
-	^self visitParseNode: aSelectorNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitString: aStringNode
-	^self visitLiteral: aStringNode
-! !
-
-!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 9/26/2022 12:59:46'!
-visitSymbolicPragma: aPragmaNode
-	^self visitPragma: aPragmaNode
-! !
-
-!SParseTreeVisitor class methodsFor: 'instance creation' stamp: 'KenD 9/26/2022 12:59:46'!
-new
-	^super new initialize
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeAssignment: anAssignmentNode
-	anAssignmentNode assignees
-		do: [:v | self analyzeIdentifier: v assignee: true]
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeBlock: aBlockNode while: aBlock
-	aBlockNode isInlined
-		ifFalse: [aBlockNode index: aBlockNode compiler blockIndex].
-	self analyzeScript: aBlockNode while: aBlock
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeIdentifier: anIdentifierNode
-	self analyzeIdentifier: anIdentifierNode assignee: false
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeIdentifier: anIdentifierNode assignee: aBoolean
-	| script binding |
-	anIdentifierNode resolveAssigning: aBoolean.
-	aBoolean ifTrue: [anIdentifierNode beAssigned].
-	script := anIdentifierNode compiler activeScript.
-	binding := anIdentifierNode binding.
-	script reference: binding.
-	binding isLocal ifTrue: [binding := script scope captureLocal: binding].
-	anIdentifierNode binding: binding
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeMessage: aMessageNode
-	inliner inline: aMessageNode.
-	aMessageNode isInlined ifFalse: [aMessageNode compiler noticeSend]
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeMethod: aMethodNode while: aBlock
-	self analyzeScript: aMethodNode while: aBlock
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeReturn: aReturnNode
-	aReturnNode compiler activeScript realScript captureHome
-! !
-
-!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 9/29/2022 13:54:50'!
-analyzeScript: aScriptNode while: aBlock
-	aScriptNode compiler activate: aScriptNode while: aBlock
-! !
-
-!SSemanticVisitor methodsFor: 'initialization' stamp: 'KenD 9/29/2022 13:54:50'!
-initialize
-	super initialize.
-	inliner := MessageInliner new
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitAssignment: anAssignmentNode
-	| c |
-	self analyzeAssignment: anAssignmentNode.
-	anAssignmentNode expression acceptVisitor: self.
-	c := anAssignmentNode compiler.
-
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitBlock: aBlockNode
-	self
-		analyzeBlock: aBlockNode
-		while: [aBlockNode statements do: [:node | node acceptVisitor: self]]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitBraceNode: aBraceNode
-	aBraceNode isLiteral
-		ifFalse: [aBraceNode asMessageNode acceptVisitor: self]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitCascade: aCascadeNode
-	aCascadeNode receiver acceptVisitor: self.
-	aCascadeNode messages do: [:msg | msg acceptVisitor: self]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitIdentifier: anIdentifierNode
-	self analyzeIdentifier: anIdentifierNode
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitMessage: aMessageNode
-	self analyzeMessage: aMessageNode.
-	aMessageNode receiver acceptVisitor: self.
-	aMessageNode arguments do: [:arg | arg acceptVisitor: self]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitMethod: aMethodNode
-	self analyzeMethod: aMethodNode while: [
-		aMethodNode bindLocals.
-		aMethodNode statements do: [:s | s acceptVisitor: self].
-		aMethodNode positionLocals]
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitParseNode: aParseNode
-	"
-	do nothing
-	"
-	
-! !
-
-!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 9/29/2022 13:54:50'!
-visitReturn: aReturnNode
-	aReturnNode expression acceptVisitor: self.
-	self analyzeReturn: aReturnNode
-! !
-
-!SSemanticVisitor class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 13:54:50'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:00'!
-encodeClassBinding: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: GlobalClassId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:25'!
-encodeClassVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: ClassVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:49'!
-encodeGlobalVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: GlobalValueId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:03'!
-encodeInlinedMessage: aMessageNode 
-
-	self nextTypePut: 0! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:18'!
-encodeInstVar: index 
-
-	stream nextPut: InstVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:31'!
-encodeLoadAwithArg: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: LoadAwithArgumentId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:50'!
-encodeLoadAwithClassVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithClassVarId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:10'!
-encodeLoadAwithConstPoolVar: value 
-	| index |
-	index := method indexOf: value ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithConstPoolId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:39'!
-encodeLoadAwithGlobal: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithGlobalId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:53'!
-encodeLoadAwithInstVar: anInteger 
-
-	stream nextPut: LoadAwithInstVarId; nextPut: anInteger! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:04'!
-encodeLoadAwithLiteral: value 
-	| index |
-	index := method indexOf: value.
-	stream nextPut: LoadAwithLiteralId; nextPut: index.
-	index = 0 ifTrue: [stream nextPut: value]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:14'!
-encodeLoadAwithNil 
-
-	stream nextPut: LoadAwithNilId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:30'!
-encodeLoadAwithPoolVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: LoadAwithPoolVarId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:42'!
-encodeLoadAwithSelf 
-
-	stream nextPut: LoadAwithSelfId! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:57'!
-encodeLoadAwithTemp: anInteger env: environment 
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	stream
-		nextPut: LoadAwithTemporaryId;
-		nextPut: anInteger;
-		nextPut: encoded! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:37'!
-encodeOptimizedBinary: aMessageNode 
-	| optimizer |
-	optimizer := BinaryMessageOptimizer on: aMessageNode using: self.
-	self nestedEncode: [optimizer emitOpcodes]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:00'!
-encodeOptimizedMessage: aMessageNode 
-	| selector |
-	selector := aMessageNode selector.
-	aMessageNode isInlined ifTrue: [^self encodeInlinedMessage: aMessageNode].
-	(BinaryMessageOptimizer optimizesMessage: selector value) ifFalse: [^self].
-	aMessageNode arguments size = 1
-		ifTrue: [^self encodeOptimizedBinary: aMessageNode]! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:12'!
-encodePoolConst: association 
-	| index |
-	index := method indexOf: association ifAbsent: [ self assert: false ].
-	stream
-		nextPut: ConstantPoolId;
-		nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:32'!
-encodePoolVar: association 
-	| index |
-	index := method indexOf: association ifAbsent: [self assert: false].
-	stream nextPut: PoolVarId; nextPut: index! !
-
-!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:39:50'!
-nestedEncode: aBlock 
-	| prev nested |
-	prev := stream.
-	nested := Array streamContents: [:s | 
-		stream := s.
-		aBlock value.
-		stream contents].
-	stream := prev.
-	stream nextPut: nested
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-compiledBlockIndexOf: aBlockNode
-	| index |
-	index := method
-		findFirst: [:literal | literal isBlock
-			and: [literal id == aBlockNode index]].
-	^index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeArgument: anInteger env: environment
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	self
-		nextPut: ArgumentId;
-		nextIntegerPut: anInteger;
-		nextIntegerPut: encoded
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 11/1/2022 15:07:44'!
-encodeClosureElements: aBlockNode
-	| scope parent |
-	scope := aBlockNode scope.
-	parent := aBlockNode realParent.
-	^Array streamContents: [:s |
-		scope capturesSelf ifTrue: [ s nextPut: Self ].
-		scope capturedEnvironments do: [:e | | index |
-			e == parent ifTrue: [s nextPut: Environment] ifFalse: [
-				index := aBlockNode environmentIndexOf: e.
-				self assert: index notNil.
-				s nextPut: EnvironmentValue; nextPut: index]].
-		scope capturedArguments do: [:a | | binding |
-			binding := aBlockNode parent scope resolve: a name.
-			s 	nextPut: binding environmentType; nextPut: binding index]]
-	
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeDynamicVar: name
-	stream nextPut: DynamicVarId.
-	self nextSymbolPut: name
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeFalse
-	stream nextPut: FalseId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeLoadRvisitingReceiver
-	stream nextPut: LoadRvisitingReceiverId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeNestedDynamicVar: name
-	stream nextPut: NestedDynamicVarId.
-	self nextLiteralPut: name 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeNil
-	stream nextPut: NilId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodePopR
-	stream nextPut: PopRid 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodePushR
-	stream nextPut: PushRid 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeSelf
-	stream nextPut: SelfId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeSuper
-	stream nextPut: SuperId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeTemporary: anInteger env: environment
-	| encoded |
-	encoded := self encodedEnvironment: environment.
-	self
-		nextPut: TemporaryId;
-		nextIntegerPut: anInteger;
-		nextIntegerPut: encoded
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodeTrue
-	stream nextPut: TrueId
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-encodedEnvironment: aLocalEnvironment
-	aLocalEnvironment isStack
-		ifTrue: [ ^ aLocalEnvironment isInlinedArgument
-				ifTrue: [ -1 ]
-				ifFalse: [ -2 ] ].
-	aLocalEnvironment isCurrent
-		ifTrue: [ ^ 0 ].
-	^ aLocalEnvironment index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextBigIntegerPut: anInteger
-	stream
-		nextPut: 16r80;
-		int64: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextBooleanPut: aBoolean
-	stream nextPut: aBoolean asBit
-
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextIntegerPut: anInteger
-	| value |
-	(anInteger > 127 or: [ anInteger < -127 ])
-		ifTrue: [ ^ self nextBigIntegerPut: anInteger ].
-	value := anInteger >= 0
-		ifTrue: [ anInteger ]
-		ifFalse: [ anInteger + 16r100 ].
-	stream nextPut: value
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 10/2/2022 09:05:40'!
-nextLiteralPut: anObject
-	| index |
-	index := method
-		indexOf: anObject
-		ifAbsent: [ self assert: false ].
-	self nextIntegerPut: index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextPut: anInteger
-	stream nextPut: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextPutAll: aCollection
-	stream nextPut: aCollection size; nextPutAll: aCollection
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 10/2/2022 15:44:01'!
-nextSymbolPut: aSymbol
-	| index |
-	index := method
-		indexOf: aSymbol asSymbol
-		ifAbsent: [ self assert: false ].
-	self nextIntegerPut: index
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-nextTypePut: anInteger
-	stream nextPut: anInteger
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitAssignment: anAssignmentNode
-	| assignees |
-	self nextTypePut: AssignmentId.
-	assignees := anAssignmentNode assignees.
-	self nextIntegerPut: assignees size.
-	assignees do: [ :node | node acceptVisitor: self ].
-	anAssignmentNode expression acceptVisitor: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitBlock: aBlockNode
-	| args inlined |
-	self nextTypePut: BlockId.
-	inlined := aBlockNode isInlined.
-	self nextBooleanPut: inlined.
-	inlined
-		ifTrue: [ args := aBlockNode arguments collect: [ :id | id binding index ].
-			self nextPutAll: args asArray ]
-		ifFalse: [ | index captured |
-			index := self compiledBlockIndexOf: aBlockNode.
-			self nextPut: index.
-			captured := self encodeClosureElements: aBlockNode.
-			self nextPutAll: captured ].
-	self visitScript: aBlockNode
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitBraceNode: aBraceNode
-	aBraceNode isLiteral
-		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
-		ifFalse: [self visitCascade: aBraceNode asMessageNode]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitCascade: aCascadeNode
-	| messages |
-	self nextTypePut: CascadeId.
-	aCascadeNode receiver acceptVisitor: self.
-	messages := aCascadeNode messages.
-	self nextIntegerPut: messages size.
-	messages do: [ :node | self visitCascadeMessage: node ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitCascadeMessage: aCascadeMessageNode
-	| arguments |
-	self nextSymbolPut: aCascadeMessageNode selector symbol.
-	arguments := aCascadeMessageNode arguments.
-	self nextIntegerPut: arguments size.
-	arguments do: [ :arg | arg acceptVisitor: self ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitIdentifier: anIdentifierNode
-	self nextTypePut: IdentifierId.
-	anIdentifierNode binding encodeUsing: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitLiteral: aLiteralNode
-	| index |
-	index := method indexOf: aLiteralNode value.
-	self
-		nextTypePut: LiteralId;
-		nextIntegerPut: index.
-	index = 0
-		ifTrue: [ self nextIntegerPut: aLiteralNode value ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitMessage: aMessageNode
-	| arguments |
-	self
-		nextTypePut: MessageId;
-		nextBooleanPut: aMessageNode isInlined;
-		nextSymbolPut: aMessageNode selector symbol.
-	aMessageNode receiver acceptVisitor: self.
-	arguments := aMessageNode arguments.
-	self nextIntegerPut: arguments size.
-	arguments do: [ :arg | arg acceptVisitor: self ]
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitMethod: aMethodNode
-	| pragma |
-	self nextTypePut: MethodId.
-	pragma := aMethodNode pragma.
-	pragma isUsed
-		ifTrue: [ self nextTypePut: PragmaId.
-			pragma name
-				ifNotNil: [ self nextSymbolPut: pragma name ]
-				ifNil: [ self nextPut: 0 ] ].
-	self visitScript: aMethodNode.
-	^ stream contents 
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 10/2/2022 14:55:28'!
-visitParseNode: aParseNode
-	^self assert: false
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitReturn: aReturnNode
-	self
-		nextTypePut: ReturnId;
-		nextBooleanPut: script realScript isMethod.
-	
-		aReturnNode expression acceptVisitor: self
-! !
-
-!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 9/28/2022 13:23:46'!
-visitScript: aScriptNode
-	| prev statements |
-	prev := script.
-	script := aScriptNode.
-	statements := aScriptNode statements.
-	self nextIntegerPut: statements size.
-	statements do: [ :node | node acceptVisitor: self ].
-	script := prev
-! !
-
-!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 9/28/2022 13:23:46'!
-initialize
-	stream := #[] writeStream
-! !
-
-!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 9/28/2022 13:23:46'!
-method: aCompiledMethod
-	method := aCompiledMethod
-! !
-
-!AstcodeEncoder class methodsFor: 'instance creation' stamp: 'KenD 9/28/2022 13:23:46'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 9/29/2022 14:22:10'!
-capturesSelf
-	^ captureSelf
-! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 9/29/2022 14:22:10'!
-describe: identifier
-	| binding type |
-	binding := self resolve: identifier.
-	type := self class name asLowercase allButLast: 'scope' size.
-	^binding description , ' of ' , type
-! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 9/29/2022 14:22:10'!
-environmentSize
-	^envSize
-! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 9/29/2022 14:22:10'!
-scopeOf: aString
-	| s |
-	s := self scriptDefining: aString.
-	^s notNil ifTrue: [s scope]
-! !
-
-!ScriptScope methodsFor: 'services' stamp: 'KenD 9/29/2022 14:22:10'!
-stackSize
-	^stackSize
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-defineArgument: identifier
-	| binding |
-	(self resolves: identifier) ifTrue: [self redefinitionError: identifier].
-	binding := ArgumentBinding new name: identifier.
-	arguments define: identifier as: binding.
-	^binding
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-defineTemporary: identifier
-	| binding |
-	(temporaries defines: identifier)
-		ifTrue: [self redefinitionError: identifier].
-	binding := TemporaryBinding new name: identifier.
-	temporaries define: identifier as: binding.
-	^binding
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-defines: aString
-	^(temporaries defines: aString) or: [arguments defines: aString]
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-localBindings
-	^arguments values , temporaries values
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-resolveLocal: aString
-	(temporaries at: aString) ifNotNil: [:binding | ^binding].
-	^arguments at: aString
-! !
-
-!ScriptScope methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:22:10'!
-resolves: aString
-	^(self resolve: aString) isDynamic not
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-growEnvironment
-	^envSize := envSize + 1
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-growStack
-	^stackSize := stackSize + 1
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-positionDefinedArguments
-	arguments withIndexDo: [:binding :index | binding index: index]
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-positionDefinedLocals
-	self positionDefinedTemporariesIn: self; positionDefinedArguments
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-positionDefinedTemporariesIn: aScriptScope
-	temporaries do: [:binding | | position |
-		position := binding isInStack
-			ifTrue: [aScriptScope growStack]
-			ifFalse: [aScriptScope growEnvironment].
-		binding index: position]
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-positionLocals
-	self positionDefinedLocals
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-realScope
-	^script realScript scope
-! !
-
-!ScriptScope methodsFor: 'private' stamp: 'KenD 9/29/2022 14:22:10'!
-redefinitionError: name
-	| scope description |
-	scope := self scopeOf: name.
-	description := scope describe: name.
-	script compiler
-		warning: name , ' already declared as ' , description
-		at: script stretch
-! !
-
-!ScriptScope methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:22:10'!
-initialize
-	super initialize.
-	arguments := StaticBinder new.
-	temporaries := StaticBinder new.
-	stackSize := envSize := 0.
-		captureSelf := false.
-! !
-
-!ScriptScope methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:22:10'!
-script: aScriptNode
-	script := aScriptNode
-! !
-
-!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:22:10'!
-new
-	^super new initialize
-! !
-
-!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:22:10'!
-on: aScriptNode
-	^self new script: aScriptNode
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-captureLocal: aLocalBinding
-	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
-	^aLocalBinding isTemporary
-		ifTrue: [self captureTemporary: aLocalBinding]
-		ifFalse: [self captureArgument: aLocalBinding]
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-captureSelf
-	captureSelf ifTrue: [^self].
-	captureSelf := true.
-	self parent captureSelf
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-captureTemporary: aTemporaryBinding
-	| name |
-	name := aTemporaryBinding name.
-	(self defines: name) ifTrue: [^aTemporaryBinding].
-	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
-		parent := self parent.
-		declaration := parent scriptDefining: name.
-		self realScope captureEnvironment: declaration realScript.
-		transferred := parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		copy isInArray ifTrue: [aTemporaryBinding beInArray].
-		copy declaration: transferred declaration]
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-capturedArguments
-	^captured select: [:b | b isArgument]
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-capturedEnvironments
-	^environments
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-capturesHome
-	^self home notNil
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-environments
-	"
-	compatibility, removes the home environment
-	"
-	| first |
-	environments isEmpty ifTrue: [^#()].
-	first := environments first.
-	^first isMethod ifTrue: [environments allButFirst] ifFalse: [environments]
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-home
-	| first |
-	environments isEmpty ifTrue: [^nil].
-	first := environments first.
-	^first isMethod ifTrue: [first]
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-resolveLocal: aString
-	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^captured at: aString
-! !
-
-!BlockScope methodsFor: 'services' stamp: 'KenD 9/30/2022 12:09:36'!
-scriptDefining: aString
-	(self defines: aString) ifTrue: [^script].
-	^self parent scriptDefining: aString
-! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 9/30/2022 12:09:36'!
-captureArgument: anArgumentBinding
-	| name |
-	name := anArgumentBinding name.
-	^captured at: name ifAbsentPut: [| transferred copy |
-		transferred := self parent transferLocal: name.
-		copy := self copyLocal: transferred.
-		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
-			ifTrue: [anArgumentBinding beInArray].
-		copy declaration: transferred declaration]
-! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 9/30/2022 12:09:36'!
-localBindings
-	^super localBindings , captured values
-! !
-
-!BlockScope methodsFor: 'binding' stamp: 'KenD 9/30/2022 12:09:36'!
-resolve: aString
-	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
-	^self parent resolve: aString
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-captureEnvironment: aScriptNode
-	script == aScriptNode ifTrue: [^self].
-	(environments identityIncludes: aScriptNode) ifTrue: [^self].
-	self realParent captureEnvironment: aScriptNode.
-	aScriptNode isMethod
-		ifTrue: [environments addFirst: aScriptNode]
-		ifFalse: [environments addLast: aScriptNode]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 10/2/2022 09:05:07'!
-capturedEnvironmentIndexOf: aScriptNode
-	| index |
-	aScriptNode realScript == script realScript
-		ifTrue: [ ^ nil ].
-	index := environments indexOf: aScriptNode ifAbsent: nil.
-	self assert: index notNil.
-	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-copyLocal: binding
-	^script isInlined ifTrue: [binding] ifFalse: [binding copy beInArray]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 11/8/2022 14:51:17'!
-environmentIndexOf: aScriptNode
-	"
-	temporal compatibility
-	"
-	(aScriptNode isKindOf: SScriptNode)
-		ifFalse: [ self assert: false. ^nil ].
-	^self capturedEnvironmentIndexOf: aScriptNode
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-environmentSizeUpToCapturedArguments
-	^self environmentSizeUpToEnvironments + self capturedArguments size
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-environmentSizeUpToEnvironments
-	| receiver |
-	receiver := self capturesSelf ifTrue: [ 1 ] ifFalse: [ 0 ].
-	^receiver + environments size
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-parent
-	^script parent scope
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-positionCapturedArgument: anArgumentBinding
-	anArgumentBinding index: self growEnvironment
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-positionCapturedLocals
-	script isInlined ifTrue: [^self].
-	envSize := self environmentSizeUpToEnvironments.
-	captured do: [:binding | 
-		binding isArgument
-			ifTrue: [self positionCapturedArgument: binding]
-			ifFalse: [self positionCapturedTemporary: binding]]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 11/8/2022 14:51:22'!
-positionCapturedTemporary: aTemporaryBinding
-	| outest index declaration |
-	outest := self scriptDefining: aTemporaryBinding name.
-	index := self capturedEnvironmentIndexOf: outest realScript.
-	aTemporaryBinding environmentIndex: index.
-	declaration := outest scope resolve: aTemporaryBinding name.
-	self assert: declaration index isInteger.
-	aTemporaryBinding index: declaration index
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-positionDefinedArgumentsIn: aScriptScope
-	arguments do: [:binding | | index |
-		index := binding isInArray
-			ifTrue: [aScriptScope growEnvironment]
-			ifFalse: [aScriptScope growStack].
-		binding index: index]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-positionDefinedLocals
-	| real |
-	script isInlined
-		ifTrue: [
-			real := self realScope.
-			self
-				positionDefinedTemporariesIn: real;
-				positionDefinedArgumentsIn: real]
-		ifFalse: [super positionDefinedLocals]
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-positionLocals
-	self positionCapturedLocals.
-	super positionLocals
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-realParent
-	^script realParent scope
-! !
-
-!BlockScope methodsFor: 'private' stamp: 'KenD 9/30/2022 12:09:36'!
-transferLocal: name
-	| binding copy |
-	(self resolveLocal: name) ifNotNil: [:b | ^b].
-	binding := self parent transferLocal: name.
-	copy := self copyLocal: binding.
-	captured at: name put: copy.
-	^copy
-! !
-
-!BlockScope methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:09:36'!
-initialize
-	super initialize.
-	captured := StaticBinder new.
-	environments := OrderedCollection new
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-captureLocal: aLocalBinding
-	self ASSERT: (self resolveLocal: aLocalBinding name) notNil.
-	^aLocalBinding
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-captureSelf
-	captureSelf := true.
-
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-environmentIndexOf: aScriptNode
-	self ASSERT: aScriptNode == script.
-	^nil
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 11/13/2022 12:50:31'!
-poolFor: aString
-	cvars do: [:binder | binder at: aString ifPresent: [:b | ^binder contents]].
-	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
-	self error: 'not found'
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-resolve: aString
-	(self resolveLocal: aString) ifNotNil: [ :binding | ^ binding ].
-	(self resolvePseudo: aString) ifNotNil: [ :binding | ^ binding ].
-	^ DynamicBinding named: aString
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 11/13/2022 12:50:31'!
-resolveShared: aString
-	(pseudo at: aString) ifNotNil: [:binding | ^binding].
-	(ivars at: aString) ifNotNil: [:binding | ^binding].
-	cvars do: [:binder | binder at: aString ifPresent: [:binding | ^binding]].
-	pools do: [:pool | pool at: aString ifPresent: [:binding | ^binding]].
-	^(globals at: aString) ifNil: [UnresolvedBinding new name: aString]
-! !
-
-!MethodScope methodsFor: 'services' stamp: 'KenD 1/30/2023 10:10:52'!
-scriptDefining: aString
-	(self resolveLocal: aString) ifNotNil: [^script].
-	self ASSERT: false.
-	^nil
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-addPool: aPoolDictionary
-	| binder |
-	binder := DynamicBinder on: aPoolDictionary .
-	pools add: binder
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-addPool: aDictionary of: type
-	| dict |
-	dict := DynamicBinder on: aDictionary of: type.
-	pools add: dict
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-addPoolBinders: aCollection
-	pools addAll: aCollection
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-classBinding
-	^species
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initialize
-	super initialize.
-	self initializePseudoVars
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-initializeClassVars
-	"
-		fixme: bootstrapping should be properly abstracted
-		and not checked with isKindOf:
-	"
-
-	| vars |
-	species instanceSide withAllSuperclasses
-		do: [ :class | 
-			| binder |
-			vars := class classPool.
-			binder := DynamicBinder on: vars of: ClassVarBinding.
-			cvars add: binder ]
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-initializeInstVars
-	species allInstVarNames withIndexDo: [:name :i | | binding |
-		binding := InstVarBinding new name: name; index: i.
-		ivars at: name put: binding]
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-initializePoolVars
-	| instance |
-	instance := species instanceSide.
-	(instance allSharedPoolsUsing: globals)
-		do:
-			[ :pool | self addPool: pool ] .
-	instance withAllSuperclasses
-		do: [ :class | class localPools do: [ :pool | self addPool: pool ] ]
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:52'!
-initializePseudoVars
-	pseudo := StaticBinder new.
-	pseudo
-		at: 'nil' put: NilBinding new;
-		at: 'true' put: TrueBinding new;
-		at: 'false' put: FalseBinding new;
-		at: 'self' put: SelfBinding new;
-		at: 'super' put: SuperBinding new
-! !
-
-!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
-species: aSpecies
-	species ifNotNil: [^self].
-	species := aSpecies.
-	self initializeInstVars; initializeClassVars; initializePoolVars.
-	species superclass isNil ifTrue: [^self].
-	pseudo at: 'super' put: SuperBinding new
-! !
-
-!MethodScope methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:52'!
-resolvePseudo: aString
-	^pseudo at: aString
-
-! !
-
-!MethodScope methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:52'!
-captureEnvironment: aScriptNode
-	self ASSERT: aScriptNode == script
-! !
-
-!MethodScope methodsFor: 'private' stamp: 'KenD 1/30/2023 10:10:52'!
-transferLocal: name
-	^self resolveLocal: name
-! !
-
-!MethodScope methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:50:31'!
-hasMultipleBindingsFor: aString
-	"
-	temporal compatibility
-	"
-	| count |
-	count := 0.
-	cvars
-		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
-	pools
-		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
-	^count > 1
-! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 11/13/2022 12:50:31'!
-namespace
-	^globals
-! !
-
-!MethodScope methodsFor: 'accessing' stamp: 'KenD 11/13/2022 12:50:31'!
-namespace: aDictionary
-	globals contents: aDictionary
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-canBeAssigned
-	^true
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-declaration
-	^self
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 11/8/2022 14:51:41'!
-encodeUsing: anAstcodeEncoder
-	self assert: false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isArgument
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isClassBinding
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isClassVariable
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isConstantBinding
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isDynamic
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isGlobal
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isInStack
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isInstVar
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isLiteral
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isLocal
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isPoolVariableBinding
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isSelf
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isSelfOrSuper
-	^self isSelf or: [self isSuper]
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isSuper
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-isTemporary
-	^false
-! !
-
-!Binding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:59:00'!
-literal
-	^nil
-! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:59:00'!
-name
-	^name
-! !
-
-!Binding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:59:00'!
-name: aString
-	name := aString
-! !
-
-!Binding methodsFor: 'printing' stamp: 'KenD 9/29/2022 13:59:00'!
-printNameOn: aStream
-		aStream
-		print: name
-
-! !
-
-!Binding methodsFor: 'printing' stamp: 'KenD 9/29/2022 13:59:00'!
-printOn: aStream
-	self printNameOn: aStream.
-	aStream
-		nextPutAll: ' ('.
-	super printOn: aStream.
-	aStream nextPutAll: ')'
-! !
-
-!Binding methodsFor: 'actions' stamp: 'KenD 9/29/2022 13:59:00'!
-beReferencedFrom: aScriptNode
-	
-! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:30'!
-association 
-
-	^association! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:41'!
-association: anAssociation 
-
-	association := anAssociation.
-	name := anAssociation key! !
-
-!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:25:02'!
-literal 
-
-	^association! !
-
-!AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
-usesSymbols 
-
-	^false! !
-
-!AssociationBinding class methodsFor: 'accessing' stamp: 'KenD 6/8/2021 13:16:43'!
-usesSymbols 
-
-	^false! !
-
-!AssociationBinding class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:23:29'!
-on: anAssociation 
-
-	^self new association: anAssociation! !
-
-!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
-emitLoadAusing: anAstcodeEncoder
-	anAstcodeEncoder encodeLoadAwithGlobal: association
-! !
-
-!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeGlobalVar: association
-! !
-
-!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
-isGlobal
-	^true
-! !
-
-!GlobalBinding class methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
-usesSymbols
-	^true
-! !
-
-!GlobalBinding class methodsFor: 'private' stamp: 'KenD 11/13/2022 12:48:59'!
-on: anAssociation
-	| v class |
-	v := anAssociation value.
-	class := (v isSpecies or: [ v class == SlotObjectMap and: [v spec isMeta]])
-		ifTrue: [ ClassBinding ]
-		ifFalse: [ GlobalBinding ].
-	^ class new association: anAssociation
-! !
-
-!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:39'!
-emitLoadAusing: anAstcodeEncoder 
-
-	anAstcodeEncoder encodeLoadAwithPoolVar: association! !
-
-!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:50'!
-encodeUsing: anAstcodeEmitter 
-
-	anAstcodeEmitter encodePoolVar: self literal! !
-
-!PoolVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:07'!
-isPoolVariableBinding 
-
-	^true! !
-
-!DynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:12:46'!
-beReferencedFrom: aScriptNode
-	"a dynamic binding could refer to an ivar, so we have to be conservative"
-	aScriptNode useSelf
-! !
-
-!DynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:12:46'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeDynamicVar: name
-! !
-
-!DynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:12:46'!
-isDynamic
-	^true
-! !
-
-!DynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:12:46'!
-literal
-	^name asSymbol
-! !
-
-!DynamicBinding class methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:12:46'!
-default
-	^Default ifNil: [Default := self new name: '<unresolved>']
-! !
-
-!DynamicBinding class methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:12:46'!
-named: aString
-	| index first second |
-	index := aString indexOf: $..
-	index = 0 ifTrue: [ ^self new name: aString ].
-	first := aString copyFrom: 1 to: index - 1.
-	second := aString copyFrom: index + 1 to: aString size.
-	^NestedDynamicBinding new name: { first. second }
-! !
-
-!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:19:29'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeNestedDynamicVar: name
-! !
-
-!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:19:29'!
-literal
-	^name collect: [ :n | n asSymbol]
-! !
-
-!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:19:29'!
-printNameOn: aStream
-	name do: [ :n | aStream nextPutAll: n ] separatedBy: [ aStream nextPut: $. ]
-! !
-
-!LiteralBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:58:47'!
-isLiteral
-	^true
-! !
-
-!FalseBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:02:17'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeFalse
-! !
-
-!FalseBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:02:17'!
-name
-	^'false'
-! !
-
-!FalseBinding methodsFor: 'evaluating' stamp: 'KenD 9/29/2022 14:02:17'!
-value
-	^false
-! !
-
-!NilBinding methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:19:43'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeNil
-! !
-
-!NilBinding methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:19:43'!
-name
-	^'nil'
-! !
-
-!NilBinding methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:19:43'!
-value
-	^nil
-! !
-
-!TrueBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:28:12'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeTrue
-! !
-
-!TrueBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:28:12'!
-name
-	^'true'
-! !
-
-!TrueBinding methodsFor: 'evaluating' stamp: 'KenD 9/29/2022 14:28:12'!
-value
-	^true
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-declaration
-	^declaration
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-declaration: anIdentifierNode
-	declaration := anIdentifierNode
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-environment
-	^environment index
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-environmentIndex
-	^environment index
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-environmentIndex: anInteger
-	environment index: anInteger
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-environmentObject
-	^environment
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-environmentType
-	^environment environmentType
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-index
-	^index
-! !
-
-!LocalBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:58:17'!
-index: aNumber
-	index := aNumber
-! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:58:17'!
-isInArray
-	^self isInStack not
-! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:58:17'!
-isInStack
-	^environment isStack
-! !
-
-!LocalBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:58:17'!
-isLocal
-	^true
-! !
-
-!LocalBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 13:58:17'!
-beInArray
-	environment := ArrayEnvironment new
-! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 14:01:42'!
-beInlined
-	environment := InlinedArgEnvironment new
-! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 14:01:42'!
-description
-	^'argument ' , name
-! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 14:01:42'!
-encodeUsing: anAstcodeEncoder
-	anAstcodeEncoder encodeArgument: index env: environment
-! !
-
-!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 14:01:42'!
-isInlined
-	^environment isInlinedArgument
-! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:01:42'!
-canBeAssigned
-	^false
-! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:01:42'!
-index: aNumber
-	index := aNumber.
-
-! !
-
-!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:01:42'!
-isArgument
-	^true
-! !
-
-!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:01:42'!
-initialize
-	super initialize.
-	environment := ArgumentEnvironment new
-! !
-
-!ArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:01:42'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!TemporaryBinding methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:28:31'!
-description
-	^'temporary ' , name
-! !
-
-!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:28:31'!
-encodeUsing: anAstcodeEncoder
-	anAstcodeEncoder encodeTemporary: index env: environment
-! !
-
-!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:28:31'!
-initialize
-	super initialize.
-	environment := StackEnvironment new
-! !
-
-!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:28:31'!
-isTemporary
-	^true
-! !
-
-!TemporaryBinding class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:28:31'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!SelfBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:57:35'!
-canBeAssigned
-	^false
-! !
-
-!SelfBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:57:35'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeSelf
-! !
-
-!SelfBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 13:57:35'!
-isSelf
-	^true
-! !
-
-!SelfBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 13:57:35'!
-name
-	^'self'
-! !
-
-!SelfBinding methodsFor: 'actions' stamp: 'KenD 9/29/2022 13:57:35'!
-beReferencedFrom: aScriptNode
-	aScriptNode useSelf
-! !
-
-!SuperBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:28:51'!
-encodeUsing: anAstcodeEmitter
-	anAstcodeEmitter encodeSuper
-! !
-
-!SuperBinding methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:28:51'!
-name
-	^'super'
-! !
-
-!SuperBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:28:51'!
-isSelf
-	^false
-! !
-
-!SuperBinding methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:28:51'!
-isSuper
-	^true
-! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 10/2/2022 13:45:05'!
-parseFragment
-	headless := false.
-	self reset.
-	ast := self parser methodFragment.
-	result ast: ast
-! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 10/2/2022 13:45:05'!
-parseFragment: aString
-	source := aString.
-	[self parseFragment; resolveSemantics] on: SCompilationError do: [].
-	^ast
-! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 10/2/2022 13:45:05'!
-parseMethod
-	headless := false.
-	self reset.
-	ast := self parser method.
-	result ast: ast
-! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 10/2/2022 13:45:05'!
-parseMethod: aString
-	source := aString.
-	frontend protect: [self parseMethod; resolveSemantics].
-	^result
-! !
-
-!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 10/2/2022 13:45:05'!
-resolveSemantics
-	ast acceptVisitor: SSemanticVisitor new
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-assignmentNode
-	^SAssignmentNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-blockNode
-	^SBlockNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-braceNode
-	^SBraceNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-buildMethod
-	result method: ast buildMethod
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-cascadeMessageNode
-	^SCascadeMessageNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-cascadeNode
-	^SCascadeNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-commentNode
-	^SCommentNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-compileMethod: aString
-	source := aString.
-	frontend protect: [
-		self
-			parseMethod;
-			resolveSemantics;
-			buildMethod].
-	^result
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-delimiterToken
-	^SDelimiterToken new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-endToken
-	^SEndToken new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-hasBlocks
-	^ blocks > 0
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-hasSends
-^ leaf not
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-identifierNode
-	^SIdentifierNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-initialize
-	self reset
-
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-literalNode
-	^SLiteralNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-messageNode
-	^SMessageNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-methodNode
-	^SMethodNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-noticeSend
-	leaf := false
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-numericLiteralNode
-	^SNumberNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-pragmaNode
-	^SPragmaNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-reset
-	self resetResult.
-	leaf := true.
-	blocks := 0.
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-returnNode
-	^SReturnNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-selectorNode
-	^SSelectorNode new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 10/2/2022 13:45:05'!
-stringToken
-	^SStringToken new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-activate: aScriptNode while: aBlock
-	| current |
-	current := activeScript.
-	activeScript := aScriptNode.
-	aBlock value.
-	activeScript := current
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-activeScope
-	^activeScript scope
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-activeScript
-	^activeScript
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-activeScript: aParseNode
-	activeScript := aParseNode
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-ast
-	^ast
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-frontend
-	^frontend
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-frontend: aCompiler
-	frontend := aCompiler
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-parser
-	^SSmalltalkParser new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-result
-	^result
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-scanner
-	^SSmalltalkScanner new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-sourceCode
-	^source
-! !
-
-!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 10/2/2022 13:45:05'!
-sourceCode: aString
-	source := aString
-! !
-
-!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 10/2/2022 13:45:05'!
-blockCount
-	^blocks
-! !
-
-!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 10/2/2022 13:45:05'!
-blockIndex
-	blocks := blocks + 1.
-	^blocks - 1
-! !
-
-!SSmalltalkCompiler methodsFor: 'private' stamp: 'KenD 10/2/2022 13:45:05'!
-resetResult
-	result := SCompilationResult new compiler: self
-! !
-
-!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 10/2/2022 13:45:05'!
-supportsBraceNodes
-	^true
-! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 10/2/2022 13:45:05'!
-compilationError: aString stretch: aStretch
-	^SCompilationError new
-		compiler: self;
-		stretch: aStretch;
-		description: aString
-! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 10/2/2022 13:45:05'!
-error: aString at: anInteger
-	| stretch |
-	stretch := anInteger thru: anInteger.
-	^self error: aString stretch: stretch
-! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 10/2/2022 13:45:05'!
-error: aString stretch: aStretch
-	| error |
-	error := self compilationError: aString stretch: aStretch.
-	^error beFatal; signal
-! !
-
-!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 10/2/2022 13:45:05'!
-warning: aString at: aStretch
-	| error |
-	error := self compilationError: aString stretch: aStretch.
-	error beWarning; signal
-! !
-
-!SSmalltalkCompiler class methodsFor: 'instance creation' stamp: 'KenD 10/2/2022 13:45:05'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-arrayBody
-	| literals position |
-	literals := OrderedCollection new.
-	position := token position.
-	[
-		self step.
-		(token is: $)) or: [token isEnd]]
-		whileFalse: [| element |
-			element := self arrayElement.
-			literals add: element].
-	token isEnd ifTrue: [self missingToken: ')'].
-	^self buildNode: compiler literalNode at: position with: literals asArray
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-arrayElement
-	token isLiteral ifTrue: [^token value].
-	token isNameToken ifTrue: [^self pseudoLiteralValue].
-	token isKeyword ifTrue: [^self literalKeyword].
-	(token is: #'-') ifTrue: [^self negativeNumberOrBinary].
-	token hasSymbol ifTrue: [^token value].
-	(token is: $() ifTrue: [^self arrayBody value].
-	(token is: #'#(') ifTrue: [^self arrayBody value].
-	(token is: #'#[') ifTrue: [^self byteArrayBody value].
-	self invalidArrayToken
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-braceBody
-	| elements position |
-	elements := OrderedCollection new.
-	position := token position.
-	self step.
-	[
-		token isEnd ifTrue: [self missingToken: '}'].
-		token is: $}]
-		whileFalse: [
-			elements add: self expression.
-			(token is: $.) ifTrue: [self step]].
-	^self buildBraceNode: elements at: position
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-bracedArray
-	| array |
-	array := self braceBody.
-	self step.
-	^array
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-byteArrayBody
-	| bytes save start array node |
-	bytes := OrderedCollection new.
-	save := token.
-	start := token position.
-	[
-		self step.
-		token isLiteral or: [token isPoolLiteral]]
-		whileTrue: [self addByteTo: bytes].
-	(token is: $]) ifFalse: [
-		token isNameToken
-			ifTrue: [self missingLiteral]
-			ifFalse: [self missingToken: ']']].
-	array := ByteArray new: bytes size.
-	bytes withIndexDo: [:b :i | array at: i put: b].
-	node := self buildNode: compiler literalNode at: start with: array.
-	^node moveCommentsFrom: save
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-literalArray
-	| array |
-	array := self arrayBody.
-	self step.
-	^array
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-literalByteArray
-	| node |
-	node := self byteArrayBody.
-	self step.
-	^node
-! !
-
-!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 9/30/2022 12:06:33'!
-negativeNumberOrBinary
-	self peek isNumberNode
-		ifTrue: [token := self next negate position: token position - 1].
-	^token value
-! !
-
-!SSmalltalkParser methodsFor: 'ffi support' stamp: 'KenD 9/30/2022 12:06:33'!
-symbolicPragma
-	| position symbol pragma |
-	position := token position.
-	symbol := self step value.
-	pragma := self buildNode: compiler pragmaNode at: position.
-	^pragma symbol: symbol
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-addByteTo: aCollection
-	| byte |
-	byte := token isLiteral ifTrue: [token value] ifFalse: [token literalValue].
-	byte isInteger ifFalse: [self nonIntegerToken].
-	(byte between: 0 and: 255) ifFalse: [self invalidByteValue].
-	aCollection add: byte
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-assignment
-	| position variable delimiter expression assignment |
-	position := token position.
-	variable := self step asIdentifierNode moveCommentsFrom: token.
-	delimiter := self step.
-	expression := self expression.
-	expression isAssign
-		ifTrue: [^expression assign: variable operator: delimiter].
-	expression moveCommentsFrom: token.
-	assignment := self buildNode: compiler assignmentNode at: position.
-	^assignment assign: variable with: expression operator: delimiter
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-attachPragmaTo: aMethodNode
-	| start pragma |
-	(aMethodNode isHeadless orNot: [token is: #'<']) ifTrue: [^false].
-	start := token position.
-	self step.
-	pragma := token isKeyword
-		ifTrue: [self ffiOrPrimitive: aMethodNode]
-		ifFalse: [self symbolicPragma].
-	pragma position: start; end: token position.
-	aMethodNode pragma: pragma.
-	(token is: #'>') ifFalse: [self missingToken: '>'].
-	^true
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildBraceNode: elements at: position
-	| node |
-	node := self buildNode: compiler braceNode at: position.
-	^node elements: elements
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildCascadeMessageNode: receiver
-	| node |
-	node := self buildNode: compiler cascadeMessageNode at: receiver position.
-	^node receiver: receiver
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildMessageNode: receiver
-	| node |
-	node := self buildNode: compiler messageNode at: receiver position.
-	^node receiver: receiver
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildMethodNode: selector arguments: arguments
-	| node |
-	node := self buildNode: compiler methodNode at: selector position.
-	compiler activeScript: node.
-	^node selector: selector; arguments: arguments
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildNode: aParserNode at: anInteger
-	^aParserNode position: anInteger; end: token position
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-buildNode: aParseNode at: anInteger with: anObject
-	| node |
-	node := scanner buildToken: aParseNode at: anInteger with: anObject.
-	^node end: token position
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-cascadeMessage: aMessageNode
-	| msg |
-	self hasUnarySelector ifTrue: [^self unaryMessage: aMessageNode].
-	self hasBinarySelector ifTrue: [^self binaryMessage: aMessageNode].
-	self hasKeywordSelector ifTrue: [^self keywordMessage: aMessageNode].
-	msg := token value = ''
-		ifTrue: ['unfinished cascade']
-		ifFalse: [token value asString , ' not allowed in cascade'].
-	self error: msg
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-ffiArguments
-	| args type |
-	args := OrderedCollection new.
-	self step.
-	token value !!= $(
-		ifTrue: [ self error: 'expected "("' ].
-	self peek value = $)
-		ifTrue: [ self step.
-			^ args ].
-	[ type := self ffiType.
-	args add: type.
-	self step.
-	token value = #, ] whileTrue.
-	token value !!= $)
-		ifTrue: [ self error: 'expected ")"' ].
-	^ args
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-ffiCall: aBoolean method: aMethodNode
-	| cc return name args descriptor |
-	cc := token value.
-	return := self ffiType.
-	aBoolean
-		ifTrue: [ self step.
-			name := token value ifNil: [ self error: 'invalid function name' ] ].
-	args := self ffiArguments.
-	args size = aMethodNode selector arity
-		ifFalse:
-			[ ^ self error: 'method arity does not match with function arguments' ].
-	self step.
-	descriptor := SFFIDescriptor ret: return args: args cc: cc.
-	^ compiler pragmaNode ffi: cc name: name with: descriptor
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-ffiOrPrimitive: aMethodNode
-	| tag |
-	tag := token value asLowercase.
-	tag last = $: ifFalse: [self invalidPragma].
-	tag := tag allButLast.
-	token value: tag.
-	tag = 'primitive' ifTrue: [^self primitive].
-	tag = 'callback' ifTrue: [ ^self ffiCall: false method: aMethodNode ].
-	tag = 'callout' ifTrue: [ ^self ffiCall: true method: aMethodNode ].	
-	self invalidPragma
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-ffiType
-	| type |
-	self step.
-	token isNameToken ifFalse: [self error: 'expected type name'].
-	type := token value.
-	type = 'struct' ifFalse: [ ^type].
-	self step.
-	token isNameToken ifFalse: [self error: 'expected type name'].	
-	^token value
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-hasKeywordSelector
-	^token isKeyword
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-hasUnarySelector
-	^token isNameToken
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-invalidPragma
-	| position stretch |
-	position := token position.
- 	stretch := position thru: position.
-	^SInvalidPragmaError new stretch: stretch; signal
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-keywordArgument
-	| arg |
-	arg := self primary ifNil: [self missingArgument].
-	arg := self unarySequence: arg.
-	^self binarySequence: arg
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-keywordMessage: aMessageNode
-	| selector arguments node |
-	node := self buildNode: compiler selectorNode at: token position.
-	selector := '' writeStream.
-	arguments := OrderedCollection new.
-	[token isKeyword] whileTrue: [
-		selector nextPutAll: token value.
-		node addKeyword: self step.
-		arguments add: self keywordArgument].
-	node symbol: selector contents; end: token prevPosition.
-	aMessageNode
-		arguments: arguments;
-		end: token prevPosition;
-		selector: node
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-keywordSequence: aParseNode
-	| expression |
-	self hasKeywordSelector ifFalse: [^aParseNode].
-	expression := self buildMessageNode: aParseNode.
-	self keywordMessage: expression.
-	^expression
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-literalKeyword
-	| keyword |
-	keyword := token value , scanner nextKeyword value.
-	^keyword reduced asSymbol
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-namedPrimitive
-	| name pragma |
-	token isNameToken
-		ifFalse: [ self invalidPragma ].
-	name := token value.
-	pragma := self buildNode: compiler pragmaNode at: token position.
-	^ pragma primitive: 0 name: name asSymbol
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-negativeNumber
-	token := nil.
-	^self negativeNumberOrBinary; step
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-numberedPrimitive
-	| number pragma |
-	number := token value.
-	number isInteger ifFalse: [self invalidPragma].
-	pragma := self buildNode: compiler pragmaNode at: token position.
-	^pragma primitive: number name: nil
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-primitive
-	| primitive |
-	self step.
-	primitive := token isNumberNode
-		ifTrue: [self numberedPrimitive]
-		ifFalse: [self namedPrimitive].
-	self step.
-	^primitive
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-pseudoLiteralValue
-	| value |
-	token isPoolLiteral ifTrue: [^token literalValue].
-	value := token value.
-	value = 'nil' ifTrue: [^nil].
-	value = 'true' ifTrue: [^true].
-	value = 'false' ifTrue: [^false].
-	^token isPoolLiteral ifTrue: [token literalValue] ifFalse: [value asSymbol]
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-skipDots
-	[token is: $.] whileTrue: [self step]
-! !
-
-!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 9/30/2022 12:06:33'!
-validateLocalName: aSmalltalkToken
-	aSmalltalkToken isDelimitedIdentifier ifTrue: [^self].
-	(aSmalltalkToken value includes: $.)
-		ifTrue: [self error: 'invalid embedded dot']
-! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 9/30/2022 12:06:33'!
-headlessMethod
-	| method |
-	self step.
-	method := compiler methodNode.
-	compiler activeScript: method.
-	self addBodyTo: method.
-	^method
-! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 9/30/2022 12:06:33'!
-method
-	| method |
-	self step.
-	method := self methodSignature.
-	method isNil ifTrue: [^nil].
-	self addBodyTo: method.
-	^method
-! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 9/30/2022 12:06:33'!
-methodFragment
-	| method |
-	self step.
-	method := self methodSignature.
-	method isNil ifTrue: [^nil].
-	[self addBodyTo: method] on: SCompilationError do: [].
-	^method
-! !
-
-!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 9/30/2022 12:06:33'!
-methodSelector
-	self step.
-	^self methodSignature ifNotNil: [:m | m selectorNode]
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-error: aString
-	self error: aString at: token position
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-error: aString at: position
-	^compiler error: aString at: position
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-invalidArrayToken
-	self error: 'invalid literal entry'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-invalidByteValue
-	self error: 'value not between 0 and 255'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-missingArgument
-	self error: 'argument missing'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-missingExpression
-	self error: 'missing expression'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-missingLiteral
-	self error: 'missing literal or named literal'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-missingToken: aString
-	self error: 'missing ' , aString
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-nonIntegerToken
-	self error: 'non-integer token'
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-notify: aString
-	compiler notify: aString at: token position
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-notify: aString at: position
-	compiler notify: aString at: position
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-warning: aString
-	compiler warning: aString at: token position
-! !
-
-!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:06:33'!
-warning: aString at: position
-	compiler warning: aString at: position
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-addBodyTo: aMethodNode
-	self
-		addTemporariesTo: aMethodNode;
-		addPragmaTo: aMethodNode;
-		addStatementsTo: aMethodNode
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-addStatementsTo: aMethodNode
-	aMethodNode
-		position: token position;
-		addStatements: self statements;
-		end: token position;
-		moveCommentsFrom: token.
-	token isEnd
-		ifFalse: [^self unexpectedStatementError: aMethodNode statements]
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-addTemporariesTo: aMethodNode
-	aMethodNode temporaries: self temporaries
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-cascadeSequence: aMessageNode
-	| cascade receiver messages msg node |
-	(token is: $;) ifFalse: [^aMessageNode].
-	cascade := self buildNode: compiler cascadeNode at: aMessageNode position.
-	receiver := aMessageNode receiver.
-	cascade receiver: receiver.
-	node := compiler cascadeMessageNode from: aMessageNode.
-	node cascade: cascade.
-	messages := OrderedCollection with: node.
-	[token is: $;] whileTrue: [
-		self step.
-		msg := self buildCascadeMessageNode: receiver.
-		msg
-			cascade: cascade;
-			position: token position;
-			moveCommentsFrom: token.
-		messages add: msg.
-		self cascadeMessage: msg].
-	^cascade messages: messages asArray; end: msg end
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-expression
-	| primary expression |
-	(token isNameToken and: [self peek isAssignment]) ifTrue: [^self assignment].
-	primary := self primary ifNil: [^self missingExpression].
-	expression := self unarySequence: primary.
-	expression := self binarySequence: expression.
-	expression := self keywordSequence: expression.
-	expression == primary
-		ifFalse: [expression := self cascadeSequence: expression].
-	token endsExpression ifFalse: [self errorIn: primary].
-	^expression
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-keywordSignature
-	| selector arguments node |
-	selector := '' writeStream.
-	arguments := OrderedCollection new.
-	node := self buildNode: compiler selectorNode at: token position.
-	[token isKeyword] whileTrue: [
-		selector nextPutAll: token value.
-		node addKeyword: token asSelectorNode.
-		self step.
-		token isNameToken ifFalse: [self missingArgument].
-		arguments add: token asIdentifierNode.
-		self step].
-	arguments isEmpty ifTrue: [^nil].
-	node
-		symbol: selector contents;
-		end: token end;
-		moveCommentsFrom: token.
-	^self buildMethodNode: node arguments: arguments
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-methodPragma
-	self step.
-	^[| method |
-		method := self methodSignature.
-		self addTemporariesTo: method; attachPragmaTo: method.
-		method pragma]
-		on: SCompilationError
-		do: [:ex | ex return: compiler pragmaNode]
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-methodSignature
-	self keywordSignature ifNotNil: [:m | ^m].
-	self binarySignature ifNotNil: [:m | ^m].
-	self unarySignature ifNotNil: [:m | ^m].
-	self error: 'method signature expected'
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-parenthesizedExpression
-	| start open expression |
-	start := token position.
-	open := self step.
-	expression := self expression.
-	expression moveCommentsFrom: open.
-	(token is: $)) ifFalse: [self missingToken: ')'].
-	expression isImmediate
-		ifFalse: [expression position: start; end: token position].
-	self step.
-	^expression
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-primary
-	token isNameToken ifTrue: [^self step asIdentifierNode].
-	token isLiteral ifTrue: [^self step].
-	(token is: $[) ifTrue: [^self block].
-	(token is: $() ifTrue: [^self parenthesizedExpression].
-	(token is: #'#(') ifTrue: [^self literalArray].
-	(token is: #'#[') ifTrue: [^self literalByteArray].
-	(compiler supportsBraceNodes and: [token is: ${]) ifTrue: [^self bracedArray].
-	(token is: #'-') ifTrue: [^self negativeNumber].
-	(token is: #'<') ifTrue: [^self taggedNode].
-	^nil
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-return
-	| return expression end node |
-	return := self step.
-	expression := self expression.
-	expression moveCommentsFrom: token.
-	end := token position.
-	self skipDots.
-	node := self buildNode: compiler returnNode at: return position.
-	^node
-		return: return;
-		end: end;
-		expression: expression;
-		moveCommentsFrom: return
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-statement
-	| expression |
-	(token is: $^) ifTrue: [^self return].
-	expression := self expression.
-	token moveCommentsTo: expression.
-	^expression
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-statements
-	| statements |
-	statements := OrderedCollection new.
-	[
-		token endsExpression ifTrue: [^statements].
-		statements add: self statement.
-		token is: $.]
-		whileTrue: [self skipDots].
-	^statements
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-step
-	| save comments |
-	save := token.
-	self next isComment ifFalse: [^save].
-	comments := OrderedCollection new: 2.
-	[
-		comments add: token.
-		self next isComment] whileTrue.
-	token comments: comments.
-	^save
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-temporaries
-	| temporaries |
-	(token is: #'||') ifTrue: [
-		self step.
-		^#()].
-	token isBar ifFalse: [^#()].
-	temporaries := OrderedCollection new.
-	[
-		self step.
-		token isNameToken]
-		whileTrue: [
-			self validateLocalName: token.
-			temporaries add: token asIdentifierNode].
-	token isBar ifFalse: [self missingToken: '|'].
-	self step.
-	^temporaries
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-unaryMessage: aMessageNode
-	| selector |
-	selector := self unarySelector.
-	aMessageNode
-		selector: selector;
-		end: selector end;
-		arguments: #();
-		moveCommentsFrom: selector
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-unarySelector
-	| selector start end node |
-	selector := token value.
-	start := token position.
-	end := start + selector size - 1.
-	self step.
-	node := self buildNode: compiler selectorNode at: start.
-	^node
-		symbol: selector;
-		end: end;
-		moveCommentsFrom: token
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-unarySequence: aParseNode
-	| node receiver |
-	node := aParseNode.
-	node isNameToken ifTrue: [node := node asIdentifierNode].
-	[
-		receiver := node.
-		self hasUnarySelector]
-		whileTrue: [
-			node := self buildMessageNode: receiver.
-			self unaryMessage: node].
-	^node moveCommentsFrom: token
-! !
-
-!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:06:33'!
-unarySignature
-	self hasUnarySelector ifFalse: [^nil].
-	^self buildMethodNode: self unarySelector arguments: #()
-! !
-
-!SSmalltalkParser methodsFor: 'api support' stamp: 'KenD 9/30/2022 12:06:33'!
-addPragmaTo: aMethodNode
-	(self attachPragmaTo: aMethodNode) ifTrue: [self step]
-! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 9/30/2022 12:06:33'!
-binaryMessage: aMessageNode
-	| selector primary argument |
-	selector := self step.
-	primary := self primary.
-	primary isNil ifTrue: [
-		((selector is: $:) and: [token is: #'='])
-			ifTrue: [self
-				error: 'stray whitespaces left in assignment'
-				at: token position - 1]
-			ifFalse: [self error: 'primary missing']].
-	argument := self unarySequence: primary.
-	aMessageNode
-		selector: selector asSelectorNode;
-		end: argument end;
-		arguments: {argument}
-! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 9/30/2022 12:06:33'!
-binarySequence: aParseNode
-	| node rcvr |
-	node := aParseNode.
-	[
-		rcvr := node.
-		self hasBinarySelector]
-		whileTrue: [
-			node := self buildMessageNode: rcvr.
-			self binaryMessage: node].
-	^node
-! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 9/30/2022 12:06:33'!
-binarySignature
-	| selector arguments |
-	((token isStringToken and: [token hasSymbol])
-		or: [token is: $^]
-		or: [token is: $:])
-		ifFalse: [^nil].
-	selector := self step asSelectorNode.
-	token isNameToken ifFalse: [self missingArgument].
-	self validateLocalName: token.
-	arguments := {token asIdentifierNode}.
-	self step.
-	token moveCommentsTo: selector.
-	^self buildMethodNode: selector arguments: arguments
-! !
-
-!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 9/30/2022 12:06:33'!
-hasBinarySelector
-	^(token isStringToken and: [token hasSymbol])
-		or: [token is: $^]
-		or: [token is: $:]
-! !
-
-!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 9/30/2022 12:06:33'!
-block
-	| block |
-	block := self buildNode: compiler blockNode at: token position.
-	block parent: compiler activeScript.
-	compiler activate: block while: [
-		token moveCommentsTo: block.
-		self step.
-		block
-			arguments: self blockArguments;
-			temporaries: self temporaries;
-			addStatements: self statements.
-		(token is: $]) ifFalse: [self missingToken: ']'].
-		block end: token position.
-		token moveCommentsTo: block.
-		self step].
-	^block
-! !
-
-!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 9/30/2022 12:06:33'!
-blockArguments
-	| arguments |
-	(token is: $:) ifFalse: [^#()].
-	arguments := OrderedCollection new.
-	[
-		self step.
-		token isNameToken ifFalse: [self missingArgument].
-		self validateLocalName: token.
-		arguments add: self step asIdentifierNode.
-		token is: $:] whileTrue.
-	token isBar ifTrue: [self step] ifFalse: [
-		(token is: #'||')
-			ifTrue: [token value: #'|']
-			ifFalse: [self missingToken: '|']].
-	^arguments
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-compiler
-	^compiler
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-compiler: aSmalltalkCompiler
-	compiler := aSmalltalkCompiler.
-	scanner := compiler scanner
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-next
-	token := next.
-	next := nil.
-	^token ifNil: [token := scanner next]
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-on: aString
-	scanner on: aString
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-peek
-	| comments |
-	next ifNotNil: [^next].
-	next := scanner next.
-	next isComment ifFalse: [^next].
-	comments := OrderedCollection new: 2.
-	[
-		comments add: next.
-		next := scanner next.
-		next isComment] whileTrue.
-	^next comments: comments
-! !
-
-!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:06:33'!
-token
-	^token
-! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 9/30/2022 12:06:33'!
-parse: aString
-	^self on: aString; method
-! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 9/30/2022 12:06:33'!
-parseExpression: aString
-	^self on: aString; headlessMethod
-! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 9/30/2022 12:06:33'!
-parseFragment: aString
-	| method |
-	self on: aString; step.
-	[
-		method := self methodSignature.
-		method notNil ifTrue: [self addBodyTo: method]]
-		on: SCompilationError
-		do: [].
-	^method
-! !
-
-!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 9/30/2022 12:06:33'!
-parseTemporaries: aString
-	self on: aString; step.
-	^self methodSignature notNil ifTrue: [self temporaries]
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 10/2/2022 13:42:15'!
-end
-	^self buildToken: compiler endToken at: stream position + 1
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-isBinary: aCharacter
-	| code |
-	aCharacter isNil ifTrue: [^false].
-	code := aCharacter asInteger.
-	code < 128 ifTrue: [
-		^#($+ $- $< $> $= $* $/ $\ $| $& $~ $, $@ $% $? $!! $: $^)
-			includes: aCharacter].
-	^code > 255
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-next
-	^self nextToken
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextArrayPrefix
-	| string |
-	string := stream copyFrom: stream position - 1 to: stream position.
-	^self
-		buildToken: compiler delimiterToken
-		at: stream position - 1
-		with: string
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextAssignment
-	^self buildToken: compiler delimiterToken at: stream position with: #':='
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextBinarySelector
-	stream back.
-	^self
-		buildToken: compiler stringToken
-		at: stream position + 1
-		with: self scanBinarySymbol
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextBinarySymbol
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: self scanBinarySymbol
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextColon
-	| start char |
-	start := stream position.
-	char := stream peek.
-	((char = Character space or: [char = Character tab]) and: [(stream peek: 2) second = $=]) ifTrue: [
-		stream skip: 1.
-		char := $=].
-	char = $= ifTrue: [
-		stream skip.
-		^self nextAssignment position: start].
-	^(self isBinary: stream peek)
-		ifTrue: [self nextBinarySelector]
-		ifFalse: [self nextSpecialCharacter]
-
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextComment
-	| start comment |
-	start := stream position.
-	[ stream atEnd not and:[stream peek !!== $"] ] whileTrue: [stream next].
-	stream atEnd ifTrue: [self error: 'unfinished comment' at: start].
-	stream position: start.
-	comment := stream upTo: $".
-	^self buildToken: compiler commentNode at: start with: comment
-
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextIdentifierOrKeyword
-	| start |
-	start := stream position.
-	self skipIdentifier.
-	((stream peekFor: $:) and: [stream peekFor: $=]) ifTrue: [stream skip: -2].
-	^self buildToken: compiler stringToken at: start
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextKeyword
-	| start string |
-	start := stream position + 1.
-	self skipKeyword.
-	string := stream copyFrom: start to: stream position.
-	^self buildToken: compiler literalNode at: start - 1 with: string asSymbol
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextLiteralCharacter
-	stream atEnd ifTrue: [^self error: 'character expected'].
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: stream next
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextLiteralString
-	^self
-		buildToken: compiler literalNode
-		at: stream position
-		with: self scanString reduced
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextNumber
-	| parser assoc |
-	stream skip: -1.
-	parser := NumberParser2 new on: stream.
-	assoc := parser next.
-	parser error ifNotNil: [:e | ^self error: e key at: e value].
-	^self
-		buildToken: compiler numericLiteralNode
-		at: assoc value start
-		with: assoc key
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextQuotedSymbol
-	| node |
-	node := self nextLiteralString.
-	^node beSymbol; position: node position - 1
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextSpecialCharacter
-	| token |
-	token := self buildToken: compiler delimiterToken.
-	^token beCharacter
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextSymbolOrArrayPrefix
-	| char |
-	stream atEnd ifTrue: [self error: 'character expected'].
-	char := stream peek.
-	(self canBeInIdentifier: char) ifTrue: [^self nextKeyword].
-	(self isBinary: char) ifTrue: [^self nextBinarySymbol].
-	stream next.
-	(char = $[ or: [char = $(]) ifTrue: [^self nextArrayPrefix].
-	char = $' ifTrue: [^self nextQuotedSymbol].
-	self error: 'character expected'
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-nextToken
-	| first |
-	first := self scanChar.
-	first isNil ifTrue: [^self end].
-	(self canStartIdentifier: first) ifTrue: [^self nextIdentifierOrKeyword].
-	(first = $_) ifTrue: [^self nextAssignment].
-	first = $: ifTrue: [^self nextColon].
-	first = $' ifTrue: [^self nextLiteralString].
-	first = $$ ifTrue: [^self nextLiteralCharacter].
-	first = $# ifTrue: [^self nextSymbolOrArrayPrefix].
-	first = $" ifTrue: [^self nextComment].
-	first isDigit ifTrue: [^self nextNumber].
-	(first !!= $^ and: [first !!= $_ and: [self isBinary: first]])
-		ifTrue: [^self nextBinarySelector].
-	^self nextSpecialCharacter
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-scanBinarySymbol
-	| start symbol |
-	start := stream position.
-	self skipBinary.
-	symbol := stream copyFrom: start + 1 to: stream position.
-	^symbol asSymbol
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-scanChar
-	^(stream skipSeparators; atEnd) ifFalse: [stream next]
-
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-scanString
-	| current start |
-	start := current := stream position.
-	^String streamContents: [:writer | 
-		[| fragment |
-			fragment := stream upTo: $'.
-			writer nextPutAll: fragment.
-			(current < stream position and: [(stream back; next) = $'])
-				ifFalse: [self error: 'string end expected' at: start].
-			stream peekFor: $']
-			whileTrue: [
-				writer nextPut: $'.
-				current := stream position]]
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-skipBinary
-	[self isBinary: stream peek] whileTrue: [stream next]
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-skipIdentifier
-	| frontend |
-	frontend := compiler frontend.
-	[stream atEnd]
-		whileFalse: [(frontend peekForIdentifier: stream) ifFalse: [^self]]
-! !
-
-!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 9/30/2022 12:57:47'!
-skipKeyword
-	| frontend continue pos |
-	frontend := compiler frontend.
-	[
-		self skipIdentifier.
-		continue := false.
-		(stream peekFor: $:) ifTrue: [
-			pos := stream position.
-			stream atEnd
-				ifFalse: [continue := frontend canStartIdentifier: stream peek]].
-		continue] whileTrue.
-	pos isNil ifFalse: [stream position: pos]
-! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:57:47'!
-compiler
-	^compiler
-! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:57:47'!
-compiler: aSmalltalkCompiler
-	compiler := aSmalltalkCompiler.
-	compiler sourceCode ifNotNil: [:s | self sourceCode: s]
-! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:57:47'!
-on: aString
-	stream := aString readStream.
-	compiler notNil ifTrue: [compiler sourceCode: aString]
-! !
-
-!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:57:47'!
-sourceCode: aString
-	stream := aString readStream
-! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:57:47'!
-canBeInIdentifier: aCharacter
-	^compiler frontend canBeInIdentifier: aCharacter
-! !
-
-!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:57:47'!
-canStartIdentifier: aCharacter
-	(compiler frontend canStartIdentifier: aCharacter) ifFalse: [^false].
-	aCharacter = $_
-		ifTrue: [^stream peek ifNil: [false] ifNotNil: [:ch | ch asInteger >= 33]].
-	^true
-! !
-
-!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 9/30/2022 12:57:47'!
-buildToken: aSmalltalkToken
-	^self buildToken: aSmalltalkToken at: stream position
-! !
-
-!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 9/30/2022 12:57:47'!
-buildToken: aSmalltalkToken at: anInteger
-	| string |
-	string := stream copyFrom: anInteger to: stream position.
-	^self buildToken: aSmalltalkToken at: anInteger with: string
-! !
-
-!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 9/30/2022 12:57:47'!
-buildToken: aSmalltalkToken at: anInteger with: anObject
-	^aSmalltalkToken
-		position: anInteger;
-		value: anObject;
-		end: stream position
-! !
-
-!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:57:47'!
-error: aString
-	^self error: aString at: stream position
-! !
-
-!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 9/30/2022 12:57:47'!
-error: aString at: anInteger
-	^compiler error: aString at: anInteger
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-compileWarning: aString
-	compiler notify: aString at: self stretch
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-compiler
-	^compiler
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-compiler: aSmalltalkCompiler
-	compiler := aSmalltalkCompiler
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-end
-	^stretch end
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-end: aNumber
-	stretch end: aNumber
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-position
-	^stretch start
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-position: aNumber
-	stretch start: aNumber
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-prevPosition
-	^stretch start - 1
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-source
-	^compiler sourceCode copyFrom: stretch start to: stretch end
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-stretch
-	^stretch
-! !
-
-!SToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:20:36'!
-stretch: aStretch
-	stretch := aStretch
-! !
-
-!SToken methodsFor: 'visiting' stamp: 'KenD 9/29/2022 14:20:36'!
-isDelimitedIdentifier
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-endsExpression
-	^self isEnd
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-hasSymbol
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-is: anObject
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isAssignment
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isBar
-	^(self is: #'|') or: [self is: #'/']
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isBlockNode
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isComment
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isDelimiter
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isEnd
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isIdentifier
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isKeyword
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isLiteral
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isNameToken
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isNumberNode
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isPoolLiteral
-	^false
-! !
-
-!SToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:20:36'!
-isStringToken
-	^false
-! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:20:36'!
-comment
-	^comments notNil ifTrue: [comments anyOne]
-! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:20:36'!
-comments
-	^comments
-! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:20:36'!
-comments: aCollection
-	aCollection isNil ifTrue: [^self].
-	comments isNil
-		ifTrue: [comments := aCollection]
-		ifFalse: [comments addAll: aCollection]
-! !
-
-!SToken methodsFor: 'printing' stamp: 'KenD 9/29/2022 14:20:36'!
-moveCommentsTo: aParseNode
-	aParseNode comments: comments.
-	comments := nil
-! !
-
-!SToken methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:20:36'!
-initialize
-	super initialize.
-	stretch := 1 thru: 0
-! !
-
-!SToken class methodsFor: 'instance creation' stamp: 'KenD 9/29/2022 14:20:36'!
-new
-	"return an initialized instance"
-
-	^ self basicNew initialize.
-
-! !
-
-!SEndToken methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:44'!
-isEnd
-	^true
-! !
-
-!SEndToken methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:25:44'!
-value: aString
-	''
-! !
-
-!SEndToken methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:25:44'!
-position: aNumber
-	super position: aNumber - 1
-! !
-
-!SEndToken methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:25:44'!
-prevPosition
-	^stretch start
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-hasAssign
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isAssign
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isBraceNode
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isCascade
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isCascadeMessage
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isEvaluable
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isImmediate
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isMessageNode
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isMethod
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isMethodArgument
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isMethodTemporary
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isReturn
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isSelector
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isSelf
-	^false
-! !
-
-!SParseNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:55'!
-isSuper
-	^false
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:33:55'!
-allNodesDo: aBlock
-	self nodesDo: aBlock includingDeclarations: true
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:33:55'!
-nodeWithLiteral: anObject
-	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) and: [n value = anObject]] ifAbsent: nil
-
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:33:55'!
-nodesDetect: aBlock ifAbsent: absentBlock
-	self nodesDo: [:node | (aBlock value: node) ifTrue: [ ^node ] ] includingDeclarations: false.
-	^absentBlock value
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 10/2/2022 13:35:18'!
-nodesDo: aBlock
-	self nodesDo: aBlock includingDeclarations: false
-! !
-
-!SParseNode methodsFor: 'enumerating' stamp: 'KenD 10/2/2022 15:43:49'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	aBlock value: self
-! !
-
-!SParseNode methodsFor: 'printing' stamp: 'KenD 9/30/2022 12:33:55'!
-moveCommentsFrom: aParseNode
-	aParseNode moveCommentsTo: self
-! !
-
-!SParseNode methodsFor: 'printing' stamp: 'KenD 9/30/2022 12:33:55'!
-variableNamed: aString
-	self
-		allNodesDo: [:node | (node isIdentifier and: [node name = aString])
-			ifTrue: [^node]].
-	^nil
-! !
-
-!SParseNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:33:55'!
-ast
-	^compiler ast
-! !
-
-!SParseNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:33:55'!
-acceptVisitor: visitor
-	^visitor visitParseNode: self
-! !
-
-!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 9/30/2022 12:28:42'!
-assign: anIdentifierNode operator: aDelimiterToken
-	assignees add: anIdentifierNode.
-	operators add: aDelimiterToken
-! !
-
-!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 9/30/2022 12:28:42'!
-assign: anIdentifierNode with: aParseNode operator: aDelimiterToken
-	assignees add: anIdentifierNode.
-	operators add: aDelimiterToken.
-	expression := aParseNode
-! !
-
-!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:28:42'!
-hasAssign
-	^true
-! !
-
-!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:28:42'!
-isAssign
-	^true
-! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:28:42'!
-assignees
-	^assignees
-! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:28:42'!
-expression
-	^expression
-! !
-
-!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:28:42'!
-operators
-	^operators
-! !
-
-!SAssignmentNode methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:28:42'!
-initialize
-	super initialize.
-	assignees := OrderedCollection new: 1.
-	operators := OrderedCollection new: 1
-! !
-
-!SAssignmentNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:28:42'!
-acceptVisitor: visitor
-	^visitor visitAssignment: self
-! !
-
-!SAssignmentNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:28:42'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	assignees do: [:v | v nodesDo: aBlock includingDeclarations: aBoolean].
-	expression nodesDo: aBlock includingDeclarations: aBoolean
-! !
-
-!SBraceNode methodsFor: 'testing' stamp: 'KenD 10/1/2022 14:18:39'!
-asMessageNode
-	message notNil ifTrue: [^message].
-	^message := self expanded
-! !
-
-!SBraceNode methodsFor: 'testing' stamp: 'KenD 10/1/2022 14:18:39'!
-isBraceNode
-	^true
-! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 14:18:39'!
-elements
-	^elements
-! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 14:18:39'!
-elements: aCollection
-	elements := aCollection asArray
-! !
-
-!SBraceNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 14:18:39'!
-expanded
-	| receiver n new argument array messages i you yourself cascade |
-	receiver := compiler identifierNode name: 'Array'.
-	n := elements size.
-	new := compiler selectorNode symbol: #new:.
-	argument := compiler numericLiteralNode value: n.
-	array := compiler messageNode.
-	array receiver: receiver.
-	array selector: new.
-	array arguments: (Array with: argument).
-	i := 0.
-	messages := elements collect: [:elem | | msg sel idx args |
-		i := i + 1.
-		msg := compiler cascadeMessageNode position: elem position; end: elem end.
-		sel := compiler selectorNode symbol: #at:put:.
-		idx := compiler numericLiteralNode value: i.
-		args := Array with: idx with: elem.
-		msg selector: sel; arguments: args].
-	you := compiler selectorNode symbol: #yourself.
-	yourself := compiler cascadeMessageNode.
-	yourself selector: you.
-	yourself arguments: #().
-	messages := messages copyWith: yourself.
-	cascade := compiler cascadeNode receiver: array.
-	messages do: [:msg | msg cascade: cascade].
-	^cascade messages: messages
-! !
-
-!SBraceNode methodsFor: 'visiting' stamp: 'KenD 10/1/2022 14:18:39'!
-acceptVisitor: visitor
-	^visitor visitBraceNode: self
-! !
-
-!SBraceNode methodsFor: 'enumerating' stamp: 'KenD 10/1/2022 14:18:39'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	elements do: [:n | n nodesDo: aBlock includingDeclarations: aBoolean]
-! !
-
-!SCascadeNode methodsFor: 'testing' stamp: 'KenD 10/1/2022 15:02:24'!
-hasAssign
-	receiver hasAssign ifTrue: [^true].
-	messages detect: [:msg | msg hasAssign] ifNone: [^false].
-	^true
-! !
-
-!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 10/1/2022 15:02:24'!
-isCascade
-	^true
-! !
-
-!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 10/1/2022 15:02:24'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	receiver nodesDo: aBlock includingDeclarations: aBoolean.
-	messages do: [:msg | msg nodesDo: aBlock includingDeclarations: aBoolean]
-! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:02:24'!
-messages
-	^messages
-! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:02:24'!
-messages: aCollection
-	messages := aCollection
-! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:02:24'!
-receiver
-	^receiver
-! !
-
-!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:02:24'!
-receiver: rcvr
-	receiver := rcvr
-! !
-
-!SCascadeNode methodsFor: 'visiting' stamp: 'KenD 10/1/2022 15:02:24'!
-acceptVisitor: visitor
-	^visitor visitCascade: self
-! !
-
-!SCommentNode methodsFor: 'testing' stamp: 'KenD 10/1/2022 15:01:45'!
-isComment
-	^true
-! !
-
-!SCommentNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:01:45'!
-value
-	^value
-! !
-
-!SCommentNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:01:45'!
-value: aString
-	value := aString
-! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:34:20'!
-declaration
-	^binding declaration
-! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:34:20'!
-defineArgumentIn: aScriptScope
-	binding := aScriptScope defineArgument: name.
-	binding declaration: self
-! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:34:20'!
-defineTemporaryIn: scope
-	binding := scope defineTemporary: name.
-	binding declaration: self
-! !
-
-!SIdentifierNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:34:20'!
-printOn: aStream
-	aStream nextPut: $<;
-	nextPutAll: name;
-	nextPutAll: '> ('.
-	super printOn: aStream.
-	aStream nextPut: $)
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-checkLowercase
-	| char |
-	char := name first.
-	(char isLetter and: [char isUppercase]) ifFalse: [^self].
-	self compileWarning: name storeString , ' should start with lowercase'
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isEvaluable
-	^self isIdentifierLiteral
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isIdentifier
-	^true
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isIdentifierLiteral
-	binding isDynamic ifFalse: [^binding isLiteral].
-	^self ast ifNil: [false] ifNotNil: [:ast | | b |
-		b := ast scope resolve: name.
-		b isLiteral]
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isImmediate
-	^true
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isLocal
-	^binding isLocal
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isMethodArgument
-	| ast |
-	binding isArgument ifFalse: [^false].
-	ast := self ast ifNil: [^false].
-	^ast arguments includes: self declaration
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isMethodTemporary
-	^self ast temporaries includes: self declaration
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isSelf
-	^binding isSelf
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-isSuper
-	^binding isSuper
-! !
-
-!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:34:20'!
-sourceIntervals
-	| stretchs declaration ast string code index |
-	stretchs := OrderedCollection new.
-	declaration := binding declaration.
-	ast := self ast.
-	ast allNodesDo: [:node | 
-		(node class == self class and: [node binding declaration == declaration])
-			ifTrue: [stretchs add: node stretch]].
-	string := self source.
-	code := compiler sourceCode.
-	index := ast stretch end.
-	[
-		index := code indexOfString: string startingAt: index + 1.
-		index > 0]
-		whileTrue: [stretchs add: (index to: index + string size - 1)].
-	^stretchs
-! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:34:20'!
-binding
-	^binding
-! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:34:20'!
-binding: aBinding
-	binding := aBinding
-! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:34:20'!
-initialize
-	super initialize.
-	binding := DynamicBinding default
-! !
-
-!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:34:20'!
-name
-	^name
-! !
-
-!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 9/30/2022 12:34:20'!
-beAssigned
-	| immutable |
-	binding canBeAssigned ifTrue: [^self].
-	immutable := binding isClassBinding
-		ifTrue: ['class']
-		ifFalse: [compiler activeScope describe: binding name].
-	self compileError: 'cannot assign to ' , immutable
-! !
-
-!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 9/30/2022 12:34:20'!
-resolveAssigning: aBoolean
-	binding := compiler activeScope resolve: name.
-	^binding
-
-! !
-
-!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:34:20'!
-name: aString
-	name := aString reduced
-! !
-
-!SIdentifierNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:34:20'!
-acceptVisitor: visitor
-	^visitor visitIdentifier: self
-! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:35:15'!
-acceptVisitor: visitor
-	^visitor visitLiteral: self
-! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:35:15'!
-hasSymbol
-	^value isSymbol
-! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:35:15'!
-isEvaluable
-	^true
-! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:35:15'!
-isImmediate
-	^true
-! !
-
-!SLiteralNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:35:15'!
-isLiteral
-	^true
-! !
-
-!SLiteralNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:35:15'!
-value
-	^value
-! !
-
-!SLiteralNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:35:15'!
-value: anObject
-	value := anObject
-! !
-
-!SLiteralNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:35:15'!
-beSymbol
-	value := value asSymbol
-! !
-
-!SNumberNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:36:45'!
-acceptVisitor: visitor
-	^visitor visitNumberNode: self
-! !
-
-!SNumberNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:45'!
-negate
-	value := value negated
-! !
-
-!SNumberNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:45'!
-isNumberNode
-	^true
-! !
-
-!SStringNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:37:51'!
-acceptVisitor: visitor
-	^visitor visitString: self
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-hasAssign
-	receiver hasAssign ifTrue: [^true].
-	^arguments anySatisfy: [:arg | arg hasAssign]
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-hasVolatileArguments
-	^arguments anySatisfy: [:arg | 
-		arg isIdentifier
-			ifTrue: [arg binding canBeAssigned]
-			ifFalse: [arg isBlockNode not andNot: [arg isLiteral]]]
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-hasVolatileReceiver
-	^ compiler hasBlocks
-		  or: [ receiver isMethodTemporary not ]
-		  or: [ arguments anySatisfy: [ :arg | arg hasAssign ] ]
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-initialize
-	super initialize.
-	inlined := false
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-isCascadeMessage
-	^false
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-isInlined
-	^inlined
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-isMessageNode
-	^true
-! !
-
-!SMessageNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:17'!
-needsStrictEvaluationOrder
-	arguments size = 0 ifTrue: [^false].
-	receiver isBlockNode ifTrue: [^false].
-	receiver isLiteral ifTrue: [^false].
-	receiver isSelf ifTrue: [^false].
-	receiver isSuper ifTrue: [^false].
-	receiver isMethodArgument ifTrue: [^false].
-	self hasVolatileReceiver ifFalse: [^false].
-	(receiver isImmediate
-		and: [arguments conform: [:arg | arg isImmediate or: [arg isBlockNode]]])
-		ifTrue: [^false].
-	receiver hasAssign ifTrue: [^true].
-	receiver isMessageNode ifTrue: [ ^true ]. 
-	^self hasVolatileArguments
-! !
-
-!SMessageNode methodsFor: 'emitting - inlined' stamp: 'KenD 9/30/2022 12:36:17'!
-beInlined
-	inlined := true
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-arguments
-	^arguments
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-arguments: aCollection
-	arguments := aCollection
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-receiver
-	^receiver
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-receiver: node
-	receiver := node
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-selector
-	^selector
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-selector: node
-	selector := node
-! !
-
-!SMessageNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:17'!
-symbol
-	^selector symbol
-! !
-
-!SMessageNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:36:17'!
-acceptVisitor: visitor
-	^visitor visitMessage: self
-! !
-
-!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:36:17'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	receiver nodesDo: aBlock includingDeclarations: aBoolean.
-	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean].
-	selector nodesDo: aBlock includingDeclarations: aBoolean
-! !
-
-!SCascadeMessageNode methodsFor: 'visiting' stamp: 'KenD 10/1/2022 15:02:04'!
-acceptVisitor: visitor
-	^visitor visitCascadeMessage: self
-! !
-
-!SCascadeMessageNode methodsFor: 'accessing' stamp: 'KenD 10/1/2022 15:02:04'!
-cascade: aCascadeNode
-	cascade := aCascadeNode.
-	receiver := cascade receiver
-! !
-
-!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 10/1/2022 15:02:04'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	aBlock evaluateWith: self.
-	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]
-! !
-
-!SCascadeMessageNode methodsFor: 'testing' stamp: 'KenD 10/1/2022 15:02:04'!
-isCascadeMessage
-	^true
-! !
-
-!SCascadeMessageNode methodsFor: 'private' stamp: 'KenD 10/1/2022 15:02:04'!
-from: aMessageNode
-	arguments := aMessageNode arguments.
-	receiver := aMessageNode receiver.
-	selector := aMessageNode selector.
-	inlined := aMessageNode isInlined.
-	stretch := aMessageNode stretch.
-	comments := aMessageNode comments
-! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:33:34'!
-expression
-	^expression
-! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:33:34'!
-expression: node
-	expression := node
-! !
-
-!SReturnNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:33:34'!
-return: aSmalltalkToken
-	return := aSmalltalkToken
-! !
-
-!SReturnNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:34'!
-hasAssign
-	^expression hasAssign
-! !
-
-!SReturnNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:33:34'!
-isReturn
-	^true
-! !
-
-!SReturnNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:33:34'!
-acceptVisitor: visitor
-	^visitor visitReturn: self
-! !
-
-!SReturnNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:33:34'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	expression nodesDo: aBlock includingDeclarations: aBoolean
-! !
-
-!SScriptNode methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:19:49'!
-hasAssign
-	statements do: [:s | s hasAssign ifTrue: [^true]].
-	^false
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-arguments
-	^arguments
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-arguments: aCollection
-	arguments := aCollection
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-children
-	^children
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-environmentSize
-	^scope environmentSize
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-realScript
-	self subclassResponsibility
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-statements
-	^statements
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-temporaries
-	^temporaries
-! !
-
-!SScriptNode methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:19:49'!
-temporaries: aCollection
-	temporaries := aCollection
-! !
-
-!SScriptNode methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:19:49'!
-addStatements: anOrderedCollection
-	statements addAll: anOrderedCollection
-! !
-
-!SScriptNode methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:19:49'!
-identifiers
-	| result |
-	result := OrderedCollection new.
-	self nodesDo: [:node | node isIdentifier ifTrue: [result add: node]].
-	^result removeDuplicates
-! !
-
-!SScriptNode methodsFor: 'initialization' stamp: 'KenD 9/29/2022 14:19:49'!
-initialize
-	super initialize.
-	statements := OrderedCollection new.
-	arguments := #().
-	temporaries := #().
-	children := OrderedCollection new
-! !
-
-!SScriptNode methodsFor: 'add/remove' stamp: 'KenD 9/29/2022 14:19:49'!
-addChild: aBlockNode
-	children add: aBlockNode
-! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:19:49'!
-bindLocals
-	arguments do: [:arg | arg defineArgumentIn: scope].
-	temporaries do: [:temp | temp checkLowercase; defineTemporaryIn: scope].
-	children do: [:block | block bindLocals]
-! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:19:49'!
-positionLocals
-	scope positionLocals.
-	children do: [:b | b positionLocals]
-! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:19:49'!
-reference: aBinding
-	aBinding beReferencedFrom: self
-! !
-
-!SScriptNode methodsFor: 'binding' stamp: 'KenD 9/29/2022 14:19:49'!
-scope
-	^scope
-! !
-
-!SScriptNode methodsFor: 'enumerating' stamp: 'KenD 10/2/2022 15:41:27'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	aBoolean ifTrue: [
-		arguments do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean].
-		temporaries do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean]].
-	statements do: [:s | s nodesDo: aBlock includingDeclarations: aBoolean]
-! !
-
-!SScriptNode methodsFor: 'private' stamp: 'KenD 9/29/2022 14:19:49'!
-useSelf
-	scope captureSelf
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-index
-	^index
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-index: aNumber
-	index := aNumber
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-parent
-	^parent
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-parent: aScriptNode
-	parent := aScriptNode addChild: self
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-realParent
-	^parent realScript
-! !
-
-!SBlockNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:31:21'!
-realScript
-	^inlined ifTrue: [parent realScript] ifFalse: [self]
-! !
-
-!SBlockNode methodsFor: 'emitting - inlined' stamp: 'KenD 9/30/2022 12:31:21'!
-beInlined
-	inlined := true.
-	arguments do: [:arg | arg binding beInlined]
-! !
-
-!SBlockNode methodsFor: 'initialization' stamp: 'KenD 9/30/2022 12:31:21'!
-initialize
-	super initialize.
-	inlined := false.
-	scope := BlockScope on: self
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-environmentIndexOf: aParseNode
-	^scope environmentIndexOf: aParseNode
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-isBlockNode
-	^true
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-isEvaluable
-	^self isNullary
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-isInlined
-	^inlined
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-isNullary
-	^arguments isEmpty
-! !
-
-!SBlockNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:31:21'!
-usesHome
-	^inlined
-		ifTrue: [children anySatisfy: [:block | block usesHome]]
-		ifFalse: [scope capturesHome]
-! !
-
-!SBlockNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:31:21'!
-acceptVisitor: visitor
-	^visitor visitBlock: self
-! !
-
-!SBlockNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:31:21'!
-buildBlock
-	| block |
-	self isInlined ifTrue: [ ^ nil ].
-	block := SCompiledBlock new.
-	^ block
-		  id: index;
-		  argumentCount: arguments size;
-		  tempCount: scope stackSize;
-		  environmentCount: scope environmentSize;
-		  capturesSelf: scope capturesSelf;
-			capturesHome: scope capturesHome
-! !
-
-!SBlockNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:31:21'!
-captureHome
-	scope captureEnvironment: self ast
-! !
-
-!SMethodNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:30'!
-isHeadless
-	^selector isNil
-! !
-
-!SMethodNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:30'!
-isMethod
-	^true
-! !
-
-!SMethodNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:30'!
-needsEnvironment
-	^scope environmentSize > 0
-		or: [children anySatisfy: [:block | block usesHome]]
-! !
-
-!SMethodNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:36:30'!
-needsFrame
-	scope stackSize > 0 ifTrue: [ ^ true ].
-	arguments size > 16 ifTrue: [ ^ true ].
-	compiler hasSends ifTrue: [ ^ true ].
-	compiler hasBlocks ifTrue: [ ^ true ].
-	^ false
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-compiler: aSmalltalkCompiler
-	super compiler: aSmalltalkCompiler.
-	scope := MethodScope new script: self.
-	pragma := aSmalltalkCompiler pragmaNode
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-pragma
-	^pragma
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-pragma: anObject
-	pragma := anObject
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-realScript
-	^self
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-selector
-	^selector value
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-selector: aSelectorNode
-	selector := aSelectorNode
-! !
-
-!SMethodNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:36:30'!
-selectorNode
-	^selector
-! !
-
-!SMethodNode methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:36:30'!
-buildMethod
-	| cm encoder astcodes |
-	cm := self methodClass withAll: self literals.
-	cm
-		blockCount: compiler blockCount;
-		tempCount: scope stackSize;
-		argumentCount: arguments size;
-		environmentCount: scope environmentSize;
-		capturesSelf: scope capturesSelf;
-		hasEnvironment: self needsEnvironment;
-		hasFrame: self needsFrame;
-		selector: self selector;
-		source: compiler sourceCode;
-		classBinding: compiler frontend classBinding.
-	cm pragma: pragma.
-	cm blocks do: [ :block | block method: cm ].
-	encoder := AstcodeEncoder new method: cm.
-	astcodes := self acceptVisitor: encoder.
-	^ cm astcodes: astcodes
-! !
-
-!SMethodNode methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:36:30'!
-captureHome
-	
-! !
-
-!SMethodNode methodsFor: 'parsing' stamp: 'KenD 10/2/2022 13:35:02'!
-literals
-	| literals v l |
-	literals := OrderedCollection new.
-	pragma isUsed
-		ifTrue: [ literals add: pragma name ].
-	self
-		nodesDo: [ :n | 
-			n isLiteral
-				ifTrue: [ v := n value.
-					v isSmallInteger
-						ifFalse: [ literals add: v ] ].
-			n isMessageNode
-				ifTrue: [ literals add: n symbol ].
-			n isBraceNode
-				ifTrue: [ n isLiteral
-						ifTrue: [ self halt ]
-						ifFalse: [ literals
-								add: #Array;
-								add: #new:;
-								add: #at:put:;
-								add: #yourself ] ].
-			(n isIdentifier
-				and: [ l := n binding literal.
-					l notNil ])
-				ifTrue: [ literals add: l ].
-			(n isBlockNode andNot: [ n isInlined ])
-				ifTrue: [ literals add: n buildBlock ] ].
-	^ literals removeDuplicates
-! !
-
-!SMethodNode methodsFor: 'parsing' stamp: 'KenD 9/30/2022 12:36:30'!
-methodClass
-	| type |
-	type := pragma type.
-	type = #callback
-		ifTrue: [ ^ SCallbackMethod ].
-	type = #callout
-		ifTrue: [ ^ SCalloutMethod ].
-	^ SCompiledMethod
-! !
-
-!SMethodNode methodsFor: 'private' stamp: 'KenD 9/30/2022 12:36:30'!
-environmentIndexOf: aParseNode
-	^nil
-! !
-
-!SMethodNode methodsFor: 'inquiries' stamp: 'KenD 9/30/2022 12:36:30'!
-header
-	"
-	(Object >> #printOn:) ast header
-	"
-	| interval |
-	interval := selector stretch.
-	arguments notEmpty
-		ifTrue: [interval := interval start thru: arguments last stretch end].
-	^compiler sourceCode copyFrom: interval start to: interval end
-! !
-
-!SMethodNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:36:30'!
-acceptVisitor: visitor
-	^visitor visitMethod: self
-! !
-
-!SMethodNode methodsFor: 'enumerating' stamp: 'KenD 9/30/2022 12:36:30'!
-nodesDo: aBlock includingDeclarations: aBoolean
-	super nodesDo: aBlock includingDeclarations: aBoolean.
-	(aBoolean and: [selector notNil]) ifTrue: [aBlock evaluateWith: selector]
-! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:37:33'!
-addKeyword: aSelectorNode
-	keywords isNil ifTrue: [keywords := OrderedCollection new: 1].
-	keywords add: aSelectorNode
-! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:37:33'!
-end
-	stretch end ifNotNil: [:e | ^e].
-	^keywords notNil ifTrue: [keywords last end]
-! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:37:33'!
-keywords
-	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]
-! !
-
-!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 9/30/2022 12:37:33'!
-positions
-	^self keywords collect: [:node | node position]
-! !
-
-!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:37:33'!
-symbol
-	^symbol
-! !
-
-!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:37:33'!
-symbol: aString
-	symbol := aString asSymbol
-! !
-
-!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:37:33'!
-value
-	^symbol
-! !
-
-!SSelectorNode methodsFor: 'queries' stamp: 'KenD 9/30/2022 12:37:33'!
-isBinary
-	^symbol isBinary
-! !
-
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:37:33'!
-hasSymbol
-	^symbol isSymbol
-! !
-
-!SSelectorNode methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:37:33'!
-isSelector
-	^true
-! !
-
-!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 9/30/2022 12:37:33'!
-acceptVisitor: visitor
-	^visitor visitSelector: self
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-acceptVisitor: aVisitor
-	self isFFI ifTrue: [^aVisitor visitFFIPragma: self].
-	self isPrimitive ifTrue: [^aVisitor visitPrimitivePragma: self].
-	self isSymbolic ifTrue: [^aVisitor visitSymbolicPragma: self]
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-ffi: cc name: aString with: anFFIDescriptor
-	type := cc.
-	name := aString.
-	info := anFFIDescriptor
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-ffi: aString with: anFFIDescriptor
-	type := #ffi.
-	name := aString.
-	info := anFFIDescriptor
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-info
-	^info
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-isUsed
-	^type notNil
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-name
-	^name
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-primitive: anInteger name: aString
-	type := #primitive.
-	name := aString.
-	info := anInteger
-! !
-
-!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 9/30/2022 12:30:32'!
-type
-	^type
-! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:21:04'!
-value
-	^value
-! !
-
-!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 9/29/2022 14:21:04'!
-value: anObject
-	value := anObject
-! !
-
-!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:04'!
-is: anObject
-	^value == anObject
-! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:25:17'!
-beCharacter
-	value := value isCharacter ifTrue: [value] ifFalse: [value first]
-! !
-
-!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 9/30/2022 12:25:17'!
-value: aString
-	super value: aString asSymbol
-! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:17'!
-endsExpression
-	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]
-! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:17'!
-isAssignment
-	^self is: #':='
-! !
-
-!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 9/30/2022 12:25:17'!
-isDelimiter
-	^true
-! !
-
-!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 9/30/2022 12:25:17'!
-asSelectorNode
-	^compiler selectorNode symbol: value asString; stretch: stretch
-! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 9/29/2022 14:21:26'!
-asIdentifierNode
-	^compiler identifierNode
-		name: value;
-		stretch: stretch;
-		comments: comments
-! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 9/29/2022 14:21:26'!
-asSelectorNode
-	^compiler selectorNode symbol: value; stretch: stretch
-! !
-
-!SStringToken methodsFor: 'converting' stamp: 'KenD 9/29/2022 14:21:26'!
-isStringToken
-	^true
-! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:26'!
-hasSymbol
-	^value isSymbol
-! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:26'!
-isBinary
-	^value isSymbol
-! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:26'!
-isDelimitedIdentifier
-	^value first = ${
-! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:26'!
-isKeyword
-	^value last = $:
-! !
-
-!SStringToken methodsFor: 'testing' stamp: 'KenD 9/29/2022 14:21:26'!
-isNameToken
-	^(self isKeyword or: [self isBinary]) not
-! !
-
 !AstcodeDecoder methodsFor: 'decoding' stamp: 'KenD 2/24/2021 11:32:30'!
 decodeClassBinding 
 	| index assoc |
@@ -33462,12 +28138,12 @@ decodeStatements
 
 	^stream upToEnd collect: [:statement | self decodeStatement: statement]! !
 
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
 builder: aRuntime
 	builder := aRuntime
 ! !
 
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
 method: aMethod
 	method := aMethod
 ! !
@@ -33477,17 +28153,17 @@ next
 
 	^stream next! !
 
-!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'accessing' stamp: 'KenD 3/7/2024 14:16:30'!
 stream: aStream
 	stream := aStream
 ! !
 
-!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
 nextBoolean
 	^ stream next = 1
 ! !
 
-!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
 nextInteger
 	| value |
 	value := stream next.
@@ -33498,7 +28174,7 @@ nextInteger
 		ifFalse: [ value - 16r100 ]
 ! !
 
-!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'initialization' stamp: 'KenD 3/7/2024 14:16:30'!
 nextUnsignedInteger
 	| value |
 	value := self nextByte.
@@ -33507,19 +28183,19 @@ nextUnsignedInteger
 		ifFalse: [value - 128 + (self nextUnsignedInteger bitShift: 7)]
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 11/1/2022 15:26:28'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 bindingTypeOf: id
-	^ self class bindingTypes at: id
+	^ BindingTypes at: id
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeArgument
 	^ SArgumentBinding new
 		index: self nextInteger;
 		environment: self nextEnvironment
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeAssignment
 	| assignment assignees |
 	assignment := SAssignment new.
@@ -33530,7 +28206,7 @@ decodeAssignment
 	^ assignment
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeBlock
 	| expression inlined block index |
 	expression := SBlock new.
@@ -33548,7 +28224,7 @@ decodeBlock
 	^ expression
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeCascade
 	| cascade receiver messages message count |
 	cascade := SCascade new.
@@ -33563,7 +28239,7 @@ decodeCascade
 		messages: messages
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeCascadeMessage
 	| selector arguments |
 	selector := self nextSymbol.
@@ -33573,12 +28249,12 @@ decodeCascadeMessage
 		arguments: arguments
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeDynamicVar
 	^ SDynamicBinding new name: self nextSymbol
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeIdentifier
 	| type binding |
 	type := self bindingTypeOf: self nextInteger.
@@ -33586,7 +28262,7 @@ decodeIdentifier
 	^ SIdentifier new binding: binding
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeLiteral
 	| index value |
 	index := self nextInteger.
@@ -33598,7 +28274,7 @@ decodeLiteral
 		value: value
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeMessage
 	| inlined selector receiver arguments |
 	inlined := self nextBoolean.
@@ -33612,7 +28288,7 @@ decodeMessage
 		inlined: inlined
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeMethod
 	| type node next pragma |
 	type := stream next.
@@ -33630,7 +28306,7 @@ decodeMethod
 	^ node
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeNestedDynamicVar
 	^ SNestedDynamicBinding new
 		name:
@@ -33638,7 +28314,7 @@ decodeNestedDynamicVar
 
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeReturn
 	| expression local |
 	local := self nextBoolean.
@@ -33648,21 +28324,21 @@ decodeReturn
 		expression: expression
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 decodeTemporary
 	^ STemporaryBinding new
 		index: self nextInteger;
 		environment: self nextEnvironment
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextArray
 	| count |
 	count := self nextInteger.
 	^ stream next: count
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextEnvironment
 	| value |
 	value := self nextInteger.
@@ -33670,7 +28346,7 @@ nextEnvironment
 		ifTrue: [ value ]
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextExpression
 	| type |
 	type := self nodeTypeOf: stream next.
@@ -33678,38 +28354,38 @@ nextExpression
 
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextExpressionArray
 	| count |
 	count := self nextInteger.
 	^(1 to: count) collect: [ :arg | self nextExpression ]
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextSymbol
 	| index |
 	index := self nextInteger.
 	^ self literalAt: index
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nextSymbolOrNil
 	| index |
 	index := self nextInteger.
 	^index !!= 0 ifTrue: [ self literalAt: index]
 ! !
 
-!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 11/1/2022 15:26:41'!
+!AstcodeDecoder methodsFor: 'public' stamp: 'KenD 3/7/2024 14:16:30'!
 nodeTypeOf: id
-	^self class nodeTypes at: id
+	^NodeTypes at: id
 ! !
 
-!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 3/7/2024 14:16:30'!
 literalAt: anInteger
 	^ builder ifNil: [method at: anInteger] ifNotNil: [builder method: method literalAt: anInteger]
 ! !
 
-!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder methodsFor: 'unclassified' stamp: 'KenD 3/7/2024 14:16:30'!
 nextLiteralInteger
 	| value |
 	value := self nextInteger.
@@ -33718,7 +28394,7 @@ nextLiteralInteger
 		ifNotNil: [ builder newInteger: value ]
 ! !
 
-!AstcodeDecoder class methodsFor: 'class initialization' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder class methodsFor: 'class initialization' stamp: 'KenD 3/7/2024 14:16:30'!
 initialize
 	NodeTypes := Dictionary new.
 	BindingTypes := Dictionary new.
@@ -33742,7 +28418,7 @@ initialize
 		at: NestedDynamicVarId put: SNestedDynamicBinding
 ! !
 
-!AstcodeDecoder class methodsFor: 'instance creation' stamp: 'KenD 10/2/2022 14:01:04'!
+!AstcodeDecoder class methodsFor: 'instance creation' stamp: 'KenD 3/7/2024 14:16:30'!
 new
 	"return an initialized instance"
 
@@ -35109,6 +29785,5698 @@ messages
 
 ! !
 
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:47'!
+beSuccessful
+	error := nil
+! !
+
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:47'!
+error
+	^error
+! !
+
+!SCompilationResult methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:47'!
+error: aCompilationError
+	error := aCompilationError
+! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+ast
+	^ast
+! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+ast: aParseNode
+	ast := aParseNode
+! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+compiler: aSmalltalkCompiler
+	compiler := aSmalltalkCompiler
+! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+method
+	^method
+! !
+
+!SCompilationResult methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+method: aCompiledMethod
+	method := aCompiledMethod
+! !
+
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:46'!
+classBinding
+	 ^class
+! !
+
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:46'!
+classBinding: aSpecies
+	| instance |
+	class := aSpecies.
+	instance := aSpecies instanceSide.
+	(instance respondsTo: #configureCompiler)
+		ifTrue: [instance configureCompiler: self]
+! !
+
+!SCompiler methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:46'!
+initialize: aDictionary
+	class := aDictionary at: #UndefinedObject ifAbsent: nil
+! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+compile: aString
+	result := self smalltalkCompiler compileMethod: aString.
+	^result method
+! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+parse: aString
+	result := self smalltalkCompiler parseMethod: aString.
+	^result ast
+! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+smalltalkCompiler
+	^ SSmalltalkCompiler new frontend: self
+! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+smalltalkParser
+	^ self smalltalkCompiler parser
+! !
+
+!SCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+smalltalkScanner
+	^ self smalltalkCompiler scanner
+! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:46'!
+canBeInIdentifier: aCharacter
+	^aCharacter isLetter or: [aCharacter isDigit] or: [aCharacter = $_]
+! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:46'!
+canStartIdentifier: aCharacter
+	^aCharacter isLetter or: [aCharacter = $_]
+! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:46'!
+peekForIdentifier: aStream
+	| char next |
+	char := aStream peek.
+	(self canBeInIdentifier: char) ifTrue: [
+		aStream skip: 1.
+		^true].
+	char = $. ifFalse: [^false].
+	aStream prev isLetter ifFalse: [
+		aStream skip: 1.
+		^false].
+	next := aStream skip: 2; peek.
+	next isNil ifTrue: [
+		aStream skip: -1.
+		^false].
+	^next isLetter ifFalse: [aStream skip: -1]; yourself
+! !
+
+!SCompiler methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:46'!
+protect: aBlock
+	^aBlock value
+! !
+
+!SCompiler methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:46'!
+forClass: aClass
+	| c |
+	c := aClass ifNil: [UndefinedObject].
+	self classBinding: c
+! !
+
+!SCompiler methodsFor: 'private' stamp: 'KenD 3/4/2024 11:29:36'!
+setBogusClass
+	self flag: #bogus. "for testing"
+	class := #bogus! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+compile: aString in: aClass
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler compile: aString
+! !
+
+!SCompiler class methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:46'!
+parse: aString in: aClass
+	| compiler |
+	compiler := self forClass: aClass.
+	^compiler parse: aString
+! !
+
+!SCompiler class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:46'!
+forClass: aClass
+	^self new forClass: aClass
+! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:49'!
+parseFragment
+	headless := false.
+	self reset.
+	ast := self parser methodFragment.
+	result ast: ast
+! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:49'!
+parseFragment: aString
+	source := aString.
+	[self parseFragment; resolveSemantics] on: SCompilationError do: [].
+	^ast
+! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:49'!
+parseMethod
+	headless := false.
+	self reset.
+	ast := self parser method.
+	result ast: ast
+! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:49'!
+parseMethod: aString
+	source := aString.
+	frontend protect: [self parseMethod; resolveSemantics].
+	^result
+! !
+
+!SSmalltalkCompiler methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:49'!
+resolveSemantics
+	ast acceptVisitor: SSemanticVisitor new
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+assignmentNode
+	^SAssignmentNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+blockNode
+	^SBlockNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+braceNode
+	^SBraceNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+buildMethod
+	result method: ast buildMethod
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+cascadeMessageNode
+	^SCascadeMessageNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+cascadeNode
+	^SCascadeNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+commentNode
+	^SCommentNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+compileMethod: aString
+	source := aString.
+	frontend protect: [
+		self
+			parseMethod;
+			resolveSemantics;
+			buildMethod].
+	^result
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+delimiterToken
+	^SDelimiterToken new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+endToken
+	^SEndToken new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+hasBlocks
+	^ blocks > 0
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+hasSends
+^ leaf not
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+identifierNode
+	^SIdentifierNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+initialize
+	self reset
+
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+literalNode
+	^SLiteralNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+messageNode
+	^SMessageNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+methodNode
+	^SMethodNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+noticeSend
+	leaf := false
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+numericLiteralNode
+	^SNumberNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+pragmaNode
+	^SPragmaNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+reset
+	self resetResult.
+	leaf := true.
+	blocks := 0.
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+returnNode
+	^SReturnNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+selectorNode
+	^SSelectorNode new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'nodes' stamp: 'KenD 3/4/2024 06:55:49'!
+stringToken
+	^SStringToken new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+activate: aScriptNode while: aBlock
+	| current |
+	current := activeScript.
+	activeScript := aScriptNode.
+	aBlock value.
+	activeScript := current
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+activeScope
+	^activeScript scope
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+activeScript
+	^activeScript
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+activeScript: aParseNode
+	activeScript := aParseNode
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+ast
+	^ast
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+frontend
+	^frontend
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+frontend: aCompiler
+	frontend := aCompiler
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+parser
+	^SSmalltalkParser new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+result
+	^result
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+scanner
+	^SSmalltalkScanner new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+sourceCode
+	^source
+! !
+
+!SSmalltalkCompiler methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+sourceCode: aString
+	source := aString
+! !
+
+!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/4/2024 06:55:49'!
+blockCount
+	^blocks
+! !
+
+!SSmalltalkCompiler methodsFor: 'emitting' stamp: 'KenD 3/4/2024 06:55:49'!
+blockIndex
+	blocks := blocks + 1.
+	^blocks - 1
+! !
+
+!SSmalltalkCompiler methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:49'!
+resetResult
+	result := SCompilationResult new compiler: self
+! !
+
+!SSmalltalkCompiler methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:49'!
+supportsBraceNodes
+	^true
+! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:49'!
+compilationError: aString stretch: aStretch
+	^SCompilationError new
+		compiler: self;
+		stretch: aStretch;
+		description: aString
+! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:49'!
+error: aString at: anInteger
+	| stretch |
+	stretch := anInteger thru: anInteger.
+	^self error: aString stretch: stretch
+! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:49'!
+error: aString stretch: aStretch
+	| error |
+	error := self compilationError: aString stretch: aStretch.
+	^error beFatal; signal
+! !
+
+!SSmalltalkCompiler methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:49'!
+warning: aString at: aStretch
+	| error |
+	error := self compilationError: aString stretch: aStretch.
+	error beWarning; signal
+! !
+
+!SSmalltalkCompiler class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:49'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+argumentCount
+	^format bitsAt: BlockArgCount
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+argumentCount: anInteger
+	format := format bitsAt: BlockArgCount put: anInteger
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+capturesHome
+	^ format anyMask: BlockCapturesHome
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+capturesHome: aBoolean
+	format := aBoolean
+				  ifTrue: [ format bitOr: BlockCapturesHome ]
+				  ifFalse: [ format bitClear: BlockCapturesHome ]
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+capturesSelf
+	^format anyMask: BlockCapturesSelf
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+capturesSelf: aBoolean
+	format := aBoolean
+		ifTrue: [ format bitOr: BlockCapturesSelf ]
+		ifFalse: [ format bitClear: BlockCapturesSelf ]
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+environmentCount
+	^ format bitsAt: BlockEnvCount
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+environmentCount: anInteger
+	format := format bitsAt: BlockEnvCount put: anInteger
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+format
+	^ format
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+id
+	^format bitsAt: BlockId
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+id: anInteger
+	format := format bitsAt: BlockId put: anInteger
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+initialize
+	super initialize.
+	format := 0
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+isBlock
+	^true
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+method
+	^method
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+newClosure
+	| closure |
+	closure := SClosure new: self environmentCount.
+	^ closure block: self
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+optimizedCode
+	^optimizedCode
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+optimizedCode: anObject
+	optimizedCode := anObject
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+printOn: aStream
+	aStream
+		print: method classBinding;
+		nextPutAll: '>>';
+		print: method selector;
+		nextPutAll: ' [block ';
+		print: self id;
+		nextPutAll: ']'
+
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+tempCount
+	^format bitsAt: BlockTempCount
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+tempCount: anInteger
+	format := format bitsAt: BlockTempCount put: anInteger
+! !
+
+!SCompiledBlock methodsFor: 'constants' stamp: 'KenD 3/4/2024 06:55:50'!
+value
+self halt
+"	<primitive: BlockValue>
+	^ self primitiveFailed" 
+! !
+
+!SCompiledBlock methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
+method: aCompiledMethod
+	method := aCompiledMethod
+! !
+
+!SCompiledBlock class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:50'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!IdentifierBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:53'!
+contents
+	^contents
+! !
+
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:53'!
+printOn: aStream
+	self printOn: aStream indent: 0
+! !
+
+!IdentifierBinder methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:53'!
+printOn: aStream indent: anInteger
+	self subclassResponsibility
+! !
+
+!IdentifierBinder methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:53'!
+keyFor: aString
+	^self subclassResponsibility
+! !
+
+!IdentifierBinder class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:53'!
+new
+	^super new initialize
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+at: aString
+	| key assoc |
+	key := self keyFor: aString.
+	key ifNil: [ ^nil ].
+	assoc := contents associationAt: key ifAbsent: [^nil].
+	^(type on: assoc) name: key
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+at: aString ifPresent: aBlock
+	| binding |
+	binding := self at: aString.
+	^binding notNil ifTrue: [aBlock value: binding]
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+at: aString put: anObject
+	| key |
+	key := self keyFor: aString.
+	self ASSERT: contents !!== Smalltalk.
+	contents at: key put: anObject
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+contents: aDictionary
+	contents := aDictionary
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+poolNamed: aSymbol ifPresent: aBlock
+	| pool |
+	pool := contents at: aSymbol ifAbsent: nil.
+	^pool notNil ifTrue: [aBlock evaluateWith: pool]
+! !
+
+!DynamicBinder methodsFor: 'accessing' stamp: 'KenD 11/13/2022 13:02:41'!
+type: aClass
+	type := aClass
+! !
+
+!DynamicBinder methodsFor: 'private' stamp: 'KenD 11/13/2022 13:02:41'!
+keyFor: aString
+	^type usesSymbols ifTrue: [aString existingSymbol] ifFalse: [aString]
+! !
+
+!DynamicBinder methodsFor: 'private' stamp: 'KenD 11/13/2022 13:02:41'!
+on: aDictionary type: aClass
+	contents := aDictionary.
+	type := aClass
+! !
+
+!DynamicBinder methodsFor: 'printing' stamp: 'KenD 11/13/2022 13:02:41'!
+printOn: aStream indent: anInteger
+	aStream
+		tab: anInteger;
+		nextPutAll: 'binder for ';
+		nextPutAll: type name;
+		nextPutAll: ': '.
+	type == GlobalBinding
+		ifTrue: [aStream nextPut: $…]
+		ifFalse: [contents keys asArray printOn: aStream]
+! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
+of: type
+	^self new type: type
+! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
+on: aPoolDictionary
+	| type |
+	type := aPoolDictionary isConstant
+		ifTrue: [ConstantPoolBinding]
+		ifFalse: [PoolVarBinding].
+	^self new on: aPoolDictionary type: type
+! !
+
+!DynamicBinder class methodsFor: 'instance creation' stamp: 'KenD 11/13/2022 13:02:41'!
+on: aDictionary of: type
+	^self new on: aDictionary type: type
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+at: aString
+	^contents at: aString ifAbsent: nil
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+at: aString ifAbsentPut: aBlock
+	^contents at: aString ifAbsentPut: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+at: aString put: aBinding
+	contents at: aString put: aBinding
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+define: aString as: aBinding
+	contents at: aString put: aBinding
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+defines: identifier
+	^contents includesKey: identifier
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+do: aBlock
+	contents do: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+select: aBlock
+	^contents select: aBlock
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+values
+	^contents values
+! !
+
+!StaticBinder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+withIndexDo: aBlock
+	contents withIndexDo: aBlock
+! !
+
+!StaticBinder methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:52'!
+initialize
+	super initialize.
+	contents := OrderedDictionary new
+! !
+
+!StaticBinder methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:52'!
+printOn: aStream indent: anInteger
+	aStream tab: anInteger; nextPut: $<.
+	contents keys
+		do: [:name | name printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $>
+! !
+
+!StaticBinder class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:52'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visit: aParseNode
+	^aParseNode notNil ifTrue: [aParseNode acceptVisitor: self] 
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitAssignment: anAssignmentNode
+	^self visitParseNode: anAssignmentNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitBlock: aBlockNode
+	^self visitParseNode: aBlockNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitBraceNode: aBraceNode
+	^self visitParseNode: aBraceNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitCascade: aCascadeNode
+	^self visitParseNode: aCascadeNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitCascadeMessage: aCascadeMessageNode
+	^self visitMessage: aCascadeMessageNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitForeignNode: anForeignNode
+	self visitLiteral: anForeignNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitIdentifier: anIdentifierNode
+	^self visitParseNode: anIdentifierNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitLiteral: aLiteralNode
+	^self visitParseNode: aLiteralNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitMessage: aMessageNode
+	^self visitParseNode: aMessageNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitMethod: aMethodNode
+	^self visitParseNode: aMethodNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitNumberNode: aNumberNode
+	^self visitLiteral: aNumberNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitParseNode: aParseNode
+	^self subclassResponsibility
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitPragma: aPragmaNode
+	^self visitParseNode: aPragmaNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitReturn: aReturnNode
+	^self visitParseNode: aReturnNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitSelector: aSelectorNode
+	^self visitParseNode: aSelectorNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitString: aStringNode
+	^self visitLiteral: aStringNode
+! !
+
+!SParseTreeVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+visitSymbolicPragma: aPragmaNode
+	^self visitPragma: aPragmaNode
+! !
+
+!SParseTreeVisitor class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:48'!
+new
+	^super new initialize
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeAssignment: anAssignmentNode
+	anAssignmentNode assignees
+		do: [:v | self analyzeIdentifier: v assignee: true]
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeBlock: aBlockNode while: aBlock
+	aBlockNode isInlined
+		ifFalse: [aBlockNode index: aBlockNode compiler blockIndex].
+	self analyzeScript: aBlockNode while: aBlock
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeIdentifier: anIdentifierNode
+	self analyzeIdentifier: anIdentifierNode assignee: false
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeIdentifier: anIdentifierNode assignee: aBoolean
+	| script binding |
+	anIdentifierNode resolveAssigning: aBoolean.
+	aBoolean ifTrue: [anIdentifierNode beAssigned].
+	script := anIdentifierNode compiler activeScript.
+	binding := anIdentifierNode binding.
+	script reference: binding.
+	binding isLocal ifTrue: [binding := script scope captureLocal: binding].
+	anIdentifierNode binding: binding
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeMessage: aMessageNode
+	inliner inline: aMessageNode.
+	aMessageNode isInlined ifFalse: [aMessageNode compiler noticeSend]
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeMethod: aMethodNode while: aBlock
+	self analyzeScript: aMethodNode while: aBlock
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeReturn: aReturnNode
+	aReturnNode compiler activeScript realScript captureHome
+! !
+
+!SSemanticVisitor methodsFor: 'analizing' stamp: 'KenD 3/4/2024 06:55:51'!
+analyzeScript: aScriptNode while: aBlock
+	aScriptNode compiler activate: aScriptNode while: aBlock
+! !
+
+!SSemanticVisitor methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+initialize
+	super initialize.
+	inliner := MessageInliner new
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitAssignment: anAssignmentNode
+	| c |
+	self analyzeAssignment: anAssignmentNode.
+	anAssignmentNode expression acceptVisitor: self.
+	c := anAssignmentNode compiler.
+
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitBlock: aBlockNode
+	self
+		analyzeBlock: aBlockNode
+		while: [aBlockNode statements do: [:node | node acceptVisitor: self]]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitBraceNode: aBraceNode
+	aBraceNode isLiteral
+		ifFalse: [aBraceNode asMessageNode acceptVisitor: self]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitCascade: aCascadeNode
+	aCascadeNode receiver acceptVisitor: self.
+	aCascadeNode messages do: [:msg | msg acceptVisitor: self]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitCascadeMessage: aCascadeMessageNode
+	"we do not inline cascade messages for now"
+	aCascadeMessageNode compiler noticeSend.
+	aCascadeMessageNode receiver acceptVisitor: self.
+	aCascadeMessageNode arguments do: [:arg | arg acceptVisitor: self]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitIdentifier: anIdentifierNode
+	self analyzeIdentifier: anIdentifierNode
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitMessage: aMessageNode
+	self analyzeMessage: aMessageNode.
+	aMessageNode receiver acceptVisitor: self.
+	aMessageNode arguments do: [:arg | arg acceptVisitor: self]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitMethod: aMethodNode
+	self analyzeMethod: aMethodNode while: [
+		aMethodNode bindLocals.
+		aMethodNode statements do: [:s | s acceptVisitor: self].
+		aMethodNode positionLocals]
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitParseNode: aParseNode
+	"
+	do nothing
+	"
+	
+! !
+
+!SSemanticVisitor methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+visitReturn: aReturnNode
+	aReturnNode expression acceptVisitor: self.
+	self analyzeReturn: aReturnNode
+! !
+
+!SSemanticVisitor class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:51'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:00'!
+encodeClassBinding: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: GlobalClassId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:30:25'!
+encodeClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: ClassVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:31:49'!
+encodeGlobalVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: GlobalValueId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:03'!
+encodeInlinedMessage: aMessageNode 
+
+	self nextTypePut: 0! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:18'!
+encodeInstVar: index 
+
+	stream nextPut: InstVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:31'!
+encodeLoadAwithArg: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithArgumentId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:32:50'!
+encodeLoadAwithClassVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithClassVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:10'!
+encodeLoadAwithConstPoolVar: value 
+	| index |
+	index := method indexOf: value ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithConstPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:39'!
+encodeLoadAwithGlobal: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithGlobalId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:33:53'!
+encodeLoadAwithInstVar: anInteger 
+
+	stream nextPut: LoadAwithInstVarId; nextPut: anInteger! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:04'!
+encodeLoadAwithLiteral: value 
+	| index |
+	index := method indexOf: value.
+	stream nextPut: LoadAwithLiteralId; nextPut: index.
+	index = 0 ifTrue: [stream nextPut: value]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:14'!
+encodeLoadAwithNil 
+
+	stream nextPut: LoadAwithNilId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:30'!
+encodeLoadAwithPoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: LoadAwithPoolVarId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:42'!
+encodeLoadAwithSelf 
+
+	stream nextPut: LoadAwithSelfId! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:34:57'!
+encodeLoadAwithTemp: anInteger env: environment 
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	stream
+		nextPut: LoadAwithTemporaryId;
+		nextPut: anInteger;
+		nextPut: encoded! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:35:37'!
+encodeOptimizedBinary: aMessageNode 
+	| optimizer |
+	optimizer := BinaryMessageOptimizer on: aMessageNode using: self.
+	self nestedEncode: [optimizer emitOpcodes]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:00'!
+encodeOptimizedMessage: aMessageNode 
+	| selector |
+	selector := aMessageNode selector.
+	aMessageNode isInlined ifTrue: [^self encodeInlinedMessage: aMessageNode].
+	(BinaryMessageOptimizer optimizesMessage: selector value) ifFalse: [^self].
+	aMessageNode arguments size = 1
+		ifTrue: [^self encodeOptimizedBinary: aMessageNode]! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:12'!
+encodePoolConst: association 
+	| index |
+	index := method indexOf: association ifAbsent: [ self assert: false ].
+	stream
+		nextPut: ConstantPoolId;
+		nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:36:32'!
+encodePoolVar: association 
+	| index |
+	index := method indexOf: association ifAbsent: [self assert: false].
+	stream nextPut: PoolVarId; nextPut: index! !
+
+!AstcodeEncoder methodsFor: 'codeGeneration' stamp: 'KenD 2/25/2021 13:39:50'!
+nestedEncode: aBlock 
+	| prev nested |
+	prev := stream.
+	nested := Array streamContents: [:s | 
+		stream := s.
+		aBlock value.
+		stream contents].
+	stream := prev.
+	stream nextPut: nested
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+compiledBlockIndexOf: aBlockNode
+	| index |
+	index := method
+		findFirst: [:literal | literal isBlock
+			and: [literal id == aBlockNode index]].
+	^index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeArgument: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: ArgumentId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:46:50'!
+encodeClosureElements: aBlockNode
+
+	| scope parent |
+	scope := aBlockNode scope.
+	parent := aBlockNode realParent.
+	^ Array streamContents: [ :s |
+		  scope capturesSelf ifTrue: [ s nextPut: Self ].
+		  scope capturedEnvironments do: [ :e |
+			  | index |
+			  e == parent
+				  ifTrue: [ s nextPut: Environment ]
+				  ifFalse: [
+					  index := parent environmentIndexOf: e.
+					  self assert: index notNil.
+					  s
+						  nextPut: EnvironmentValue;
+						  nextPut: index ] ].
+		  scope capturedArguments do: [ :a |
+			  | binding |
+			  binding := aBlockNode parent scope resolve: a name.
+			  s
+				  nextPut: binding environmentType;
+				  nextPut: binding index ] ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeDynamicVar: name
+	stream nextPut: DynamicVarId.
+	self nextSymbolPut: name
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeFalse
+	stream nextPut: FalseId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeLoadRvisitingReceiver
+	stream nextPut: LoadRvisitingReceiverId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeNestedDynamicVar: name
+	stream nextPut: NestedDynamicVarId.
+	self nextLiteralPut: name 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeNil
+	stream nextPut: NilId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodePopR
+	stream nextPut: PopRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodePushR
+	stream nextPut: PushRid 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeSelf
+	stream nextPut: SelfId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeSuper
+	stream nextPut: SuperId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeTemporary: anInteger env: environment
+	| encoded |
+	encoded := self encodedEnvironment: environment.
+	self
+		nextPut: TemporaryId;
+		nextIntegerPut: anInteger;
+		nextIntegerPut: encoded
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeTrue
+	stream nextPut: TrueId
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+encodedEnvironment: aLocalEnvironment
+	aLocalEnvironment isStack
+		ifTrue: [ ^ aLocalEnvironment isInlinedArgument
+				ifTrue: [ -1 ]
+				ifFalse: [ -2 ] ].
+	aLocalEnvironment isCurrent
+		ifTrue: [ ^ 0 ].
+	^ aLocalEnvironment index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextBigIntegerPut: anInteger
+	stream
+		nextPut: 16r80;
+		int64: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextBooleanPut: aBoolean
+	stream nextPut: aBoolean asBit
+
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextIntegerPut: anInteger
+	| value |
+	(anInteger > 127 or: [ anInteger < -127 ])
+		ifTrue: [ ^ self nextBigIntegerPut: anInteger ].
+	value := anInteger >= 0
+		ifTrue: [ anInteger ]
+		ifFalse: [ anInteger + 16r100 ].
+	stream nextPut: value
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:06'!
+nextLiteralPut: anObject
+	| index |
+	index := method
+		indexOf: anObject
+		ifAbsent: [ self assert: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextPut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextPutAll: aCollection
+	stream nextPut: aCollection size; nextPutAll: aCollection
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:11'!
+nextSymbolPut: aSymbol
+	| index |
+	index := method
+		indexOf: aSymbol asSymbol
+		ifAbsent: [ self assert: false ].
+	self nextIntegerPut: index
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+nextTypePut: anInteger
+	stream nextPut: anInteger
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitAssignment: anAssignmentNode
+	| assignees |
+	self nextTypePut: AssignmentId.
+	assignees := anAssignmentNode assignees.
+	self nextIntegerPut: assignees size.
+	assignees do: [ :node | node acceptVisitor: self ].
+	anAssignmentNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitBlock: aBlockNode
+	| args inlined |
+	self nextTypePut: BlockId.
+	inlined := aBlockNode isInlined.
+	self nextBooleanPut: inlined.
+	inlined
+		ifTrue: [ args := aBlockNode arguments collect: [ :id | id binding index ].
+			self nextPutAll: args asArray ]
+		ifFalse: [ | index captured |
+			index := self compiledBlockIndexOf: aBlockNode.
+			self nextPut: index.
+			captured := self encodeClosureElements: aBlockNode.
+			self nextPutAll: captured ].
+	self visitScript: aBlockNode
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitBraceNode: aBraceNode
+	aBraceNode isLiteral
+		ifTrue: [self visitLiteral: aBraceNode asLiteralNode]
+		ifFalse: [self visitCascade: aBraceNode asMessageNode]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitCascade: aCascadeNode
+	| messages |
+	self nextTypePut: CascadeId.
+	aCascadeNode receiver acceptVisitor: self.
+	messages := aCascadeNode messages.
+	self nextIntegerPut: messages size.
+	messages do: [ :node | self visitCascadeMessage: node ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitCascadeMessage: aCascadeMessageNode
+	| arguments |
+	self nextSymbolPut: aCascadeMessageNode selector symbol.
+	arguments := aCascadeMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitIdentifier: anIdentifierNode
+	self nextTypePut: IdentifierId.
+	anIdentifierNode binding encodeUsing: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitLiteral: aLiteralNode
+	| index |
+	index := method indexOf: aLiteralNode value.
+	self
+		nextTypePut: LiteralId;
+		nextIntegerPut: index.
+	index = 0
+		ifTrue: [ self nextIntegerPut: aLiteralNode value ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitMessage: aMessageNode
+	| arguments |
+	self
+		nextTypePut: MessageId;
+		nextBooleanPut: aMessageNode isInlined;
+		nextSymbolPut: aMessageNode selector symbol.
+	aMessageNode receiver acceptVisitor: self.
+	arguments := aMessageNode arguments.
+	self nextIntegerPut: arguments size.
+	arguments do: [ :arg | arg acceptVisitor: self ]
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitMethod: aMethodNode
+	| pragma |
+	self nextTypePut: MethodId.
+	pragma := aMethodNode pragma.
+	pragma isUsed
+		ifTrue: [ self nextTypePut: PragmaId.
+			pragma name
+				ifNotNil: [ self nextSymbolPut: pragma name ]
+				ifNil: [ self nextPut: 0 ] ].
+	self visitScript: aMethodNode.
+	^ stream contents 
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/5/2024 15:47:15'!
+visitParseNode: aParseNode
+	^self assert: false
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitReturn: aReturnNode
+	self
+		nextTypePut: ReturnId;
+		nextBooleanPut: script realScript isMethod.
+	
+		aReturnNode expression acceptVisitor: self
+! !
+
+!AstcodeEncoder methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:49'!
+visitScript: aScriptNode
+	| prev statements |
+	prev := script.
+	script := aScriptNode.
+	statements := aScriptNode statements.
+	self nextIntegerPut: statements size.
+	statements do: [ :node | node acceptVisitor: self ].
+	script := prev
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+initialize
+	stream := #[] writeStream
+! !
+
+!AstcodeEncoder methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+method: aCompiledMethod
+	method := aCompiledMethod
+! !
+
+!AstcodeEncoder class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:49'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeBindingIds
+	| named |
+	named := self addNamespaceAs: #BindingIds.
+	named
+		at: #NilId put: 1;
+		at: #TrueId put: 2;
+		at: #FalseId put: 3;
+		at: #ArgumentId put: 4;
+		at: #TemporaryId put: 5;
+		at: #SelfId put: 6;
+		at: #SuperId put: 7;
+		at: #DynamicVarId put: 14;
+		at: #NestedDynamicVarId put: 15;
+		at: #PushRid put: 50;
+		at: #PopRid put: 51
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeClosureElementIds
+	| named |
+	named := self addNamespaceAs: #ClosureElementIds.
+	named
+		at: #Self put: 0;
+		at: #LocalArgument put: 1;
+		at: #Environment put: 2;
+		at: #EnvironmentValue put: 3
+! !
+
+!AstcodeEncoder class methodsFor: 'class initialization' stamp: 'KenD 3/8/2024 10:09:41'!
+initializeTreecodeIds
+	| named |
+	named := self addNamespaceAs: #TreecodeIds.
+	named
+		at: #MethodId put: 101;
+		at: #BlockId put: 102;
+		at: #IdentifierId put: 103;
+		at: #LiteralId put: 104;
+		at: #MessageId put: 105;
+		at: #CascadeId put: 106;
+		at: #BraceId put: 107;
+		at: #AssignmentId put: 108;
+		at: #ReturnId put: 109;
+		at: #PragmaId put: 110
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+arrayBody
+	| literals position |
+	literals := OrderedCollection new.
+	position := token position.
+	[
+		self step.
+		(token is: $)) or: [token isEnd]]
+		whileFalse: [| element |
+			element := self arrayElement.
+			literals add: element].
+	token isEnd ifTrue: [self missingToken: ')'].
+	^self buildNode: compiler literalNode at: position with: literals asArray
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+arrayElement
+	token isLiteral ifTrue: [^token value].
+	token isNameToken ifTrue: [^self pseudoLiteralValue].
+	token isKeyword ifTrue: [^self literalKeyword].
+	(token is: #'-') ifTrue: [^self negativeNumberOrBinary].
+	token hasSymbol ifTrue: [^token value].
+	(token is: $() ifTrue: [^self arrayBody value].
+	(token is: #'#(') ifTrue: [^self arrayBody value].
+	(token is: #'#[') ifTrue: [^self byteArrayBody value].
+	self invalidArrayToken
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+braceBody
+	| elements position |
+	elements := OrderedCollection new.
+	position := token position.
+	self step.
+	[
+		token isEnd ifTrue: [self missingToken: '}'].
+		token is: $}]
+		whileFalse: [
+			elements add: self expression.
+			(token is: $.) ifTrue: [self step]].
+	^self buildBraceNode: elements at: position
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+bracedArray
+	| array |
+	array := self braceBody.
+	self step.
+	^array
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+byteArrayBody
+	| bytes save start array node |
+	bytes := OrderedCollection new.
+	save := token.
+	start := token position.
+	[
+		self step.
+		token isLiteral or: [token isPoolLiteral]]
+		whileTrue: [self addByteTo: bytes].
+	(token is: $]) ifFalse: [
+		token isNameToken
+			ifTrue: [self missingLiteral]
+			ifFalse: [self missingToken: ']']].
+	array := ByteArray new: bytes size.
+	bytes withIndexDo: [:b :i | array at: i put: b].
+	node := self buildNode: compiler literalNode at: start with: array.
+	^node moveCommentsFrom: save
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+literalArray
+	| array |
+	array := self arrayBody.
+	self step.
+	^array
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+literalByteArray
+	| node |
+	node := self byteArrayBody.
+	self step.
+	^node
+! !
+
+!SSmalltalkParser methodsFor: 'arrays' stamp: 'KenD 3/4/2024 06:55:52'!
+negativeNumberOrBinary
+	self peek isNumberNode
+		ifTrue: [token := self next negate position: token position - 1].
+	^token value
+! !
+
+!SSmalltalkParser methodsFor: 'ffi support' stamp: 'KenD 3/4/2024 06:55:52'!
+symbolicPragma
+	| position symbol pragma |
+	position := token position.
+	symbol := self step value.
+	pragma := self buildNode: compiler pragmaNode at: position.
+	^pragma symbol: symbol
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+addByteTo: aCollection
+	| byte |
+	byte := token isLiteral ifTrue: [token value] ifFalse: [token literalValue].
+	byte isInteger ifFalse: [self nonIntegerToken].
+	(byte between: 0 and: 255) ifFalse: [self invalidByteValue].
+	aCollection add: byte
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+assignment
+	| position variable delimiter expression assignment |
+	position := token position.
+	variable := self step asIdentifierNode moveCommentsFrom: token.
+	delimiter := self step.
+	expression := self expression.
+	expression isAssign
+		ifTrue: [^expression assign: variable operator: delimiter].
+	expression moveCommentsFrom: token.
+	assignment := self buildNode: compiler assignmentNode at: position.
+	^assignment assign: variable with: expression operator: delimiter
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+attachPragmaTo: aMethodNode
+	| start pragma |
+	(aMethodNode isHeadless orNot: [token is: #'<']) ifTrue: [^false].
+	start := token position.
+	self step.
+	pragma := token isKeyword
+		ifTrue: [self ffiOrPrimitive: aMethodNode]
+		ifFalse: [self symbolicPragma].
+	pragma position: start; end: token position.
+	aMethodNode pragma: pragma.
+	(token is: #'>') ifFalse: [self missingToken: '>'].
+	^true
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildBraceNode: elements at: position
+	| node |
+	node := self buildNode: compiler braceNode at: position.
+	^node elements: elements
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildCascadeMessageNode: receiver
+	| node |
+	node := self buildNode: compiler cascadeMessageNode at: receiver position.
+	^node receiver: receiver
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildMessageNode: receiver
+	| node |
+	node := self buildNode: compiler messageNode at: receiver position.
+	^node receiver: receiver
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildMethodNode: selector arguments: arguments
+	| node |
+	node := self buildNode: compiler methodNode at: selector position.
+	compiler activeScript: node.
+	^node selector: selector; arguments: arguments
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildNode: aParserNode at: anInteger
+	^aParserNode position: anInteger; end: token position
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+buildNode: aParseNode at: anInteger with: anObject
+	| node |
+	node := scanner buildToken: aParseNode at: anInteger with: anObject.
+	^node end: token position
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+cascadeMessage: aMessageNode
+	| msg |
+	self hasUnarySelector ifTrue: [^self unaryMessage: aMessageNode].
+	self hasBinarySelector ifTrue: [^self binaryMessage: aMessageNode].
+	self hasKeywordSelector ifTrue: [^self keywordMessage: aMessageNode].
+	msg := token value = ''
+		ifTrue: ['unfinished cascade']
+		ifFalse: [token value asString , ' not allowed in cascade'].
+	self error: msg
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+ffiArguments
+	| args type |
+	args := OrderedCollection new.
+	self step.
+	token value !!= $(
+		ifTrue: [ self error: 'expected "("' ].
+	self peek value = $)
+		ifTrue: [ self step.
+			^ args ].
+	[ type := self ffiType.
+	args add: type.
+	self step.
+	token value = #, ] whileTrue.
+	token value !!= $)
+		ifTrue: [ self error: 'expected ")"' ].
+	^ args
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+ffiCall: aBoolean method: aMethodNode
+	| cc return name args descriptor |
+	cc := token value.
+	return := self ffiType.
+	aBoolean
+		ifTrue: [ self step.
+			name := token value ifNil: [ self error: 'invalid function name' ] ].
+	args := self ffiArguments.
+	args size = aMethodNode selector arity
+		ifFalse:
+			[ ^ self error: 'method arity does not match with function arguments' ].
+	self step.
+	descriptor := SFFIDescriptor ret: return args: args cc: cc.
+	^ compiler pragmaNode ffi: cc name: name with: descriptor
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+ffiOrPrimitive: aMethodNode
+	| tag |
+	tag := token value asLowercase.
+	tag last = $: ifFalse: [self invalidPragma].
+	tag := tag allButLast.
+	token value: tag.
+	tag = 'primitive' ifTrue: [^self primitive].
+	tag = 'callback' ifTrue: [ ^self ffiCall: false method: aMethodNode ].
+	tag = 'callout' ifTrue: [ ^self ffiCall: true method: aMethodNode ].	
+	self invalidPragma
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+ffiType
+	| type |
+	self step.
+	token isNameToken ifFalse: [self error: 'expected type name'].
+	type := token value.
+	type = 'struct' ifFalse: [ ^type].
+	self step.
+	token isNameToken ifFalse: [self error: 'expected type name'].	
+	^token value
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+hasKeywordSelector
+	^token isKeyword
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+hasUnarySelector
+	^token isNameToken
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+invalidPragma
+	| position stretch |
+	position := token position.
+ 	stretch := position thru: position.
+	^SInvalidPragmaError new stretch: stretch; signal
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+keywordArgument
+	| arg |
+	arg := self primary ifNil: [self missingArgument].
+	arg := self unarySequence: arg.
+	^self binarySequence: arg
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+keywordMessage: aMessageNode
+	| selector arguments node |
+	node := self buildNode: compiler selectorNode at: token position.
+	selector := '' writeStream.
+	arguments := OrderedCollection new.
+	[token isKeyword] whileTrue: [
+		selector nextPutAll: token value.
+		node addKeyword: self step.
+		arguments add: self keywordArgument].
+	node symbol: selector contents; end: token prevPosition.
+	aMessageNode
+		arguments: arguments;
+		end: token prevPosition;
+		selector: node
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+keywordSequence: aParseNode
+	| expression |
+	self hasKeywordSelector ifFalse: [^aParseNode].
+	expression := self buildMessageNode: aParseNode.
+	self keywordMessage: expression.
+	^expression
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+literalKeyword
+	| keyword |
+	keyword := token value , scanner nextKeyword value.
+	^keyword reduced asSymbol
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+namedPrimitive
+	| name pragma |
+	token isNameToken
+		ifFalse: [ self invalidPragma ].
+	name := token value.
+	pragma := self buildNode: compiler pragmaNode at: token position.
+	^ pragma primitive: 0 name: name asSymbol
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+negativeNumber
+	token := nil.
+	^self negativeNumberOrBinary; step
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+numberedPrimitive
+	| number pragma |
+	number := token value.
+	number isInteger ifFalse: [self invalidPragma].
+	pragma := self buildNode: compiler pragmaNode at: token position.
+	^pragma primitive: number name: nil
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+primitive
+	| primitive |
+	self step.
+	primitive := token isNumberNode
+		ifTrue: [self numberedPrimitive]
+		ifFalse: [self namedPrimitive].
+	self step.
+	^primitive
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+pseudoLiteralValue
+	| value |
+	token isPoolLiteral ifTrue: [^token literalValue].
+	value := token value.
+	value = 'nil' ifTrue: [^nil].
+	value = 'true' ifTrue: [^true].
+	value = 'false' ifTrue: [^false].
+	^token isPoolLiteral ifTrue: [token literalValue] ifFalse: [value asSymbol]
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+skipDots
+	[token is: $.] whileTrue: [self step]
+! !
+
+!SSmalltalkParser methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:52'!
+validateLocalName: aSmalltalkToken
+	aSmalltalkToken isDelimitedIdentifier ifTrue: [^self].
+	(aSmalltalkToken value includes: $.)
+		ifTrue: [self error: 'invalid embedded dot']
+! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/4/2024 06:55:52'!
+headlessMethod
+	| method |
+	self step.
+	method := compiler methodNode.
+	compiler activeScript: method.
+	self addBodyTo: method.
+	^method
+! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/4/2024 06:55:52'!
+method
+	| method |
+	self step.
+	method := self methodSignature.
+	method isNil ifTrue: [^nil].
+	self addBodyTo: method.
+	^method
+! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/4/2024 06:55:52'!
+methodFragment
+	| method |
+	self step.
+	method := self methodSignature.
+	method isNil ifTrue: [^nil].
+	[self addBodyTo: method] on: SCompilationError do: [].
+	^method
+! !
+
+!SSmalltalkParser methodsFor: 'productions' stamp: 'KenD 3/4/2024 06:55:52'!
+methodSelector
+	self step.
+	^self methodSignature ifNotNil: [:m | m selectorNode]
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+error: aString
+	self error: aString at: token position
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+error: aString at: position
+	^compiler error: aString at: position
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+invalidArrayToken
+	self error: 'invalid literal entry'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+invalidByteValue
+	self error: 'value not between 0 and 255'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+missingArgument
+	self error: 'argument missing'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+missingExpression
+	self error: 'missing expression'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+missingLiteral
+	self error: 'missing literal or named literal'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+missingToken: aString
+	self error: 'missing ' , aString
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+nonIntegerToken
+	self error: 'non-integer token'
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+notify: aString
+	compiler notify: aString at: token position
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+notify: aString at: position
+	compiler notify: aString at: position
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+warning: aString
+	compiler warning: aString at: token position
+! !
+
+!SSmalltalkParser methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:55:52'!
+warning: aString at: position
+	compiler warning: aString at: position
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+addBodyTo: aMethodNode
+	self
+		addTemporariesTo: aMethodNode;
+		addPragmaTo: aMethodNode;
+		addStatementsTo: aMethodNode
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+addStatementsTo: aMethodNode
+	aMethodNode
+		position: token position;
+		addStatements: self statements;
+		end: token position;
+		moveCommentsFrom: token.
+	token isEnd
+		ifFalse: [^self unexpectedStatementError: aMethodNode statements]
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+addTemporariesTo: aMethodNode
+	aMethodNode temporaries: self temporaries
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+cascadeSequence: aMessageNode
+	| cascade receiver messages msg node |
+	(token is: $;) ifFalse: [^aMessageNode].
+	cascade := self buildNode: compiler cascadeNode at: aMessageNode position.
+	receiver := aMessageNode receiver.
+	cascade receiver: receiver.
+	node := compiler cascadeMessageNode from: aMessageNode.
+	node cascade: cascade.
+	messages := OrderedCollection with: node.
+	[token is: $;] whileTrue: [
+		self step.
+		msg := self buildCascadeMessageNode: receiver.
+		msg
+			cascade: cascade;
+			position: token position;
+			moveCommentsFrom: token.
+		messages add: msg.
+		self cascadeMessage: msg].
+	^cascade messages: messages asArray; end: msg end
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+expression
+	| primary expression |
+	(token isNameToken and: [self peek isAssignment]) ifTrue: [^self assignment].
+	primary := self primary ifNil: [^self missingExpression].
+	expression := self unarySequence: primary.
+	expression := self binarySequence: expression.
+	expression := self keywordSequence: expression.
+	expression == primary
+		ifFalse: [expression := self cascadeSequence: expression].
+	token endsExpression ifFalse: [self errorIn: primary].
+	^expression
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+keywordSignature
+	| selector arguments node |
+	selector := '' writeStream.
+	arguments := OrderedCollection new.
+	node := self buildNode: compiler selectorNode at: token position.
+	[token isKeyword] whileTrue: [
+		selector nextPutAll: token value.
+		node addKeyword: token asSelectorNode.
+		self step.
+		token isNameToken ifFalse: [self missingArgument].
+		arguments add: token asIdentifierNode.
+		self step].
+	arguments isEmpty ifTrue: [^nil].
+	node
+		symbol: selector contents;
+		end: token end;
+		moveCommentsFrom: token.
+	^self buildMethodNode: node arguments: arguments
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+methodPragma
+	self step.
+	^[| method |
+		method := self methodSignature.
+		self addTemporariesTo: method; attachPragmaTo: method.
+		method pragma]
+		on: SCompilationError
+		do: [:ex | ex return: compiler pragmaNode]
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+methodSignature
+	self keywordSignature ifNotNil: [:m | ^m].
+	self binarySignature ifNotNil: [:m | ^m].
+	self unarySignature ifNotNil: [:m | ^m].
+	self error: 'method signature expected'
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+parenthesizedExpression
+	| start open expression |
+	start := token position.
+	open := self step.
+	expression := self expression.
+	expression moveCommentsFrom: open.
+	(token is: $)) ifFalse: [self missingToken: ')'].
+	expression isImmediate
+		ifFalse: [expression position: start; end: token position].
+	self step.
+	^expression
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+primary
+	token isNameToken ifTrue: [^self step asIdentifierNode].
+	token isLiteral ifTrue: [^self step].
+	(token is: $[) ifTrue: [^self block].
+	(token is: $() ifTrue: [^self parenthesizedExpression].
+	(token is: #'#(') ifTrue: [^self literalArray].
+	(token is: #'#[') ifTrue: [^self literalByteArray].
+	(compiler supportsBraceNodes and: [token is: ${]) ifTrue: [^self bracedArray].
+	(token is: #'-') ifTrue: [^self negativeNumber].
+	(token is: #'<') ifTrue: [^self taggedNode].
+	^nil
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+return
+	| return expression end node |
+	return := self step.
+	expression := self expression.
+	expression moveCommentsFrom: token.
+	end := token position.
+	self skipDots.
+	node := self buildNode: compiler returnNode at: return position.
+	^node
+		return: return;
+		end: end;
+		expression: expression;
+		moveCommentsFrom: return
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+statement
+	| expression |
+	((token is: $^) or: [token is: $↑]) ifTrue: [^self return].
+	expression := self expression.
+	token moveCommentsTo: expression.
+	^expression
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+statements
+	| statements |
+	statements := OrderedCollection new.
+	[
+		token endsExpression ifTrue: [^statements].
+		statements add: self statement.
+		token is: $.]
+		whileTrue: [self skipDots].
+	^statements
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:57:35'!
+step
+	| save comments |
+	save := token.
+	self next isComment ifFalse: [^save].
+	comments := OrderedCollection new.
+	[
+		comments add: token.
+		self next isComment] whileTrue.
+	token comments: comments.
+	^save
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+temporaries
+	| temporaries |
+	(token is: #'||') ifTrue: [
+		self step.
+		^#()].
+	token isBar ifFalse: [^#()].
+	temporaries := OrderedCollection new.
+	[
+		self step.
+		token isNameToken]
+		whileTrue: [
+			self validateLocalName: token.
+			temporaries add: token asIdentifierNode].
+	token isBar ifFalse: [self missingToken: '|'].
+	self step.
+	^temporaries
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+unaryMessage: aMessageNode
+	| selector |
+	selector := self unarySelector.
+	aMessageNode
+		selector: selector;
+		end: selector end;
+		arguments: #();
+		moveCommentsFrom: selector
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+unarySelector
+	| selector start end node |
+	selector := token value.
+	start := token position.
+	end := start + selector size - 1.
+	self step.
+	node := self buildNode: compiler selectorNode at: start.
+	^node
+		symbol: selector;
+		end: end;
+		moveCommentsFrom: token
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+unarySequence: aParseNode
+	| node receiver |
+	node := aParseNode.
+	node isNameToken ifTrue: [node := node asIdentifierNode].
+	[
+		receiver := node.
+		self hasUnarySelector]
+		whileTrue: [
+			node := self buildMessageNode: receiver.
+			self unaryMessage: node].
+	^node moveCommentsFrom: token
+! !
+
+!SSmalltalkParser methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:52'!
+unarySignature
+	self hasUnarySelector ifFalse: [^nil].
+	^self buildMethodNode: self unarySelector arguments: #()
+! !
+
+!SSmalltalkParser methodsFor: 'api support' stamp: 'KenD 3/4/2024 06:55:52'!
+addPragmaTo: aMethodNode
+	(self attachPragmaTo: aMethodNode) ifTrue: [self step]
+! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/4/2024 06:55:52'!
+binaryMessage: aMessageNode
+	| selector primary argument |
+	selector := self step.
+	primary := self primary.
+	primary isNil ifTrue: [
+		((selector is: $:) and: [token is: #'='])
+			ifTrue: [self
+				error: 'stray whitespaces left in assignment'
+				at: token position - 1]
+			ifFalse: [self error: 'primary missing']].
+	argument := self unarySequence: primary.
+	aMessageNode
+		selector: selector asSelectorNode;
+		end: argument end;
+		arguments: {argument}
+! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/4/2024 06:55:52'!
+binarySequence: aParseNode
+	| node rcvr |
+	node := aParseNode.
+	[
+		rcvr := node.
+		self hasBinarySelector]
+		whileTrue: [
+			node := self buildMessageNode: rcvr.
+			self binaryMessage: node].
+	^node
+! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/4/2024 06:55:52'!
+binarySignature
+	| selector arguments |
+	((token isStringToken and: [token hasSymbol])
+		or: [token is: $^]
+		or: [token is: $:])
+		ifFalse: [^nil].
+	selector := self step asSelectorNode.
+	token isNameToken ifFalse: [self missingArgument].
+	self validateLocalName: token.
+	arguments := {token asIdentifierNode}.
+	self step.
+	token moveCommentsTo: selector.
+	^self buildMethodNode: selector arguments: arguments
+! !
+
+!SSmalltalkParser methodsFor: 'binary' stamp: 'KenD 3/4/2024 06:55:52'!
+hasBinarySelector
+	^(token isStringToken and: [token hasSymbol])
+		or: [token is: $^]
+		or: [token is: $:]
+! !
+
+!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/4/2024 06:55:52'!
+block
+	| block |
+	block := self buildNode: compiler blockNode at: token position.
+	block parent: compiler activeScript.
+	compiler activate: block while: [
+		token moveCommentsTo: block.
+		self step.
+		block
+			arguments: self blockArguments;
+			temporaries: self temporaries;
+			addStatements: self statements.
+		(token is: $]) ifFalse: [self missingToken: ']'].
+		block end: token position.
+		token moveCommentsTo: block.
+		self step].
+	^block
+! !
+
+!SSmalltalkParser methodsFor: 'blocks' stamp: 'KenD 3/4/2024 06:55:52'!
+blockArguments
+	| arguments |
+	(token is: $:) ifFalse: [^#()].
+	arguments := OrderedCollection new.
+	[
+		self step.
+		token isNameToken ifFalse: [self missingArgument].
+		self validateLocalName: token.
+		arguments add: self step asIdentifierNode.
+		token is: $:] whileTrue.
+	token isBar ifTrue: [self step] ifFalse: [
+		(token is: #'||')
+			ifTrue: [token value: #'|']
+			ifFalse: [self missingToken: '|']].
+	^arguments
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+compiler
+	^compiler
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+compiler: aSmalltalkCompiler
+	compiler := aSmalltalkCompiler.
+	scanner := compiler scanner
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+next
+	token := next.
+	next := nil.
+	^token ifNil: [token := scanner next]
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+on: aString
+	scanner on: aString
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 12:02:32'!
+peek
+	| comments |
+	next ifNotNil: [^next].
+	next := scanner next.
+	next isComment ifFalse: [^next].
+	comments := OrderedCollection new.
+	[
+		comments add: next.
+		next := scanner next.
+		next isComment] whileTrue.
+	^next comments: comments
+! !
+
+!SSmalltalkParser methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+token
+	^token
+! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:52'!
+parse: aString
+	^self on: aString; method
+! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:52'!
+parseExpression: aString
+	^self on: aString; headlessMethod
+! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:52'!
+parseFragment: aString
+	| method |
+	self on: aString; step.
+	[
+		method := self methodSignature.
+		method notNil ifTrue: [self addBodyTo: method]]
+		on: SCompilationError
+		do: [].
+	^method
+! !
+
+!SSmalltalkParser methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:52'!
+parseTemporaries: aString
+	self on: aString; step.
+	^self methodSignature notNil ifTrue: [self temporaries]
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+end
+	^self buildToken: compiler endToken at: stream position + 1
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+isBinary: aCharacter
+	| code |
+	aCharacter isNil ifTrue: [^false].
+	code := aCharacter asInteger.
+	code < 128 ifTrue: [
+		^#($+ $- $< $> $= $* $/ $\ $| $& $~ $, $@ $% $? $!! $: $^)
+			includes: aCharacter].
+	^code > 255
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+next
+	^self nextToken
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextArrayPrefix
+	| string |
+	string := stream copyFrom: stream position - 1 to: stream position.
+	^self
+		buildToken: compiler delimiterToken
+		at: stream position - 1
+		with: string
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextAssignment
+	^self buildToken: compiler delimiterToken at: stream position with: #':='
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextBinarySelector
+	stream back.
+	^self
+		buildToken: compiler stringToken
+		at: stream position + 1
+		with: self scanBinarySymbol
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextBinarySymbol
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: self scanBinarySymbol
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextColon
+	| start char |
+	start := stream position.
+	char := stream peek.
+	((char = Character space or: [char = Character tab]) and: [(stream peek: 2) second = $=]) ifTrue: [
+		stream skip: 1.
+		char := $=].
+	char = $= ifTrue: [
+		stream skip.
+		^self nextAssignment position: start].
+	^(self isBinary: stream peek)
+		ifTrue: [self nextBinarySelector]
+		ifFalse: [self nextSpecialCharacter]
+
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:35'!
+nextComment
+	| start comment |
+	start := stream position.
+	[ stream atEnd not and:[stream peek !!= $"] ] whileTrue: [stream next].
+	stream atEnd ifTrue: [self error: 'unfinished comment' at: start].
+	stream position: start.
+	comment := stream upTo: $".
+	^self buildToken: compiler commentNode at: start with: comment
+
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextIdentifierOrKeyword
+	| start |
+	start := stream position.
+	self skipIdentifier.
+	((stream peekFor: $:) and: [stream peekFor: $=]) ifTrue: [stream skip: -2].
+	^self buildToken: compiler stringToken at: start
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextKeyword
+	| start string |
+	start := stream position + 1.
+	self skipKeyword.
+	string := stream copyFrom: start to: stream position.
+	^self buildToken: compiler literalNode at: start - 1 with: string asSymbol
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextLiteralCharacter
+	stream atEnd ifTrue: [^self error: 'character expected'].
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: stream next
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextLiteralString
+	^self
+		buildToken: compiler literalNode
+		at: stream position
+		with: self scanString reduced
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextNumber
+	| parser assoc |
+	stream skip: -1.
+	parser := NumberParser2 new on: stream.
+	assoc := parser next.
+	parser error ifNotNil: [:e | ^self error: e key at: e value].
+	^self
+		buildToken: compiler numericLiteralNode
+		at: assoc value start
+		with: assoc key
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextQuotedSymbol
+	| node |
+	node := self nextLiteralString.
+	^node beSymbol; position: node position - 1
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextSpecialCharacter
+	| token |
+	token := self buildToken: compiler delimiterToken.
+	^token beCharacter
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextSymbolOrArrayPrefix
+	| char |
+	stream atEnd ifTrue: [self error: 'character expected'].
+	char := stream peek.
+	(self canBeInIdentifier: char) ifTrue: [^self nextKeyword].
+	(self isBinary: char) ifTrue: [^self nextBinarySymbol].
+	stream next.
+	(char = $[ or: [char = $(]) ifTrue: [^self nextArrayPrefix].
+	char = $' ifTrue: [^self nextQuotedSymbol].
+	self error: 'character expected'
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+nextToken
+	| first |
+	first := self scanChar.
+	first isNil ifTrue: [^self end].
+	(self canStartIdentifier: first) ifTrue: [^self nextIdentifierOrKeyword].
+	(first = $→ or: [first = $_]) ifTrue: [^self nextAssignment].
+	first = $: ifTrue: [^self nextColon].
+	first = $' ifTrue: [^self nextLiteralString].
+	first = $$ ifTrue: [^self nextLiteralCharacter].
+	first = $# ifTrue: [^self nextSymbolOrArrayPrefix].
+	first = $" ifTrue: [^self nextComment].
+	first isDigit ifTrue: [^self nextNumber].
+	(first !!= $^ and: [first !!= $↑ and: [self isBinary: first]])
+		ifTrue: [^self nextBinarySelector].
+	^self nextSpecialCharacter
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+scanBinarySymbol
+	| start symbol |
+	start := stream position.
+	self skipBinary.
+	symbol := stream copyFrom: start + 1 to: stream position.
+	^symbol asSymbol
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+scanChar
+	^(stream skipSeparators; atEnd) ifFalse: [stream next]
+
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+scanString
+	| current start |
+	start := current := stream position.
+	^String streamContents: [:writer | 
+		[| fragment |
+			fragment := stream upTo: $'.
+			writer nextPutAll: fragment.
+			(current < stream position and: [(stream back; next) = $'])
+				ifFalse: [self error: 'string end expected' at: start].
+			stream peekFor: $']
+			whileTrue: [
+				writer nextPut: $'.
+				current := stream position]]
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+skipBinary
+	[self isBinary: stream peek] whileTrue: [stream next]
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+skipIdentifier
+	| frontend |
+	frontend := compiler frontend.
+	[stream atEnd]
+		whileFalse: [(frontend peekForIdentifier: stream) ifFalse: [^self]]
+! !
+
+!SSmalltalkScanner methodsFor: 'scanning' stamp: 'KenD 3/4/2024 06:56:01'!
+skipKeyword
+	| frontend continue pos |
+	frontend := compiler frontend.
+	[
+		self skipIdentifier.
+		continue := false.
+		(stream peekFor: $:) ifTrue: [
+			pos := stream position.
+			stream atEnd
+				ifFalse: [continue := frontend canStartIdentifier: stream peek]].
+		continue] whileTrue.
+	pos isNil ifFalse: [stream position: pos]
+! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:01'!
+compiler
+	^compiler
+! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:01'!
+compiler: aSmalltalkCompiler
+	compiler := aSmalltalkCompiler.
+	compiler sourceCode ifNotNil: [:s | self sourceCode: s]
+! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:01'!
+on: aString
+	stream := aString readStream.
+	compiler notNil ifTrue: [compiler sourceCode: aString]
+! !
+
+!SSmalltalkScanner methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:01'!
+sourceCode: aString
+	stream := aString readStream
+! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:01'!
+canBeInIdentifier: aCharacter
+	^compiler frontend canBeInIdentifier: aCharacter
+! !
+
+!SSmalltalkScanner methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:01'!
+canStartIdentifier: aCharacter
+	(compiler frontend canStartIdentifier: aCharacter) ifFalse: [^false].
+	aCharacter = $_
+		ifTrue: [^stream peek ifNil: [false] ifNotNil: [:ch | ch asInteger >= 33]].
+	^true
+! !
+
+!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 3/4/2024 06:56:01'!
+buildToken: aSmalltalkToken
+	^self buildToken: aSmalltalkToken at: stream position
+! !
+
+!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 3/4/2024 06:56:01'!
+buildToken: aSmalltalkToken at: anInteger
+	| string |
+	string := stream copyFrom: anInteger to: stream position.
+	^self buildToken: aSmalltalkToken at: anInteger with: string
+! !
+
+!SSmalltalkScanner methodsFor: 'private' stamp: 'KenD 3/4/2024 06:56:01'!
+buildToken: aSmalltalkToken at: anInteger with: anObject
+	^aSmalltalkToken
+		position: anInteger;
+		value: anObject;
+		end: stream position
+! !
+
+!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:56:01'!
+error: aString
+	^self error: aString at: stream position
+! !
+
+!SSmalltalkScanner methodsFor: 'errors' stamp: 'KenD 3/4/2024 06:56:01'!
+error: aString at: anInteger
+	^compiler error: aString at: anInteger
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+compileWarning: aString
+	compiler notify: aString at: self stretch
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+compiler
+	^compiler
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+compiler: aSmalltalkCompiler
+	compiler := aSmalltalkCompiler
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+end
+	^stretch end
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+end: aNumber
+	stretch end: aNumber
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+position
+	^stretch start
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+position: aNumber
+	stretch start: aNumber
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+prevPosition
+	^stretch start - 1
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+source
+	^compiler sourceCode copyFrom: stretch start to: stretch end
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+stretch
+	^stretch
+! !
+
+!SToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:56:02'!
+stretch: aStretch
+	stretch := aStretch
+! !
+
+!SToken methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:56:02'!
+isDelimitedIdentifier
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+endsExpression
+	^self isEnd
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+hasSymbol
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+is: anObject
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isAssignment
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isBar
+	^(self is: #'|') or: [self is: #'/']
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isBlockNode
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isComment
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isDelimiter
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isEnd
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isIdentifier
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isKeyword
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isLiteral
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isNameToken
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isNumberNode
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isPoolLiteral
+	^false
+! !
+
+!SToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:56:02'!
+isStringToken
+	^false
+! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:56:02'!
+comment
+	^comments notNil ifTrue: [comments anyOne]
+! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:56:02'!
+comments
+	^comments
+! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:56:02'!
+comments: aCollection
+	aCollection isNil ifTrue: [^self].
+	comments isNil
+		ifTrue: [comments := aCollection]
+		ifFalse: [comments addAll: aCollection]
+! !
+
+!SToken methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:56:02'!
+moveCommentsTo: aParseNode
+	aParseNode comments: comments.
+	comments := nil
+! !
+
+!SToken methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:56:02'!
+initialize
+	super initialize.
+	stretch := 1 thru: 0
+! !
+
+!SToken class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:56:02'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SEndToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isEnd
+	^true
+! !
+
+!SEndToken methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:47'!
+value: aString
+	''
+! !
+
+!SEndToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+position: aNumber
+	super position: aNumber - 1
+! !
+
+!SEndToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+prevPosition
+	^stretch start
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+hasAssign
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isAssign
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isBraceNode
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isCascade
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isCascadeMessage
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isEvaluable
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isImmediate
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isMessageNode
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isMethod
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isMethodArgument
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isMethodTemporary
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isReturn
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isSelector
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isSelf
+	^false
+! !
+
+!SParseNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isSuper
+	^false
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+allNodesDo: aBlock
+	self nodesDo: aBlock includingDeclarations: true
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+nodeWithLiteral: anObject
+	^self nodesDetect: [:n | (n isLiteral or: [n isSelector]) and: [n value = anObject]] ifAbsent: nil
+
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+nodesDetect: aBlock ifAbsent: absentBlock
+	self nodesDo: [:node | (aBlock value: node) ifTrue: [ ^node ] ] includingDeclarations: false.
+	^absentBlock value
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+nodesDo: aBlock
+	self nodesDo: aBlock includingDeclarations: false
+! !
+
+!SParseNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	aBlock value: self
+! !
+
+!SParseNode methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:51'!
+moveCommentsFrom: aParseNode
+	aParseNode moveCommentsTo: self
+! !
+
+!SParseNode methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:51'!
+variableNamed: aString
+	self
+		allNodesDo: [:node | (node isIdentifier and: [node name = aString])
+			ifTrue: [^node]].
+	^nil
+! !
+
+!SParseNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+ast
+	^compiler ast
+! !
+
+!SParseNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+acceptVisitor: visitor
+	^visitor visitParseNode: self
+! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 3/4/2024 06:55:47'!
+assign: anIdentifierNode operator: aDelimiterToken
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken
+! !
+
+!SAssignmentNode methodsFor: 'adding / removing' stamp: 'KenD 3/4/2024 06:55:47'!
+assign: anIdentifierNode with: aParseNode operator: aDelimiterToken
+	assignees add: anIdentifierNode.
+	operators add: aDelimiterToken.
+	expression := aParseNode
+! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+hasAssign
+	^true
+! !
+
+!SAssignmentNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isAssign
+	^true
+! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+assignees
+	^assignees
+! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+expression
+	^expression
+! !
+
+!SAssignmentNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+operators
+	^operators
+! !
+
+!SAssignmentNode methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:57:56'!
+initialize
+	super initialize.
+	assignees := OrderedCollection new.
+	operators := OrderedCollection new
+! !
+
+!SAssignmentNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:47'!
+acceptVisitor: visitor
+	^visitor visitAssignment: self
+! !
+
+!SAssignmentNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	assignees do: [:v | v nodesDo: aBlock includingDeclarations: aBoolean].
+	expression nodesDo: aBlock includingDeclarations: aBoolean
+! !
+
+!SBraceNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+asMessageNode
+	message notNil ifTrue: [^message].
+	^message := self expanded
+! !
+
+!SBraceNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isBraceNode
+	^true
+! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+elements
+	^elements
+! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+elements: aCollection
+	elements := aCollection asArray
+! !
+
+!SBraceNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+expanded
+	| receiver n new argument array messages i you yourself cascade |
+	receiver := compiler identifierNode name: 'Array'.
+	n := elements size.
+	new := compiler selectorNode symbol: #new:.
+	argument := compiler numericLiteralNode value: n.
+	array := compiler messageNode.
+	array receiver: receiver.
+	array selector: new.
+	array arguments: (Array with: argument).
+	i := 0.
+	messages := elements collect: [:elem | | msg sel idx args |
+		i := i + 1.
+		msg := compiler cascadeMessageNode position: elem position; end: elem end.
+		sel := compiler selectorNode symbol: #at:put:.
+		idx := compiler numericLiteralNode value: i.
+		args := Array with: idx with: elem.
+		msg selector: sel; arguments: args].
+	you := compiler selectorNode symbol: #yourself.
+	yourself := compiler cascadeMessageNode.
+	yourself selector: you.
+	yourself arguments: #().
+	messages := messages copyWith: yourself.
+	cascade := compiler cascadeNode receiver: array.
+	messages do: [:msg | msg cascade: cascade].
+	^cascade messages: messages
+! !
+
+!SBraceNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:47'!
+acceptVisitor: visitor
+	^visitor visitBraceNode: self
+! !
+
+!SBraceNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	elements do: [:n | n nodesDo: aBlock includingDeclarations: aBoolean]
+! !
+
+!SCascadeNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+hasAssign
+	receiver hasAssign ifTrue: [^true].
+	messages detect: [:msg | msg hasAssign] ifNone: [^false].
+	^true
+! !
+
+!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+isCascade
+	^true
+! !
+
+!SCascadeNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	messages do: [:msg | msg nodesDo: aBlock includingDeclarations: aBoolean]
+! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+messages
+	^messages
+! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+messages: aCollection
+	messages := aCollection
+! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+receiver
+	^receiver
+! !
+
+!SCascadeNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+receiver: rcvr
+	receiver := rcvr
+! !
+
+!SCascadeNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:47'!
+acceptVisitor: visitor
+	^visitor visitCascade: self
+! !
+
+!SCommentNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+isComment
+	^true
+! !
+
+!SCommentNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+value
+	^value
+! !
+
+!SCommentNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+value: aString
+	value := aString
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:48'!
+declaration
+	^binding declaration
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:48'!
+defineArgumentIn: aScriptScope
+	binding := aScriptScope defineArgument: name.
+	binding declaration: self
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:48'!
+defineTemporaryIn: scope
+	binding := scope defineTemporary: name.
+	binding declaration: self
+! !
+
+!SIdentifierNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:48'!
+printOn: aStream
+	aStream nextPut: $<;
+	nextPutAll: name;
+	nextPutAll: '> ('.
+	super printOn: aStream.
+	aStream nextPut: $)
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+checkLowercase
+	| char |
+	char := name first.
+	(char isLetter and: [char isUppercase]) ifFalse: [^self].
+	self compileWarning: name storeString , ' should start with lowercase'
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isEvaluable
+	^self isIdentifierLiteral
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isIdentifier
+	^true
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isIdentifierLiteral
+	binding isDynamic ifFalse: [^binding isLiteral].
+	^self ast ifNil: [false] ifNotNil: [:ast | | b |
+		b := ast scope resolve: name.
+		b isLiteral]
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isImmediate
+	^true
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isLocal
+	^binding isLocal
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isMethodArgument
+	| ast |
+	binding isArgument ifFalse: [^false].
+	ast := self ast ifNil: [^false].
+	^ast arguments includes: self declaration
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isMethodTemporary
+	^self ast temporaries includes: self declaration
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isSelf
+	^binding isSelf
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isSuper
+	^binding isSuper
+! !
+
+!SIdentifierNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+sourceIntervals
+	| stretchs declaration ast string code index |
+	stretchs := OrderedCollection new.
+	declaration := binding declaration.
+	ast := self ast.
+	ast allNodesDo: [:node | 
+		(node class == self class and: [node binding declaration == declaration])
+			ifTrue: [stretchs add: node stretch]].
+	string := self source.
+	code := compiler sourceCode.
+	index := ast stretch end.
+	[
+		index := code indexOfString: string startingAt: index + 1.
+		index > 0]
+		whileTrue: [stretchs add: (index to: index + string size - 1)].
+	^stretchs
+! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+binding
+	^binding
+! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+binding: aBinding
+	binding := aBinding
+! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+initialize
+	super initialize.
+	binding := DynamicBinding default
+! !
+
+!SIdentifierNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+name
+	^name
+! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:48'!
+beAssigned
+	| immutable |
+	binding canBeAssigned ifTrue: [^self].
+	immutable := binding isClassBinding
+		ifTrue: ['class']
+		ifFalse: [compiler activeScope describe: binding name].
+	self compileError: 'cannot assign to ' , immutable
+! !
+
+!SIdentifierNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:48'!
+resolveAssigning: aBoolean
+	binding := compiler activeScope resolve: name.
+	^binding
+
+! !
+
+!SIdentifierNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:48'!
+name: aString
+	name := aString reduced
+! !
+
+!SIdentifierNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+acceptVisitor: visitor
+	^visitor visitIdentifier: self
+! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+acceptVisitor: visitor
+	^visitor visitLiteral: self
+! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+hasSymbol
+	^value isSymbol
+! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isEvaluable
+	^true
+! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isImmediate
+	^true
+! !
+
+!SLiteralNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isLiteral
+	^true
+! !
+
+!SLiteralNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:51'!
+value
+	^value
+! !
+
+!SLiteralNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:51'!
+value: anObject
+	value := anObject
+! !
+
+!SLiteralNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+beSymbol
+	value := value asSymbol
+! !
+
+!SNumberNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:53'!
+acceptVisitor: visitor
+	^visitor visitNumberNode: self
+! !
+
+!SNumberNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:53'!
+negate
+	value := value negated
+! !
+
+!SNumberNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isNumberNode
+	^true
+! !
+
+!SStringNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:56:01'!
+acceptVisitor: visitor
+	^visitor visitString: self
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+hasAssign
+	receiver hasAssign ifTrue: [^true].
+	^arguments anySatisfy: [:arg | arg hasAssign]
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+hasVolatileArguments
+	^arguments anySatisfy: [:arg | 
+		arg isIdentifier
+			ifTrue: [arg binding canBeAssigned]
+			ifFalse: [arg isBlockNode not andNot: [arg isLiteral]]]
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+hasVolatileReceiver
+	^ compiler hasBlocks
+		  or: [ receiver isMethodTemporary not ]
+		  or: [ arguments anySatisfy: [ :arg | arg hasAssign ] ]
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+initialize
+	super initialize.
+	inlined := false
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isCascadeMessage
+	^false
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isInlined
+	^inlined
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isMessageNode
+	^true
+! !
+
+!SMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+needsStrictEvaluationOrder
+	arguments size = 0 ifTrue: [^false].
+	receiver isBlockNode ifTrue: [^false].
+	receiver isLiteral ifTrue: [^false].
+	receiver isSelf ifTrue: [^false].
+	receiver isSuper ifTrue: [^false].
+	receiver isMethodArgument ifTrue: [^false].
+	self hasVolatileReceiver ifFalse: [^false].
+	(receiver isImmediate
+		and: [arguments conform: [:arg | arg isImmediate or: [arg isBlockNode]]])
+		ifTrue: [^false].
+	receiver hasAssign ifTrue: [^true].
+	receiver isMessageNode ifTrue: [ ^true ]. 
+	^self hasVolatileArguments
+! !
+
+!SMessageNode methodsFor: 'emitting - inlined' stamp: 'KenD 3/4/2024 06:55:48'!
+beInlined
+	inlined := true
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+arguments
+	^arguments
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+arguments: aCollection
+	arguments := aCollection
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+receiver
+	^receiver
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+receiver: node
+	receiver := node
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+selector
+	^selector
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+selector: node
+	selector := node
+! !
+
+!SMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+symbol
+	^selector symbol
+! !
+
+!SMessageNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+acceptVisitor: visitor
+	^visitor visitMessage: self
+! !
+
+!SMessageNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:48'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	receiver nodesDo: aBlock includingDeclarations: aBoolean.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean].
+	selector nodesDo: aBlock includingDeclarations: aBoolean
+! !
+
+!SCascadeMessageNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:47'!
+acceptVisitor: visitor
+	^visitor visitCascadeMessage: self
+! !
+
+!SCascadeMessageNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+cascade: aCascadeNode
+	cascade := aCascadeNode.
+	receiver := cascade receiver
+! !
+
+!SCascadeMessageNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	aBlock value: self.
+	arguments do: [:arg | arg nodesDo: aBlock includingDeclarations: aBoolean]
+! !
+
+!SCascadeMessageNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isCascadeMessage
+	^true
+! !
+
+!SCascadeMessageNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+from: aMessageNode
+	arguments := aMessageNode arguments.
+	receiver := aMessageNode receiver.
+	selector := aMessageNode selector.
+	inlined := aMessageNode isInlined.
+	stretch := aMessageNode stretch.
+	comments := aMessageNode comments
+! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+expression
+	^expression
+! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+expression: node
+	expression := node
+! !
+
+!SReturnNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+return: aSmalltalkToken
+	return := aSmalltalkToken
+! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+hasAssign
+	^expression hasAssign
+! !
+
+!SReturnNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isReturn
+	^true
+! !
+
+!SReturnNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:48'!
+acceptVisitor: visitor
+	^visitor visitReturn: self
+! !
+
+!SReturnNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:48'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	expression nodesDo: aBlock includingDeclarations: aBoolean
+! !
+
+!SScriptNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+hasAssign
+	statements do: [:s | s hasAssign ifTrue: [^true]].
+	^false
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+arguments
+	^arguments
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+arguments: aCollection
+	arguments := aCollection
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+children
+	^children
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+environmentSize
+	^scope environmentSize
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+realScript
+	self subclassResponsibility
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+statements
+	^statements
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+temporaries
+	^temporaries
+! !
+
+!SScriptNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+temporaries: aCollection
+	temporaries := aCollection
+! !
+
+!SScriptNode methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+addStatements: anOrderedCollection
+	statements addAll: anOrderedCollection
+! !
+
+!SScriptNode methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+identifiers
+	| result |
+	result := OrderedCollection new.
+	self nodesDo: [:node | node isIdentifier ifTrue: [result add: node]].
+	^result removeDuplicates
+! !
+
+!SScriptNode methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+initialize
+	super initialize.
+	statements := OrderedCollection new.
+	arguments := #().
+	temporaries := #().
+	children := OrderedCollection new
+! !
+
+!SScriptNode methodsFor: 'add/remove' stamp: 'KenD 3/4/2024 06:55:51'!
+addChild: aBlockNode
+	children add: aBlockNode
+! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+bindLocals
+	arguments do: [:arg | arg defineArgumentIn: scope].
+	temporaries do: [:temp | temp checkLowercase; defineTemporaryIn: scope].
+	children do: [:block | block bindLocals]
+! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+positionLocals
+	scope positionLocals.
+	children do: [:b | b positionLocals]
+! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+reference: aBinding
+	aBinding beReferencedFrom: self
+! !
+
+!SScriptNode methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+scope
+	^scope
+! !
+
+!SScriptNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:51'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	aBoolean ifTrue: [
+		arguments do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean].
+		temporaries do: [:a | a nodesDo: aBlock includingDeclarations: aBoolean]].
+	statements do: [:s | s nodesDo: aBlock includingDeclarations: aBoolean]
+! !
+
+!SScriptNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+useSelf
+	scope captureSelf
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+index
+	^index
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+index: aNumber
+	index := aNumber
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+parent
+	^parent
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+parent: aScriptNode
+	parent := aScriptNode addChild: self
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+realParent
+	^parent realScript
+! !
+
+!SBlockNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:51'!
+realScript
+	^inlined ifTrue: [parent realScript] ifFalse: [self]
+! !
+
+!SBlockNode methodsFor: 'emitting - inlined' stamp: 'KenD 3/4/2024 06:55:51'!
+beInlined
+	inlined := true.
+	arguments do: [:arg | arg binding beInlined]
+! !
+
+!SBlockNode methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+initialize
+	super initialize.
+	inlined := false.
+	scope := BlockScope on: self
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+environmentIndexOf: aParseNode
+	^scope environmentIndexOf: aParseNode
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isBlockNode
+	^true
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isEvaluable
+	^self isNullary
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isInlined
+	^inlined
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+isNullary
+	^arguments isEmpty
+! !
+
+!SBlockNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:51'!
+usesHome
+	^inlined
+		ifTrue: [children anySatisfy: [:block | block usesHome]]
+		ifFalse: [scope capturesHome]
+! !
+
+!SBlockNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:51'!
+acceptVisitor: visitor
+	^visitor visitBlock: self
+! !
+
+!SBlockNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+buildBlock
+	| block |
+	self isInlined ifTrue: [ ^ nil ].
+	block := SCompiledBlock new.
+	^ block
+		  id: index;
+		  argumentCount: arguments size;
+		  tempCount: scope stackSize;
+		  environmentCount: scope environmentSize;
+		  capturesSelf: scope capturesSelf;
+			capturesHome: scope capturesHome
+! !
+
+!SBlockNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+captureHome
+	scope captureEnvironment: self ast
+! !
+
+!SMethodNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isHeadless
+	^selector isNil
+! !
+
+!SMethodNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isMethod
+	^true
+! !
+
+!SMethodNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+needsEnvironment
+	^scope environmentSize > 0
+		or: [children anySatisfy: [:block | block usesHome]]
+! !
+
+!SMethodNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+needsFrame
+	scope stackSize > 0 ifTrue: [ ^ true ].
+	arguments size > 16 ifTrue: [ ^ true ].
+	compiler hasSends ifTrue: [ ^ true ].
+	compiler hasBlocks ifTrue: [ ^ true ].
+	^ false
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+compiler: aSmalltalkCompiler
+	super compiler: aSmalltalkCompiler.
+	scope := MethodScope new script: self.
+	pragma := aSmalltalkCompiler pragmaNode
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+pragma
+	^pragma
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+pragma: anObject
+	pragma := anObject
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+realScript
+	^self
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+selector
+	^selector value
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+selector: aSelectorNode
+	selector := aSelectorNode
+! !
+
+!SMethodNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+selectorNode
+	^selector
+! !
+
+!SMethodNode methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:47'!
+buildMethod
+	| cm encoder astcodes |
+	cm := self methodClass withAll: self literals.
+	cm
+		blockCount: compiler blockCount;
+		tempCount: scope stackSize;
+		argumentCount: arguments size;
+		environmentCount: scope environmentSize;
+		capturesSelf: scope capturesSelf;
+		hasEnvironment: self needsEnvironment;
+		hasFrame: self needsFrame;
+		selector: self selector;
+		source: compiler sourceCode;
+		classBinding: compiler frontend classBinding.
+	cm pragma: pragma.
+	cm blocks do: [ :block | block method: cm ].
+	encoder := AstcodeEncoder new method: cm.
+	astcodes := self acceptVisitor: encoder.
+	^ cm astcodes: astcodes
+! !
+
+!SMethodNode methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:47'!
+captureHome
+	
+! !
+
+!SMethodNode methodsFor: 'parsing' stamp: 'KenD 3/4/2024 07:25:16'!
+literals
+	| literals v l |
+	literals := OrderedCollection new.
+	pragma isUsed
+		ifTrue: [ literals add: pragma name ].
+	self
+		nodesDo: [ :n | 
+			n isLiteral
+				ifTrue: [ v := n value.
+					(v is: #SmallInteger)
+						ifFalse: [ literals add: v ] ].
+			n isMessageNode
+				ifTrue: [ literals add: n symbol ].
+			n isBraceNode
+				ifTrue: [ n isLiteral
+						ifTrue: [ self halt ]
+						ifFalse: [ literals
+								add: #Array;
+								add: #new:;
+								add: #at:put:;
+								add: #yourself ] ].
+			(n isIdentifier
+				and: [ l := n binding literal.
+					l notNil ])
+				ifTrue: [ literals add: l ].
+			(n isBlockNode andNot: [ n isInlined ])
+				ifTrue: [ literals add: n buildBlock ] ].
+	^ literals removeDuplicates
+! !
+
+!SMethodNode methodsFor: 'parsing' stamp: 'KenD 3/4/2024 06:55:47'!
+methodClass
+	| type |
+	type := pragma type.
+	type = #callback
+		ifTrue: [ ^ SCallbackMethod ].
+	type = #callout
+		ifTrue: [ ^ SCalloutMethod ].
+	^ SCompiledMethod
+! !
+
+!SMethodNode methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+environmentIndexOf: aParseNode
+	^nil
+! !
+
+!SMethodNode methodsFor: 'inquiries' stamp: 'KenD 3/4/2024 06:55:47'!
+header
+	"
+	(Object >> #printOn:) ast header
+	"
+	| interval |
+	interval := selector stretch.
+	arguments notEmpty
+		ifTrue: [interval := interval start thru: arguments last stretch end].
+	^compiler sourceCode copyFrom: interval start to: interval end
+! !
+
+!SMethodNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:47'!
+acceptVisitor: visitor
+	^visitor visitMethod: self
+! !
+
+!SMethodNode methodsFor: 'enumerating' stamp: 'KenD 3/4/2024 06:55:47'!
+nodesDo: aBlock includingDeclarations: aBoolean
+	super nodesDo: aBlock includingDeclarations: aBoolean.
+	(aBoolean and: [selector notNil]) ifTrue: [aBlock value: selector]
+! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:58:16'!
+addKeyword: aSelectorNode
+	keywords isNil ifTrue: [keywords := OrderedCollection new].
+	keywords add: aSelectorNode
+! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
+end
+	stretch end ifNotNil: [:e | ^e].
+	^keywords notNil ifTrue: [keywords last end]
+! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
+keywords
+	^keywords isNil ifTrue: [{self}] ifFalse: [keywords]
+! !
+
+!SSelectorNode methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:50'!
+positions
+	^self keywords collect: [:node | node position]
+! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:50'!
+symbol
+	^symbol
+! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:50'!
+symbol: aString
+	symbol := aString asSymbol
+! !
+
+!SSelectorNode methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:50'!
+value
+	^symbol
+! !
+
+!SSelectorNode methodsFor: 'queries' stamp: 'KenD 3/4/2024 12:01:40'!
+isBinary
+	^symbol isValidBinarySelector
+! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+hasSymbol
+	^symbol isSymbol
+! !
+
+!SSelectorNode methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+isSelector
+	^true
+! !
+
+!SSelectorNode methodsFor: 'visiting' stamp: 'KenD 3/4/2024 06:55:50'!
+acceptVisitor: visitor
+	^visitor visitSelector: self
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+acceptVisitor: aVisitor
+	self isFFI ifTrue: [^aVisitor visitFFIPragma: self].
+	self isPrimitive ifTrue: [^aVisitor visitPrimitivePragma: self].
+	self isSymbolic ifTrue: [^aVisitor visitSymbolicPragma: self]
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+ffi: cc name: aString with: anFFIDescriptor
+	type := cc.
+	name := aString.
+	info := anFFIDescriptor
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+ffi: aString with: anFFIDescriptor
+	type := #ffi.
+	name := aString.
+	info := anFFIDescriptor
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+info
+	^info
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+isUsed
+	^type notNil
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+name
+	^name
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+primitive: anInteger name: aString
+	type := #primitive.
+	name := aString.
+	info := anInteger
+! !
+
+!SPragmaNode methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:52'!
+type
+	^type
+! !
+
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+value
+	^value
+! !
+
+!SSymbolicToken methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+value: anObject
+	value := anObject
+! !
+
+!SSymbolicToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+is: anObject
+	^value == anObject
+! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:50'!
+beCharacter
+	value := value isCharacter ifTrue: [value] ifFalse: [value first]
+! !
+
+!SDelimiterToken methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:50'!
+value: aString
+	super value: aString asSymbol
+! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+endsExpression
+	^value = $. or: [value = $]] or: [value = $)] or: [value = $}]
+! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+isAssignment
+	^self is: #':='
+! !
+
+!SDelimiterToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+isDelimiter
+	^true
+! !
+
+!SDelimiterToken methodsFor: 'converting' stamp: 'KenD 3/4/2024 06:55:50'!
+asSelectorNode
+	^compiler selectorNode symbol: value asString; stretch: stretch
+! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 3/4/2024 06:55:48'!
+asIdentifierNode
+	^compiler identifierNode
+		name: value;
+		stretch: stretch;
+		comments: comments
+! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 3/4/2024 06:55:48'!
+asSelectorNode
+	^compiler selectorNode symbol: value; stretch: stretch
+! !
+
+!SStringToken methodsFor: 'converting' stamp: 'KenD 3/4/2024 06:55:48'!
+isStringToken
+	^true
+! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+hasSymbol
+	^value isSymbol
+! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/5/2024 07:51:02'!
+isBinary
+	^value asSymbol isValidBinarySelector! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isDelimitedIdentifier
+	^value first = ${
+! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isKeyword
+	^value last = $:
+! !
+
+!SStringToken methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isNameToken
+	^(self isKeyword or: [self isBinary]) not
+! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:47'!
+capturesSelf
+	^ captureSelf
+! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:47'!
+describe: identifier
+	| binding type |
+	binding := self resolve: identifier.
+	type := self class name asLowercase allButLast: 'scope' size.
+	^binding description , ' of ' , type
+! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:47'!
+environmentSize
+	^envSize
+! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:47'!
+scopeOf: aString
+	| s |
+	s := self scriptDefining: aString.
+	^s notNil ifTrue: [s scope]
+! !
+
+!ScriptScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:47'!
+stackSize
+	^stackSize
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+defineArgument: identifier
+	| binding |
+	(self resolves: identifier) ifTrue: [self redefinitionError: identifier].
+	binding := ArgumentBinding new name: identifier.
+	arguments define: identifier as: binding.
+	^binding
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+defineTemporary: identifier
+	| binding |
+	(temporaries defines: identifier)
+		ifTrue: [self redefinitionError: identifier].
+	binding := TemporaryBinding new name: identifier.
+	temporaries define: identifier as: binding.
+	^binding
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+defines: aString
+	^(temporaries defines: aString) or: [arguments defines: aString]
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+localBindings
+	^arguments values , temporaries values
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+resolveLocal: aString
+	(temporaries at: aString) ifNotNil: [:binding | ^binding].
+	^arguments at: aString
+! !
+
+!ScriptScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:47'!
+resolves: aString
+	^(self resolve: aString) isDynamic not
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+growEnvironment
+	^envSize := envSize + 1
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+growStack
+	^stackSize := stackSize + 1
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+positionDefinedArguments
+	arguments withIndexDo: [:binding :index | binding index: index]
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+positionDefinedLocals
+	self positionDefinedTemporariesIn: self; positionDefinedArguments
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+positionDefinedTemporariesIn: aScriptScope
+	temporaries do: [:binding | | position |
+		position := binding isInStack
+			ifTrue: [aScriptScope growStack]
+			ifFalse: [aScriptScope growEnvironment].
+		binding index: position]
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+positionLocals
+	self positionDefinedLocals
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+realScope
+	^script realScript scope
+! !
+
+!ScriptScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+redefinitionError: name
+	| scope description |
+	scope := self scopeOf: name.
+	description := scope describe: name.
+	script compiler
+		warning: name , ' already declared as ' , description
+		at: script stretch
+! !
+
+!ScriptScope methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:47'!
+initialize
+	super initialize.
+	arguments := StaticBinder new.
+	temporaries := StaticBinder new.
+	stackSize := envSize := 0.
+		captureSelf := false.
+! !
+
+!ScriptScope methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+script: aScriptNode
+	script := aScriptNode
+! !
+
+!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:47'!
+new
+	^super new initialize
+! !
+
+!ScriptScope class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:47'!
+on: aScriptNode
+	^self new script: aScriptNode
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+captureLocal: aLocalBinding
+	(self defines: aLocalBinding name) ifTrue: [^aLocalBinding].
+	^aLocalBinding isTemporary
+		ifTrue: [self captureTemporary: aLocalBinding]
+		ifFalse: [self captureArgument: aLocalBinding]
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+captureSelf
+	captureSelf ifTrue: [^self].
+	captureSelf := true.
+	self parent captureSelf
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+captureTemporary: aTemporaryBinding
+	| name |
+	name := aTemporaryBinding name.
+	(self defines: name) ifTrue: [^aTemporaryBinding].
+	^captured at: name ifAbsentPut: [| parent declaration transferred copy |
+		parent := self parent.
+		declaration := parent scriptDefining: name.
+		self realScope captureEnvironment: declaration realScript.
+		transferred := parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		copy isInArray ifTrue: [aTemporaryBinding beInArray].
+		copy declaration: transferred declaration]
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+capturedArguments
+	^captured select: [:b | b isArgument]
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+capturedEnvironments
+	^environments
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+capturesHome
+	^self home notNil
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+environments
+	"
+	compatibility, removes the home environment
+	"
+	| first |
+	environments isEmpty ifTrue: [^#()].
+	first := environments first.
+	^first isMethod ifTrue: [environments allButFirst] ifFalse: [environments]
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+home
+	| first |
+	environments isEmpty ifTrue: [^nil].
+	first := environments first.
+	^first isMethod ifTrue: [first]
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+resolveLocal: aString
+	(super resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^captured at: aString
+! !
+
+!BlockScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:51'!
+scriptDefining: aString
+	(self defines: aString) ifTrue: [^script].
+	^self parent scriptDefining: aString
+! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+captureArgument: anArgumentBinding
+	| name |
+	name := anArgumentBinding name.
+	^captured at: name ifAbsentPut: [| transferred copy |
+		transferred := self parent transferLocal: name.
+		copy := self copyLocal: transferred.
+		(anArgumentBinding isInlined and: [copy !!= anArgumentBinding])
+			ifTrue: [anArgumentBinding beInArray].
+		copy declaration: transferred declaration]
+! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+localBindings
+	^super localBindings , captured values
+! !
+
+!BlockScope methodsFor: 'binding' stamp: 'KenD 3/4/2024 06:55:51'!
+resolve: aString
+	(self resolveLocal: aString) ifNotNil: [:binding | ^binding].
+	^self parent resolve: aString
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+captureEnvironment: aScriptNode
+	script == aScriptNode ifTrue: [^self].
+	(environments identityIncludes: aScriptNode) ifTrue: [^self].
+	self realParent captureEnvironment: aScriptNode.
+	aScriptNode isMethod
+		ifTrue: [environments addFirst: aScriptNode]
+		ifFalse: [environments addLast: aScriptNode]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 11:47:57'!
+capturedEnvironmentIndexOf: aScriptNode
+	| index |
+	aScriptNode realScript == script realScript
+		ifTrue: [ ^ nil ].
+	index := environments indexOf: aScriptNode ifAbsent: nil.
+	self assert:  index notNil.
+	^self capturesSelf ifTrue: [ index + 1 ] ifFalse: [ index ]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+copyLocal: binding
+	^script isInlined ifTrue: [binding] ifFalse: [binding copy beInArray]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 11:48:02'!
+environmentIndexOf: aScriptNode
+	"
+	temporal compatibility
+	"
+	(aScriptNode isKindOf: SScriptNode)
+		ifFalse: [ self assert:  false. ^nil ].
+	^self capturedEnvironmentIndexOf: aScriptNode
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+environmentSizeUpToCapturedArguments
+	^self environmentSizeUpToEnvironments + self capturedArguments size
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+environmentSizeUpToEnvironments
+	| receiver |
+	receiver := self capturesSelf ifTrue: [ 1 ] ifFalse: [ 0 ].
+	^receiver + environments size
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+parent
+	^script parent scope
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+positionCapturedArgument: anArgumentBinding
+	anArgumentBinding index: self growEnvironment
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+positionCapturedLocals
+	script isInlined ifTrue: [^self].
+	envSize := self environmentSizeUpToEnvironments.
+	captured do: [:binding | 
+		binding isArgument
+			ifTrue: [self positionCapturedArgument: binding]
+			ifFalse: [self positionCapturedTemporary: binding]]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 11:48:06'!
+positionCapturedTemporary: aTemporaryBinding
+	| outest index declaration |
+	outest := self scriptDefining: aTemporaryBinding name.
+	index := self capturedEnvironmentIndexOf: outest realScript.
+	aTemporaryBinding environmentIndex: index.
+	declaration := outest scope resolve: aTemporaryBinding name.
+	self assert:  declaration index isInteger.
+	aTemporaryBinding index: declaration index
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+positionDefinedArgumentsIn: aScriptScope
+	arguments do: [:binding | | index |
+		index := binding isInArray
+			ifTrue: [aScriptScope growEnvironment]
+			ifFalse: [aScriptScope growStack].
+		binding index: index]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+positionDefinedLocals
+	| real |
+	script isInlined
+		ifTrue: [
+			real := self realScope.
+			self
+				positionDefinedTemporariesIn: real;
+				positionDefinedArgumentsIn: real]
+		ifFalse: [super positionDefinedLocals]
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+positionLocals
+	self positionCapturedLocals.
+	super positionLocals
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+realParent
+	^script realParent scope
+! !
+
+!BlockScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:51'!
+transferLocal: name
+	| binding copy |
+	(self resolveLocal: name) ifNotNil: [:b | ^b].
+	binding := self parent transferLocal: name.
+	copy := self copyLocal: binding.
+	captured at: name put: copy.
+	^copy
+! !
+
+!BlockScope methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:51'!
+initialize
+	super initialize.
+	captured := StaticBinder new.
+	environments := OrderedCollection new
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/4/2024 11:48:30'!
+captureLocal: aLocalBinding
+	self assert: (self resolveLocal: aLocalBinding name) notNil.
+	^aLocalBinding
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:50'!
+captureSelf
+	captureSelf := true.
+
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/4/2024 11:48:38'!
+environmentIndexOf: aScriptNode
+	self assert: aScriptNode == script.
+	^nil
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 11/13/2022 12:50:31'!
+poolFor: aString
+	cvars do: [:binder | binder at: aString ifPresent: [:b | ^binder contents]].
+	pools do: [:pool | pool at: aString ifPresent: [:b | ^pool contents]].
+	self error: 'not found'
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/4/2024 06:55:50'!
+resolve: aString
+	(self resolveLocal: aString) ifNotNil: [ :binding | ^ binding ].
+	(self resolvePseudo: aString) ifNotNil: [ :binding | ^ binding ].
+	^ DynamicBinding named: aString
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 11/13/2022 12:50:31'!
+resolveShared: aString
+	(pseudo at: aString) ifNotNil: [:binding | ^binding].
+	(ivars at: aString) ifNotNil: [:binding | ^binding].
+	cvars do: [:binder | binder at: aString ifPresent: [:binding | ^binding]].
+	pools do: [:pool | pool at: aString ifPresent: [:binding | ^binding]].
+	^(globals at: aString) ifNil: [UnresolvedBinding new name: aString]
+! !
+
+!MethodScope methodsFor: 'services' stamp: 'KenD 3/4/2024 11:48:43'!
+scriptDefining: aString
+	(self resolveLocal: aString) ifNotNil: [^script].
+	self assert: false.
+	^nil
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+addPool: aPoolDictionary
+	| binder |
+	binder := DynamicBinder on: aPoolDictionary .
+	pools add: binder
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+addPool: aDictionary of: type
+	| dict |
+	dict := DynamicBinder on: aDictionary of: type.
+	pools add: dict
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+addPoolBinders: aCollection
+	pools addAll: aCollection
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+classBinding
+	^species
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:50'!
+initialize
+	super initialize.
+	self initializePseudoVars
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+initializeClassVars
+	"
+		fixme: bootstrapping should be properly abstracted
+		and not checked with isKindOf:
+	"
+
+	| vars |
+	species instanceSide withAllSuperclasses
+		do: [ :class | 
+			| binder |
+			vars := class classPool.
+			binder := DynamicBinder on: vars of: ClassVarBinding.
+			cvars add: binder ]
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+initializeInstVars
+	species allInstVarNames withIndexDo: [:name :i | | binding |
+		binding := InstVarBinding new name: name; index: i.
+		ivars at: name put: binding]
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+initializePoolVars
+	| instance |
+	instance := species instanceSide.
+	(instance allSharedPoolsUsing: globals)
+		do:
+			[ :pool | self addPool: pool ] .
+	instance withAllSuperclasses
+		do: [ :class | class localPools do: [ :pool | self addPool: pool ] ]
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:50'!
+initializePseudoVars
+	pseudo := StaticBinder new.
+	pseudo
+		at: 'nil' put: NilBinding new;
+		at: 'true' put: TrueBinding new;
+		at: 'false' put: FalseBinding new;
+		at: 'self' put: SelfBinding new;
+		at: 'super' put: SuperBinding new
+! !
+
+!MethodScope methodsFor: 'initialization' stamp: 'KenD 11/13/2022 12:50:31'!
+species: aSpecies
+	species ifNotNil: [^self].
+	species := aSpecies.
+	self initializeInstVars; initializeClassVars; initializePoolVars.
+	species superclass isNil ifTrue: [^self].
+	pseudo at: 'super' put: SuperBinding new
+! !
+
+!MethodScope methodsFor: 'as yet unclassified' stamp: 'KenD 3/4/2024 06:55:50'!
+resolvePseudo: aString
+	^pseudo at: aString
+
+! !
+
+!MethodScope methodsFor: 'private' stamp: 'KenD 3/4/2024 11:48:12'!
+captureEnvironment: aScriptNode
+	self assert:  aScriptNode == script
+! !
+
+!MethodScope methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:50'!
+transferLocal: name
+	^self resolveLocal: name
+! !
+
+!MethodScope methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:50:31'!
+hasMultipleBindingsFor: aString
+	"
+	temporal compatibility
+	"
+	| count |
+	count := 0.
+	cvars
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	pools
+		do: [:binder | binder at: aString ifPresent: [:b | count := count + 1]].
+	^count > 1
+! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 11/13/2022 12:50:31'!
+namespace
+	^globals
+! !
+
+!MethodScope methodsFor: 'accessing' stamp: 'KenD 11/13/2022 12:50:31'!
+namespace: aDictionary
+	globals contents: aDictionary
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineConditional
+	| arguments |
+	arguments := message arguments.
+	arguments size >= 1 ifFalse: [^self].
+	arguments do: [:arg | arg isEvaluable ifFalse: [^self]].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineIfNilIfNotNil
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments first isEvaluable ifFalse: [^self].
+	arg := arguments second.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined
+	
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineIfNotNil
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 1 ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arg isBlockNode ifTrue: [arg beInlined]
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineIfNotNilIfNil
+	| arguments arg |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	arguments second isEvaluable ifFalse: [^self].
+	arg := arguments first.
+	(arg isEvaluable or: [arg isBlockNode and: [arg arguments size = 1]])
+		ifFalse: [^self].
+	message beInlined.
+	arguments select: #isBlockNode thenDo: #beInlined
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineToByDo
+	| arguments arg step |
+	arguments := message arguments.
+	arguments size = 3 ifFalse: [^self].
+	arg := arguments at: 3.
+	arg isBlockNode ifFalse: [^self].
+	arg arguments size = 1 ifFalse: [^self].
+	step := arguments at: 2.
+	(step isNumberNode and: [step value isSmallInteger]) ifFalse: [^self].
+	message beInlined.
+	arg beInlined
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineToDo
+	| arguments last |
+	arguments := message arguments.
+	arguments size = 2 ifFalse: [^self].
+	last := arguments at: 2.
+	last isBlockNode ifFalse: [^self].
+	last arguments size = 1 ifFalse: [^self].
+	message beInlined.
+	last beInlined
+! !
+
+!MessageInliner methodsFor: 'inlining' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineWhile
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments size = 1
+		ifFalse: [ ^ self ].
+	arguments last isNullary
+		ifFalse: [ ^ self ].
+	self inlineConditional.
+	receiver isBlockNode
+		ifTrue: [ receiver beInlined ]
+! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/4/2024 06:55:50'!
+inline: aMessageNode
+	| s keywords |
+	message := aMessageNode.
+	message receiver isSuper
+		ifTrue: [ ^ self ].
+	(message isCascadeMessage and: [ message receiver isBlockNode ])
+		ifTrue: [ ^ self ].
+	s := message selector value.
+	s == #ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #or:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #and:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #timesRepeat:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifTrue:ifFalse:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifFalse:ifTrue:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #andNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #orNot:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNil:
+		ifTrue: [ ^ self inlineConditional ].
+	s == #ifNotNil:
+		ifTrue: [ ^ self inlineIfNotNil ].
+	s == #ifNil:ifNotNil:
+		ifTrue: [ ^ self inlineIfNilIfNotNil ].
+	s == #ifNotNil:ifNil:
+		ifTrue: [ ^ self inlineIfNotNilIfNil ].
+	s == #whileTrue:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileFalse:
+		ifTrue: [ ^ self inlineWhile ].
+	s == #whileTrue
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #whileFalse
+		ifTrue: [ ^ self inlineUnitaryWhile ].
+	s == #repeat
+		ifTrue: [ ^ self inlineRepeat ].
+	s == #to:do:
+		ifTrue: [ ^ self inlineToDo ].
+	"s == #to:by:do:
+		ifTrue: [ ^ self inlineToByDo ]."
+	keywords := $: split: s.
+	keywords last = ''
+		ifTrue: [ keywords := keywords allButLast ].
+	(keywords conform: [ :k | k = 'and' ])
+		ifTrue: [ ^ self inlineConditional ].
+	(keywords conform: [ :k | k = 'or' ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'and' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ ^ self inlineConditional ].
+	((keywords allButLast conform: [ :k | k = 'or' ])
+		and: [ #('ifTrue' 'ifFalse') includes: keywords last ])
+		ifTrue: [ self inlineConditional ]
+! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineRepeat
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable
+		ifFalse: [ ^ self ].
+	arguments := message arguments.
+	arguments isEmpty
+		ifFalse: [ ^ self ].
+	receiver isBlockNode
+		ifFalse: [ ^ self ].
+	message beInlined.
+	receiver beInlined
+! !
+
+!MessageInliner methodsFor: 'transforming' stamp: 'KenD 3/4/2024 06:55:50'!
+inlineUnitaryWhile
+	| receiver arguments |
+	receiver := message receiver.
+	receiver isEvaluable ifFalse: [^self].
+	arguments := message arguments.
+	arguments size = 0 ifFalse: [^self].
+	self inlineConditional.
+	receiver isBlockNode ifTrue: [
+		message beInlined.
+		receiver beInlined]
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+canBeAssigned
+	^true
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+declaration
+	^self
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 11:48:47'!
+encodeUsing: anAstcodeEncoder
+	self assert: false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isArgument
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isClassBinding
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isClassVariable
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isConstantBinding
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isDynamic
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isGlobal
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isInStack
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isInstVar
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isLiteral
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isLocal
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isPoolVariableBinding
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isSelf
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isSelfOrSuper
+	^self isSelf or: [self isSuper]
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isSuper
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+isTemporary
+	^false
+! !
+
+!Binding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:53'!
+literal
+	^nil
+! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:53'!
+name
+	^name
+! !
+
+!Binding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:53'!
+name: aString
+	name := aString
+! !
+
+!Binding methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:53'!
+printNameOn: aStream
+		aStream
+		print: name
+
+! !
+
+!Binding methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:53'!
+printOn: aStream
+	self printNameOn: aStream.
+	aStream
+		nextPutAll: ' ('.
+	super printOn: aStream.
+	aStream nextPutAll: ')'
+! !
+
+!Binding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:53'!
+beReferencedFrom: aScriptNode
+	
+! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:30'!
+association 
+
+	^association! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:24:41'!
+association: anAssociation 
+
+	association := anAssociation.
+	name := anAssociation key! !
+
+!AssociationBinding methodsFor: 'accessing' stamp: 'KenD 2/24/2021 11:25:02'!
+literal 
+
+	^association! !
+
+!AssociationBinding methodsFor: 'testing' stamp: 'KenD 2/24/2021 11:24:17'!
+usesSymbols 
+
+	^false! !
+
+!AssociationBinding class methodsFor: 'accessing' stamp: 'KenD 6/8/2021 13:16:43'!
+usesSymbols 
+
+	^false! !
+
+!AssociationBinding class methodsFor: 'instance creation' stamp: 'KenD 2/24/2021 11:23:29'!
+on: anAssociation 
+
+	^self new association: anAssociation! !
+
+!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
+emitLoadAusing: anAstcodeEncoder
+	anAstcodeEncoder encodeLoadAwithGlobal: association
+! !
+
+!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeGlobalVar: association
+! !
+
+!GlobalBinding methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
+isGlobal
+	^true
+! !
+
+!GlobalBinding class methodsFor: 'testing' stamp: 'KenD 11/13/2022 12:48:59'!
+usesSymbols
+	^true
+! !
+
+!GlobalBinding class methodsFor: 'private' stamp: 'KenD 11/13/2022 12:48:59'!
+on: anAssociation
+	| v class |
+	v := anAssociation value.
+	class := (v isSpecies or: [ v class == SlotObjectMap and: [v spec isMeta]])
+		ifTrue: [ ClassBinding ]
+		ifFalse: [ GlobalBinding ].
+	^ class new association: anAssociation
+! !
+
+!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:39'!
+emitLoadAusing: anAstcodeEncoder 
+
+	anAstcodeEncoder encodeLoadAwithPoolVar: association! !
+
+!PoolVarBinding methodsFor: 'codeGeneration' stamp: 'KenD 3/2/2021 12:43:50'!
+encodeUsing: anAstcodeEmitter 
+
+	anAstcodeEmitter encodePoolVar: self literal! !
+
+!PoolVarBinding methodsFor: 'testing' stamp: 'KenD 3/2/2021 12:44:07'!
+isPoolVariableBinding 
+
+	^true! !
+
+!DynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+beReferencedFrom: aScriptNode
+	"a dynamic binding could refer to an ivar, so we have to be conservative"
+	aScriptNode useSelf
+! !
+
+!DynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeDynamicVar: name
+! !
+
+!DynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+isDynamic
+	^true
+! !
+
+!DynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+literal
+	^name asSymbol
+! !
+
+!DynamicBinding class methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+default
+	^Default ifNil: [Default := self new name: '<unresolved>']
+! !
+
+!DynamicBinding class methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:52'!
+named: aString
+	| index first second |
+	index := aString indexOf: $..
+	index = 0 ifTrue: [ ^self new name: aString ].
+	first := aString copyFrom: 1 to: index - 1.
+	second := aString copyFrom: index + 1 to: aString size.
+	^NestedDynamicBinding new name: { first. second }
+! !
+
+!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeNestedDynamicVar: name
+! !
+
+!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+literal
+	^name collect: [ :n | n asSymbol]
+! !
+
+!NestedDynamicBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:52'!
+printNameOn: aStream
+	name do: [ :n | aStream nextPutAll: n ] separatedBy: [ aStream nextPut: $. ]
+! !
+
+!LiteralBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isLiteral
+	^true
+! !
+
+!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeFalse
+! !
+
+!FalseBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+name
+	^'false'
+! !
+
+!FalseBinding methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:47'!
+value
+	^false
+! !
+
+!NilBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeNil
+! !
+
+!NilBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+name
+	^'nil'
+! !
+
+!NilBinding methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:48'!
+value
+	^nil
+! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeTrue
+! !
+
+!TrueBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+name
+	^'true'
+! !
+
+!TrueBinding methodsFor: 'evaluating' stamp: 'KenD 3/4/2024 06:55:47'!
+value
+	^true
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+declaration
+	^declaration
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+declaration: anIdentifierNode
+	declaration := anIdentifierNode
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+environment
+	^environment index
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+environmentIndex
+	^environment index
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+environmentIndex: anInteger
+	environment index: anInteger
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+environmentObject
+	^environment
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+environmentType
+	^environment environmentType
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+index
+	^index
+! !
+
+!LocalBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:59'!
+index: aNumber
+	index := aNumber
+! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:59'!
+isInArray
+	^self isInStack not
+! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:59'!
+isInStack
+	^environment isStack
+! !
+
+!LocalBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:59'!
+isLocal
+	^true
+! !
+
+!LocalBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:59'!
+beInArray
+	environment := ArrayEnvironment new
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:48'!
+beInlined
+	environment := InlinedArgEnvironment new
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:48'!
+description
+	^'argument ' , name
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:48'!
+encodeUsing: anAstcodeEncoder
+	anAstcodeEncoder encodeArgument: index env: environment
+! !
+
+!ArgumentBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:48'!
+isInlined
+	^environment isInlinedArgument
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+canBeAssigned
+	^false
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+index: aNumber
+	index := aNumber.
+
+! !
+
+!ArgumentBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isArgument
+	^true
+! !
+
+!ArgumentBinding methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:48'!
+initialize
+	super initialize.
+	environment := ArgumentEnvironment new
+! !
+
+!ArgumentBinding class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:48'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!TemporaryBinding methodsFor: 'printing' stamp: 'KenD 3/4/2024 06:55:49'!
+description
+	^'temporary ' , name
+! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeUsing: anAstcodeEncoder
+	anAstcodeEncoder encodeTemporary: index env: environment
+! !
+
+!TemporaryBinding methodsFor: 'initialization' stamp: 'KenD 3/4/2024 06:55:49'!
+initialize
+	super initialize.
+	environment := StackEnvironment new
+! !
+
+!TemporaryBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:49'!
+isTemporary
+	^true
+! !
+
+!TemporaryBinding class methodsFor: 'instance creation' stamp: 'KenD 3/4/2024 06:55:49'!
+new
+	"return an initialized instance"
+
+	^ self basicNew initialize.
+
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+canBeAssigned
+	^false
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeSelf
+! !
+
+!SelfBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:48'!
+isSelf
+	^true
+! !
+
+!SelfBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:48'!
+name
+	^'self'
+! !
+
+!SelfBinding methodsFor: 'actions' stamp: 'KenD 3/4/2024 06:55:48'!
+beReferencedFrom: aScriptNode
+	aScriptNode useSelf
+! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+encodeUsing: anAstcodeEmitter
+	anAstcodeEmitter encodeSuper
+! !
+
+!SuperBinding methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:49'!
+name
+	^'super'
+! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:49'!
+isSelf
+	^false
+! !
+
+!SuperBinding methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:49'!
+isSuper
+	^true
+! !
+
+!LocalEnvironment methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:50'!
+isInlinedArgument
+	^false
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+environmentType
+	^EnvironmentValue
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+index
+	^index
+! !
+
+!ArrayEnvironment methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+index: anInteger
+	index := anInteger
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isCurrent
+	^index isNil
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isIndirect
+	^self isCurrent not
+! !
+
+!ArrayEnvironment methodsFor: 'testing' stamp: 'KenD 3/4/2024 06:55:47'!
+isStack
+	^false
+! !
+
+!StackEnvironment methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:47'!
+index
+	^nil
+! !
+
+!StackEnvironment methodsFor: 'private' stamp: 'KenD 3/4/2024 06:55:47'!
+isStack
+	^true
+! !
+
+!ArgumentEnvironment methodsFor: 'private' stamp: 'KenD 3/4/2024 06:56:02'!
+environmentType
+	^LocalArgument
+! !
+
+!InlinedArgEnvironment methodsFor: 'accessing' stamp: 'KenD 3/4/2024 06:55:53'!
+isInlinedArgument
+	^true
+! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 3/4/2024 07:01:28'!
+error
+	^error
+! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 3/4/2024 07:01:28'!
+on: aString
+	stream := aString readStream.
+	return := nil
+! !
+
+!NumberParser2 methodsFor: 'accessing' stamp: 'KenD 6/3/2021 07:15:06'!
+return
+
+	^return! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+checkNumberEnd: position
+	| char |
+	stream atEnd ifTrue: [^self].
+	char := stream peek.
+	char = $. ifFalse: [^self].
+	stream skip: 1.
+	stream atEnd
+		ifFalse: [stream peek isDigit
+			ifTrue: [self error: 'invalid number' at: position]].
+	stream skip: -1
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+completeFloat: anInteger
+	| tenth |
+	tenth := 10 raisedToInteger: self nextExponent.
+	^(anInteger * tenth) asFloat
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+completeNumber: anInteger after: aCharacter
+	aCharacter = $. ifTrue: [
+		^(stream peekFor: $s)
+			ifTrue: [self nextScaledFrom: anInteger fractionDigits: 0]
+			ifFalse: [self nextFloat: anInteger]].
+	(aCharacter = $e or: [aCharacter = $E])
+		ifTrue: [^self completeFloat: anInteger].
+	aCharacter = $r ifTrue: [^self nextIntegerRadix: anInteger].
+	aCharacter = $s ifTrue: [^self nextScaledFrom: anInteger fractionDigits: 0].
+	(anInteger = 0 and: [aCharacter = $x or: [aCharacter = $X]])
+		ifTrue: [^self nextIntegerRadix: 16].
+	stream skip: -1.
+	^anInteger
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+completeNumber: anInteger at: start
+	| number |
+	stream atEnd ifTrue: [^anInteger].
+	number := anInteger.
+	number := self completeNumber: anInteger after: stream next.
+	self checkNumberEnd: start.
+	^number
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+digitFromChar: char base: radix
+	| c |
+	char isDigit ifTrue: [^char digitValue].
+	char = $r ifTrue: [^nil].
+	char = $x ifTrue: [^nil].
+	char = $X ifTrue: [^nil].
+	c := char asUppercase.
+	(c asInteger between: $A asInteger and: $Z asInteger) ifFalse: [^nil].
+	(c !!= $E and: [radix <= c digitValue]) ifTrue: [^nil].
+	(c = $E and: [radix = 10]) ifTrue: [^nil].
+	^c digitValue
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+endToken
+	self error: 'end of stream' at: stream position
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+error: aString at: position
+	error := aString -> position.
+	return value: nil
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+negativeNumber
+	| position |
+	stream atEnd ifTrue: [^nil].
+	stream peek isDigit ifFalse: [^nil].
+	position := stream position.
+	^self next key negated -> position
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+next
+	| char |
+	return isNil ifTrue: [return := [:value | ^value]].
+	char := self nextChar.
+	char isNil ifTrue: [^self endToken].
+	char = $- ifTrue: [^self negativeNumber].
+	char = $+ ifTrue: [^self positiveNumber].
+	char isDigit ifTrue: [^self nextNumber: char].
+	^nil
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextChar
+	^stream skipSeparators atEnd ifFalse: [stream next]
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextDigit: radix
+	| char digit |
+	stream atEnd ifTrue: [^nil].
+	char := stream next.
+	digit := self digitFromChar: char base: radix.
+	digit isNil ifTrue: [
+		stream skip: -1.
+		^nil].
+	radix <= digit
+		ifTrue: [self error: 'digit greater than radix' at: stream position].
+	^digit
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextExponent
+	| negated exp |
+	negated := false.
+	(stream peekFor: $+) ifFalse: [negated := stream peekFor: $-].
+	exp := self nextIntegerRadix: 10.
+	negated ifTrue: [exp := exp negated].
+	^exp
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextFloat: aNumber
+	| base digit e exp |
+	digit := self nextDigit: 10.
+	digit isNil ifTrue: [
+		stream skip: -1.
+		^aNumber].
+	e := 1.
+	base := aNumber * 10 + digit.
+	[
+		digit := self nextDigit: 10.
+		digit isNil]
+		whileFalse: [
+			base := base * 10 + digit.
+			e := e + 1].
+	((stream peekFor: $E) or: [stream peekFor: $e]) ifTrue: [
+		exp := self nextExponent.
+		^(base * (10 raisedToInteger: exp - e)) asFloat].
+	(stream peekFor: $s) ifTrue: [^self nextScaledFrom: base fractionDigits: e].
+	^(base * (10 raisedToInteger: e negated)) asFloat
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextIntegerRadix: radix
+	| value valid digit |
+	value := 0.
+	valid := false.
+	[
+		digit := self nextDigit: radix.
+		digit isNil]
+		whileFalse: [
+			valid := true.
+			value := value * radix + digit].
+	valid ifFalse: [self error: 'digit missing' at: stream position + 1].
+	^value
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextNumber: aCharacter
+	| start number digit |
+	start := stream position.
+	number := aCharacter digitValue.
+	[
+		digit := self nextDigit: 10.
+		digit isNil]
+		whileFalse: [number := number * 10 + digit].
+	number := self completeNumber: number at: start.
+	^number -> (start thru: stream position)
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+nextScaledFrom: aNumber fractionDigits: digits
+	| scale denominator sd |
+	scale := (stream atEnd not and: [stream peek isDigit])
+		ifTrue: [self nextIntegerRadix: 10].
+	denominator := 10 raisedToInteger: digits.
+	sd := ScaledDecimal
+		numerator: aNumber
+		denominator: denominator
+		scale: scale.
+	^sd reduced
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+positiveNumber
+	| position |
+	stream peek isDigit ifFalse: [^nil].
+	position := stream position.
+	^self next key -> position
+! !
+
+!NumberParser2 methodsFor: 'private' stamp: 'KenD 3/4/2024 07:01:28'!
+reset
+	stream reset.
+	return := nil
+! !
+
+!NumberParser2 methodsFor: 'services' stamp: 'KenD 3/4/2024 07:01:28'!
+nextValue
+	^self next ifNil: [0] ifNotNil: [:assoc | assoc key]
+! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:05:33'!
+classes
+	"Answer dictionary of NameSym->ClassSpec"
+	^classes! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:06:50'!
+globalVariables
+	"Answer dictionary of NameSym->LiteralVariableSpec"
+	^globalVariables ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:03:41'!
+isBigEndian
+
+	^isBigEndian ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:04:01'!
+isBigEndian: aBoolean
+
+	isBigEndian := aBoolean ! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:06:04'!
+methods
+	"Answer dictionary of NameSym->MethodSpec"
+	^methods! !
+
+!BeeProtoImage methodsFor: 'accessing' stamp: 'KenD 3/5/2024 14:07:46'!
+startUpMethod
+	"Answer a MethodSpec"
+	^startUpMethod! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:10:25'!
+imageFormat
+	"Answer the number that identifies this image format"
+	self flag: #Fixme
+	^666! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:08:42'!
+imageHeaderSize
+	"In Bytes"
+	self flag: #Fixme.
+	^0! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:09:51'!
+lastBridge
+	"In Bytes"
+	self flag: #Fixme.
+	self error: 'no lastBridge defined'.! !
+
+!BeeProtoImage methodsFor: 'format constants' stamp: 'KenD 3/5/2024 12:07:47'!
+wordSize
+	"Also size of an oop.
+	In Bytes"
+	^8! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:25:20'!
+on: aStream nexWordPut: aNumber
+	"Write #wordSize bytes. Use 'isBigEndian' endianess."
+
+	self on: aStream nextUint64Put: aNumber.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:12'!
+on: aStream nextUint16Put: aNumber
+	"Write 2 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint16Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:34'!
+on: aStream nextUint32Put: aNumber
+	"Write 4 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint32Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'services' stamp: 'KenD 3/5/2024 12:24:40'!
+on: aStream nextUint64Put: aNumber
+	"Write 8 bytes. Use 'isBigEndian' endianess."
+
+	aStream nextUint64Put: aNumber bigEndian: isBigEndian.! !
+
+!BeeProtoImage methodsFor: 'initialization' stamp: 'KenD 3/5/2024 12:22:24'!
+initialize
+	isBigEndian := false. "default"
+	classes := OrderedDictionary new.
+	methods := IdentitySet new.
+	baseAddressOfImage := self imageHeaderSize. 										"Base address. Start of Object Memory."
+	nextFreeAddressOfImage := baseAddressOfImage.
+	foreignObjectsMap := IdentityDictionary new.
+	globalVariables  := OrderedCollection new.
+	symbols := OrderedCollection new.! !
+
 !Subject methodsFor: 'as yet unclassified' stamp: 'KenD 1/30/2023 10:10:54'!
 _gate
 	^gate
@@ -35182,14 +35550,6 @@ printString2
 !Subject class methodsFor: 'initialization' stamp: 'KenD 1/30/2023 10:10:54'!
 initialize
 	Counts := IdentityDictionary new
-! !
-
-!ClosureElementTypes class methodsFor: 'class initialization' stamp: 'KenD 1/30/2023 10:10:53'!
-initialize
-	Self := 0.
-	LocalArgument := 1.
-	Environment := 2.
-	EnvironmentValue := 3
 ! !
 
 !ProtoObject methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:44:40'!
@@ -35358,62 +35718,6 @@ bin: bits
 	bin := pad , self bin.
 	^ bin copyFrom: bin size - bits + 1 to: bin size! !
 
-!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:53:06'!
-bitShiftRight: anInteger 
-
-	^self bitShift: 0 - anInteger! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:30:23'!
-bitsAt: aStretch 
-	"
-	(2r001101010 bitField: (3 thru: 6)) bin = '1010'
-	(-16r40000000 bitField: (29 thru: 31)) bin = '100'
-	"
-	| shifted mask |
-	shifted := self bitShiftRight: aStretch start - 1.
-	mask := 1 bitShift: aStretch length.
-	^shifted bitAnd: mask - 1! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:29:27'!
-bitsAt: aStretch put: anInteger 
-	"
-	((2r001101100 bitsAt: (3 thru: 6) put: 2r1101) bitField: (3 thru: 6)) bin = '1101'
-	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (29 thru: 31)) bin = '101'
-	((2r100 bitsAt: (29 thru: 31) put: 2r101) bitField: (1 thru: 3)) bin = '100'
-	"
-	| shifted max |
-	shifted := anInteger bitShift: aStretch start - 1.
-	max := 1 bitShift: aStretch length.
-	anInteger < max ifFalse: [self error: 'invalid argument'].
-	^(self bitsClear: aStretch) bitOr: shifted! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:29:57'!
-bitsClear: aStretch 
-	"
-	(2r111100110 bitsClear: (3 thru: 6)) = 2r111000010
-	"
-	| mask |
-	mask := (1 bitShift: aStretch end) - (1 bitShift: aStretch start - 1).
-	^self bitAnd: mask bitInvert! !
-
-!Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/30/2022 15:30:51'!
-isOnBit: n
-
-	^(self bitAnd: n) = n! !
-
-!Integer methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 12:54:20'!
-linearFeedbackShiftRandom: key 
-	"
-	LFSR implementation (avoids 0 by definition).
-	More keys at: https://users.ece.cmu.edu/~koopman/lfsr/index.html
-	"
-
-	| shifted |
-	shifted := self bitShift: -1.
-	^ (self bitAnd: 1) = 0
-		ifTrue: [ shifted ]
-		ifFalse: [ shifted bitXor: key ]! !
-
 !Integer methodsFor: '*Powerlang-Core' stamp: 'KenD 9/29/2022 14:03:31'!
 thru: anInteger
 	^Stretch from: self thru: anInteger
@@ -35486,20 +35790,6 @@ anyone
 collect: collectBlock thenDo: doBlock
 	
 	^self do: [ :each | doBlock value: (collectBlock value: each)]! !
-
-!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 13:58:29'!
-conform: evaluable
-
-	^self allSatisfy: evaluable! !
-
-!Collection methodsFor: '*powerlang-core' stamp: 'KenD 5/30/2021 14:06:30'!
-reject: rejectBlock thenDo: doBlock
-	"A utility which does not create intermediate collection"
-
-	self do: [ :each |
-		(rejectBlock value: each)
-		ifFalse: [ doBlock value: each ]
-	]! !
 
 !Collection class methodsFor: '*powerlang-core' stamp: 'KenD 6/17/2021 13:20:37'!
 with: anObject withAll: aCollection 
@@ -35663,34 +35953,6 @@ uint64le: anInteger
 	self nextPut: (anInteger byteAt: 7).
 	self nextPut: (anInteger byteAt: 8)! !
 
-!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 11:20:29'!
-copyFrom: start to: end
-
-	| startPos result |
-	startPos := self position.
-	self position: start - 1.
-	result := self next: end - start + 1.
-	self position: startPos.
-	^result! !
-
-!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:36'!
-peek: n
-
-	| startPos safe data |
-	startPos := self position.
-	safe := n min: (self size - startPos).
-	data := self next: safe.
-	self position: startPos.
-	^data
-	! !
-
-!ReadStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:47:54'!
-prev 
-
-	^self position > 0
-		ifTrue: [self position: self position - 1; peek]
-		ifFalse: [self error: 'read beyond start of stream']! !
-
 !WriteStream methodsFor: '*powerlang-core' stamp: 'KenD 6/2/2021 16:58:02'!
 nextBytePut: aCollection 
 
@@ -35775,11 +36037,12 @@ ObjectHeaderMasks initialize!
 ObjectHeaderOffsets initialize!
 InlineMessageLinkerFlags initialize!
 SendSiteFlags initialize!
-SCompiledBlockFlags initialize!
-SCompiledMethodFlags initialize!
+SExpressionTypes initialize!
 AstBindingTypes initialize!
 AstNodeTypes initialize!
-SExpressionTypes initialize!
+ClosureElementTypes initialize!
+SCompiledBlockFlags initialize!
+SCompiledMethodFlags initialize!
 SFFIDescriptor initialize!
 Assembler initialize!
 MethodEvaluator initialize!
@@ -35788,5 +36051,4 @@ SmalltalkInterpreter initialize!
 AstcodeDecoder initialize!
 MessageCollector initialize!
 Subject initialize!
-ClosureElementTypes initialize!
 PowerLangPackage postPackageInstall!
