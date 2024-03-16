@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6272] on 13 March 2024 at 2:52:09 pm'!
+'From Cuis6.3 [latest update: #6278] on 16 March 2024 at 12:47:10 pm'!
 'Description Original + Bee RiscV64G code generation back end.'!
-!provides: 'Powerlang' 1 73!
+!provides: 'Powerlang' 1 74!
 !requires: 'BeeCompatibility' 1 25 nil!
 !requires: 'RISC5-Instructions' 1 28 nil!
 !requires: 'BeePParser' 1 19 nil!
@@ -12063,6 +12063,13 @@ compare: reg1 withImm: imm
 	self compare: reg1 with: tmp0Reg 
 ! !
 
+!RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 3/16/2024 12:45:26'!
+compare: reg1 withMem: aMemRef
+	"Just use a register" 
+	self  load: tmp1Reg fromMem: aMemRef;
+		compare: reg1 with: tmp1Reg "uses tmpReg0"
+! !
+
 !RV64GCodeGenerator methodsFor: 'operations - logical' stamp: 'KenD 10/16/2022 13:52:49'!
 or: srcAndDstReg withImm: imm
 
@@ -12261,10 +12268,11 @@ pop: dstReg
 		addImm: RV64GABI  wordSize to: RegSP 
 	! !
 
-!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:26:37'!
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/16/2024 12:28:04'!
 popIntoMem: dstMemRef
 
-	self notYetImplemented ! !
+	self  pop: RegTmp1;
+		store: RegTmp1 intoMem: dstMemRef! !
 
 !RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:25:26'!
 push: srcReg
@@ -12286,22 +12294,17 @@ pushImm: imm
 	self  moveImm: imm to: tmp1Reg; "NB: uses `tmp0Reg` internally, so `tmp1Reg` OK"
 		push: tmp1Reg! !
 
-!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:27:29'!
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/16/2024 12:30:13'!
 pushMem: aMemRef
 
-	self notYetImplemented ! !
+	self  load: RegTmp1 fromMem: aMemRef;
+		push: RegTmp1 ! !
 
-!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/13/2024 14:27:46'!
+!RV64GCodeGenerator methodsFor: 'operations - stack' stamp: 'KenD 3/16/2024 12:30:39'!
 pushROnFPUStack
 
+	"? Semantics ?"
 	self notYetImplemented ! !
-
-!RV64GCodeGenerator methodsFor: 'services' stamp: 'KenD 10/16/2022 15:24:13'!
-alignTo: aNumber
-	| current |
-	current := memory position. "Should always be modulo 32"
-	self assert: ((current alignedTo: aNumber) = current).
-! !
 
 !RV64GCodeGenerator methodsFor: 'system calls' stamp: 'KenD 10/5/2022 13:52:32'!
 breakpoint
